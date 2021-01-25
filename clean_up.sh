@@ -1,0 +1,1 @@
+docker system prune -a && docker volume rm $(docker volume ls -q)
