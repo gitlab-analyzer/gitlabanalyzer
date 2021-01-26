@@ -1,0 +1,4 @@
+client/node_modules
+client/.idea
+server/.idea
+server/__pycache__
