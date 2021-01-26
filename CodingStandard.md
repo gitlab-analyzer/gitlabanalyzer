@@ -1,15 +1,23 @@
 # Coding Standard
+
+
+## JavaScript
+Refer to "[Airbnb React/JSX Style Guide](https://github.com/airbnb/javascript/tree/master/react)"
+
+## Python
+Refer to "[PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)"
+
+## Java
 Reference: [Dr. Fraser's Java Coding Standard](https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt373/links/files/CodeStyleGuide.html)
 
-
-## Clean & Simple Code
+### Clean & Simple Code
 
 ```
 final String HIGHEST_PRIORITY = "clean code";
 System.out.println("My priority: " + HIGHEST_PRIORITY + ".");
 ```
 
-## Use Meaningful Names
+### Use Meaningful Names
 All identifiers must have meaningful, human-readable, English names. Avoid cryptic abbreviations such as "dspl()", "cntStd()", or "stdRegYYYYMMDD". Instead use:
 ```
 void display();
@@ -32,7 +40,7 @@ void swapCars(Person person1, Person person2)
 }
 ```
 
-## Naming Conventions
+### Naming Conventions
 Constants must be all upper case, with multiple words separated by '_':
 ```
 final int DAYS_PER_WEEK = 7;
@@ -78,7 +86,7 @@ i = i + 1;
 someFunction(x, 0, 1);
 ```
 
-## Indentation and Braces {...}
+### Indentation and Braces {...}
 There's always time for perfect indentation.
 
 Tab size is 4; indentation size is 4. Use tabs to indent code.
@@ -135,7 +143,7 @@ while (count > 0) {
 }
 ```
 
-## Statements and Spacing
+### Statements and Spacing
 Declare each variable in its own definition, rather than together ("int i, j").
 ```
 int *p1;
@@ -181,7 +189,7 @@ if (!isFinishedBooting
 }
 ```
 
-## Classes
+### Classes
 Inside a class, the fields must be at the top of the class, followed by the methods.
 ```
 class Pizza {
@@ -205,7 +213,7 @@ class Topping {
 }
 ```
 
-## Comments
+### Comments
 Comments which are on one line should use the // style. Comments which are or a couple lines may use either the //, or /* ... */ style. Comments which are many lines long should use /* ... */.
 
 Each class must have a descriptive comment before it describing the general purpose of the class. These comments should be in the JavaDoc format. Recommended format is shown below:
@@ -231,7 +239,7 @@ callSomeFunction(
         "test");        // Message
 ```
 
-## Comments vs Functions
+### Comments vs Functions
 Your code should not need many comments. Generally, before writing a comment, consider how you can refactor your code to remove the need to "freshen" it up with a comment.
 
 When you do write a comment, it must describe why something is done, not what it does:
@@ -243,7 +251,7 @@ if (isAlpha((char)someLetter)) {
 }
 ```
 
-## Other
+### Other
 Either post-increment or pre-increment may be used on its own:
 ```
 i++;
