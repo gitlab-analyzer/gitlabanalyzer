@@ -7,6 +7,7 @@ RUN apt-get install -y libsm6 libxext6 libxrender-dev
 RUN pip3 install flask
 RUN pip3 install pika
 RUN pip3 install pymongo
+RUN pip3 install python-gitlab
 
 WORKDIR /app
 COPY ./server .
