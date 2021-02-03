@@ -50,6 +50,14 @@ class GitLab:
             commitDiff.append(oneCommit.diff())
         return commitDiff
 
+    def get_merge_request(self, projectID, state=None, order_by=None, sort=None):
+        myProjects = self.get_project_list()
+        for project in myProjects:
+            if project.id == projectID:
+                return project.mergerequests.list(state=state, order_by=order_by, sort=sort)
+        return None
+
+
 
 
 
