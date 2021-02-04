@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Logo from './Logo';
+import SearchBar from './SearchBar';
 
 function App() {
   // const [placeholder, setPlaceholder] = useState('Hi');
@@ -30,6 +31,7 @@ function App() {
         <p>Flask says {placeholder}</p>
       </header> */}
       <Logo />
+      <SearchBar />
     </div>
   );
 }
