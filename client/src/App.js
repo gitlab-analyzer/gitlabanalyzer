@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './App.css';
 import './Shared.css';
 import Logo from './Logo';
 import SearchBarComp from './SearchBar';
+import LoginBar from './LoginBar';
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
           <div className="m-bot">
             <Logo />
           </div>
-          <SearchBarComp />
+          {/* <SearchBarComp /> */}
+          <LoginBar />
         </div>
       </div>
     </div>

@@ -1,28 +1,22 @@
 import React from 'react';
-import './SearchBar.css';
 import { Paper, Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import useStyles from './BarStyles';
+import './SearchBar.css';
 
-const SearchBarComp = () => {
+const LoginBar = () => {
   const classes = useStyles();
   return (
     <div className="main">
       <div className="bar_container">
         <Paper component="form" className={classes.root}>
-          <IconButton className={classes.iconButton} aria-label="menu">
-            <MenuIcon />
-          </IconButton>
           <InputBase
             className={classes.input}
-            placeholder="Search Repo"
-            inputProps={{ 'aria-label': 'search repo' }}
+            placeholder="Personal Token"
+            inputProps={{ 'aria-label': 'personal token' }}
           />
           <Button variant="contained" className={classes.goButton}>
-            GO
+            LOG IN
           </Button>
         </Paper>
       </div>
@@ -30,4 +24,4 @@ const SearchBarComp = () => {
   );
 };
 
-export default SearchBarComp;
+export default LoginBar;
