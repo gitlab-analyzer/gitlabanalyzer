@@ -31,8 +31,10 @@ function App() {
         </a>
         <p>Flask says {placeholder}</p>
       </header> */}
-      <Logo />
-      <SearchBarComp />
+      <div className="main_container">
+        <Logo />
+        <SearchBarComp />
+      </div>
     </div>
   );
 }

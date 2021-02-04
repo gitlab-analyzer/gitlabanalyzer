@@ -1,11 +1,15 @@
 import React from 'react';
 import './Logo.css';
+import logo from './logo.svg';
 
 const Logo = () => {
   return (
-    <div>
+    <div className="logo__main">
       <p>makemake</p>
-      <h1>gitlab.analyzer</h1>
+      <div className="logo__container">
+        <img src={logo} className="logo" alt="logo" />
+        <h1 className="title">gitlab.analyzer</h1>
+      </div>
     </div>
   );
 };
