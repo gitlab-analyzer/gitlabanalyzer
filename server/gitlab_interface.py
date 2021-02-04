@@ -1,6 +1,5 @@
 import gitlab
 
-
 class GitLab:
     def __init__(self, token, url=None):
         self.token = token
@@ -50,14 +49,22 @@ class GitLab:
             commitDiff.append(oneCommit.diff())
         return commitDiff
 
-    def get_merge_request(self, projectID, state=None, order_by=None, sort=None):
+    # First return value: a list of merge requests
+    # Ex: [mergeRequest1, mergeRequest2]
+    # Second return value: a list of all commits for each merge requests
+    # Ex: [[commit1, commit2], [commit1]]
+    def get_merge_requests_and_commits(self, projectID, state=None, order_by=None, sort=None):
+        commitsForMergeRequests = []
         myProjects = self.get_project_list()
         for project in myProjects:
             if project.id == projectID:
-                return project.mergerequests.list(state=state, order_by=order_by, sort=sort)
+                mergeRequests = project.mergerequests.list(state=state, order_by=order_by, sort=sort)
+
+                for mergeRequest in mergeRequests:
+                    myCommits = mergeRequest.commits()
+                    commitsList = []
+                    for _ in range(myCommits.total_pages):
+                        commitsList.append(myCommits.next())
+                    commitsForMergeRequests.append(commitsList)
+                return mergeRequests, commitsForMergeRequests
         return None
-
-
-
-
-
