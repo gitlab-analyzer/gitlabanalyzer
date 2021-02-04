@@ -1,5 +1,6 @@
 import gitlab
 
+
 class GitLab:
     def __init__(self, token, url=None):
         self.token = token
