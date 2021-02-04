@@ -1,7 +1,14 @@
 .center {
-  margin: auto;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.m-bot {
+  margin-bottom: 2rem;
 }
 
 .main_container {
-  margin: auto;
+  position: relative;
 }

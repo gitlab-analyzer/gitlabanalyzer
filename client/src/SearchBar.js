@@ -48,21 +48,6 @@ const SearchBarComp = () => {
             placeholder="Search Repo"
             inputProps={{ 'aria-label': 'search repo' }}
           />
-          {/* <IconButton
-            type="submit"
-            className={classes.iconButton}
-            aria-label="search"
-          >
-            <SearchIcon />
-          </IconButton> */}
-          {/* <Divider className={classes.divider} orientation="vertical" /> */}
-          {/* <IconButton
-            color="primary"
-            className={classes.iconButton}
-            aria-label="directions"
-          >
-            <DirectionsIcon />
-          </IconButton> */}
           <Button variant="contained" className={classes.goButton}>
             GO
           </Button>
