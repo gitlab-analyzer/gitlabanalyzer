@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Logo from './Logo';
 
 function App() {
-  const [placeholder, setPlaceholder] = useState('Hi');
+  // const [placeholder, setPlaceholder] = useState('Hi');
 
-  useEffect(() => {
-    fetch('/hello').then(res => res.json()).then(data => {
-      setPlaceholder(data.result);
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetch('/hello').then(res => res.json()).then(data => {
+  //     setPlaceholder(data.result);
+  //   });
+  // }, []);
 
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -27,7 +28,8 @@ function App() {
           Learn React
         </a>
         <p>Flask says {placeholder}</p>
-      </header>
+      </header> */}
+      <Logo />
     </div>
   );
 }
