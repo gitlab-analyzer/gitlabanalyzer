@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, List, Tuple
 
 class Issue:
     """
@@ -21,15 +21,15 @@ class Issue:
             milestone -> Milestone
             author -> User
 
-            assignees_list -> List[User]
-            comments_list -> List[Comment]
-            labels_list -> List[str]        # list of tags/labels e.g. "Critical", "Back-End", etc.
+            assignees_list -> List[User]    # An immutable list of Users assigned to the issue
+            comments_list -> List[Comment]  # An immutable list of Comments belonging to the issue
+            labels_list -> List[str]        # An immutable list of tags/labels e.g. "Critical", "Back-End", etc.
 
         methods:
             Getters for all attributes
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._issue_id: int = None
         self._upvotes: int = None
         self._downvotes: int = None
@@ -47,11 +47,15 @@ class Issue:
         self._milestone = None
         self._author = None
 
-        self._assignees_list = None
-        self._comments_list = None
-        self._labels_list = None
+        self._assignees_list: List = None
+        self._comments_list: List = None
+        self._labels_list: List[str] = None
 
     # Getters
+    @property
+    def labels_list(self) -> Tuple[str]:
+        return tuple(self._labels_list)
+
     @property
     def issue_id(self) -> int:
         return self._issue_id
