@@ -1,7 +1,12 @@
-* {
+.main {
+  margin: 0 auto;
+}
+
+.bar_container {
   font-family: 'Comfortaa', cursive;
 }
 
 .searchBar {
-  background-color: blue;
+  margin: 0 auto;
+  max-width: 600px;
 }
