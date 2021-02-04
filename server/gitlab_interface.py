@@ -59,5 +59,16 @@ class GitLab:
 
 
 
+myGitLab = GitLab(token="uS4ai1UqTZJSeYp69Bey")
+print(myGitLab.authenticate())
+# projects = myGitLab.get_project_list()
+# for project in projects:
+#     print(project)
 
+# commits = myGitLab.get_commit_diff_list(19771)
+commits = myGitLab.get_merge_request(19771)
+
+for commit in commits:
+    print(commit)
+    break
 
