@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Header from './components/Header'
+import Overview from './components/Overview'
+import Code from './components/Code'
+import Table from './components/Table'
+import Batch from './components/Batch'
+import Config from './components/Config'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
+import { Container, Typography } from '@material-ui/core'
 
 function App() {
   const [placeholder, setPlaceholder] = useState('Hi');
@@ -12,23 +19,22 @@ function App() {
   }, []);
 
   return (
+    <Router>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Flask says {placeholder}</p>
-      </header>
+    <Container maxWidth="md">
+      <Header />
+      <Switch>
+        <Route exact path="/overview" component={Overview} />
+        <Route path="/code" component={Code} />
+        <Route path="/table" component={Table} />
+        <Route path="/batch" component={Batch} />
+        <Route path="/config" component={Config} />
+        <Redirect exact from="/" to="/overview" />
+      </Switch>
+      <h3>Flask: {placeholder}</h3>
+</Container>
     </div>
+    </Router>
   );
 }
 
