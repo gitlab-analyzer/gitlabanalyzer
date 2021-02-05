@@ -12,16 +12,16 @@ class Issue:
             title -> str
             description -> str
             state -> str                    # where the issue is on the issues board e.g. "Open", "Closed", "In Progress", etc.
-            updated_date -> str               # string datetime in ISO 8601 format (updated_at)
-            created_date -> str               # string datetime in ISO 8601 format (created_at)
+            updated_date -> str             # string datetime in ISO 8601 format (updated_at)
+            created_date -> str             # string datetime in ISO 8601 format (created_at)
             closed_at -> str                # string datetime in ISO 8601 format (closed_at)
             due_date -> str                 # string datetime in ISO 8601 format
             project_id -> Union[int, str]   # project ID or URL-encoded path of the project
 
             milestone -> Milestone
-            author -> User
+            author -> Member
 
-            assignees_list -> List[User]    # An immutable list of Users assigned to the issue
+            assignees_list -> List[Member]  # An immutable list of Members assigned to the issue
             comments_list -> List[Comment]  # An immutable list of Comments belonging to the issue
             labels_list -> List[str]        # An immutable list of tags/labels e.g. "Critical", "Back-End", etc.
 
@@ -30,26 +30,27 @@ class Issue:
     """
 
     def __init__(self) -> None:
-        self._issue_id: int = None
-        self._upvotes: int = None
-        self._downvotes: int = None
-        self._merge_requests_count: int = None
+        # by default, the attributes will have test values
+        self.__issue_id: int = -1
+        self.__upvotes: int = -2
+        self.__downvotes: int = -3
+        self.__merge_requests_count: int = -4
 
-        self._title: str = None
-        self._description: str = None
-        self._state: str = None
-        self._updated_date: str = None
-        self._created_date: str = None
-        self._closed_date: Optional[str] = None
-        self._due_date: Optional[str] = None
-        self._project_id: Union[int, str] = None
+        self.__title: str = 'title here'
+        self.__description: str = 'description here'
+        self.__state: str = 'state here'
+        self.__updated_date: str = 'YYYY-MM-DDTHH:MI:SS.SSSZ'
+        self.__created_date: str = 'YYYY-MM-DDTHH:MI:SS.SSSZ'
+        self.__closed_date: Optional[str] = 'YYYY-MM-DDTHH:MI:SS.SSSZ'
+        self.__due_date: Optional[str] = None
+        self.__project_id: Union[int, str] = 'project_id is Union[int, str]'
 
-        self._milestone = None
-        self._author = None
+        self.__milestone: None = None                                           # TODO: low priority, maybe not needed
+        self.__author: None = None                                              # TODO
 
-        self._assignees_list: List = None
-        self._comments_list: List = None
-        self._labels_list: List[str] = None
+        self.__assignees_list: List[None] = None                                # TODO
+        self.__comments_list: List[None] = None                                 # TODO
+        self.__labels_list: List[str] = ['Back-End', 'Test']
 
     # Getters
     @property
@@ -58,7 +59,7 @@ class Issue:
 
     @property
     def issue_id(self) -> int:
-        return self._issue_id
+        return self.__issue_id
 
     @property
     def upvotes(self) -> int:
