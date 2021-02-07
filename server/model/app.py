@@ -1,10 +1,11 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 import pymongo
 import urllib.parse
 
+from model.gitlab_interface import GitLab
 
 app = Flask(__name__)
-
+myGitLab = None
 
 @app.route('/')
 def index():
@@ -36,6 +37,30 @@ def hello_world():
     temp = str(myCol.find_one())
     print(temp, flush=True)
     return {'result': temp}
+
+
+# Example: /auth?token=token_variable
+@app.route('/auth', methods=['get'])
+def auth():
+    token = request.args.get('token', default=None, type=str)
+    if not token:
+        return jsonify({'value': 'invalid token'})
+    global myGitLab
+    myGitLab = GitLab(token=token)
+    return jsonify({'value': myGitLab.authenticate()})
+
+
+@app.route('/getProjectList', methods=['get'])
+def get_project_list():
+    projectList = myGitLab.get_project_list()
+    myResponse = []
+    """
+    This is for testing only, need to be changed later
+    """
+    for project in projectList:
+        myResponse.append(project.name_with_namespace)
+    return jsonify({'value': myResponse})
+
 
 
 if __name__ == '__main__':

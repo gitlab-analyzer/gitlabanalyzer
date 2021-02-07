@@ -116,24 +116,24 @@ class GitLab:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
 
-"""
-Below are only for testing purpose
-"""
-myGitLab = GitLab(token="uS4ai1UqTZJSeYp69Bey")
-print("Auth:",myGitLab.authenticate())
-projects = myGitLab.get_project_list()
-myGitLab.set_project(19771)
-for item in myGitLab.get_issue_list():
-    print(item)
-
-print("--------------------------------------")
-for item in myGitLab.get_issue_comments_list():
-    print(item)
-    for note in item:
-        print(note)
-
-print("--------------------------------------")
-for item in myGitLab.get_merge_request_comment_list():
-    print(item)
-    for note in item:
-        print(note)
+# """
+# Below are only for testing purpose
+# """
+# myGitLab = GitLab(token="uS4ai1UqTZJSeYp69Bey")
+# print("Auth:",myGitLab.authenticate())
+# projects = myGitLab.get_project_list()
+# myGitLab.set_project(19771)
+# for item in myGitLab.get_issue_list():
+#     print(item)
+#
+# print("--------------------------------------")
+# for item in myGitLab.get_issue_comments_list():
+#     print(item)
+#     for note in item:
+#         print(note)
+#
+# print("--------------------------------------")
+# for item in myGitLab.get_merge_request_comment_list():
+#     print(item)
+#     for note in item:
+#         print(note)
