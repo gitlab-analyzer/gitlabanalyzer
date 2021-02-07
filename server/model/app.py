@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import pymongo
 import urllib.parse
 
-from model.gitlab_interface import GitLab
+from gitlab_interface import GitLab
 
 app = Flask(__name__)
 myGitLab = None
