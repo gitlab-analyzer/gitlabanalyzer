@@ -1,22 +1,18 @@
-import React from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
 import './Shared.css';
-import Logo from './Logo';
-import SearchBarComp from './SearchBar';
-import LoginBar from './LoginBar';
+import LoginPage from './pages/LoginPage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   return (
-    <div className="App">
-      <div className="main_container">
-        <div className="center">
-          <div className="m-bot">
-            <Logo />
-          </div>
-          {/* <SearchBarComp /> */}
-          <LoginBar />
+    <div>
+      <BrowserRouter>
+        <div>
+          <Route path="/" exact component={LoginPage} />
+          <Route path="/repo" exact component={SearchPage} />
         </div>
-      </div>
+      </BrowserRouter>
     </div>
   );
 }
