@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
@@ -6,19 +6,15 @@ import LoginBar from '../components/LoginBar';
 import { useAuth } from '../context/AuthContext';
 
 function LoginPage() {
-  const { loggedIn } = useAuth();
+  const { user } = useAuth();
 
   // For testing login functionality
   const loggedState = () => {
-    if (loggedIn) {
+    if (user) {
       return <h1>Logged In</h1>;
     }
     return <h1>Logged Out</h1>;
   };
-
-  useEffect(() => {
-    console.log(loggedIn);
-  }, [loggedIn]);
 
   return (
     <div className="App">

@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   goButton: {
     backgroundColor: '#E8ECF2',
+    width: '100px',
   },
 }));
 
