@@ -12,9 +12,9 @@ const LanguageMultiplier = ({ languages }) => {
             <TextField
               label={lang}
               id={lang}
-              defaultValue="Default Value"
+              defaultValue="1.0"
               className=""
-              helperText="Some important text"
+              // helperText="Language"
               margin="normal"
               variant="outlined"
             />
