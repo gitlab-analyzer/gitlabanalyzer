@@ -3,6 +3,7 @@ import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import LoginBar from '../components/LoginBar';
+import SearchBar from '../components/SearchBar';
 import { useAuth } from '../context/AuthContext';
 
 function LoginPage() {
@@ -23,7 +24,7 @@ function LoginPage() {
           <div className="m-bot">
             <Logo />
           </div>
-          <LoginBar />
+          {user ? <SearchBar /> : <LoginBar />}
           {loggedState()}
         </div>
       </div>
