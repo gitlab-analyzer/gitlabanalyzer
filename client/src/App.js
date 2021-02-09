@@ -8,22 +8,20 @@ import Config from './components/Config'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import { Container, Typography } from '@material-ui/core'
+import './App.css';
+import './Shared.css';
+import LoginPage from './pages/LoginPage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
-  const [placeholder, setPlaceholder] = useState('Hi');
-
-  useEffect(() => {
-    fetch('/hello').then(res => res.json()).then(data => {
-      setPlaceholder(data.result);
-    });
-  }, []);
-
   return (
     <Router>
     <div className="App">
     <Container maxWidth="md">
       <Header />
       <Switch>
+        <Route path="/" exact component={LoginPage} />
+        <Route path="/repo" exact component={SearchPage} />
         <Route exact path="/overview" component={Overview} />
         <Route path="/code" component={Code} />
         <Route path="/table" component={Table} />
@@ -31,8 +29,7 @@ function App() {
         <Route path="/config" component={Config} />
         <Redirect exact from="/" to="/overview" />
       </Switch>
-      <h3>Flask: {placeholder}</h3>
-</Container>
+    </Container>
     </div>
     </Router>
   );
