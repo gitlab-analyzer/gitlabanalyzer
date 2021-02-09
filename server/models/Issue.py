@@ -43,14 +43,20 @@ class Issue:
         self.__created_date: str = 'YYYY-MM-DDTHH:MI:SS.SSSZ'
         self.__closed_date: Optional[str] = 'YYYY-MM-DDTHH:MI:SS.SSSZ'
         self.__due_date: Optional[str] = None
-        self.__project_id: Union[int, str] = 'project_id is Union[int, str]'
+        self.__project_id: Union[int, str] = 'project_id is type Union[int, str]'
 
         self.__milestone: None = None                                           # TODO: low priority, maybe not needed
         self.__author: None = None                                              # TODO
 
-        self.__assignees_list: List[None] = None                                # TODO
-        self.__comments_list: List[None] = None                                 # TODO
+        self.__assignees_list: List[None] = []                                  # TODO
+        self.__comments_list: List[None] = []                                   # TODO
         self.__labels_list: List[str] = ['Back-End', 'Test']
+
+    def to_json(self) -> str:
+        return self.__dict__.__str__().replace("'", "\"").replace("_Issue__", "")
+        
+    def __str__(self) -> str:
+        return self.__dict__.__str__()
 
     # Getters
     @property
@@ -104,3 +110,55 @@ class Issue:
     @property
     def project_id(self) -> Union[int, str]:
         return self._project_id
+
+# Testing
+if __name__ == '__main__':
+    testIssue = Issue()
+
+    print(testIssue)
+    print(testIssue.__dict__)
+    print(testIssue.to_json())
+
+"""
+testIssue.to_json() output:
+{
+    "issue_id": -1, 
+    "upvotes": -2, 
+    "downvotes": -3, 
+    "merge_requests_count": -4, 
+    "title": "title here", 
+    "description": "description here", 
+    "state": "state here", 
+    "updated_date": "YYYY-MM-DDTHH:MI:SS.SSSZ", 
+    "created_date": "YYYY-MM-DDTHH:MI:SS.SSSZ", 
+    "closed_date": "YYYY-MM-DDTHH:MI:SS.SSSZ", 
+    "due_date": None, 
+    "project_id": "project_id is type Union[int, str]", 
+    "milestone": None, 
+    "author": None, 
+    "assignees_list": [], 
+    "comments_list": [], 
+    "labels_list": ["Back-End", "Test"]
+}
+
+testIssue.__dict__ output:
+{
+    '_Issue__issue_id': -1, 
+    '_Issue__upvotes': -2, 
+    '_Issue__downvotes': -3, 
+    '_Issue__merge_requests_count': -4, 
+    '_Issue__title': 'title here', 
+    '_Issue__description': 'description here', 
+    '_Issue__state': 'state here', 
+    '_Issue__updated_date': 'YYYY-MM-DDTHH:MI:SS.SSSZ', 
+    '_Issue__created_date': 'YYYY-MM-DDTHH:MI:SS.SSSZ', 
+    '_Issue__closed_date': 'YYYY-MM-DDTHH:MI:SS.SSSZ', 
+    '_Issue__due_date': None, 
+    '_Issue__project_id': 'project_id is type Union[int, str]', 
+    '_Issue__milestone': None, 
+    '_Issue__author': None, 
+    '_Issue__assignees_list': [], 
+    '_Issue__comments_list': [], 
+    '_Issue__labels_list': ['Back-End', 'Test']
+}
+"""
