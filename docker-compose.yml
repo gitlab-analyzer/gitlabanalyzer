@@ -24,6 +24,8 @@ services:
       - '27017-27019:27017-27019'
     volumes:
       - 'mongo:/data/db'
+    # volumes: # uncomment these to use volumes
+       # - mongodb_data_volume:/data/db
     environment:
       - MONGO_INITDB_DATABASE=gitlab_data
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -31,14 +33,6 @@ services:
 
 volumes:
   mongo:
+  # mongodb_data_volume: # uncomment these to use volumes
+    # driver: local
 
-  # frontend:
-  #   container_name: frontend
-  #   build: ./frontend
-  #   volumes:
-  #     - './frontend:/app'
-  #     - '/app/node_modules'
-  #   ports:
-  #     - 5000:5000
-  #   environment:
-  #     - CHOKIDAR_USEPOLLING=true
