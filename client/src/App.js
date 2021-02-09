@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import Header from './components/Header'
+import Overview from './components/Overview'
+import Code from './components/Code'
+import Table from './components/Table'
+import Batch from './components/Batch'
+import Config from './components/Config'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
+import { Container, Typography } from '@material-ui/core'
 import './App.css';
+import './Shared.css';
+import LoginPage from './pages/LoginPage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
-  const [placeholder, setPlaceholder] = useState('Hi');
-
-  useEffect(() => {
-    fetch('/hello').then(res => res.json()).then(data => {
-      setPlaceholder(data.result);
-    });
-  }, []);
-
   return (
+    <Router>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Flask says {placeholder}</p>
-      </header>
+    <Container maxWidth="md">
+      <Header />
+      <Switch>
+        <Route path="/" exact component={LoginPage} />
+        <Route path="/repo" exact component={SearchPage} />
+        <Route exact path="/overview" component={Overview} />
+        <Route path="/code" component={Code} />
+        <Route path="/table" component={Table} />
+        <Route path="/batch" component={Batch} />
+        <Route path="/config" component={Config} />
+      </Switch>
+    </Container>
     </div>
+    </Router>
   );
 }
 
