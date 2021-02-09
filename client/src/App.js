@@ -1,33 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
+import './Shared.css';
+import LoginPage from './pages/LoginPage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
-  const [placeholder, setPlaceholder] = useState('Hi');
-
-  useEffect(() => {
-    fetch('/hello').then(res => res.json()).then(data => {
-      setPlaceholder(data.result);
-    });
-  }, []);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Flask says {placeholder}</p>
-      </header>
+    <div>
+      <BrowserRouter>
+        <div>
+          <Route path="/" exact component={LoginPage} />
+          <Route path="/repo" exact component={SearchPage} />
+        </div>
+      </BrowserRouter>
     </div>
   );
 }
