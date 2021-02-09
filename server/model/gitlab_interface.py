@@ -35,7 +35,7 @@ class GitLab:
         self.__project_lists: list_none = None
         self.__url: str_none = None
         self.__project: Union[gitlab, None] = None
-        if url is None:
+        if (url is None) or (url is ''):
             self.__url = "https://csil-git1.cs.surrey.sfu.ca/"
         else:
             self.__url = url
@@ -125,10 +125,13 @@ class GitLab:
 # """
 # Below are only for testing purpose
 # """
-# myGitLab = GitLab(token="uS4ai1UqTZJSeYp69Bey")
+# myGitLab = GitLab(token="EJf7qdRqxdKWu1ydozLe", url="https://cmpt373-1211-12.cmpt.sfu.ca/")
 # print("Auth:", myGitLab.authenticate())
 # print("Username:", myGitLab.get_username())
 # projects = myGitLab.get_project_list()
+#
+# for project in projects:
+#     print(project)
 # myGitLab.set_project(19771)
 # for item in myGitLab.get_issue_list():
 #     print(item)
