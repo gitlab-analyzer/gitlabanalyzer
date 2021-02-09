@@ -27,7 +27,6 @@ function App() {
         <Route path="/table" component={Table} />
         <Route path="/batch" component={Batch} />
         <Route path="/config" component={Config} />
-        <Redirect exact from="/" to="/overview" />
       </Switch>
     </Container>
     </div>
