@@ -41,11 +41,11 @@ def hello_world():
 @app.route('/auth', methods=['post'])
 def auth():
     global myGitLab
-    myGitLab = GitLab(token=request.form['token'])
+    myGitLab = GitLab(token=request.form['token'], url=request.form['token'])
     if myGitLab.authenticate():
         return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
     else:
-        return jsonify({'username': myGitLab.get_username(), 'response': 'invalid'})
+        return jsonify({'username': '', 'response': 'invalid'})
 
 
 @app.route('/getProjectList', methods=['get'])
@@ -58,7 +58,6 @@ def get_project_list():
     for project in projectList:
         myResponse.append(project.name_with_namespace)
     return jsonify({'value': myResponse})
-
 
 
 if __name__ == '__main__':
