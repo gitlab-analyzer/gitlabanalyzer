@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 import pymongo
 import urllib.parse
-
+from interface.gitlab_interface import GitLab
 
 app = Flask(__name__)
-
+myGitLab = None
 
 @app.route('/')
 def index():
@@ -36,6 +36,29 @@ def hello_world():
     temp = str(myCol.find_one())
     print(temp, flush=True)
     return {'result': temp}
+
+
+# Note: Should pass both the gitlab url and the access token when making post call to /auth
+@app.route('/auth', methods=['post'])
+def auth():
+    global myGitLab
+    myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
+    if myGitLab.authenticate():
+        return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
+    else:
+        return jsonify({'username': '', 'response': 'invalid'})
+
+
+@app.route('/getProjectList', methods=['get'])
+def get_project_list():
+    projectList = myGitLab.get_project_list()
+    myResponse = []
+    """
+    This is for testing only, need to be changed later
+    """
+    for project in projectList:
+        myResponse.append(project.name_with_namespace)
+    return jsonify({'value': myResponse})
 
 
 if __name__ == '__main__':
