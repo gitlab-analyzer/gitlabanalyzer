@@ -1,4 +1,3 @@
-
 from typing import Union, Optional, List
 
 class MergeRequest:
@@ -15,7 +14,7 @@ class MergeRequest:
 		self.__comments: Optional[List[str]] = comments 
 
 	#Getters
-	
+
 	@property
 	def id(self) -> Union[int, str]:
 		return self.__id
