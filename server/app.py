@@ -38,6 +38,7 @@ def hello_world():
     return {'result': temp}
 
 
+# Note: Should pass both the gitlab url and the access token when making post call to /auth
 @app.route('/auth', methods=['post'])
 def auth():
     global myGitLab
