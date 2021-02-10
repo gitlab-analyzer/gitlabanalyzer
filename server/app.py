@@ -41,7 +41,7 @@ def hello_world():
 @app.route('/auth', methods=['post'])
 def auth():
     global myGitLab
-    myGitLab = GitLab(token=request.form['token'], url=request.form['token'])
+    myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
         return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
     else:
