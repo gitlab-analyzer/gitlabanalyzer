@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Paper, Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
-import TextField from '@material-ui/core/TextField';
 import useStyles from './BarStyles';
 import './SearchBar.css';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const LoginBar = () => {
-  const [value, setValue] = useState('');
+  const [token, setToken] = useState('');
   const [url, setUrl] = useState('');
   const classes = useStyles();
 
@@ -20,22 +20,28 @@ const LoginBar = () => {
     } else {
       console.log('Not logged in');
       const userInfo = await logIn();
-      if (value === userInfo.token) {
-        console.log('Log in Successful');
-        setUser(userInfo);
-      } else {
-        console.log('Incorrect token');
-      }
+      console.log(userInfo);
+      // if (token === userInfo.token) {
+      //   console.log('Log in Successful');
+      //   setUser(userInfo);
+      // } else {
+      //   console.log('Incorrect token');
+      // }
     }
   };
 
   // Test Example Login function
-  const logIn = () => {
-    return {
-      userId: 'bfraser',
-      token: 'klAS8jk2ao0z8',
-      time: '02/08/2021',
-    };
+  const logIn = async () => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('token', token);
+    bodyFormData.append('url', url);
+    const response = await axios({
+      method: 'post',
+      url: 'http://localhost:5000/auth',
+      data: bodyFormData,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response;
   };
 
   return (
@@ -45,9 +51,9 @@ const LoginBar = () => {
           <Paper className={classes.root}>
             <InputBase
               className={classes.input}
-              value={value}
+              value={token}
               onChange={(event) => {
-                setValue(event.target.value);
+                setToken(event.target.value);
               }}
               placeholder="Personal Token"
               inputProps={{ 'aria-label': 'personal token' }}
