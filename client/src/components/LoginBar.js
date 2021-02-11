@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Paper, Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
+import TextField from '@material-ui/core/TextField';
 import useStyles from './BarStyles';
 import './SearchBar.css';
 import { useAuth } from '../context/AuthContext';
 
 const LoginBar = () => {
   const [value, setValue] = useState('');
+  const [url, setUrl] = useState('');
   const classes = useStyles();
 
   const { user, setUser } = useAuth();
@@ -39,7 +41,7 @@ const LoginBar = () => {
   return (
     <div className="main">
       <div className="bar_container">
-        <form className="flex" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <Paper className={classes.root}>
             <InputBase
               className={classes.input}
@@ -49,6 +51,17 @@ const LoginBar = () => {
               }}
               placeholder="Personal Token"
               inputProps={{ 'aria-label': 'personal token' }}
+            />
+          </Paper>
+          <Paper className={classes.root}>
+            <InputBase
+              className={classes.input}
+              value={url}
+              onChange={(event) => {
+                setUrl(event.target.value);
+              }}
+              placeholder="gitlab url"
+              inputProps={{ 'aria-label': 'gitlab url' }}
             />
           </Paper>
           <Button

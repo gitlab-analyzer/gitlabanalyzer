@@ -6,11 +6,13 @@ from interface.gitlab_interface import GitLab
 app = Flask(__name__)
 myGitLab = None
 
+
 @app.route('/')
 def index():
     username = urllib.parse.quote_plus('root')
     password = urllib.parse.quote_plus('pass')
-    myClient = pymongo.MongoClient("mongodb://%s:%s@mangodb:27017/" % (username, password))
+    myClient = pymongo.MongoClient(
+        "mongodb://%s:%s@mangodb:27017/" % (username, password))
     myDB = myClient["student_repo"]
     myCol = myDB["students"]
 
@@ -26,7 +28,8 @@ def index():
 def hello_world():
     username = urllib.parse.quote_plus('root')
     password = urllib.parse.quote_plus('pass')
-    myClient = pymongo.MongoClient("mongodb://%s:%s@mangodb:27017/" % (username, password))
+    myClient = pymongo.MongoClient(
+        "mongodb://%s:%s@mangodb:27017/" % (username, password))
     myDB = myClient["student_repo"]
     myCol = myDB["students"]
 
@@ -41,7 +44,7 @@ def hello_world():
 @app.route('/auth', methods=['post'])
 def auth():
     global myGitLab
-    myGitLab = GitLab(token=request.form['token'], url=request.form['token'])
+    myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
         return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
     else:

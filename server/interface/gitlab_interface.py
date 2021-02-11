@@ -81,7 +81,8 @@ class GitLab:
         if not (sinceDate and untilDate):
             commitList = self.get_commit_list_for_project()
         else:
-            commitList = self.get_commit_list_for_project_with_range(sinceDate, untilDate)
+            commitList = self.get_commit_list_for_project_with_range(
+                sinceDate, untilDate)
 
         for oneCommit in commitList:
             commitDiff.append(oneCommit.diff())
@@ -92,9 +93,10 @@ class GitLab:
     # Second return value: a list of all commits for each merge requests
     # Ex: [[commit1, commit2], [commit1]]
     def get_merge_requests_and_commits(self, state: str = None, order_by: str = None, sort: str = None) -> Tuple[
-        list, list]:
+            list, list]:
         commitsForMergeRequests: list = []
-        mergeRequests = self.__project.mergerequests.list(state=state, order_by=order_by, sort=sort)
+        mergeRequests = self.__project.mergerequests.list(
+            state=state, order_by=order_by, sort=sort)
 
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
