@@ -51,7 +51,7 @@ class Project:
 
         self.__owner: None
 
-        self.__tag_list: List[str]
+        self.__tags_list: List[str]
         self.__issues_list: List[Issue]
         self.__branches_list: List[None]
         self.__members_list: List[None]
