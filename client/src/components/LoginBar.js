@@ -21,12 +21,12 @@ const LoginBar = () => {
       console.log('Not logged in');
       const userInfo = await logIn();
       console.log(userInfo);
-      // if (token === userInfo.token) {
-      //   console.log('Log in Successful');
-      //   setUser(userInfo);
-      // } else {
-      //   console.log('Incorrect token');
-      // }
+      if (userInfo.data['response'] === 'valid') {
+        console.log('Log in Successful');
+        setUser(userInfo.data);
+      } else {
+        console.log('Incorrect token');
+      }
     }
   };
 
