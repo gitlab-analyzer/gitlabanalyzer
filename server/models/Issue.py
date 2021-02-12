@@ -1,4 +1,4 @@
-from typing import Union, Optional, List, Tuple
+from typing import Protocol, Union, Optional, List, Tuple
 
 class Issue:
     """
@@ -27,6 +27,8 @@ class Issue:
 
         methods:
             Getters for all attributes
+            __str__()                       # implicit "to string" method
+            to_json()
     """
 
     def __init__(self) -> None:
@@ -45,20 +47,36 @@ class Issue:
         self.__due_date: Optional[str] = None
         self.__project_id: Union[int, str] = 'project_id is type Union[int, str]'
 
-        self.__milestone: None = None                                           # TODO: low priority, maybe not needed
-        self.__author: None = None                                              # TODO
+        self.__milestone_id: int = -1                                               # maybe not needed
+        self.__author_id: int = -1
 
-        self.__assignees_list: List[None] = []                                  # TODO
-        self.__comments_list: List[None] = []                                   # TODO
+        self.__assignee_id_list: List[int] = [-2, -3, -4]
+        self.__comment_id_list: List[int] = [-1, -2, -3]
         self.__labels_list: List[str] = ['Back-End', 'Test']
 
     def to_json(self) -> str:
-        return self.__dict__.__str__().replace("'", "\"").replace("_Issue__", "")
+        return self.__dict__.__str__().replace("_Issue__", "").replace("'", "\"")
         
     def __str__(self) -> str:
         return self.__dict__.__str__()
 
     # Getters
+    @property
+    def comment_id_list(self) -> Tuple[int]:
+        return tuple(self.__comment_id_list)
+
+    @property
+    def assignee_id_list(self) -> Tuple[int]:
+        return tuple(self.__assignee_id_list)
+
+    @property
+    def author_id(self) -> int:
+        return self.__author_id
+
+    @property
+    def milestone_id(self) -> int:
+        return self.__milestone_id
+
     @property
     def labels_list(self) -> Tuple[str]:
         return tuple(self.__labels_list)
@@ -120,7 +138,7 @@ if __name__ == '__main__':
     print(testIssue.to_json())
 
 """
-testIssue.to_json() output:
+testIssue.to_json() example output:
 {
     "issue_id": -1, 
     "upvotes": -2, 
@@ -134,14 +152,14 @@ testIssue.to_json() output:
     "closed_date": "YYYY-MM-DDTHH:MI:SS.SSSZ", 
     "due_date": None, 
     "project_id": "project_id is type Union[int, str]", 
-    "milestone": None, 
-    "author": None, 
-    "assignees_list": [], 
-    "comments_list": [], 
+    "milestone": -1, 
+    "author": -1, 
+    "assignees_list": [-2, -3, -4], 
+    "comments_list": [-1, -2, -3], 
     "labels_list": ["Back-End", "Test"]
 }
 
-testIssue.__dict__ output:
+testIssue.__dict__ example output:
 {
     '_Issue__issue_id': -1, 
     '_Issue__upvotes': -2, 
@@ -155,10 +173,10 @@ testIssue.__dict__ output:
     '_Issue__closed_date': 'YYYY-MM-DDTHH:MI:SS.SSSZ', 
     '_Issue__due_date': None, 
     '_Issue__project_id': 'project_id is type Union[int, str]', 
-    '_Issue__milestone': None, 
-    '_Issue__author': None, 
-    '_Issue__assignees_list': [], 
-    '_Issue__comments_list': [], 
+    '_Issue__milestone': -1, 
+    '_Issue__author': -1, 
+    '_Issue__assignees_list': [-2, -3, -4], 
+    '_Issue__comments_list': [-1, -2, -3], 
     '_Issue__labels_list': ['Back-End', 'Test']
 }
 """
