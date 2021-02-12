@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
 import { Paper, Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
@@ -6,12 +6,22 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import useStyles from './BarStyles';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const SearchBarComp = () => {
   const [value, setValue] = useState('');
   const classes = useStyles();
 
-  const { user } = useAuth();
+  const { user, setRepo } = useAuth();
+
+  useEffect(() => {
+    const getRepos = async () => {
+      const repoList = await axios.get('http://localhost:5000/getProjectList');
+      console.log(repoList);
+      setRepo(repoList.data.value);
+    };
+    getRepos();
+  }, [setRepo]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,7 +54,7 @@ const SearchBarComp = () => {
             variant="contained"
             className={classes.goButton}
           >
-            LOG IN
+            GO
           </Button>
         </form>
       </div>

@@ -23,10 +23,14 @@ const useStyles = makeStyles((theme) => ({
     height: 28,
     margin: 4,
   },
-  goButton: {
+  logInButton: {
     backgroundColor: '#E8ECF2',
     width: '100px',
     marginTop: '10px',
+  },
+  goButton: {
+    backgroundColor: '#E8ECF2',
+    width: '100px',
   },
 }));
 

@@ -11,26 +11,41 @@ const LoginBar = () => {
   const [url, setUrl] = useState('');
   const classes = useStyles();
 
-  const { user, setUser } = useAuth();
+  // Global states from Context API
+  const { user, setUser, setIncorrect } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (user) {
       console.log('Logged in');
     } else {
-      console.log('Not logged in');
-      const userInfo = await logIn();
-      console.log(userInfo);
-      if (userInfo.data['response'] === 'valid') {
-        console.log('Log in Successful');
-        setUser(userInfo.data);
-      } else {
-        console.log('Incorrect token');
+      try {
+        const userInfo = await logIn();
+        if (userInfo.data['response'] === 'valid') {
+          console.log('Log in Successful');
+          setIncorrect(false);
+          setUser(userInfo.data['username']);
+          localStorage.setItem('user', userInfo.data['username']);
+        } else {
+          console.log('Incorrect token');
+          setIncorrect(true);
+        }
+        // TODO Error handling on failed request
+      } catch (err) {
+        console.log(err);
       }
     }
   };
 
-  // Test Example Login function
+  // FOR TESTING ONLY
+  // Automatically fills in the token and URL
+  const handleJustLogIn = async (event) => {
+    event.preventDefault();
+    setToken('EJf7qdRqxdKWu1ydozLe');
+    setUrl('https://cmpt373-1211-12.cmpt.sfu.ca');
+  };
+
+  // POST request to backend server
   const logIn = async () => {
     const bodyFormData = new FormData();
     bodyFormData.append('token', token);
@@ -73,11 +88,18 @@ const LoginBar = () => {
           <Button
             type="submit"
             variant="contained"
-            className={classes.goButton}
+            className={classes.logInButton}
           >
             LOG IN
           </Button>
         </form>
+        <Button
+          variant="contained"
+          onClick={handleJustLogIn}
+          className={classes.logInButton}
+        >
+          FILL
+        </Button>
       </div>
     </div>
   );
