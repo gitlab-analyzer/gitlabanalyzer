@@ -61,7 +61,7 @@ class Issue:
     # Getters
     @property
     def labels_list(self) -> Tuple[str]:
-        return tuple(self._labels_list)
+        return tuple(self.__labels_list)
 
     @property
     def issue_id(self) -> int:
