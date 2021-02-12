@@ -69,47 +69,47 @@ class Issue:
 
     @property
     def upvotes(self) -> int:
-        return self._upvotes
+        return self.__upvotes
 
     @property
     def downvotes(self) -> int:
-        return self._downvotes
+        return self.__downvotes
 
     @property
     def merge_requests_count(self) -> int:
-        return self._merge_requests_count
+        return self.__merge_requests_count
 
     @property
     def title(self) -> str:
-        return self._title
+        return self.__title
 
     @property
     def description(self) -> str:
-        return self._description
+        return self.__description
 
     @property
     def state(self) -> str:
-        return self._state
+        return self.__state
 
     @property
     def updated_date(self) -> str:
-        return self._updated_date
+        return self.__updated_date
 
     @property
     def created_date(self) -> str:
-        return self._created_date
+        return self.__created_date
 
     @property
     def closed_date(self) -> Optional[str]:
-        return self._closed_date
+        return self.__closed_date
 
     @property
     def due_date(self) -> Optional[str]:
-        return self._due_date
+        return self.__due_date
 
     @property
     def project_id(self) -> Union[int, str]:
-        return self._project_id
+        return self.__project_id
 
 # Testing
 if __name__ == '__main__':
