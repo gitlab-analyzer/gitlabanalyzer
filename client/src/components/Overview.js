@@ -3,19 +3,22 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'
+import Graph from './Graph'
 
 {/* could probably move some of this stuff into other components */}
 
 const useStyles = makeStyles((theme) =>({
     grid: {
       width: '100%',
-      margin:'0px'
+      margin:'0px',
+      backgroundColor: '#E4E8EF',
     },
     paper: {
       padding: theme.spacing(3),
       textAlign: 'left',
       height: '90%',
       border: '',
+      backgroundColor: '#E4E8EF',
     },
   }));
 
@@ -27,7 +30,7 @@ const Overview = () => {
             <Grid item xs={9}>
                 <Paper className={ classes.paper}>
                     <Typography variant="h6">
-                        Graph and stuff go here
+                        <Graph />
                     </Typography>
                 </Paper>
             </Grid>
