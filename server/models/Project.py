@@ -34,20 +34,19 @@ class Project:
         self.__project_id: int
         self.__name: str
         self.__namespace: str
-        self.__path: str
+        self.__path_with_namespace: str
         self.__web_url: str
-        self.__runners_token: str
         self.__description: str
 
         self.__default_branch: str
         self.__visibility: str
-        self.__isArchived: bool
+        self.__is_archived: bool
 
         self.__created_date: str
         self.__updated_date: str
         self.__deletion_date: Optional[str]
 
-        self.__forks_count: int
+        self.__fork_count: int
         self.__star_count: int
 
         self.__owner: None
@@ -56,3 +55,69 @@ class Project:
         self.__issues_list: List[Issue]
         self.__branches_list: List[None]
         self.__members_list: List[None]
+
+    # Getters
+    @property
+    def project_id(self) -> int:
+        return self.__project_id 
+    
+    @property
+    def project_name(self) -> str:
+        return self.__name
+    
+    @property
+    def project_namespace(self) -> str:
+        return self.__namespace
+
+    @property
+    def project_path(self) -> str:
+        slashIndex = self.__path_with_namespace.index('/') + 1
+        return self.__path_with_namespace[slashIndex:]
+
+    @property
+    def project_path_with_namespace(self) -> str:
+        return self.__path_with_namespace
+
+    @property
+    def web_url(self) -> str:
+        return self.__web_url
+    
+    @property
+    def description(self) -> str:
+        return self.__description
+
+    @property
+    def default_branch(self) -> str:
+        return self.__default_branch
+
+    @property
+    def visibility(self) -> str:
+        return self.__visibility
+    
+    @property
+    def is_archived(self) -> bool:
+        return self.__is_archived
+    
+    @property
+    def created_date(self) -> str:
+        return self.__created_date
+
+    @property
+    def updated_date(self) -> str:
+        return self.__updated_date
+
+    @property
+    def deletion_date(self) -> Optional[str]:
+        return self.__deletion_date
+    
+    @property
+    def fork_count(self) -> int:
+        return self.__fork_count
+    
+    @property
+    def star_count(self) -> int:
+        return self.__star_count
+
+    @property
+    def project_owner(self) -> None:
+        return self.__owner
