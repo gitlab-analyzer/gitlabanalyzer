@@ -2,18 +2,24 @@ from typing import Union, Optional, List
 
 class MergeRequest:
 
-	def __init__(self, id, iid, author, title, description, state, merged_by=None, created_date, merged_date=None, related_issue_iid, comments=None) -> None:
+	def __init__(self, id, iid, author, title, description, state, created_date, related_issue_iid, merged_by=None, merged_date=None, comments=None) -> None:
 		self.__id: int = id
 		self.__iid: int = iid
-		self.__author: str = author 
+		self.__author: int = author 
 		self.__title: str = title
 		self.__description: str = description 
 		self.__state: str = state #whether opened / closed / locked / merged
-		self.__merged_by: Optional[str] = merged_by 
 		self.__created_date: str = created_date  #datetime in ISO 8601 format
-		self.__merged_date: Optional[str] = merged_date
 		self.__related_issue_iid: int = related_issue_iid #Ex. 23 for a merge request closing Issue #23
+		self.__merged_by: Optional[Union[str, int]] = merged_by 
+		self.__merged_date: Optional[str] = merged_date
 		self.__comments: Optional[List[str]] = comments 
+
+	def to_json(self) -> str:
+		return self.__dict__.__str__().replace("_MergeRequest__", "").replace("'", "\"")
+
+	def __str__(self) -> str:
+		return str(self.__dict__)
 
 	#Getters
 
@@ -26,7 +32,7 @@ class MergeRequest:
 	    return self.__iid
 	
 	@property
-	def author(self) -> str:
+	def author(self) -> int:
 		return self.__author
 	
 	@property
@@ -42,26 +48,37 @@ class MergeRequest:
 		return self.__state
 
 	@property
-	def merged_by(self) -> Optional[str]:
-		return self.__merged_by
-	
-	@property
 	def created_date(self) -> str:
 		return self.__created_date
 
+	@property
+	def related_issue_iid(self) -> int:
+		return self.__related_issue_iid
+
+	@property
+	def merged_by(self) -> Optional[Union[str, int]]:
+		return self.__merged_by
+	
 	@property
 	def merged_date(self) -> Optional[str]:
 		return self.__merged_date
 
 	@property
-	def related_issue_iid(self) -> int:
-    		return self.__related_issue_iid
-	
-	@property
 	def comments(self) -> Optional[List[str]]:
 		return self.__comments
-	
-	
 
 
+
+"""
+#Test
+
+mr = MergeRequest(11111, 1, 312, "Title", "Descrption", "opened", "date created", 1)
+
+print(mr)
+print("_______")
+print(mr.__str__())
+print("_______")
+print(mr.to_json())
+
+"""
 	
