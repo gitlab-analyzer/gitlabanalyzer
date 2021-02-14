@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pymongo
 import urllib.parse
 from interface.gitlab_interface import GitLab
 
 app = Flask(__name__)
 myGitLab = None
+
 
 @app.route('/')
 def index():
