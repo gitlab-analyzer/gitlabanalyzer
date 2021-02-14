@@ -12,9 +12,9 @@ function LoginPage() {
   // For testing login functionality
   const loggedState = () => {
     if (user) {
-      return <h1>Logged In</h1>;
+      return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged In</h1>;
     }
-    return <h1>Logged Out</h1>;
+    return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged Out</h1>;
   };
 
   return (

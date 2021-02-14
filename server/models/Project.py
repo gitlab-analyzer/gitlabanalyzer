@@ -1,5 +1,4 @@
 from typing import Union, Optional, List, Tuple
-from .Issue import Issue
 
 class Project:
     """
@@ -25,10 +24,10 @@ class Project:
             owner -> Member
 
             tag_list -> List[str]
-            issues_list -> List[Issue]
-            merge_requests_list -> List[MergeRequest]
-            branches_list -> List[Branch]
-            members_list -> List[Member]
+            issues_id_list -> List[int]
+            merge_requests_id_list -> List[int]
+            branches_id_list -> List[int]
+            members_id_list -> List[id]
     """
     def __init__(self) -> None:
         self.__project_id: int
@@ -52,9 +51,9 @@ class Project:
         self.__owner: None
 
         self.__tags_list: List[str]
-        self.__issues_list: List[Issue]
-        self.__branches_list: List[None]
-        self.__members_list: List[None]
+        self.__issues_list: List[int]
+        self.__branches_list: List[int]
+        self.__members_list: List[int]
 
     # Getters
     @property
