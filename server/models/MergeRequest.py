@@ -29,7 +29,7 @@ class MergeRequest:
 
 	@property
 	def iid(self) -> int:
-	    return self.__iid
+		return self.__iid
 	
 	@property
 	def author(self) -> int:
@@ -66,6 +66,7 @@ class MergeRequest:
 	@property
 	def comments(self) -> Optional[List[str]]:
 		return self.__comments
+
 
 
 
