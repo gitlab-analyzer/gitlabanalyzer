@@ -1,13 +1,13 @@
 import React from "react";
 import "./FloatBar.css";
 // import "./components/Button.css";
-import {Button, Select, StylesProvider} from '@material-ui/core';
+import {Button, Select, StylesProvider /*createMuiTheme*/} from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import FormControl from '@material-ui/core/FormControl';
 
 // import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-// import { makeStyles } from '@material-ui/core/styles';
+import { /*makeStyles, ThemeProvider*/ } from '@material-ui/core/styles';
 // import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 // import { makeStyles } from '@material-ui/core/styles';
@@ -95,10 +95,13 @@ function FloatBar() {
                 </Grid>
                 <Grid item xs={12}>
                   <StylesProvider injectFirst>
+                  {/* <ThemeProvider theme={theme}> */}
                     <Button className="copybutton" variant="outlined" size="small">
-                      Copy 
+                    {/* <Button className={classes.copybutton} variant="outlined" size="small"> */}
+                      <span className="copyText">Copy</span> 
                       <FileCopyOutlinedIcon className="copyicon" size="small"/>
                     </Button>
+                  {/* </ThemeProvider> */}
                   </StylesProvider>              
                 </Grid>              
             {/* </Box> */}
