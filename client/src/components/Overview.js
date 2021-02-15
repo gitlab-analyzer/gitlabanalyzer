@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'
-import Graph from './Graph'
+import StackedBar from './StackedBar'
+import Heatmap from './Heatmap'
 
 {/* could probably move some of this stuff into other components */}
 
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) =>({
       backgroundColor: '#E4E8EF',
     },
     paper: {
-      padding: theme.spacing(3),
+      padding: theme.spacing(4),
       textAlign: 'left',
       height: '90%',
       border: '',
@@ -26,54 +27,37 @@ const Overview = () => {
     const classes = useStyles();
     return (
         <div>
-            <Grid container spacing={2} className={classes.grid}>
-            <Grid item xs={9}>
+            <Grid container className={classes.grid}>
+            <Grid item xs={10}>
                 <Paper className={ classes.paper}>
                     <Typography variant="h6">
-                        <Graph />
+                        <StackedBar />
                     </Typography>
                 </Paper>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={10}>
+                
+            </Grid>
+            <Grid item xs={12}>
                 <Paper className={ classes.paper}>
                     <Typography variant="h6">
-                        Buttons + Graph legend goes here
+                        <Heatmap />
                     </Typography>
                 </Paper>
             </Grid>
             <Grid item xs={12}>
                 <Paper className={ classes.paper}>
                     <Typography variant="h6">
-                        Another graph goes here
+                        Top 10 Merge Requests and Commits
+                        <ul>
+                            <li>@user1: Code Score of 10000, 100 additions, 0 deletions</li>
+                            <li>@user2: Code Score of 500, 2 additions, 0 deletions</li>
+                            <li>@user3: Code Score of 1, 1 additions, 0 deletions</li>
+                        </ul>
                     </Typography>
                 </Paper>
             </Grid>
-            <Grid item xs={6}>
-                <Paper className={ classes.paper}>
-                    <Typography variant="h6">
-                        Another graph goes here
-                    </Typography>
-                </Paper>
-            </Grid>
-            <Grid item xs={6}>
-                <Paper className={ classes.paper}>
-                    <Typography variant="h6">
-                        @everyone Code Score: 0
-                    </Typography>
-                    <Typography variant="h6">
-                        @user1 Code Score: 0
-                    </Typography>
-                    <Typography variant="h6">
-                        @user2 Code Score: 0
-                    </Typography>
-                    <Typography variant="h6">
-                        @user3 Code Score: 0
-                    </Typography>
-                    <Typography variant="h6">
-                        @user4 Code Score: 0
-                    </Typography>
-                </Paper>
-            </Grid>
+
             </Grid>
         </div>
     )

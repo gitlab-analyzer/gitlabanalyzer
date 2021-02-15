@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts'
 
-class Graph extends React.Component {
+// adapted from: https://apexcharts.com/react-chart-demos/column-charts/stacked/
+
+class StackedBar extends React.Component {
     constructor(props) {
       super(props);
 
@@ -9,28 +11,29 @@ class Graph extends React.Component {
       
         series: [{
           name: '@user1',
-          data: [44, 55, 41, 67, 22, 43]
+          data: [44, 55, 41, 67, 22, 43, 0, 30, 10, 10]
         }, {
           name: '@user2',
-          data: [13, 23, 20, 8, 13, 27]
+          data: [13, 23, 20, 8, 13, 27, 0, 30, 10, 10]
         }, {
           name: '@user3',
-          data: [11, 17, 15, 15, 21, 14]
+          data: [11, 17, 15, 15, 21, 14, 0, 30, 10, 10]
         }, {
           name: '@user4',
-          data: [21, 7, 25, 13, 22, 8]
+          data: [21, 7, 25, 13, 22, 8, 0, 30, 10, 10]
         }],
         options: {
+          title: {
+            text: 'Commit Count from Jan 2021 to Mar 2021'
+          },
+          colors: ['#C7EBFF', '#ABF1DC', '#ABB2F1', '#F1E2AB'],
           chart: {
+            toolbar: {
+              show: false
+            },
             type: 'bar',
             height: 350,
             stacked: true,
-            toolbar: {
-              show: true
-            },
-            zoom: {
-              enabled: true
-            }
           },
           responsive: [{
             breakpoint: 480,
@@ -49,9 +52,8 @@ class Graph extends React.Component {
             },
           },
           xaxis: {
-            type: 'datetime',
-            categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
-              '01/05/2011 GMT', '01/06/2011 GMT'
+            categories: ['J1', 'J2', 'J3', 'J4', 'F1',
+            'F2', 'F3', 'F4', 'M1', 'M2'
             ],
           },
           legend: {
@@ -82,4 +84,4 @@ class Graph extends React.Component {
     }
   }
 
-export default Graph
+export default StackedBar
