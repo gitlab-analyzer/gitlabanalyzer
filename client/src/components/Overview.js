@@ -30,8 +30,13 @@ const Overview = () => {
             <Grid container className={classes.grid}>
             <Grid item xs={10}>
                 <Paper className={ classes.paper}>
-                    <Typography variant="h6">
                         <StackedBar />
+                </Paper>
+            </Grid>
+            <Grid item xs={2}>
+                <Paper className={ classes.paper}>
+                    <Typography variant="h6">
+                        Button goes here
                     </Typography>
                 </Paper>
             </Grid>
