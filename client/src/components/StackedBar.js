@@ -27,6 +27,12 @@ class StackedBar extends React.Component {
             text: 'Commit Count from Jan 2021 to Mar 2021'
           },
           colors: ['#C7EBFF', '#ABF1DC', '#ABB2F1', '#F1E2AB'],
+          stroke: {
+            show: true,
+            width: 2,
+            lineCap: 'square',
+            colors: ['#6AB1D9', '#55FFCC', '#7F87CF', '#CBB97B']
+          },
           chart: {
             toolbar: {
               show: false

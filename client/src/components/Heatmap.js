@@ -9,31 +9,31 @@ class Heatmap extends React.Component {
       
         series: [{
           name: '',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [5, 10, 15, 20, 50, 30, 10, 70, 30, 5]
         },
         {
           name: 'F',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [5, 10, 15, 20, 50, 15, 20, 50, 30, 5]
         },
         {
           name: '',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [5, 10, 15, 20, 50, 0, 0, 15, 20, 50]
         },
         {
           name: 'W',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [15, 20, 50, 20, 50, 0, 0, 0, 30, 5]
         },
         {
           name: '',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [5, 30, 5, 20, 50, 30, 5, 0, 30, 5]
         },
         {
           name: 'M',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [5, 10, 15, 20, 30, 5, 0, 0, 30, 5]
         },
         {
           name: '',
-          data: [5, 10, 15, 20, 50, 0, 0, 0, 30, 5]
+          data: [5, 10, 15, 30, 5, 0, 0, 0, 30, 5]
         }
         ],
         options: {
@@ -47,7 +47,7 @@ class Heatmap extends React.Component {
           dataLabels: {
             enabled: false
           },
-          colors: ["#232948"],
+          colors: ["#8C90AA"],
           title: {
             text: '4444 contributions in the last year'
           },
