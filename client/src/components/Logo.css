@@ -1,0 +1,15 @@
+* {
+  font-family: 'Comfortaa', cursive;
+}
+
+.logo {
+  height: 50px;
+  margin: 5px;
+}
+
+.logo__container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  margin: 0 auto;
+}
