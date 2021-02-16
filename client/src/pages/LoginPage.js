@@ -1,21 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import LoginBar from '../components/LoginBar';
 import SearchBar from '../components/SearchBar';
 import { useAuth } from '../context/AuthContext';
+import Repo from '../components/Repo';
 
 function LoginPage() {
-  const { user } = useAuth();
+  const { user, setUser, repo, incorrect } = useAuth();
+
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
+      setUser(localStorage.getItem('user'));
+    }
+  }, [setUser]);
 
   // For testing login functionality
-  const loggedState = () => {
-    if (user) {
-      return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged In</h1>;
-    }
-    return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged Out</h1>;
-  };
+  // const loggedState = () => {
+  //   if (user) {
+  //     return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged In</h1>;
+  //   }
+  //   return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged Out</h1>;
+  // };
 
   return (
     <div className="App">
@@ -25,7 +32,13 @@ function LoginPage() {
             <Logo />
           </div>
           {user ? <SearchBar /> : <LoginBar />}
-          {loggedState()}
+          {/* {loggedState()} */}
+          {repo ? <Repo repo={repo} /> : <p></p>}
+          {incorrect ? (
+            <h2 style={{ color: 'red' }}>Incorrect Token or URL.</h2>
+          ) : (
+            <p></p>
+          )}
         </div>
       </div>
     </div>
