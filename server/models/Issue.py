@@ -1,4 +1,5 @@
 from typing import Union, Optional, List, Tuple
+from gitlab.v4.objects import Issue as gl_Issue
 
 class Issue:
     """
@@ -31,7 +32,7 @@ class Issue:
             to_json()
     """
 
-    def __init__(self, ) -> None:
+    def __init__(self, gitlab_issue: gl_Issue = None) -> None:
         # by default, the attributes will have test values
         self.__issue_id: int = -1
         self.__upvotes: int = -2
@@ -53,6 +54,9 @@ class Issue:
         self.__assignee_id_list: List[int] = [-2, -3, -4]
         self.__comment_id_list: List[int] = [-1, -2, -3]
         self.__labels_list: List[str] = ['Back-End', 'Test']
+
+        if gitlab_issue is not None:
+            print(gl_Issue) # temp to test passing of gl_Issue & what the object looks like
 
     def to_json(self) -> str:
         return self.__dict__.__str__().replace("_Issue__", "").replace("'", "\"")
@@ -131,11 +135,10 @@ class Issue:
 
 # Testing
 if __name__ == '__main__':
+
+    gitlab.
     testIssue = Issue()
 
-    print(testIssue)
-    print(testIssue.__dict__)
-    print(testIssue.to_json())
 
 """
 testIssue.to_json() example output:
