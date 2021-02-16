@@ -9,10 +9,16 @@ import Heatmap from './Heatmap'
 {/* could probably move some of this stuff into other components */}
 
 const useStyles = makeStyles((theme) =>({
+    root: {
+        fontFamily: 'Comfortaa'
+    },
     grid: {
       width: '100%',
       margin:'0px',
       backgroundColor: '#E4E8EF',
+      paddingTop: '20px',
+      paddingLeft: '10px',
+      textAlign: 'left',
     },
     paper: {
       padding: theme.spacing(4),
@@ -28,39 +34,38 @@ const Overview = () => {
     return (
         <div>
             <Grid container className={classes.grid}>
+            <Grid item xs={12}>                    
+                    <Typography variant="h6">
+                        Commit Count from x to y
+                    </Typography>
+            </Grid>
             <Grid item xs={10}>
-                <Paper className={ classes.paper}>
                         <StackedBar />
-                </Paper>
             </Grid>
             <Grid item xs={2}>
-                <Paper className={ classes.paper}>
                     <Typography variant="h6">
                         Button goes here
                     </Typography>
-                </Paper>
             </Grid>
-            <Grid item xs={10}>
-                
+            <Grid item xs={12}>                    
+                    <Typography variant="h6">
+                        x contributions in the past year
+                    </Typography>
             </Grid>
-            <Grid item xs={12}>
-                <Paper className={ classes.paper}>
+            <Grid item xs={2}></Grid>
+            <Grid item xs={8}>
                     <Typography variant="h6">
                         <Heatmap />
                     </Typography>
-                </Paper>
             </Grid>
+            <Grid item xs={2}></Grid>
             <Grid item xs={12}>
-                <Paper className={ classes.paper}>
-                    <Typography variant="h6">
                         Top 10 Merge Requests and Commits
-                        <ul>
+                        <ol>
                             <li>@user1: Code Score of 10000, 100 additions, 0 deletions</li>
                             <li>@user2: Code Score of 500, 2 additions, 0 deletions</li>
                             <li>@user3: Code Score of 1, 1 additions, 0 deletions</li>
-                        </ul>
-                    </Typography>
-                </Paper>
+                        </ol>
             </Grid>
 
             </Grid>
