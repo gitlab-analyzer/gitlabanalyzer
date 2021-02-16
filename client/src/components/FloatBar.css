@@ -1,47 +1,64 @@
-.floatbar-labels,
-.floatbar-scores,
-.floatbar-functions {
-  width: 100%;
-  height:200px;
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+* {
   box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+}
+.floatbar-labels,
+.floatbar-scores {
+  width: 100%;
+  height: 200px;
+
 }
 
 .floatbar-labels {
   list-style-type: none;  
-
-  background-color: #E4E8EF;
+  
+  /* background-color: red; */
   color: black;
-  display: inline-block;
   text-align: right;
-  width: 300px;
-  padding-left: 0;
-  margin-left: 100px; 
-  /* padding-top: 50px;   */
-  line-height: 200%;
+  padding-top: 50px;
+  width: 170px;
+  line-height: 150%;
   border-radius: 10px 0px 0px 10px;
 
 }
 
 .floatbar-scores{
-  /* background-color: blue; */
-  background-color: #E4E8EF;
+  /* background-color: #E4E8EF; */  
+  /* background-color: antiquewhite; */
+  display: flex;
   padding-left: 30px;
+  padding-top: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
 
 .floatbar-functions {
-  background-color: #E4E8EF;
-  margin-right: 100px;
+  /* background-color: #9aa0ac; */
+  /* margin-right: 100px; */
   /* float: right; */
   width: 30%;
   padding-right: 20px;
   border-radius: 0px 10px 10px 0px;
+  align-content: center;
+
 }
 
 .floatbar-container {
   display:flex;
   align-items: center;  
-  width: 100%;  
+  width: 90%;  
   vertical-align: middle;
+  /* background-color: black; */
+  margin: 2% 0% 0% 5%;
+  height: 200px;
+  border-radius: 10px;
+  background-color: #E4E8EF;
 
 
 }
@@ -50,13 +67,6 @@
   display: flex;
 }
 
-
-.daterange,
-.listofusers,
-.copybutton {
-  float: right;
-  white-space: pre-line;
-}
 
 .selectuser {
   box-shadow: none;
@@ -69,12 +79,7 @@
   border-radius: 10px;
   border: none;
   width: 150px;
-  /* height: 50%; */
-  /* height: min-content; */
-  
-
-  margin-bottom: 100px;  
-  outline: 0 !important;
+  /* font-family: 'Lato', sans-serif im !important; */
 }
 
 
@@ -88,25 +93,44 @@
   border: none;
 } 
 
-
 .copybutton {
-
   border-radius: 10px;
   background-color: transparent;
   border: 2px solid #4A4F68;
   width: 150px;
   cursor: pointer;
-  justify-content: flex-start;
-  
-  
-
+  text-transform: none;
+  font-family: 'Lato', sans-serif;
 }
 
 
 
 
 .copybutton .copyicon {
-  justify-self:flex-end ;
-  margin-left: 50%;
+  /* justify-self:flex-end; */
+
+  margin-left: 40%;
+  transform: scale(0.8);
+  color: #4A4F68;
   /* color: white; */
 } 
+
+.startdate {
+  color: #ffff;
+  background-color: #4A4F68;
+  border-radius: 10px 0px 0px 10px;
+}
+
+.enddate {
+  background-color: #ffff;
+  border-radius: 0px 10px 10px 0px;
+}
+
+.startdate,
+.enddate {
+  height: 35px;
+  line-height: 35px;  
+  width: 120px;
+  text-align: center;
+
+}

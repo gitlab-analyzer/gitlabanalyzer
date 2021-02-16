@@ -11,9 +11,10 @@ import { /*makeStyles, ThemeProvider*/ } from '@material-ui/core/styles';
 // import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 // import { makeStyles } from '@material-ui/core/styles';
+// import Drawer from '@material-ui/core/Drawer';
 
 const SCORES = ['raw score', 'commits', 'lines of code', "issues & reviews"];
-const USERS = ['bfraser', 'khangura', 'gbaker'];
+const USERS = ['bfraser', 'khangura', 'gbaker', 'prof1'];
 const DATES = ['8/29/2021', '9/31/2021'];
 
 // const useStyles = makeStyles((theme) => ({
@@ -50,7 +51,10 @@ function FloatBar() {
   // const classes = useStyles();
   const [user, setUser] = React.useState('');
 
-  const handleChange = (event) => {
+  // const handleChange = (event) => {
+  //   setUser(event.target.value);
+  // };
+  const handleUserChange = (event, index) => {
     setUser(event.target.value);
   };
 
@@ -63,47 +67,117 @@ function FloatBar() {
 
           </ul>
           <div className="floatbar-scores">
-            <div>
-              {SCORES.map(scorename => {
-                return <li>{scorename}</li>;
-              })}
-            </div>
+
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+              <div>
+                {SCORES.map(scorename => {
+                  return <li>{scorename}</li>;
+                })}
+              </div>
+             
+  
+            {/* </Drawer> */}
+
+         
+
           </div>
           <div className="floatbar-functions">
-            <Grid container className="sth" spacing={1} direction="column" justify="space-evenly"  alignItems="flex-end" >
-              {/* <Box pr={3} my={2}> */}
-                <Grid item xs={12}>
-                  <div className="daterange">
-                    {DATES[0]} - {DATES[1]}
-                    {/* dates here */}
+            <Grid 
+              container 
+              className="sth" 
+              spacing={2} 
+              direction="column" 
+              alignItems="flex-end" 
+            >
+              <Grid item xs={12}>
+                <div className="daterange">
+                  <div className="startdate">
+                    {DATES[0]}
                   </div>
-                </Grid>
-                <Grid item xs={12}>
-                  {/* <div className={classes.listofusers}> */}
-                  <div className="listofusers">
-                    <FormControl variant="outlined" size="small" className="selectuser" >
-                      <Select value={user} onChange={handleChange} displayEmpty>
-                        <MenuItem value="">
-                          @everyone
-                        </MenuItem>
-                        {USERS.map(username => {
-                          return <li><MenuItem value={username}>@{username}</MenuItem></li>;
-                        })}
-                      </Select>
-                    </FormControl>
-                  </div> 
-                </Grid>
-                <Grid item xs={12}>
-                  <StylesProvider injectFirst>
-                  {/* <ThemeProvider theme={theme}> */}
-                    <Button className="copybutton" variant="outlined" size="small">
-                    {/* <Button className={classes.copybutton} variant="outlined" size="small"> */}
-                      <span className="copyText">Copy</span> 
-                      <FileCopyOutlinedIcon className="copyicon" size="small"/>
-                    </Button>
-                  {/* </ThemeProvider> */}
-                  </StylesProvider>              
-                </Grid>              
+                  <div className="enddate"> 
+                    {DATES[1]}
+                  </div>
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                {/* <div className={classes.listofusers}> */}
+                <div className="listofusers">
+                  <FormControl 
+                    variant="outlined" 
+                    size="small" 
+                    className="selectuser" 
+                  >
+                    <Select 
+                      value={user} 
+                      onChange={handleUserChange} 
+                      displayEmpty
+                      className="selectlistofusers"
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="">
+                        @everyone
+                      </MenuItem>                        
+                      {USERS.map((username, index) => 
+                        <MenuItem value={index}>@{username}</MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </div> 
+              </Grid>
+              <Grid item xs={12}>
+                <StylesProvider injectFirst>
+                {/* <ThemeProvider theme={theme}> */}
+                  <Button 
+                    className="copybutton" 
+                    variant="outlined" 
+                    size="small"
+                  >
+                  {/* <Button className={classes.copybutton} variant="outlined" size="small"> */}
+                    <span className="copyText">Copy</span> 
+                    <FileCopyOutlinedIcon className="copyicon" size="small"/>
+                  </Button>
+                {/* </ThemeProvider> */}
+                </StylesProvider>              
+              </Grid>              
             {/* </Box> */}
           </Grid>
             
