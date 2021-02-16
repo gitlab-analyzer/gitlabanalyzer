@@ -1,4 +1,4 @@
-from typing import Protocol, Union, Optional, List, Tuple
+from typing import Union, Optional, List, Tuple
 
 class Issue:
     """
@@ -31,7 +31,7 @@ class Issue:
             to_json()
     """
 
-    def __init__(self) -> None:
+    def __init__(self, ) -> None:
         # by default, the attributes will have test values
         self.__issue_id: int = -1
         self.__upvotes: int = -2
