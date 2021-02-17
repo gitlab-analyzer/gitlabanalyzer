@@ -21,7 +21,8 @@ body {
   color: black;
   text-align: right;
   padding-top: 50px;
-  width: 170px;
+  padding-right: 20px;
+  width: 190px;
   line-height: 150%;
   border-radius: 10px 0px 0px 10px;
 
@@ -31,18 +32,34 @@ body {
   /* background-color: #E4E8EF; */  
   /* background-color: antiquewhite; */
   display: flex;
-  padding-left: 30px;
+  /* padding-left: 30px; */
   padding-top: 20px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
+  will-change: transform;  
+}
+
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(233, 238, 243);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c8cbd4;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ea0a7;
 }
 
 .floatbar-functions {
   /* background-color: #9aa0ac; */
-  /* margin-right: 100px; */
-  /* float: right; */
-  width: 30%;
+  width: 380px;
   padding-right: 20px;
   border-radius: 0px 10px 10px 0px;
   align-content: center;
