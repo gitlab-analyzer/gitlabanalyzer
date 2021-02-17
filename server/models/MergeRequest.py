@@ -1,4 +1,4 @@
-from typing import Union, Optional, List
+from typing import Optional, List
 import gitlab
 import re
 
@@ -14,7 +14,7 @@ class MergeRequest:
         self.__related_issue_iid: Optional[int] = self.parseRelatedIssueIID(mr.description)
 
         if mr.state == "merged":
-            self.__merged_by: Optional[int] = mr.merged_by['id'] #person who merged the MergeRequest
+            self.__merged_by: Optional[int] = mr.merged_by['id']
         else:
             self.__merged_by: Optional[int] = None #merge request is not merged
         
@@ -84,4 +84,5 @@ class MergeRequest:
     def comments(self) -> Optional[List[str]]:
         return self.__comments
 
-
+    def setComments(self, commentList : List[str]):
+        self.__comments = commentList
