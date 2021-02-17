@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
     width: 500,
     margin: '0 auto',
     backgroundColor: '#F1F1F1',
+    marginBottom: '10px',
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -21,6 +22,11 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     height: 28,
     margin: 4,
+  },
+  logInButton: {
+    backgroundColor: '#E8ECF2',
+    width: '100px',
+    marginTop: '10px',
   },
   goButton: {
     backgroundColor: '#E8ECF2',
