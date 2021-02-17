@@ -4,10 +4,16 @@ const AuthContext = createContext();
 
 const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
+  const [repo, setRepo] = useState(null);
+  const [incorrect, setIncorrect] = useState(false);
 
   const authContextValue = {
     user,
     setUser,
+    repo,
+    setRepo,
+    incorrect,
+    setIncorrect,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
