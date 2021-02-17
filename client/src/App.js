@@ -12,25 +12,27 @@ import './App.css';
 import './Shared.css';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
-// import CommitPage from './pages/CommitPage';
-import onLoadMore from './components/commits/CommitBar';
+import CommitPage from './pages/CommitPage';
+// import onLoadMore from './components/commits/CommitBar';
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Switch>
-          <Route path="/" exact component={LoginPage} />
-          <Route path="/repo" exact component={SearchPage} />
-          <Container maxWidth="md">
-            <Header />
-            <Route path="/overview" exact component={Overview} />
-            <Route path="/code" component={Code} />
-            <Route path="/table" component={Table} />
-            <Route path="/batch" component={Batch} />
-            <Route path="/config" component={Config} />
-            <Route path="/commits" component={onLoadMore} />
-          </Container>
+          <React.Fragment>
+            <Route path="/" exact component={LoginPage} />
+            <Route path="/repo" exact component={SearchPage} />
+            <Container maxWidth="md">
+              <Header />
+              <Route path="/overview" exact component={Overview} />
+              <Route path="/code" component={Code} />
+              <Route path="/table" component={Table} />
+              <Route path="/batch" component={Batch} />
+              <Route path="/config" component={Config} />
+              <Route path="/commits" component={CommitPage} />
+            </Container>
+          </React.Fragment>
         </Switch>
       </div>
     </Router>

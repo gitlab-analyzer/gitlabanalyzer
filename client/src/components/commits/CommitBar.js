@@ -3,16 +3,19 @@ import 'antd/dist/antd.css';
 // import './index.css';
 import { List, Avatar, Button, Skeleton } from 'antd';
 
+import { fetchData, fetchNames } from './commitData';
+
 import reqwest from 'reqwest';
 
-const count = 3;
+const count = 5;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
-const CommitBar = () => {
+const CommitBar = ({ username }) => {
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [list, setList] = useState([]);
+  const [commits, setCommits] = useState([]);
 
   useEffect(() => {
     getData((res) => {
@@ -20,6 +23,7 @@ const CommitBar = () => {
       setData(res.results);
       setList(res.results);
     });
+    getFakeData();
   }, []);
 
   const getData = (callback) => {
@@ -34,10 +38,15 @@ const CommitBar = () => {
     });
   };
 
+  const getFakeData = async () => {
+    const data = await fetchData();
+    setCommits(data);
+  };
+
   const onLoadMore = () => {
     setLoading(true);
     const tosetList = data.concat(
-      [...new Array(3)].map(() => ({ loading: true, name: {} }))
+      [...new Array(5)].map(() => ({ loading: true, name: {} }))
     );
     setList(tosetList);
 
@@ -70,28 +79,29 @@ const CommitBar = () => {
       loading={initLoading}
       itemLayout="horizontal"
       loadMore={loadMore}
-      dataSource={list}
-      renderItem={(item) => (
+      dataSource={commits}
+      renderItem={(commits) => (
         <List.Item
           actions={[
-            <a key="list-loadmore-edit">edit</a>,
-            <a key="list-loadmore-more">more</a>,
+            <a href="/commits" key="list-loadmore-edit">
+              code
+            </a>,
+            <a href="/commits" key="list-loadmore-more">
+              expand
+            </a>,
+            <a href="/commits" key="list-loadmore-ignore">
+              ignore
+            </a>,
           ]}
         >
-          <Skeleton avatar title={false} loading={item.loading} active>
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  shape="square"
-                  size="large"
-                  src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                />
-              }
-              title={<a href="https://ant.design">{item.name.last}</a>}
-              description="@bfraser"
-            />
-            <div>content</div>
-          </Skeleton>
+          {/* <Skeleton avatar title={false} loading={item.loading} active> */}
+          <List.Item.Meta
+            avatar={<Avatar shape="square" size="large" src={commits.avatar} />}
+            title={<a href="/commits">{commits.title}</a>}
+            description={`${commits.username} Updated: ${commits.date}`}
+          />
+          <div>content</div>
+          {/* </Skeleton> */}
         </List.Item>
       )}
     />
