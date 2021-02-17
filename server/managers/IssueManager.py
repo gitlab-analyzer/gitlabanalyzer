@@ -9,7 +9,7 @@ class IssueManager:
             newIssue = Issue(issue)
             self.__issue_list.append(newIssue)
 
-    def find_issue_by_iid(self, iid: int) -> Optional[Issue]:
+    def get_issue_by_iid(self, iid: int) -> Optional[Issue]:
         # linear search
         for issue in self.__issue_list:
             if issue.issue_id == iid:
