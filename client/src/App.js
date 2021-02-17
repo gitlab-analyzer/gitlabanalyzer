@@ -12,6 +12,8 @@ import './App.css';
 import './Shared.css';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
+// import CommitPage from './pages/CommitPage';
+import onLoadMore from './components/commits/CommitBar';
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
             <Route path="/table" component={Table} />
             <Route path="/batch" component={Batch} />
             <Route path="/config" component={Config} />
+            <Route path="/commits" component={onLoadMore} />
           </Container>
         </Switch>
       </div>
