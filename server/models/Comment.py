@@ -27,13 +27,13 @@ class Comment:
 			self.__noteable_iid: Optional[int] = commentForIssueMR.noteable_iid # Ex. Issue #1
 			self.__id: Optional[int] = commentForIssueMR.id
 		else: 		#comment of Commit
-			self.__author: int = commentForCommit.author['id']
+			self.__author: int = commentForCommit.author['id'] 
 			self.__body: str = commentForCommit.note
 			self.__created_date: str = commentForCommit.created_at  #datetime in ISO 8601 format
-			self.__noteable_id: Union[int, str] = commitSha
-			self.__noteable_type: str = "Commit"
-			self.__noteable_iid: Optional[Union[int, str]] = None
-			self.__id: Optional[int] = None
+			self.__noteable_id: Union[int, str] = commitSha  
+			self.__noteable_type: str = "Commit"  
+			self.__noteable_iid: Optional[int] = None 
+			self.__id: Optional[int] = None 	
 
 	def to_json(self) -> str:
 		return self.__dict__.__str__().replace("_Comment__", "").replace("'", "\"")
@@ -42,10 +42,6 @@ class Comment:
 		return self.__dict__.__str__()
 
 	#Getters
-
-	@property
-	def id(self) -> Optional[int]:
-		return self.__id
 
 	@property
 	def author(self) -> int:
@@ -68,9 +64,12 @@ class Comment:
 		return self.__noteable_type
 
 	@property
-	def noteable_iid(self) -> Optional[Union[int, str]]:
+	def noteable_iid(self) -> Optional[int]:
 		return self.__noteable_iid
 
+	@property
+	def id(self) -> Optional[int]:
+		return self.__id
 
 """
 #Test
