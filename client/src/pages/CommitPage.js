@@ -4,10 +4,12 @@ import CommitBar from '../components/commits/CommitBar';
 import CommitGraph from '../components/commits/CommitGraph';
 import { Menu, Dropdown, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { useAuth } from '../context/AuthContext';
 import './CommitsPage.css';
 
 const CommitPage = () => {
   const [userNames, setUserNames] = useState([]);
+  const { selectUser, setSelectUser } = useAuth();
 
   useEffect(() => {
     const loadFakeData = async () => {
@@ -20,6 +22,7 @@ const CommitPage = () => {
   const handleMenuClick = (e) => {
     message.info('Click on menu item.');
     console.log('click', e);
+    setSelectUser('@' + e.key);
   };
 
   const userItems = userNames.map((user) => {

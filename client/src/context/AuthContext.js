@@ -6,6 +6,7 @@ const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
   const [repo, setRepo] = useState(null);
   const [incorrect, setIncorrect] = useState(false);
+  const [selectUser, setSelectUser] = useState('everyone');
 
   const authContextValue = {
     user,
@@ -14,6 +15,8 @@ const AuthProvider = (props) => {
     setRepo,
     incorrect,
     setIncorrect,
+    selectUser,
+    setSelectUser,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

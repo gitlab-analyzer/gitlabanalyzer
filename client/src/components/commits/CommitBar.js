@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 // import './index.css';
 import { Popover, Checkbox, List, Avatar, Button, Skeleton } from 'antd';
-import { fetchData, fetchNames } from './commitData';
-import Code from './Code';
+import { fetchData } from './commitData';
+import { useAuth } from '../../context/AuthContext';
 
 // Used boilerplate from https://ant.design/components/list/
 
 const CommitBar = ({ username }) => {
   const [commits, setCommits] = useState([]);
   const [hover, setHover] = useState({ visible: false });
-  const [selectUser, setSelectUser] = useState('everyone');
+  const { selectUser } = useAuth();
 
   useEffect(() => {
     getFakeData();
