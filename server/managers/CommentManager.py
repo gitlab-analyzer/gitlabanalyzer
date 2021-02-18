@@ -11,10 +11,10 @@ class CommentManager:
     def getCommentList(self) -> list:
         return self.__commentList
 
-    def add_comment(self, comment: gitlab, code, sha=None) -> None:
-        if code == 1:
+    def add_comment(self, comment: gitlab, sha=None) -> None:
+        if sha is None:
             self.__commentList.append(Comment(commentForIssueMR=comment))
-        else: #if code == 0, which means "Commit"
+        else: #sha is not None
             self.__commentList.append(Comment(commentForCommit=comment, commitSha=sha))
 
     #Get list of Comments in certain (ex. Issue iid / Merge Request iid / Commit sha)
