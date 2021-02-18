@@ -1,5 +1,5 @@
 from typing import Union, Optional, List
-from models.Commit import *
+from model.Commit import *
 import gitlab
 from datetime import datetime
 from dateutil import parser
