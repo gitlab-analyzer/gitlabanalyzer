@@ -4,12 +4,7 @@
 
 .logo {
   height: 50px;
-  position: absolute;
-  top: 14%;
-  left: 15%;
-}
-
-.logo__main {
+  margin: 5px;
 }
 
 .logo__container {
