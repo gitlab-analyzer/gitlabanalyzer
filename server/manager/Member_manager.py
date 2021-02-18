@@ -4,6 +4,7 @@ import gitlab
 from datetime import datetime
 from dateutil import parser
 
+
 class MemberManager:
     def __init__(self) -> None:
         self.__memberList: List[member] = []
@@ -22,4 +23,3 @@ class MemberManager:
 
     def get_number_of_members(self) -> int:
         return len(self.__memberList)
-
