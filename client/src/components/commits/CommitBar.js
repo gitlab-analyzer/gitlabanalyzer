@@ -5,6 +5,8 @@ import { List, Avatar, Button, Skeleton } from 'antd';
 
 import { fetchData, fetchNames } from './commitData';
 
+// Used boilerplate from https://ant.design/components/list/
+
 import reqwest from 'reqwest';
 
 const count = 5;
@@ -100,7 +102,7 @@ const CommitBar = ({ username }) => {
             title={<a href="/commits">{commits.title}</a>}
             description={`${commits.username} Updated: ${commits.date}`}
           />
-          <div>content</div>
+          <div>{commits.weighting}%</div>
           {/* </Skeleton> */}
         </List.Item>
       )}

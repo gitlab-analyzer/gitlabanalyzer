@@ -6,6 +6,8 @@ const fakeData = [
     title: 'Fix data fetch method and add infinity scroll',
     date: '2021-01-29',
     commitId: '9228f2d5',
+    weighting: 12,
+    linesofcode: 397,
   },
   {
     avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
@@ -15,6 +17,8 @@ const fakeData = [
       'Add functionality to embedd codes in reviews page and sync automatically',
     date: '2021-01-27',
     commitId: '1228f2d5',
+    weighting: 31,
+    linesofcode: 901,
   },
   {
     avatar: 'https://randomuser.me/api/portraits/men/35.jpg',
@@ -23,6 +27,8 @@ const fakeData = [
     title: 'Create new api route for fetching user and commits data',
     date: '2021-01-22',
     commitId: '9228f2d5',
+    weighting: 29,
+    linesofcode: 682,
   },
   {
     avatar: 'https://uifaces.co/our-content/donated/LgPx_hOQ.jpg',
@@ -31,6 +37,8 @@ const fakeData = [
     title: 'Fix data fetch method and add infinity scroll',
     date: '2021-01-21',
     commitId: '9228f2d5',
+    weighting: 6,
+    linesofcode: 187,
   },
   {
     avatar: 'https://uifaces.co/our-content/donated/LgPx_hOQ.jpg',
@@ -39,6 +47,8 @@ const fakeData = [
     title: 'Fix data fetch method and add infinity scroll',
     date: '2021-01-20',
     commitId: '5228f2d5',
+    weighting: 27,
+    linesofcode: 1201,
   },
 ];
 
