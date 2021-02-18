@@ -40,7 +40,7 @@ class Issue:
         self.__comment_count: int = gitlab_issue.user_notes_count
         self.__author_id: int = gitlab_issue.author.id
         self.__milestone_id: Optional[int] = None if gitlab_issue.milestone is None else gitlab_issue.milestone.id # maybe not needed
-        self.__closer_id: Optional[int] = gitlab_issue.closed_by.id
+        self.__closer_id: Optional[int] = gitlab_issue.closed_by.id # TODO: fix bug
 
         self.__project_id: Union[int, str] = gitlab_issue.project_id
 
