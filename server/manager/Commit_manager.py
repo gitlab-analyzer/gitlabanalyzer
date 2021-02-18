@@ -4,6 +4,7 @@ import gitlab
 from datetime import datetime
 from dateutil import parser
 
+
 class CommitManager:
     def __init__(self) -> None:
         self.__commitList: List[Commit] = []
@@ -11,8 +12,8 @@ class CommitManager:
     def getCommitList(self) -> list:
         return self.__commitList
 
-    def add_comment(self, commit: gitlab) -> None:
-        self.__commentList.append(Commit(commit))
+    def add_commit(self, commit: gitlab) -> None:
+        self.__commitList.append(Commit(commit))
 
     def get_commit_by_id(self, ID) -> Union[Commit, None]:
         for commit in self.__commitList:
@@ -27,17 +28,19 @@ class CommitManager:
                 listCommits.append(commit)
         return listCommits
 
-    def get_commits_by_range(self, startDate, endDate) -> Union[List[Comment], None]:
+    def get_commits_by_range(self, startDate, endDate) -> Union[List[Commit], None]:
         listTimeRange = []
-
         start = parser.parse(startDate)
         end = parser.parse(endDate)
         for commit in self.__commitList:
-            tempDate = datetime.strptime(commit.committed_date, '%Y-%m-%dT%H:%M:%S.%f%z')
+            tempDate = datetime.strptime(
+                commit.committed_date, "%Y-%m-%dT%H:%M:%S.%f%z"
+            )
             if start <= tempDate <= end:
                 listTimeRange.append(commit)
         return listTimeRange
 
     def get_number_of_commits(self) -> int:
         return len(self.__commitList)
+
 
