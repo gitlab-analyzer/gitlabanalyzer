@@ -22,19 +22,15 @@ const CommitPage = () => {
     console.log('click', e);
   };
 
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="1" icon={<UserOutlined />}>
-        @jwayne
+  const userItems = userNames.map((user) => {
+    return (
+      <Menu.Item key={user} icon={<UserOutlined />}>
+        @{user}
       </Menu.Item>
-      <Menu.Item key="2" icon={<UserOutlined />}>
-        @schan
-      </Menu.Item>
-      <Menu.Item key="3" icon={<UserOutlined />}>
-        @aroberts
-      </Menu.Item>
-    </Menu>
-  );
+    );
+  });
+
+  const menu = <Menu onClick={handleMenuClick}>{userItems}</Menu>;
 
   return (
     <div className="open-sans">
