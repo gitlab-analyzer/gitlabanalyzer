@@ -102,7 +102,10 @@ class GitLab:
             myCommits: gitlab = mergeRequest.commits()
             commitsList: list = []
             for _ in range(myCommits.total_pages):
-                commitsList.append(myCommits.next())
+                try:
+                    commitsList.append(myCommits.next())
+                except StopIteration:
+                    pass
             commitsForMergeRequests.append(commitsList)
         return mergeRequests, commitsForMergeRequests
 

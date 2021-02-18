@@ -1,9 +1,12 @@
 import React from 'react'
 import {Navbar, Nav} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
+import Logo from './Logo'
 
 const Header = () => {
   return (
+    <div>
+      <Logo />
     <Navbar bg="light" expand="lg">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
@@ -26,6 +29,7 @@ const Header = () => {
         </Nav>
       </Navbar.Collapse>
     </Navbar>
+    </div>
   )
 }
 
