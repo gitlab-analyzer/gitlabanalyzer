@@ -48,7 +48,6 @@ const CommitPage = () => {
         </Dropdown.Button>
       </div>
       <CommitBar username={userNames[0]} />
-      <CommitBar username={userNames[1]} />
     </div>
   );
 };
