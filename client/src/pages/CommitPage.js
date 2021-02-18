@@ -4,6 +4,7 @@ import CommitBar from '../components/commits/CommitBar';
 import CommitGraph from '../components/commits/CommitGraph';
 import { Menu, Dropdown, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import './CommitsPage.css';
 
 const CommitPage = () => {
   const [userNames, setUserNames] = useState([]);
@@ -36,7 +37,7 @@ const CommitPage = () => {
   );
 
   return (
-    <div>
+    <div className="open-sans">
       <CommitGraph />
       <div style={{ margin: '10px 0 10px 0' }}>
         <Dropdown.Button
