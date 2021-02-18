@@ -1,5 +1,5 @@
 from typing import Union, Optional, List
-from models.Comment import *
+from server.model.Comment import *
 import gitlab
 from datetime import datetime
 from dateutil import parser

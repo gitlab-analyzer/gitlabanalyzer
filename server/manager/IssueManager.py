@@ -1,5 +1,5 @@
 from typing import Union, Optional, List, Tuple
-from server.models.Issue import Issue
+from server.model.Issue import Issue
 
 class IssueManager:
     def __init__(self, gitlab_issue_list: list) -> None:
