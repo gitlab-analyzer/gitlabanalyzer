@@ -23,7 +23,7 @@ function App() {
           <Container maxWidth="md">
             <Header />
             <Route path="/overview" exact component={Overview} />
-            <Route path="/code" component={Code} />
+            <Route path="/commits" component={Code} />
             <Route path="/table" component={Table} />
             <Route path="/batch" component={Batch} />
             <Route path="/config" component={Config} />
