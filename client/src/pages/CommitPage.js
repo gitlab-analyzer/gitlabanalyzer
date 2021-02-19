@@ -21,7 +21,6 @@ const CommitPage = () => {
 
   const handleMenuClick = (e) => {
     message.info(`Switched to @${e.key}`);
-    console.log('click', e);
     setSelectUser('@' + e.key);
   };
 
