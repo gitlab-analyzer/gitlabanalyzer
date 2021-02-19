@@ -95,13 +95,15 @@ def get_project_overview():
             "number_issues": randint(0, 100)
         }
         response[member.username] = memberObject
+    # TODO: The format of this response need to be changed
     return jsonify(response)
 
 
 @app.route('/getCommits', methods=['get'])
 def get_commits():
     global gitlabProjectInterface
-    commitList: list = gitlabProjectInterface.commits_manager.getCommitList()
+    commitList: str = gitlabProjectInterface.commits_manager.get_commit_list_json()
+    print(commitList)
     return jsonify(commitList)
 
 
@@ -112,20 +114,17 @@ def get_merge_request():
     return jsonify(mergeRequestList)
 
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0')
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
 
 
 # Testing only
-gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
-gl.authenticate()
-gitlabProjectInterface = GitlabProject(gl)
-pList = gitlabProjectInterface.project_list
-gl.set_project(25515)
-# gitlabProjectInterface.set_project(25515)
-
-c = gl.get_commit_list_for_project()
-for s in c:
-    print(s)
-# print(get_project_overview())
-# print(get_commits())
+# with app.app_context():
+#     gl = GitLab(token='', url='https://csil-git1.cs.surrey.sfu.ca/')
+#     gl.authenticate()
+#     gitlabProjectInterface = GitlabProject(gl)
+#     pList = gitlabProjectInterface.project_list
+#     gl.set_project(25515)
+#     gitlabProjectInterface.set_project(25515)
+#
+#     get_commits()
