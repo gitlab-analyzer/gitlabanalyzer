@@ -1,3 +1,4 @@
+import json
 from random import randint
 
 from flask import Flask, request, jsonify
@@ -85,18 +86,21 @@ def set_project():
 @app.route('/getProjectOverview', methods=['get'])
 def get_project_overview():
     global gitlabProjectInterface
-    response = {}
+    memberObjectList = []
     memberList = gitlabProjectInterface.member_manager.getMemberList()
 
     for member in memberList:
-        memberObject = {
-            "number_commits": randint(0, 100),
-            "lines_of_code": randint(0, 100000),
-            "number_issues": randint(0, 100)
-        }
-        response[member.username] = memberObject
+        memberObjectList.append(
+            {
+                "username": member.username,
+                "number_commits": randint(0, 100),
+                "lines_of_code": randint(0, 100000),
+                "number_issues": randint(0, 100)
+            }
+        )
     # TODO: The format of this response need to be changed
-    return jsonify(response)
+    # print({"users": memberObjectList})
+    return jsonify({"users": memberObjectList})
 
 
 @app.route('/getCommits', methods=['get'])
@@ -121,10 +125,9 @@ if __name__ == '__main__':
 # Testing only
 # with app.app_context():
 #     gl = GitLab(token='', url='https://csil-git1.cs.surrey.sfu.ca/')
-#     gl.authenticate()
+#     print(gl.authenticate())
 #     gitlabProjectInterface = GitlabProject(gl)
 #     pList = gitlabProjectInterface.project_list
-#     gl.set_project(25515)
 #     gitlabProjectInterface.set_project(25515)
-#
+#     get_project_overview()
 #     get_commits()
