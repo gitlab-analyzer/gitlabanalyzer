@@ -21,7 +21,7 @@ class Project:
             forks_count -> int
             star_count -> int
 
-            owner -> Member
+            owner_id -> int
 
             tag_list -> List[str]
             # issues_id_list -> List[int]
