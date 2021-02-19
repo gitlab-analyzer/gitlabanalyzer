@@ -1,0 +1,46 @@
+{
+    "users":[
+        {
+            "username": "bfraser",
+            "score": 6712,
+            "number_commits": 812,
+            "lines_of_code": 1298,
+            "number_issues": 248
+        },
+        {
+            "username": "khangura",
+            "score": 5720,
+            "number_commits": 927,
+            "lines_of_code": 1502,
+            "number_issues": 148
+        },
+        {
+            "username": "gbaker",
+            "score": 4921,
+            "number_commits": 570,
+            "lines_of_code": 982,
+            "number_issues": 68
+        },
+        {
+            "username": "afraser",
+            "score": 2289,
+            "number_commits": 310,
+            "lines_of_code": 677,
+            "number_issues": 27
+        },
+        {
+            "username": "cfraser",
+            "score": 5421,
+            "number_commits": 232,
+            "lines_of_code": 1670,
+            "number_issues": 121
+        },
+        {
+            "username": "dfraser",
+            "score": 4581,
+            "number_commits": 132,
+            "lines_of_code": 2501,
+            "number_issues": 101
+        }
+    ]
+}
