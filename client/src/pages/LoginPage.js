@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import LoginBar from '../components/LoginBar';
 import SearchBar from '../components/SearchBar';
 import { useAuth } from '../context/AuthContext';
+import { Alert, Layout, Spin } from 'antd';
 import Repo from '../components/Repo';
+
+const { Content } = Layout;
 
 function LoginPage() {
   const { user, setUser, repo, incorrect } = useAuth();
@@ -24,6 +27,20 @@ function LoginPage() {
   //   return <h1 style={{ fontSize: 16, marginTop: 10 }}>Logged Out</h1>;
   // };
 
+  // if (loading) {
+  //   return (
+  //     <div style={{ margin: '50px' }}>
+  //       <Spin tip="Logging in...">
+  //         <Alert
+  //           message="Logging in"
+  //           description="Please wait while we retrieve your repository information."
+  //           type="info"
+  //         />
+  //       </Spin>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="App">
       <div className="main_container">
@@ -35,7 +52,11 @@ function LoginPage() {
           {/* {loggedState()} */}
           {repo ? <Repo repo={repo} /> : <p></p>}
           {incorrect ? (
-            <h2 style={{ color: 'red' }}>Incorrect Token or URL.</h2>
+            <Alert
+              message="Access token or url wrong, please try again"
+              type="error"
+              showIcon
+            />
           ) : (
             <p></p>
           )}

@@ -13,11 +13,14 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const { Option } = Select;
+
 const LoginBar = () => {
+  // Local states
   const [token, setToken] = useState('');
   const [url, setUrl] = useState('');
   const [urlPre, setUrlPre] = useState('https://');
   const [urlPost, setUrlPost] = useState('.ca');
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
 
   // Global states from Context API
@@ -29,13 +32,16 @@ const LoginBar = () => {
       console.log('Logged in');
     } else {
       try {
+        setLoading(true);
         const userInfo = await logIn();
         if (userInfo.data['response'] === 'valid') {
+          setLoading(false);
           console.log('Log in Successful');
           setIncorrect(false);
           setUser(userInfo.data['username']);
           localStorage.setItem('user', userInfo.data['username']);
         } else {
+          setLoading(false);
           console.log('Incorrect token');
           setIncorrect(true);
         }
@@ -56,7 +62,7 @@ const LoginBar = () => {
     setUrl('cmpt373-1211-12.cmpt.sfu');
   };
 
-  // POST request to backend server
+  // POST request to backend server with the login information
   const logIn = async () => {
     const bodyFormData = new FormData();
     const fullUrl = urlPre + url + urlPost;
@@ -101,28 +107,6 @@ const LoginBar = () => {
     <div className="main">
       <div className="bar_container">
         <form onSubmit={handleSubmit}>
-          {/* <Paper className={classes.root}>
-            <InputBase
-              className={classes.input}
-              value={token}
-              onChange={(event) => {
-                setToken(event.target.value);
-              }}
-              placeholder="Personal Token"
-              inputProps={{ 'aria-label': 'personal token' }}
-            />
-          </Paper>
-          <Paper className={classes.root}>
-            <InputBase
-              className={classes.input}
-              value={url}
-              onChange={(event) => {
-                setUrl(event.target.value);
-              }}
-              placeholder="gitlab url"
-              inputProps={{ 'aria-label': 'gitlab url' }}
-            />
-          </Paper> */}
           <Input
             style={{ width: '500px' }}
             size="large"
@@ -153,6 +137,7 @@ const LoginBar = () => {
           </div>
           <Button
             type="primary"
+            loading={loading}
             htmlType="submit"
             className={classes.logInButton}
           >
