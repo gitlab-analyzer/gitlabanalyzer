@@ -10,6 +10,10 @@ class MergeRequestManager:
     def __init__(self) -> None:
         self.__mergeRequestList: list = []
 
+    @property
+    def merge_request_list(self) -> list:
+        return self.__mergeRequestList
+
     def add_merge_request(self, mergeRequest: gitlab) -> None:
         self.__mergeRequestList.append(MergeRequest(mergeRequest))
 

@@ -53,6 +53,9 @@ class GitLab:
             if user.kind == 'user':
                 return user.name
 
+    def get_all_members(self) -> list:
+        return self.__project.members.list()
+
     def set_project(self, projectID: int) -> None:
         self.__project = self.__find_project(projectID)
 
@@ -69,7 +72,7 @@ class GitLab:
         return self.__project_lists
 
     def get_commit_list_for_project(self) -> list_none:
-        return self.__project.commits.list()
+        return self.__project.commits.list(all=True)
 
     # Example: since='2016-01-01T00:00:00Z'
     def get_commit_list_for_project_with_range(self, sinceDate: str, untilDate: str) -> list_none:
@@ -88,6 +91,11 @@ class GitLab:
             commitDiff.append(oneCommit.diff())
         return commitDiff
 
+    '''
+        state: state of the MR. It can be one of all, merged, opened or closed
+        order_by: sort by created_at or updated_at
+        sort: sort order (asc or desc)
+    '''
     # First return value: a list of merge requests
     # Ex: [mergeRequest1, mergeRequest2]
     # Second return value: a list of all commits for each merge requests

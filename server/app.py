@@ -1,13 +1,16 @@
+from random import randint
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import pymongo
 import urllib.parse
 from interface.gitlab_interface import GitLab
+from interface.gitlab_project_interface import GitlabProject
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-myGitLab = None
+gitlabProjectInterface: [GitlabProject] = GitlabProject(None)
 
 
 @app.route('/')
@@ -48,9 +51,10 @@ def hello_world():
 @app.route('/auth', methods=['post'])
 @cross_origin()
 def auth():
-    global myGitLab
     myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
+        global gitlabProjectInterface
+        gitlabProjectInterface = GitlabProject(myGitlab=myGitLab)
         return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
     else:
         return jsonify({'username': '', 'response': 'invalid'})
@@ -58,7 +62,8 @@ def auth():
 
 @app.route('/getProjectList', methods=['get'])
 def get_project_list():
-    projectList = myGitLab.get_project_list()
+    global gitlabProjectInterface
+    projectList = gitlabProjectInterface.project_list
     myResponse = []
     """
     This is for testing only, need to be changed later
@@ -68,5 +73,59 @@ def get_project_list():
     return jsonify({'value': myResponse})
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+# Example: /setProject?projectID=projectID_variable
+@app.route('/setProject', methods=['post'])
+@cross_origin()
+def set_project():
+    global gitlabProjectInterface
+    projectID = request.args.get('projectID', default=None, type=int)
+    gitlabProjectInterface.set_project(projectID=projectID)
+
+
+@app.route('/getProjectOverview', methods=['get'])
+def get_project_overview():
+    global gitlabProjectInterface
+    response = {}
+    memberList = gitlabProjectInterface.member_manager.getMemberList()
+
+    for member in memberList:
+        memberObject = {
+            "number_commits": randint(0, 100),
+            "lines_of_code": randint(0, 100000),
+            "number_issues": randint(0, 100)
+        }
+        response[member.username] = memberObject
+    return jsonify(response)
+
+
+@app.route('/getCommits', methods=['get'])
+def get_commits():
+    global gitlabProjectInterface
+    commitList: list = gitlabProjectInterface.commits_manager.getCommitList()
+    return jsonify(commitList)
+
+
+@app.route('/getMergeRequests', methods=['get'])
+def get_merge_request():
+    global gitlabProjectInterface
+    mergeRequestList: list = gitlabProjectInterface.merge_request_manager.merge_request_list
+    return jsonify(mergeRequestList)
+
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0')
+
+
+# Testing only
+gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
+gl.authenticate()
+gitlabProjectInterface = GitlabProject(gl)
+pList = gitlabProjectInterface.project_list
+gl.set_project(25515)
+# gitlabProjectInterface.set_project(25515)
+
+c = gl.get_commit_list_for_project()
+for s in c:
+    print(s)
+# print(get_project_overview())
+# print(get_commits())
