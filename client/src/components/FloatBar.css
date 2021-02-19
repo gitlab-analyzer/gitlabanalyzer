@@ -11,7 +11,7 @@ body {
 .floatbar-scores {
   width: 100%;
   height: 200px;
-
+  /* height: auto; */
 }
 
 .floatbar-labels {
@@ -20,24 +20,32 @@ body {
   /* background-color: red; */
   color: black;
   text-align: right;
-  padding-top: 50px;
+  padding-top: 45px;
   padding-right: 20px;
-  width: 190px;
-  line-height: 150%;
+  width: 230px;
+  /* line-height: 170%; */
   border-radius: 10px 0px 0px 10px;
 
 }
+.rawscore-label {
+  line-height: 35px;
+}
+.remaining-labels {
+  line-height: 32px;
+}
+
 
 .floatbar-scores{
   /* background-color: #E4E8EF; */  
   /* background-color: antiquewhite; */
   display: flex;
-  /* padding-left: 30px; */
+  padding-left: 20px;
   padding-top: 20px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   will-change: transform;  
+
 }
 
 
@@ -59,8 +67,8 @@ body {
 
 .floatbar-functions {
   /* background-color: #9aa0ac; */
-  width: 380px;
-  padding-right: 20px;
+  width: 400px;
+  padding-right: 30px;
   border-radius: 0px 10px 10px 0px;
   align-content: center;
 
@@ -149,5 +157,33 @@ body {
   line-height: 35px;  
   width: 120px;
   text-align: center;
+}
+.data {
+  padding-right: 50px;
+}
+.data2 {
+  display: flex;
+  flex-direction: row;  
+  text-align: right;
+  padding-top: 5px;
 
+}
+.user {
+  font-size: 16px;
+  text-align: right;
+}
+
+.userscore {
+  font-size: 27px;
+}
+.userscore_details {
+  font-size: 25px;
+  color: #6E7590;
+
+}
+
+.userscore,
+.userscore_details {
+  font-weight: bold;
+  line-height: 130%;
 }

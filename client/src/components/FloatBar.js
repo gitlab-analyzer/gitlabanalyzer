@@ -11,12 +11,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 // import ReactDOM from 'react-dom'
 import HorizontalScroll from './Scroll'
+import Data from './FloatBarData.json'
 
-const SCORES = ['raw score', 'commits', 'lines of code', "issues & reviews"];
-const USERS = ['bfraser', 'khangura', 'gbaker', 'afraser'];
 const DATES = ['8/29/2021', '9/31/2021'];
 
-
+var FloatBarData = Data.users;
 function FloatBar() {
 
   const [user, setUser] = React.useState('');
@@ -29,67 +28,44 @@ function FloatBar() {
 
     return (
         <div className="floatbar-container">
-          <ul className="floatbar-labels">
+          <div className="floatbar-labels">
+            <div className="rawscore-label">
+              raw score
+            </div>
+            <div className="remaining-labels">
+              <div>commits</div>
+              <div>lines of code</div>
+              <div>issues & reviews</div>
+            </div>
+          </div>
+          {/* <ul className="floatbar-labels">
             {SCORES.map(scorename => {
               return <li>{scorename}</li>;
             })}
 
-          </ul>
+          </ul> */}
           <div className="floatbar-scores" ref={scrollRef}>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
-              <div classname="userscore">
-                {SCORES.map(scorename => {
-                  return <li>{scorename}</li>;
-                })}
-              </div>
+              <div className="data2" >
+                {FloatBarData.map((Detail, index) => {
+                  return (
+                    <div className="data">
+                      <div className= "user">@{Detail.username}</div>
+                      {/* <div spacing={5}> */}
+                        <div className="userscore">{Detail.score}</div>
+                        <div className="userscore_details">
+                          <div>{Detail.number_commits}</div>
+                          <div>{Detail.lines_of_code}</div>
+                          <div>{Detail.number_issues}</div>
+                        </div>
 
+                      {/* </div> */}
 
-         
+                      
+                    </div>
 
+                  )
+                })}
+              </div> 
           </div>
           <div className="floatbar-functions">
             <Grid 
@@ -127,9 +103,12 @@ function FloatBar() {
                       <MenuItem value="">
                         @everyone
                       </MenuItem>                        
-                      {USERS.map((username, index) => 
+                      {/* {USERS.map((username, index) => 
                         <MenuItem value={index}>@{username}</MenuItem>
-                      )}
+                      )} */}
+                      {FloatBarData.map((Detail, index) => {
+                        return <MenuItem value={index}>@{Detail.username}</MenuItem>
+                      })}
                     </Select>
                   </FormControl>
                 </div> 
