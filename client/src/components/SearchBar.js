@@ -43,7 +43,7 @@ const SearchBarComp = () => {
       <div className="bar_container">
         <form className="flex" onSubmit={handleSubmit}>
           <Search
-            style={{ width: '550px' }}
+            style={{ width: '650px' }}
             placeholder="Search a repository"
             allowClear
             enterButton="Search"

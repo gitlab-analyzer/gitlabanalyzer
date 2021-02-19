@@ -1,7 +1,6 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
-import { List, Avatar } from 'antd';
+import { Button, Checkbox, List, Avatar } from 'antd';
 
 const Repo = ({ repo }) => {
   const repoList = [
@@ -31,8 +30,9 @@ const Repo = ({ repo }) => {
         renderItem={(item) => (
           <List.Item
             actions={[
-              <a key="list-loadmore-edit">Details</a>,
-              <a key="list-loadmore-more">Analyze</a>,
+              <Button key="details">Details</Button>,
+              <Button key="analyze">Analyze</Button>,
+              <Checkbox>Batch</Checkbox>,
             ]}
           >
             <List.Item.Meta
