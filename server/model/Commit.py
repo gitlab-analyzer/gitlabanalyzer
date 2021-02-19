@@ -5,12 +5,12 @@ from typing import Union, Optional, List
 class Commit:
     def __init__(self, commit: gitlab = None) -> None:
         self.__id: int = commit.id
-        self.__author: str = commit.author
         self.__title: str = commit.title
+        self.__author_name: str = commit.author_name
+        self.__committer_name: str = commit.commiter_name
         self.__committed_date: str = (
             commit.committed_date
         )  # datetime in ISO 8601 format
-        self.__conflicts: Optional[List[str]] = commit.conflicts
 
     def to_json(self) -> str:
         return self.__dict__.__str__().replace("_Commit__", "").replace("'", '"')
@@ -25,8 +25,12 @@ class Commit:
         return self.__id
 
     @property
-    def author(self) -> str:
-        return self.__author
+    def author_name(self) -> str:
+        return self.__author_name
+
+    @property
+    def committer_name(self) -> str:
+        return self.__committer_name
 
     @property
     def title(self) -> str:
@@ -36,6 +40,3 @@ class Commit:
     def committed_date(self) -> str:
         return self.__committed_date
 
-    @property
-    def conflicts(self) -> Optional[List[str]]:
-        return self.__conflicts

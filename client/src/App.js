@@ -12,14 +12,15 @@ import './App.css';
 import './Shared.css';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
+import CommitPage from './pages/CommitPage';
 
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div>
         <Switch>
-          <Route path="/" exact component={LoginPage} />
-          <Route path="/repo" exact component={SearchPage} />
+          <Route className="App" path="/" exact component={LoginPage} />
+          <Route className="App" path="/repo" exact component={SearchPage} />
           <Container maxWidth="md">
             <Header />
             <Route path="/overview" exact component={Overview} />
@@ -27,6 +28,7 @@ function App() {
             <Route path="/table" component={Table} />
             <Route path="/batch" component={Batch} />
             <Route path="/config" component={Config} />
+            <Route path="/commits" component={CommitPage} />
           </Container>
         </Switch>
       </div>
