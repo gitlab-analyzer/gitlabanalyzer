@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Paper, Button } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
+import { Button } from 'antd';
 import InputBase from '@material-ui/core/InputBase';
 import useStyles from './BarStyles';
 import './SearchBar.css';
@@ -86,15 +87,15 @@ const LoginBar = () => {
             />
           </Paper>
           <Button
-            type="submit"
-            variant="contained"
+            type="primary"
+            htmlType="submit"
             className={classes.logInButton}
           >
             LOG IN
           </Button>
         </form>
         <Button
-          variant="contained"
+          type="primary"
           onClick={handleJustLogIn}
           className={classes.logInButton}
         >
