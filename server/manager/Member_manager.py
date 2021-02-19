@@ -23,3 +23,34 @@ class MemberManager:
 
     def get_number_of_members(self) -> int:
         return len(self.__memberList)
+
+    def loop_through_list(self, accessLevel, listMember) -> None:
+        for member in self.__memberList:
+            if member.access_level == accessLevel:
+                listMember.append(member)
+
+    def get_member_by_access_level(self, role) -> Union[List[Member], None]:
+        listMember = []
+        if role == "no access":
+            loop_through_list(0, listMember)
+            return listMember
+        elif role == "minimal access":
+            loop_through_list(5, listMember)
+            return listMember
+        elif role == "guest":
+            loop_through_list(10, listMember)
+            return listMember
+        elif role == "reporter":
+            loop_through_list(20, listMember)
+            return listMember
+        elif role == "developer":
+            loop_through_list(30, listMember)
+            return listMember
+        elif role == "maintainer":
+            loop_through_list(40, listMember)
+            return listMember
+        elif role == "owner":
+            loop_through_list(50, listMember)
+            return listMember
+        else:
+            return listMember
