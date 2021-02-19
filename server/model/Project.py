@@ -64,25 +64,36 @@ class Project:
 
     # Getters
     @property
+    def tags_list(self) -> Tuple[str]:
+        return tuple(self.__tags_list)
+
+    @property
     def project_id(self) -> int:
         return self.__project_id 
     
     @property
-    def project_name(self) -> str:
+    def name(self) -> str:
         return self.__name
     
     @property
-    def project_namespace(self) -> str:
+    def namespace(self) -> str:
         return self.__namespace
+    
+    @property
+    def name_with_namespace(self) -> str:
+        return "{} / {}".format(self.__name, self.__namespace) 
 
     @property
-    def project_path(self) -> str:
-        slashIndex = self.__path_with_namespace.index('/') + 1
-        return self.__path_with_namespace[slashIndex:]
+    def path(self) -> str:
+        return self.__path
 
     @property
-    def project_path_with_namespace(self) -> str:
-        return self.__path_with_namespace
+    def path_namespace(self) -> str:
+        return self.__path_namespace
+
+    @property
+    def path_with_namespace(self) -> str:
+        return "{}/{}".format(self.path, self.path_namespace)
 
     @property
     def web_url(self) -> str:
@@ -121,8 +132,8 @@ class Project:
         return self.__star_count
 
     @property
-    def project_owner(self) -> None:
-        return self.__owner
+    def owner_id(self) -> int:
+        return self.__owner_id
 
 """
 gitlab.v4.objects.Project:
