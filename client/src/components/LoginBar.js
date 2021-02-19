@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
-import { Paper } from '@material-ui/core';
 import { Button, Input, Tooltip, Select } from 'antd';
-import {
-  InfoCircleOutlined,
-  UserOutlined,
-  GitlabOutlined,
-} from '@ant-design/icons';
-import InputBase from '@material-ui/core/InputBase';
+import { InfoCircleOutlined, GitlabOutlined } from '@ant-design/icons';
 import useStyles from './BarStyles';
 import './SearchBar.css';
 import { useAuth } from '../context/AuthContext';
@@ -82,7 +76,7 @@ const LoginBar = () => {
       onChange={(value) => {
         setUrlPre(value);
       }}
-      defaultValue="http://"
+      defaultValue="https://"
       className="select-before"
     >
       <Option value="http://">http://</Option>
