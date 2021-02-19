@@ -39,15 +39,88 @@ const Overview = () => {
     const [menuSelection, setMenuSelection] = useState('Commits')
     const classes = useStyles();
 
+    // will be replaced once we find out how 
+    const data = [[44, 55, 41, 67, 22, 43, 0, 30, 10, 10], 
+                    [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
+                    [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
+                    [21, 7, 25, 13, 22, 8, 0, 30, 10, 10],
+                   ];
+
+    const [series, setSeries] = useState([{
+      name: '@user1',
+      data: data[0]
+    }, {
+      name: '@user2',
+      data: data[1]
+    }, {
+      name: '@user3',
+      data: data[2]
+    }, {
+      name: '@user4',
+      data: data[3]
+    }])
+
     const handleMenuClick = (e) => {
       console.log('Key test:', e);
-      if(e.key == "commits") {
+      if(e.key === "commits") {
         setMenuSelection("Commits")
-      } else if (e.key == "mergereqs") {
+        setSeries([{
+          name: '@user1',
+          data: data[0]
+        }, {
+          name: '@user2',
+          data: data[1]
+        }, {
+          name: '@user3',
+          data: data[2]
+        }, {
+          name: '@user4',
+          data: data[3]
+        }])
+      } else if (e.key === "mergereqs") {
         setMenuSelection("Merge Reqs")
-      } else if (e.key =="issues") {
+        setSeries([{
+          name: '@user1',
+          data: data[3]
+        }, {
+          name: '@user2',
+          data: data[2]
+        }, {
+          name: '@user3',
+          data: data[1]
+        }, {
+          name: '@user4',
+          data: data[0]
+        }])
+      } else if (e.key ==="issues") {
         setMenuSelection("Issues")
+        setSeries([{
+          name: '@user1',
+          data: data[4]
+        }, {
+          name: '@user2',
+          data: data[4]
+        }, {
+          name: '@user3',
+          data: data[1]
+        }, {
+          name: '@user4',
+          data: data[2]
+        }])
       } else {
+        setSeries([{
+          name: '@user1',
+          data: data[2]
+        }, {
+          name: '@user2',
+          data: data[1]
+        }, {
+          name: '@user3',
+          data: data[0]
+        }, {
+          name: '@user4',
+          data: data[3]
+        }])
         setMenuSelection("Reviews")
       }
  
@@ -68,7 +141,7 @@ const Overview = () => {
                         <b>Commit Count from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <StackedBar />
+                        <StackedBar series={series}/>
             </Grid>
             <Grid item xs={2}>
                       <Dropdown overlay={menu}>
