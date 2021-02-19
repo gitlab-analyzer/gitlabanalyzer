@@ -37,7 +37,7 @@ const CommitBar = ({ username }) => {
   };
 
   const getDataSource = () => {
-    if (selectUser === 'everyone') {
+    if (selectUser === '@everyone') {
       return commits;
     } else {
       return filterCommits(selectUser, commits);

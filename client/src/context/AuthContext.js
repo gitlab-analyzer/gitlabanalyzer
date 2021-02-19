@@ -6,7 +6,7 @@ const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
   const [repo, setRepo] = useState(null);
   const [incorrect, setIncorrect] = useState(false);
-  const [selectUser, setSelectUser] = useState('everyone');
+  const [selectUser, setSelectUser] = useState('@everyone');
 
   const authContextValue = {
     user,

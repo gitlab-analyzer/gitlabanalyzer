@@ -14,13 +14,13 @@ const CommitPage = () => {
   useEffect(() => {
     const loadFakeData = async () => {
       const load = await fetchNames();
-      setUserNames([...load]);
+      setUserNames(['everyone', ...load]);
     };
     loadFakeData();
   }, []);
 
   const handleMenuClick = (e) => {
-    message.info('Click on menu item.');
+    message.info(`Switched to @${e.key}`);
     console.log('click', e);
     setSelectUser('@' + e.key);
   };
@@ -44,7 +44,7 @@ const CommitPage = () => {
           placement="bottomCenter"
           icon={<UserOutlined />}
         >
-          @everyone
+          {selectUser}
         </Dropdown.Button>
       </div>
       <CommitBar username={userNames[0]} />
