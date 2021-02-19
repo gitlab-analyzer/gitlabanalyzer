@@ -39,7 +39,7 @@ const Overview = () => {
     const [menuSelection, setMenuSelection] = useState('Commits')
     const classes = useStyles();
 
-    // will be replaced once we find out how 
+    // will be replaced once we find out how to get data from backend
     const data = [[44, 55, 41, 67, 22, 43, 0, 30, 10, 10], 
                     [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
                     [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
