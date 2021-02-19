@@ -49,8 +49,7 @@ function LoginPage() {
             <Logo />
           </div>
           {user ? <SearchBar /> : <LoginBar />}
-          {/* {loggedState()} */}
-          {repo ? <Repo repo={repo} /> : <p></p>}
+          {repo ? <Repo repo={repo} /> : null}
           {incorrect ? (
             <Alert
               message="Access token or url wrong, please try again"

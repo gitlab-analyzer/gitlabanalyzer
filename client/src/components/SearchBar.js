@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
+import { Input } from 'antd';
 import { Paper, Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,6 +8,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import useStyles from './BarStyles';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+
+const { Search } = Input;
 
 const SearchBarComp = () => {
   const [value, setValue] = useState('');
@@ -35,7 +38,7 @@ const SearchBarComp = () => {
     <div className="main">
       <div className="bar_container">
         <form className="flex" onSubmit={handleSubmit}>
-          <Paper className={classes.root}>
+          {/* <Paper className={classes.root}>
             <IconButton className={classes.iconButton} aria-label="searchicon">
               <SearchIcon />
             </IconButton>
@@ -48,14 +51,26 @@ const SearchBarComp = () => {
               placeholder="Search for Repo"
               inputProps={{ 'aria-label': 'search repo' }}
             />
-          </Paper>
-          <Button
+          </Paper> */}
+
+          <Search
+            style={{ width: '550px' }}
+            placeholder="Search a repository"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onChange={(event) => {
+              setValue(event.target.value);
+            }}
+            // onSearch={onSearch}
+          />
+          {/* <Button
             type="submit"
             variant="contained"
             className={classes.goButton}
           >
             GO
-          </Button>
+          </Button> */}
         </form>
       </div>
     </div>
