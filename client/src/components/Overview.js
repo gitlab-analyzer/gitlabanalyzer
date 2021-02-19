@@ -6,6 +6,10 @@ import Typography from '@material-ui/core/Typography'
 import StackedBar from './StackedBarGraph'
 import Heatmap from './Heatmap'
 import GraphDropdown from './GraphDropdown'
+import { Menu, Dropdown, Button } from 'antd';
+import {DownOutlined} from '@ant-design/icons'
+import 'antd/dist/antd.css';
+
 
 {/* could probably move some of this stuff into other components */}
 
@@ -32,7 +36,31 @@ const useStyles = makeStyles((theme) =>({
 const Overview = () => {
     const [startDate, setStartDate] = useState('Jan 2021')
     const [endDate, setEndDate] = useState('Mar 2021')
+    const [menuSelection, setMenuSelection] = useState('Commits')
     const classes = useStyles();
+
+    const handleMenuClick = (e) => {
+      console.log('Key test:', e);
+      if(e.key == "commits") {
+        setMenuSelection("Commits")
+      } else if (e.key == "mergereqs") {
+        setMenuSelection("Merge Reqs")
+      } else if (e.key =="issues") {
+        setMenuSelection("Issues")
+      } else {
+        setMenuSelection("Reviews")
+      }
+ 
+    };
+
+    const menu = (
+      <Menu onClick={handleMenuClick} >
+        <Menu.Item key="commits">Commits</Menu.Item>
+        <Menu.Item key="mergereqs">Merge Reqs</Menu.Item>
+        <Menu.Item key="issues">Issues</Menu.Item>
+        <Menu.Item key="code_reviews">Reviews</Menu.Item>
+      </Menu>
+    )
     return (
         <div>
             <Grid container className={classes.grid}>
@@ -43,7 +71,11 @@ const Overview = () => {
                         <StackedBar />
             </Grid>
             <Grid item xs={2}>
-                        <GraphDropdown />
+                      <Dropdown overlay={menu}>
+                <Button>
+                  {menuSelection} <DownOutlined />
+                </Button>
+              </Dropdown>
             </Grid>
             <Grid item xs={12}>                    
                         <b>x Lifetime Contributions</b>
