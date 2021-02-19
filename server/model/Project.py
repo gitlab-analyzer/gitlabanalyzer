@@ -1,4 +1,5 @@
 from typing import Union, Optional, List, Tuple
+from gitlab.v4.objects import Project as gl_Project
 
 class Project:
     """
@@ -16,7 +17,6 @@ class Project:
 
             created_date -> str                         # ISO 8601 format
             updated_date -> str                         # ISO 8601 format
-            deletion_date -> Optional[str]
 
             forks_count -> int
             star_count -> int
@@ -24,36 +24,43 @@ class Project:
             owner -> Member
 
             tag_list -> List[str]
-            issues_id_list -> List[int]
-            merge_requests_id_list -> List[int]
-            branches_id_list -> List[int]
-            members_id_list -> List[id]
+            # issues_id_list -> List[int]
+            # merge_requests_id_list -> List[int]
+            # branches_id_list -> List[int]
+            # members_id_list -> List[id]
     """
-    def __init__(self) -> None:
-        self.__project_id: int
-        self.__name: str
-        self.__namespace: str
-        self.__path_with_namespace: str
-        self.__web_url: str
-        self.__description: str
+    def __init__(self, gitlab_project: gl_Project) -> None:
+        self.__project_id: int = gitlab_project.id
+        self.__name: str = gitlab_project.name
+        self.__namespace: str = gitlab_project.namespace.name
+        self.__path: str = gitlab_project.path
+        self.__path_namespace = gitlab_project.namespace.path
+        self.__web_url: str = gitlab_project.web_url
+        self.__description: str = gitlab_project.description
 
-        self.__default_branch: str
-        self.__visibility: str
-        self.__is_archived: bool
+        self.__default_branch: str = gitlab_project.default_branch
+        self.__visibility: str = gitlab_project.visibility
+        self.__is_archived: bool = gitlab_project.archived
 
-        self.__created_date: str
-        self.__updated_date: str
-        self.__deletion_date: Optional[str]
+        self.__created_date: str = gitlab_project.created_at
+        self.__updated_date: str = gitlab_project.last_activity_at
 
-        self.__fork_count: int
-        self.__star_count: int
+        self.__fork_count: int = gitlab_project.forks_count
+        self.__star_count: int = gitlab_project.star_count
 
-        self.__owner: None
+        self.__owner_id: int = gitlab_project.owner.id
 
-        self.__tags_list: List[str]
-        self.__issues_list: List[int]
-        self.__branches_list: List[int]
-        self.__members_list: List[int]
+        self.__tags_list: List[str] = gitlab_project.tag_list
+
+        # self.__issues_list: List[int]
+        # self.__branches_list: List[int]
+        # self.__members_list: List[int]
+
+    def to_json(self) -> str:
+        return self.__dict__.__str__().replace("_Project__", "").replace("'", "\"")
+        
+    def __str__(self) -> str:
+        return self.__dict__.__str__()
 
     # Getters
     @property
@@ -104,10 +111,6 @@ class Project:
     @property
     def updated_date(self) -> str:
         return self.__updated_date
-
-    @property
-    def deletion_date(self) -> Optional[str]:
-        return self.__deletion_date
     
     @property
     def fork_count(self) -> int:
