@@ -9,7 +9,7 @@
 } */
 .floatbar-labels,
 .floatbar-scores {
-  width: 100%;
+  /* width: 100%; */
   height: 170px;
   /* height: auto; */
 }
@@ -21,9 +21,10 @@
   color: black;
   font-size: 14px;
   text-align: right;
-  padding-top: 40px;
+  padding-top: 45px;
   padding-right: 10px;
-  width: 270px;
+  /* width: 270px; */
+  width: 150px;
   /* line-height: 170%; */
   border-radius: 10px 0px 0px 10px;
 
@@ -64,29 +65,44 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #9ea0a7;
 }
-
+/* .floatbar-container .floatbar-functions {
+  width: auto;
+} */
 .floatbar-functions {
   /* background-color: #9aa0ac; */
-  width: 400px;
+  /* position: absolute; */
+  float: right;
+  right: auto;
+  width: 300px;
   padding-right: 20px;
   border-radius: 0px 10px 10px 0px;
-  align-content: center;
+  /* align-content: center; */
+  /* background-color: blue; */
+  
 }
 
 .floatbar-container {
   display:flex;
   align-items: center;  
-  /* width: 90%;   */
   vertical-align: middle;
-  /* background-color: black; */
-  /* margin: 2% 0% 0% 5%; */
   height: 170px;
-  /* border-radius: 10px; */
-  background-color: #efefef;
+  /* background-color: #efefef; */
+  background-color: #eaf1f8;
 
-
+  /* MAYBE USE #f9fbfd FOR NAVBAR */
+  
 }
 
+.floatbar-mid-container {
+  display: flex;
+  height: 170px;
+  /* background-color: grey; */
+}
+
+.floatbaralign {
+  float: left;
+  width: 100%;
+}
 .daterange {
   display: flex;
 }
@@ -207,3 +223,24 @@
 .ant-select-selection {
   background-color: red;
 } */
+
+.individualscore {
+  width: 100%;
+  margin-left: 40px;
+  display: flex;
+  font-weight: bolder;
+  font-size: 50px;
+  /* align-content: flex-start; */
+}
+
+.smallscore {
+  margin-left: 70px;
+  text-align: left;
+  flex-direction: column;
+}
+.numberscore {
+  margin-bottom: 5px;
+}
+.scoretext {
+  font-size: 15px;
+}

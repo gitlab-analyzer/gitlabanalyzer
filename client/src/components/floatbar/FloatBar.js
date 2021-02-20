@@ -9,12 +9,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import { /*makeStyles, ThemeProvider*/ } from '@material-ui/core/styles';
 // import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-// import ReactDOM from 'react-dom'
-import HorizontalScroll from './Scroll'
-import Data from './FloatBarData.json'
+// import ReactDOM from 'react-dom';
+// import HorizontalScroll from './Scroll'
 import { Select, Button } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import { DatePicker, Space } from 'antd';
+import IndividualScore from './IndividualScore.js';
+import EveryoneScore from './EveryoneScore.js';
+import Data from './FloatBarData.json';
+var FloatBarData = Data.users;
 
 
 
@@ -22,56 +25,77 @@ const DATES = ['8/29/2021', '9/31/2021'];
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-var FloatBarData = Data.users;
 function FloatBar() {
 
-  const [user, setUser] = React.useState('');
-  const scrollRef = HorizontalScroll();
+  const [user, setUser] = React.useState("everyone");
+  // const scrollRef = HorizontalScroll();
 
 
   const handleUserChange = (event, index) => {
     setUser(event.target.value);
   };
+  // function handleChange(value) {
+  //   // // console.log(`selected ${value}`);
+  //   setUser(value);
+  //   // console.log({user});
+  //   if (value === "everyone"){
+  //     // console.log("inside");
+  //     // return <EveryoneScore />
+  //     return <EveryoneScore />
+  //   }
+  //   else {
+  //     console.log("outside");
+  //     return <IndividualScore />
+  //   }
+
+  // }
+
+
+  // function EveryoneScore(prop) {
+  //     return (
+  //         <div className="data2" >
+  //             {FloatBarData.map((Detail, index) => {
+  //               console.log("inside everyone");
+  //               return (
+  //                     <div className="data">
+  //                         <div className= "user">@{Detail.username}</div>
+  //                         <div className="userscore">{Detail.score}</div>
+  //                         <div className="userscore_details">
+  //                             <div>{Detail.number_commits}</div>
+  //                             <div>{Detail.lines_of_code}</div>
+  //                             <div>{Detail.number_issues}</div>
+  //                         </div>
+  //                     </div>
+  //                 );
+  //             })}
+  //         </div>             
+  //     );
+  // }
+
+
   function handleChange(value) {
-    console.log(`selected ${value}`);
-  }
+  // // const handleChange = (event) => {
+  //   if (value === "everyone"){
+  //     console.log("everyone");
+  //     return <div><EveryoneScore /></div>
+  //   }
+  //   else {
+  //     console.log("not everyone");
+  //     <div><IndividualScore /></div>
+  //   }
+    setUser(value);
+
+  };
 
     return (
         <div className="floatbar-container">
-          <div className="floatbar-labels">
-            <div className="rawscore-label">
-              raw score
-            </div>
-            <div className="remaining-labels">
-              <div>commits</div>
-              <div>lines of code</div>
-              <div>issues & reviews</div>
-            </div>
-          </div>
-          {/* <ul className="floatbar-labels">
-            {SCORES.map(scorename => {
-              return <li>{scorename}</li>;
-            })}
-
-          </ul> */}
-          <div className="floatbar-scores" ref={scrollRef}>
-              <div className="data2" >
-                {FloatBarData.map((Detail, index) => {
-                  return (
-                    <div className="data">
-                      <div className= "user">@{Detail.username}</div>
-                      {/* <div spacing={5}> */}
-                        <div className="userscore">{Detail.score}</div>
-                        <div className="userscore_details">
-                          <div>{Detail.number_commits}</div>
-                          <div>{Detail.lines_of_code}</div>
-                          <div>{Detail.number_issues}</div>
-                        </div>
-                      {/* </div> */}                      
-                    </div>
-                  )
-                })}
-              </div> 
+          <div className="floatbaralign">
+            { (user && user==="everyone" && 
+              <div><EveryoneScore /></div>
+              ) || (
+                <div><IndividualScore>{user}</IndividualScore></div>
+              )
+            }            
           </div>
           <div className="floatbar-functions">
             <Grid 
@@ -84,12 +108,6 @@ function FloatBar() {
               <Grid item xs={12}>
                 <div className="daterange">
                   <RangePicker />
-                  {/* <div className="startdate">
-                    {DATES[0]}
-                  </div>
-                  <div className="enddate"> 
-                    {DATES[1]}
-                  </div> */}
                 </div>
               </Grid>
               <Grid item xs={12}>
@@ -97,12 +115,13 @@ function FloatBar() {
                 <div className="listofusers2">
                 <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
                   <Option value="everyone">@everyone</Option>
-                  {FloatBarData.map((Detail, index) => {
-                    return <Option value={index}>@{Detail.username}</Option>
+                  {FloatBarData.map((Detail) => {
+                    return <Option value={Detail.username}>@{Detail.username}</Option>
                   })}                
                 </Select>
                 </div>
                 {/* INSERT HERE */}
+
               </Grid>
               <Grid item xs={12}>
                 <StylesProvider injectFirst>
@@ -116,8 +135,7 @@ function FloatBar() {
                 </StylesProvider>              
               </Grid>              
             {/* </Box> */}
-          </Grid>
-            
+            </Grid>
           </div>
         </div>
     );
