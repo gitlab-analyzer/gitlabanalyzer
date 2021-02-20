@@ -15,7 +15,7 @@ RUN npm install
 # add app
 COPY ./client .
 
-EXPOSE 5050
+EXPOSE 6789
 
 # start app
 CMD npm start

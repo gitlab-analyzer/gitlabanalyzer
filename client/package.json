@@ -28,7 +28,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "export PORT=5050 && react-scripts start",
+    "start": "export PORT=6789 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -51,5 +51,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://flask:5000"
+  "proxy": "http://flask:5678"
 }
