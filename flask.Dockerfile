@@ -8,6 +8,7 @@ RUN pip3 install flask
 RUN pip3 install -U flask-cors
 RUN pip3 install pika
 RUN pip3 install pymongo
+RUN pip3 install python-dateutil
 RUN pip3 install python-gitlab
 
 WORKDIR /app

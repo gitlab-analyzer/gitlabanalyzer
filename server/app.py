@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
 # Testing only
 # with app.app_context():
-#     gl = GitLab(token='', url='https://csil-git1.cs.surrey.sfu.ca/')
+#     gl = GitLab(token='7shVgQ7M1o9gKZMZbCCh', url='https://csil-git1.cs.surrey.sfu.ca/')
 #     print(gl.authenticate())
 #     gitlabProjectInterface = GitlabProject(gl)
 #     pList = gitlabProjectInterface.project_list

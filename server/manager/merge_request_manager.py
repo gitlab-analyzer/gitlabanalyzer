@@ -1,8 +1,8 @@
 from typing import Union
 import datetime
 from dateutil import parser
-from server.interface.gitlab_interface import GitLab
-from server.model.MergeRequest import MergeRequest
+from interface.gitlab_interface import GitLab
+from model.MergeRequest import MergeRequest
 import gitlab
 
 
