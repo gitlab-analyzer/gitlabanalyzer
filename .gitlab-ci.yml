@@ -7,7 +7,6 @@ build:
     - master
   script:
     - echo "Hello CI/CD"
-    - ./start.sh
     - echo "Finished"
   tags: 
     - CMPT373
