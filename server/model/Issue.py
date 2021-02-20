@@ -1,7 +1,8 @@
+from server.model.DataObject import DataObject
 from typing import Union, Optional, List, Tuple
 from gitlab.v4.objects import ProjectIssue
 
-class Issue:
+class Issue(DataObject):
     """
         attributes:     
             issue_id -> int                 # the issue's number in the context of the project (iid)
@@ -40,7 +41,7 @@ class Issue:
         self.__comment_count: int = gitlab_issue.user_notes_count
         self.__author_id: int = gitlab_issue.author.id
         self.__milestone_id: Optional[int] = None if gitlab_issue.milestone is None else gitlab_issue.milestone.id # maybe not needed
-        self.__closer_id: Optional[int] = gitlab_issue.closed_by.id # TODO: fix bug
+        # self.__closer_id: Optional[int] = gitlab_issue.closed_by.id # TODO: fix bug
 
         self.__project_id: Union[int, str] = gitlab_issue.project_id
 
@@ -55,16 +56,14 @@ class Issue:
         self.__assignee_id_list: List[int] = [member.id for member in gitlab_issue.assignees]
         self.__labels_list: List[str] = gitlab_issue.labels
 
-    def to_json(self) -> str:
-        return self.__dict__.__str__().replace("_Issue__", "").replace("'", "\"")
-        
-    def __str__(self) -> str:
-        return self.__dict__.__str__()
+        # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
+        super().__init__()
 
     # Getters
-    @property
-    def closer_id(self) -> Optional[int]:
-        return self.__closer_id
+
+    # @property
+    # def closer_id(self) -> Optional[int]:
+    #     return self.__closer_id
 
     @property
     def comment_count(self) -> int:

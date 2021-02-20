@@ -1,8 +1,9 @@
+from server.model.DataObject import DataObject
 import gitlab
 from typing import Union, Optional, List
 
 
-class Member:
+class Member(DataObject):
     def __init__(self, member: gitlab) -> None:
         self.__id: int = member.id
         self.__username: str = member.username
@@ -10,11 +11,8 @@ class Member:
         self.__state: str = member.state
         self.__access_level: int = member.access_level
 
-    def to_json(self) -> str:
-        return self.__dict__.__str__().replace("_Member__", "").replace("'", '"')
-
-    def __str__(self) -> str:
-        return self.__dict__.__str__()
+        # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
+        super().__init__()
 
     # Getters
 

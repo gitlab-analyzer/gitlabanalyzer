@@ -1,8 +1,9 @@
+from server.model.DataObject import DataObject
 import gitlab
 from typing import Union, Optional, List
 
 
-class Commit:
+class Commit(DataObject):
     def __init__(self, commit: gitlab = None) -> None:
         self.__id: int = commit.id
         self.__title: str = commit.title
@@ -12,11 +13,8 @@ class Commit:
             commit.committed_date
         )  # datetime in ISO 8601 format
 
-    def to_json(self) -> str:
-        return self.__dict__.__str__().replace("_Commit__", "").replace("'", '"')
-
-    def __str__(self) -> str:
-        return self.__dict__.__str__()
+        # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
+        super().__init__()
 
     # Getters
 
