@@ -3,7 +3,7 @@ import { Paper, Button } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import useStyles from './BarStyles';
 import './SearchBar.css';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const LoginBar = () => {
