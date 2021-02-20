@@ -1,5 +1,5 @@
 from typing import Union, Optional, List
-from server.model.Comment import *
+from model.Comment import *
 import gitlab
 from datetime import datetime
 from dateutil import parser
@@ -49,7 +49,7 @@ class CommentManager:
         listComments = []
         if providedList is not None:  #if function is provided specific list of comments
             for comment in providedList:
-                if comment.noteable_type == noteableType: 
+                if comment.noteable_type == noteableType:
                     listComments.append(comment)
         else:
             for comment in self.__commentList:

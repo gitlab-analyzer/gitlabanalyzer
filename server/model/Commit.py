@@ -7,7 +7,7 @@ class Commit:
         self.__id: int = commit.id
         self.__title: str = commit.title
         self.__author_name: str = commit.author_name
-        self.__committer_name: str = commit.commiter_name
+        self.__committer_name: str = commit.committer_name
         self.__committed_date: str = (
             commit.committed_date
         )  # datetime in ISO 8601 format
