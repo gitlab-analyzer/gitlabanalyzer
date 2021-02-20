@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
   },
   logInButton: {
-    backgroundColor: '#E8ECF2',
-    width: '100px',
+    // backgroundColor: '#E8ECF2',
+    width: '500px',
     marginTop: '10px',
   },
   goButton: {
