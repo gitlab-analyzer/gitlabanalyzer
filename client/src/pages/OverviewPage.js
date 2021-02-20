@@ -210,13 +210,11 @@ const Overview = () => {
               </Dropdown>
             </Grid>
             <Grid item xs={12}>                    
-                        <b>x Lifetime Contributions</b>
+                        <b>x Contributions This Year</b>
             </Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={8}>
+            <Grid item xs={12}>
                         <Heatmap />
             </Grid>
-            <Grid item xs={2}></Grid>
             <Grid item xs={12}>
                         <b>Top 10 Merge Requests and Commits</b>
                         <ol>
