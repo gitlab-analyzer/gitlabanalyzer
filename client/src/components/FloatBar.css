@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap'); */
 
 * {
   box-sizing: border-box;
 }
 
-body {
+/* body {
   font-family: 'Lato', sans-serif;
-}
+} */
 .floatbar-labels,
 .floatbar-scores {
   width: 100%;
@@ -46,7 +46,6 @@ body {
   overflow-y: hidden;
   white-space: nowrap;
   will-change: transform;  
-
 }
 
 
@@ -72,7 +71,6 @@ body {
   padding-right: 20px;
   border-radius: 0px 10px 10px 0px;
   align-content: center;
-
 }
 
 .floatbar-container {
@@ -120,7 +118,7 @@ body {
   border: none;
 } 
 
-.copybutton {
+/* .copybutton {
   border-radius: 10px;
   background-color: transparent;
   border: 2px solid #4A4F68;
@@ -131,16 +129,12 @@ body {
 }
 
 
-
-
 .copybutton .copyicon {
-  /* justify-self:flex-end; */
 
   margin-left: 40%;
   transform: scale(0.8);
   color: #4A4F68;
-  /* color: white; */
-} 
+}  */
 
 .startdate {
   color: #ffff;
@@ -189,3 +183,28 @@ body {
   font-weight: bold;
   line-height: 120%;
 }
+
+/* .listofusers2 {
+  border-radius: 10px;
+}
+.ant-select-selection {
+  background-color: transparent;
+}
+.listofusers2 {
+  background-color: pink;
+} */
+
+/* .ant-btn-primary {
+  background-color: red;
+}
+.ant-select-selection {
+  border-radius: 10px !important;
+  height: 53px;
+}
+.ant-select-selection-item {
+
+  border-radius: 20px;
+} 
+.ant-select-selection {
+  background-color: red;
+} */

@@ -1,7 +1,7 @@
 import React from "react";
 import "./FloatBar.css";
 // import "./components/Button.css";
-import {Button, Select, StylesProvider /*createMuiTheme*/} from '@material-ui/core';
+import {/*Button, Select,*/ StylesProvider /*createMuiTheme*/} from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import FormControl from '@material-ui/core/FormControl';
 
@@ -12,8 +12,15 @@ import Grid from '@material-ui/core/Grid';
 // import ReactDOM from 'react-dom'
 import HorizontalScroll from './Scroll'
 import Data from './FloatBarData.json'
+import { Select, Button } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
+import { DatePicker, Space } from 'antd';
+
+
 
 const DATES = ['8/29/2021', '9/31/2021'];
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 var FloatBarData = Data.users;
 function FloatBar() {
@@ -25,6 +32,9 @@ function FloatBar() {
   const handleUserChange = (event, index) => {
     setUser(event.target.value);
   };
+  function handleChange(value) {
+    console.log(`selected ${value}`);
+  }
 
     return (
         <div className="floatbar-container">
@@ -57,12 +67,8 @@ function FloatBar() {
                           <div>{Detail.lines_of_code}</div>
                           <div>{Detail.number_issues}</div>
                         </div>
-
-                      {/* </div> */}
-
-                      
+                      {/* </div> */}                      
                     </div>
-
                   )
                 })}
               </div> 
@@ -77,54 +83,35 @@ function FloatBar() {
             >
               <Grid item xs={12}>
                 <div className="daterange">
-                  <div className="startdate">
+                  <RangePicker />
+                  {/* <div className="startdate">
                     {DATES[0]}
                   </div>
                   <div className="enddate"> 
                     {DATES[1]}
-                  </div>
+                  </div> */}
                 </div>
               </Grid>
               <Grid item xs={12}>
                 {/* <div className={classes.listofusers}> */}
-                <div className="listofusers">
-                  <FormControl 
-                    variant="outlined" 
-                    size="small" 
-                    className="selectuser" 
-                  >
-                    <Select 
-                      value={user} 
-                      onChange={handleUserChange} 
-                      displayEmpty
-                      className="selectlistofusers"
-                      inputProps={{ 'aria-label': 'Without label' }}
-                    >
-                      <MenuItem value="">
-                        @everyone
-                      </MenuItem>                        
-                      {/* {USERS.map((username, index) => 
-                        <MenuItem value={index}>@{username}</MenuItem>
-                      )} */}
-                      {FloatBarData.map((Detail, index) => {
-                        return <MenuItem value={index}>@{Detail.username}</MenuItem>
-                      })}
-                    </Select>
-                  </FormControl>
-                </div> 
+                <div className="listofusers2">
+                <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
+                  <Option value="everyone">@everyone</Option>
+                  {FloatBarData.map((Detail, index) => {
+                    return <Option value={index}>@{Detail.username}</Option>
+                  })}                
+                </Select>
+                </div>
+                {/* INSERT HERE */}
               </Grid>
               <Grid item xs={12}>
                 <StylesProvider injectFirst>
                 {/* <ThemeProvider theme={theme}> */}
-                  <Button 
-                    className="copybutton" 
-                    variant="outlined" 
-                    size="small"
-                  >
-                  {/* <Button className={classes.copybutton} variant="outlined" size="small"> */}
-                    <span className="copyText">Copy</span> 
-                    <FileCopyOutlinedIcon className="copyicon" size="small"/>
+                  <Button className="copybtn" style={{ width: 150 }}>
+                    Copy
+                    <CopyOutlined className="copyicon"/>
                   </Button>
+                  {/* Button Code */}
                 {/* </ThemeProvider> */}
                 </StylesProvider>              
               </Grid>              
