@@ -8,7 +8,7 @@ import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
 
 
-{/* could probably move some of this stuff into other components */}
+/* could probably move some of this stuff into other components */
 
 const useStyles = makeStyles((theme) =>({
     root: {

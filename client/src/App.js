@@ -1,6 +1,5 @@
 import React from 'react';
 import Header from './components/Header';
-import Code from './components/commits/Code';
 import Table from './components/Table';
 import Batch from './components/Batch';
 import Config from './components/Config';
