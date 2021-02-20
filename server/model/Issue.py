@@ -1,5 +1,5 @@
 from typing import Union, Optional, List, Tuple
-from gitlab.v4.objects import ProjectIssue as gl_Issue
+from gitlab.v4.objects import ProjectIssue
 
 class Issue:
     """
@@ -32,7 +32,7 @@ class Issue:
             to_json()
     """
 
-    def __init__(self, gitlab_issue: gl_Issue) -> None:
+    def __init__(self, gitlab_issue: ProjectIssue) -> None:
         self.__issue_id: int = gitlab_issue.iid
         self.__upvotes: int = gitlab_issue.upvotes
         self.__downvotes: int = gitlab_issue.downvotes
@@ -40,7 +40,7 @@ class Issue:
         self.__comment_count: int = gitlab_issue.user_notes_count
         self.__author_id: int = gitlab_issue.author.id
         self.__milestone_id: Optional[int] = None if gitlab_issue.milestone is None else gitlab_issue.milestone.id # maybe not needed
-        self.__closer_id: Optional[int] = gitlab_issue.closed_by.id
+        self.__closer_id: Optional[int] = gitlab_issue.closed_by.id # TODO: fix bug
 
         self.__project_id: Union[int, str] = gitlab_issue.project_id
 
