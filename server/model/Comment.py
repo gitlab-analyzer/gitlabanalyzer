@@ -37,7 +37,7 @@ class Comment(DataObject):
 			self.__id: Optional[int] = None 	
 
 		# super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
-        super().__init__()
+		super().__init__()
 
 	#Getters
 
