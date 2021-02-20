@@ -13,6 +13,7 @@ class CommitGraph extends Component {
           type: 'rangeBar',
         },
         plotOptions: {
+          
           bar: {
             horizontal: true,
             barHeight: '80%',

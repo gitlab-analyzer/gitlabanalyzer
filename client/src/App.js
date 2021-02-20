@@ -21,7 +21,7 @@ function App() {
         <Switch>
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
-          <Container maxWidth="md">
+          <Container maxWidth="lg">
             <Header />
             <Route path="/overview" exact component={OverviewPage} />
             <Route path="/commits" component={CommitPage} />

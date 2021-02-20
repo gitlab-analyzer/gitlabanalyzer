@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) =>({
     grid: {
       width: '100%',
       margin:'0px',
-      backgroundColor: '#E4E8EF',
       padding: 25,
       textAlign: 'left',
     }

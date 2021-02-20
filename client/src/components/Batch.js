@@ -3,7 +3,7 @@ import React from 'react'
 const Batch = () => {
     return (
         <div>
-            <h1>This is the table page</h1>
+            <h1>Batch processing here</h1>
         </div>
     )
 }

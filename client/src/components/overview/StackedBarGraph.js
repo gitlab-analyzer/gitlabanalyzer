@@ -12,14 +12,14 @@ class StackedBar extends React.Component {
       
         options: {
           colors: ['#F1E2AB', '#ABB2F1', '#ABF1DC', '#C7EBFF', '#D7ECD9', '#F5D5CB', '#F6ECF5', '#F3DDF2'],
-          stroke: {
-            show: true,
-            curve: 'smooth',
-            lineCap: 'butt',
-            colors: ['#CBB97B', '#7F87CF', '#55FFCC', '#6AB1D9', '#489850', '#bb4824', '#a34d9a', '#ab3ca6'],
-            width: 1,
-            dashArray: 0,      
-        },
+        //   stroke: {
+        //     show: true,
+        //     curve: 'smooth',
+        //     lineCap: 'butt',
+        //     colors: ['#CBB97B', '#7F87CF', '#55FFCC', '#6AB1D9', '#489850', '#bb4824', '#a34d9a', '#ab3ca6'],
+        //     width: 1,
+        //     dashArray: 0,      
+        // },
           chart: {
             toolbar: {
               show: false
