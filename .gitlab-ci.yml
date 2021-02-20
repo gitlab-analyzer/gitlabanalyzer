@@ -1,7 +1,13 @@
 stages:
-    - build
+  - build
 
 build:
-    stage: build
-    script:
-        - ./start
+  stage: build
+  only:
+    - master
+  script:
+    - echo "Hello CI/CD"
+    - ./start.sh
+    - echo "Finished"
+  tags: 
+    - CMPT373
