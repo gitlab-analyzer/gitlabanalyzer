@@ -1,3 +1,4 @@
+from server.model.DataObject import DataObject
 from typing import Union, Optional
 import gitlab
 
@@ -15,7 +16,7 @@ For comments from Commit:
 
 """
 
-class Comment:
+class Comment(DataObject):
 
 	def __init__(self, commentForIssueMR: gitlab = None, commentForCommit: gitlab = None, commitSha: str = None) -> None:
 		if commentForIssueMR is not None: 	#comment of either MergeRequest or Issue
@@ -35,11 +36,8 @@ class Comment:
 			self.__noteable_iid: Optional[int] = None 
 			self.__id: Optional[int] = None 	
 
-	def to_json(self) -> str:
-		return self.__dict__.__str__().replace("_Comment__", "").replace("'", "\"")
-
-	def __str__(self) -> str:
-		return self.__dict__.__str__()
+		# super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
+        super().__init__()
 
 	#Getters
 
