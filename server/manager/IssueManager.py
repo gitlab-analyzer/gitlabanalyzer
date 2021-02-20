@@ -1,5 +1,5 @@
 from typing import Union, Optional, List, Tuple
-from server.model.Issue import Issue
+from model.Issue import Issue
 from datetime import datetime
 from dateutil import parser
 

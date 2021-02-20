@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
-import LoginBar from '../components/LoginBar';
-import SearchBar from '../components/SearchBar';
+import LoginBar from '../components/login/LoginBar';
+import SearchBar from '../components/login/SearchBar';
 import { useAuth } from '../context/AuthContext';
 import { Alert, Layout, Spin } from 'antd';
-import Repo from '../components/Repo';
+import Repo from '../components/login/Repo';
 
 const { Content } = Layout;
 

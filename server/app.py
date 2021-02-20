@@ -81,6 +81,7 @@ def set_project():
     global gitlabProjectInterface
     projectID = request.args.get('projectID', default=None, type=int)
     gitlabProjectInterface.set_project(projectID=projectID)
+    return jsonify({"response": "ok"})
 
 
 @app.route('/getProjectOverview', methods=['get'])

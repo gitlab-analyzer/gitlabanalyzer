@@ -1,7 +1,8 @@
+from model.DataObject import DataObject
 from typing import Union, Optional, List, Tuple
 from gitlab.v4.objects import Project as gl_Project
 
-class Project:
+class Project(DataObject):
     """
         attributes:
             project_id -> int
@@ -56,11 +57,8 @@ class Project:
         # self.__branches_list: List[int]
         # self.__members_list: List[int]
 
-    def to_json(self) -> str:
-        return self.__dict__.__str__().replace("_Project__", "").replace("'", "\"")
-        
-    def __str__(self) -> str:
-        return self.__dict__.__str__()
+        # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
+        super().__init__()
 
     # Getters
     @property

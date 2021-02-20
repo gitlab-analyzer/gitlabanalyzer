@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
 import { Input } from 'antd';
 import useStyles from './BarStyles';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const { Search } = Input;
