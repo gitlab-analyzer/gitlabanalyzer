@@ -3,7 +3,7 @@ import { Button, Input, Tooltip, Select } from 'antd';
 import { InfoCircleOutlined, GitlabOutlined } from '@ant-design/icons';
 import useStyles from './BarStyles';
 import './SearchBar.css';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const { Option } = Select;

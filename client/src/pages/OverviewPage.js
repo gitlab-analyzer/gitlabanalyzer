@@ -1,17 +1,14 @@
 import React, {useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography'
-import StackedBar from './StackedBarGraph'
-import Heatmap from './Heatmap'
-import GraphDropdown from './GraphDropdown'
+import StackedBar from '../components/overview/StackedBarGraph'
+import Heatmap from '../components/overview/Heatmap'
 import { Menu, Dropdown, Button } from 'antd';
 import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
 
 
-{/* could probably move some of this stuff into other components */}
+/* could probably move some of this stuff into other components */
 
 const useStyles = makeStyles((theme) =>({
     root: {
@@ -20,17 +17,9 @@ const useStyles = makeStyles((theme) =>({
     grid: {
       width: '100%',
       margin:'0px',
-      backgroundColor: '#E4E8EF',
       padding: 25,
       textAlign: 'left',
-    },
-    paper: {
-      padding: theme.spacing(4),
-      textAlign: 'left',
-      height: '90%',
-      border: '',
-      backgroundColor: '#E4E8EF',
-    },
+    }
   }));
 
 const Overview = () => {
@@ -44,83 +33,152 @@ const Overview = () => {
                     [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
                     [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
                     [21, 7, 25, 13, 22, 8, 0, 30, 10, 10],
+                    [44, 55, 41, 67, 22, 43, 0, 30, 10, 10], 
+                    [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
+                    [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
+                    [21, 7, 25, 13, 22, 8, 0, 30, 10, 10]
                    ];
 
     const [series, setSeries] = useState([{
-      name: '@user1',
+      name: '@bfraser',
       data: data[0]
     }, {
-      name: '@user2',
+      name: '@khangura',
       data: data[1]
     }, {
-      name: '@user3',
+      name: '@gbaker',
       data: data[2]
     }, {
-      name: '@user4',
+      name: '@afraser',
       data: data[3]
-    }])
+    }, {
+      name: '@cfraser',
+      data: data[0]
+    }, {
+      name: '@dfraser',
+      data: data[1]
+    }, {
+      name: '@efraser',
+      data: data[2]
+    }, {
+      name: '@ffraser',
+      data: data[3]
+    }
+    ])
 
     const handleMenuClick = (e) => {
       console.log('Key test:', e);
       if(e.key === "commits") {
         setMenuSelection("Commits")
         setSeries([{
-          name: '@user1',
+          name: '@bfraser',
           data: data[0]
         }, {
-          name: '@user2',
+          name: '@khangura',
           data: data[1]
         }, {
-          name: '@user3',
+          name: '@gbaker',
           data: data[2]
         }, {
-          name: '@user4',
+          name: '@afraser',
           data: data[3]
-        }])
+        }, {
+          name: '@cfraser',
+          data: data[0]
+        }, {
+          name: '@dfraser',
+          data: data[1]
+        }, {
+          name: '@efraser',
+          data: data[2]
+        }, {
+          name: '@ffraser',
+          data: data[3]
+        }
+        ])
       } else if (e.key === "mergereqs") {
         setMenuSelection("Merge Reqs")
         setSeries([{
-          name: '@user1',
+          name: '@bfraser',
+          data: data[6]
+        }, {
+          name: '@khangura',
           data: data[3]
         }, {
-          name: '@user2',
-          data: data[2]
-        }, {
-          name: '@user3',
+          name: '@gbaker',
           data: data[1]
         }, {
-          name: '@user4',
+          name: '@afraser',
+          data: data[4]
+        }, {
+          name: '@cfraser',
+          data: data[5]
+        }, {
+          name: '@dfraser',
           data: data[0]
-        }])
+        }, {
+          name: '@efraser',
+          data: data[1]
+        }, {
+          name: '@ffraser',
+          data: data[3]
+        }
+        ])
       } else if (e.key ==="issues") {
         setMenuSelection("Issues")
         setSeries([{
-          name: '@user1',
-          data: data[4]
+          name: '@bfraser',
+          data: data[3]
         }, {
-          name: '@user2',
-          data: data[4]
+          name: '@khangura',
+          data: data[5]
         }, {
-          name: '@user3',
+          name: '@gbaker',
+          data: data[3]
+        }, {
+          name: '@afraser',
+          data: data[2]
+        }, {
+          name: '@cfraser',
           data: data[1]
         }, {
-          name: '@user4',
+          name: '@dfraser',
+          data: data[6]
+        }, {
+          name: '@efraser',
+          data: data[3]
+        }, {
+          name: '@ffraser',
           data: data[2]
-        }])
+        }
+        ])
       } else {
         setSeries([{
-          name: '@user1',
-          data: data[2]
-        }, {
-          name: '@user2',
+          name: '@bfraser',
           data: data[1]
         }, {
-          name: '@user3',
-          data: data[0]
+          name: '@khangura',
+          data: data[1]
         }, {
-          name: '@user4',
+          name: '@gbaker',
           data: data[3]
-        }])
+        }, {
+          name: '@afraser',
+          data: data[3]
+        }, {
+          name: '@cfraser',
+          data: data[3]
+        }, {
+          name: '@dfraser',
+          data: data[5]
+        }, {
+          name: '@efraser',
+          data: data[5]
+        }, {
+          name: '@ffraser',
+          data: data[6]
+        }
+        ])
         setMenuSelection("Reviews")
       }
  
@@ -151,13 +209,11 @@ const Overview = () => {
               </Dropdown>
             </Grid>
             <Grid item xs={12}>                    
-                        <b>x Lifetime Contributions</b>
+                        <b>x Contributions This Year</b>
             </Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={8}>
+            <Grid item xs={12}>
                         <Heatmap />
             </Grid>
-            <Grid item xs={2}></Grid>
             <Grid item xs={12}>
                         <b>Top 10 Merge Requests and Commits</b>
                         <ol>

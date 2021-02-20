@@ -3,7 +3,7 @@ import React from 'react'
 const Table = () => {
     return (
         <div>
-            <h1>This is the table page</h1>
+            <h1>Issues and Reviews table here</h1>
         </div>
     )
 }
