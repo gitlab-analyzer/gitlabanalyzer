@@ -1,9 +1,8 @@
-job:
-    tags:
-    - CMPT373
-
 stages:
     - build
+
+tags:
+    - CMPT373
 
 build:
     stage: build
