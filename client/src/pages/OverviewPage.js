@@ -34,83 +34,152 @@ const Overview = () => {
                     [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
                     [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
                     [21, 7, 25, 13, 22, 8, 0, 30, 10, 10],
+                    [44, 55, 41, 67, 22, 43, 0, 30, 10, 10], 
+                    [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
+                    [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
+                    [21, 7, 25, 13, 22, 8, 0, 30, 10, 10]
                    ];
 
     const [series, setSeries] = useState([{
-      name: '@user1',
+      name: '@bfraser',
       data: data[0]
     }, {
-      name: '@user2',
+      name: '@khangura',
       data: data[1]
     }, {
-      name: '@user3',
+      name: '@gbaker',
       data: data[2]
     }, {
-      name: '@user4',
+      name: '@afraser',
       data: data[3]
-    }])
+    }, {
+      name: '@cfraser',
+      data: data[0]
+    }, {
+      name: '@dfraser',
+      data: data[1]
+    }, {
+      name: '@efraser',
+      data: data[2]
+    }, {
+      name: '@ffraser',
+      data: data[3]
+    }
+    ])
 
     const handleMenuClick = (e) => {
       console.log('Key test:', e);
       if(e.key === "commits") {
         setMenuSelection("Commits")
         setSeries([{
-          name: '@user1',
+          name: '@bfraser',
           data: data[0]
         }, {
-          name: '@user2',
+          name: '@khangura',
           data: data[1]
         }, {
-          name: '@user3',
+          name: '@gbaker',
           data: data[2]
         }, {
-          name: '@user4',
+          name: '@afraser',
           data: data[3]
-        }])
+        }, {
+          name: '@cfraser',
+          data: data[0]
+        }, {
+          name: '@dfraser',
+          data: data[1]
+        }, {
+          name: '@efraser',
+          data: data[2]
+        }, {
+          name: '@ffraser',
+          data: data[3]
+        }
+        ])
       } else if (e.key === "mergereqs") {
         setMenuSelection("Merge Reqs")
         setSeries([{
-          name: '@user1',
+          name: '@bfraser',
+          data: data[6]
+        }, {
+          name: '@khangura',
           data: data[3]
         }, {
-          name: '@user2',
-          data: data[2]
-        }, {
-          name: '@user3',
+          name: '@gbaker',
           data: data[1]
         }, {
-          name: '@user4',
+          name: '@afraser',
+          data: data[4]
+        }, {
+          name: '@cfraser',
+          data: data[5]
+        }, {
+          name: '@dfraser',
           data: data[0]
-        }])
+        }, {
+          name: '@efraser',
+          data: data[1]
+        }, {
+          name: '@ffraser',
+          data: data[3]
+        }
+        ])
       } else if (e.key ==="issues") {
         setMenuSelection("Issues")
         setSeries([{
-          name: '@user1',
-          data: data[4]
+          name: '@bfraser',
+          data: data[3]
         }, {
-          name: '@user2',
-          data: data[4]
+          name: '@khangura',
+          data: data[5]
         }, {
-          name: '@user3',
+          name: '@gbaker',
+          data: data[3]
+        }, {
+          name: '@afraser',
+          data: data[2]
+        }, {
+          name: '@cfraser',
           data: data[1]
         }, {
-          name: '@user4',
+          name: '@dfraser',
+          data: data[6]
+        }, {
+          name: '@efraser',
+          data: data[3]
+        }, {
+          name: '@ffraser',
           data: data[2]
-        }])
+        }
+        ])
       } else {
         setSeries([{
-          name: '@user1',
-          data: data[2]
-        }, {
-          name: '@user2',
+          name: '@bfraser',
           data: data[1]
         }, {
-          name: '@user3',
-          data: data[0]
+          name: '@khangura',
+          data: data[1]
         }, {
-          name: '@user4',
+          name: '@gbaker',
           data: data[3]
-        }])
+        }, {
+          name: '@afraser',
+          data: data[3]
+        }, {
+          name: '@cfraser',
+          data: data[3]
+        }, {
+          name: '@dfraser',
+          data: data[5]
+        }, {
+          name: '@efraser',
+          data: data[5]
+        }, {
+          name: '@ffraser',
+          data: data[6]
+        }
+        ])
         setMenuSelection("Reviews")
       }
  
