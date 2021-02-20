@@ -1,3 +1,4 @@
+import json
 from typing import Union, Optional, List
 from model.Commit import *
 import gitlab
@@ -11,6 +12,12 @@ class CommitManager:
 
     def getCommitList(self) -> list:
         return self.__commitList
+
+    def get_commit_list_json(self):
+        strBody = []
+        for commit in self.__commitList:
+            strBody.append(commit.to_json())
+        return str(strBody)
 
     def add_commit(self, commit: gitlab) -> None:
         self.__commitList.append(Commit(commit))

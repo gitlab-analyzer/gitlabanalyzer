@@ -1,12 +1,14 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import FloatBar from './floatbar/FloatBar';
 import Logo from './Logo';
 
 const Header = () => {
   return (
     <div>
       <Logo />
+      <FloatBar />
       <Navbar bg="light" expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

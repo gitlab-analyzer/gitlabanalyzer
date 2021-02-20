@@ -1,7 +1,7 @@
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/login/SearchBar';
 import { useAuth } from '../context/AuthContext';
 
 function SearchPage() {

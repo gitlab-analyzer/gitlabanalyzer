@@ -1,8 +1,9 @@
+from model.DataObject import DataObject
 from typing import Optional, List
 import gitlab
 import re
 
-class MergeRequest:
+class MergeRequest(DataObject):
     def __init__(self, mr: gitlab) -> None:
         self.__id = int = mr.id
         self.__iid: int = mr.iid
@@ -21,6 +22,8 @@ class MergeRequest:
         self.__merged_date: Optional[str] = mr.merged_at
         self.__comments: Optional[List[str]] = None
 
+        # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
+        super().__init__()
 
     def parseRelatedIssueIID(self, description) -> int: 
         substring = "Closes #"
@@ -31,12 +34,6 @@ class MergeRequest:
                 return int(iid)
             return None #there is no related issue for this merge request
         return None
-
-    def to_json(self) -> str:
-        return self.__dict__.__str__().replace("_MergeRequest__", "").replace("'", '"')
-
-    def __str__(self) -> str:
-        return str(self.__dict__)
 
     # Getters
 
