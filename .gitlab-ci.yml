@@ -1,9 +1,6 @@
 stages:
     - build
 
-tags:
-    - CMPT373
-
 build:
     stage: build
     script:
