@@ -10,17 +10,18 @@ class CommitManager:
     def __init__(self) -> None:
         self.__commitList: List[Commit] = []
 
-    def getCommitList(self) -> list:
+    def get_commit_list(self) -> list:
         return self.__commitList
 
     def get_commit_list_json(self):
-        strBody = []
+        myList = []
         for commit in self.__commitList:
-            strBody.append(commit.to_json())
-        return str(strBody)
+            myList.append(commit.to_dict())
+        return myList
 
     def add_commit(self, commit: gitlab) -> None:
-        self.__commitList.append(Commit(commit))
+        test = Commit(commit)
+        self.__commitList.append(test)
 
     def get_commit_by_id(self, ID) -> Union[Commit, None]:
         for commit in self.__commitList:
