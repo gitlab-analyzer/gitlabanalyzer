@@ -1,10 +1,11 @@
 import json
 
+
 class DataObject:
     def __init__(self) -> None:
         self.__thisDict = {}
 
-        classIdSubstr = "{}__".format(self.__class__.__name__)
+        classIdSubstr = "_{}__".format(self.__class__.__name__)
         for key, value in self.__dict__.items():
             if key != '_DataObject__thisDict':
                 newKey = key.replace(classIdSubstr, "")

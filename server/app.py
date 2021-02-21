@@ -16,18 +16,17 @@ gitlabProjectInterface: [GitlabProject] = GitlabProject(None)
 
 @app.route('/')
 def index():
-    username = urllib.parse.quote_plus('root')
-    password = urllib.parse.quote_plus('pass')
-    myClient = pymongo.MongoClient(
-        "mongodb://%s:%s@mangodb:27017/" % (username, password))
-    myDB = myClient["student_repo"]
-    myCol = myDB["students"]
-
-    myCol.insert_one({"name": "John", "repoInfo": "this is a test"})
-
-    print(myDB.list_collection_names(), flush=True)
-    print(myCol.find_one(), flush=True)
-
+    # username = urllib.parse.quote_plus('root')
+    # password = urllib.parse.quote_plus('pass')
+    # myClient = pymongo.MongoClient(
+    #     "mongodb://%s:%s@mangodb:27017/" % (username, password))
+    # myDB = myClient["student_repo"]
+    # myCol = myDB["students"]
+    #
+    # myCol.insert_one({"name": "John", "repoInfo": "this is a test"})
+    #
+    # print(myDB.list_collection_names(), flush=True)
+    # print(myCol.find_one(), flush=True)
     return "Hello World from index"
 
 
@@ -101,34 +100,29 @@ def get_project_overview():
         )
     # TODO: The format of this response need to be changed
     # print({"users": memberObjectList})
+    memberObjectList = get_test_data()["get_project_overview"]["users"]
     return jsonify({"users": memberObjectList})
 
 
 @app.route('/getCommits', methods=['get'])
 def get_commits():
     global gitlabProjectInterface
-    commitList: str = gitlabProjectInterface.commits_manager.get_commit_list_json()
-    print(commitList)
-    return jsonify(commitList)
+    commitList: list = gitlabProjectInterface.commits_manager.get_commit_list_json()
+    return jsonify({"commit_list": json.loads(json.dumps(commitList))})
 
 
 @app.route('/getMergeRequests', methods=['get'])
 def get_merge_request():
     global gitlabProjectInterface
     mergeRequestList: list = gitlabProjectInterface.merge_request_manager.merge_request_list
-    return jsonify(mergeRequestList)
+    return jsonify({"merge_request_list": mergeRequestList})
+
+
+# This function should only be used
+def get_test_data() -> json:
+    return json.load(open('test_data.json'))
 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5678)
 
-
-# Testing only
-# with app.app_context():
-#     gl = GitLab(token='7shVgQ7M1o9gKZMZbCCh', url='https://csil-git1.cs.surrey.sfu.ca/')
-#     print(gl.authenticate())
-#     gitlabProjectInterface = GitlabProject(gl)
-#     pList = gitlabProjectInterface.project_list
-#     gitlabProjectInterface.set_project(25515)
-#     get_project_overview()
-#     get_commits()
