@@ -8,12 +8,10 @@ import { useAuth } from '../context/AuthContext';
 import './CommitsPage.css';
 
 const CommitPage = () => {
-  const { commitsList, setCommitsList } = useAuth();
   const [userNames, setUserNames] = useState([]);
   const { selectUser, setSelectUser } = useAuth();
 
   useEffect(() => {
-    console.log(commitsList);
     const loadFakeData = async () => {
       const load = await fetchNames();
       setUserNames(['everyone', ...load]);

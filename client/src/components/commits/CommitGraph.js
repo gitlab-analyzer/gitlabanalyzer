@@ -36,7 +36,7 @@ class CommitGraph extends Component {
 
       series: [
         {
-          name: 'Bob',
+          name: 'schan',
           data: [
             {
               x: 'Design',
@@ -90,7 +90,7 @@ class CommitGraph extends Component {
           ],
         },
         {
-          name: 'Joe',
+          name: 'jwayne',
           data: [
             {
               x: 'Design',
@@ -130,7 +130,7 @@ class CommitGraph extends Component {
           ],
         },
         {
-          name: 'Dan',
+          name: 'swilliams',
           data: [
             {
               x: 'Code',

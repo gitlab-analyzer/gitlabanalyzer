@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { Button, Checkbox, List, Avatar } from 'antd';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
 const Repo = ({ repo, setAnalyzing }) => {
-  const { overview, setOverview, commitsList, setCommitsList } = useAuth();
+  const { setOverview, setCommitsList } = useAuth();
   const [redirect, setRedirect] = useState(false);
 
   const repoList = [
@@ -50,7 +49,7 @@ const Repo = ({ repo, setAnalyzing }) => {
         setCommitsList(
           commitsArray.map((commit) => ({
             authorName: commit.author_name,
-            commitedDate: new Date(commit.commited_date),
+            commitedDate: new Date(commit.committed_date),
             committerName: commit.committer_name,
             id: commit.id,
             title: commit.title,
@@ -95,7 +94,7 @@ const Repo = ({ repo, setAnalyzing }) => {
                   src="https://cdn4.iconfinder.com/data/icons/logos-and-brands-1/512/144_Gitlab_logo_logos-512.png"
                 />
               }
-              title={<a href="http://localhost:6789/overview">{item}</a>}
+              title={item}
               description="Web app for GitLab Analyzer"
             />
           </List.Item>

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-// import './index.css';
 import { Popover, Checkbox, List, Avatar, Button, Skeleton } from 'antd';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
 
 // Used boilerplate from https://ant.design/components/list/
-
 const CommitBar = ({ username }) => {
   const [commits, setCommits] = useState([]);
   const [hover, setHover] = useState({ visible: false });
@@ -63,17 +61,17 @@ const CommitBar = ({ username }) => {
             <Button size="small" type="primary">
               code
             </Button>,
-            <Popover
-              content={<a onClick={hide}>Close</a>}
-              title="Title"
-              trigger="click"
-              visible={hover.visible}
-              onVisibleChange={handleVisibleChange}
-            >
-              <Button ghost size="small" type="primary">
-                details
-              </Button>
-            </Popover>,
+            // <Popover
+            //   content={<a onClick={hide}>Close</a>}
+            //   title="Title"
+            //   trigger="click"
+            //   visible={hover.visible}
+            //   onVisibleChange={handleVisibleChange}
+            // >
+            <Button ghost size="small" type="primary">
+              details
+            </Button>,
+            // </Popover>,
             <Checkbox>ignore</Checkbox>,
           ]}
         >

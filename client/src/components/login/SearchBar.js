@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
 import { Input } from 'antd';
-import useStyles from './BarStyles';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
@@ -12,13 +11,11 @@ const SearchBarComp = ({ setLoading }) => {
   const [reList, setReList] = useState([]);
 
   const { user, repo, setRepo } = useAuth();
-  const classes = useStyles();
 
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
       const repoList = await axios.get('http://localhost:5678/getProjectList');
-      console.log(repoList);
       setRepo(repoList.data.value);
       setReList([
         repoList.data.value,
