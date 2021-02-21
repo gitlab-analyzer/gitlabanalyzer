@@ -16,7 +16,7 @@ const SearchBarComp = () => {
 
   useEffect(() => {
     const getRepos = async () => {
-      const repoList = await axios.get('http://localhost:5000/getProjectList');
+      const repoList = await axios.get('http://localhost:5678/getProjectList');
       console.log(repoList);
       setRepo(repoList.data.value);
       setReList([

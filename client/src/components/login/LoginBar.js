@@ -64,7 +64,7 @@ const LoginBar = () => {
     bodyFormData.append('url', fullUrl);
     const response = await axios({
       method: 'post',
-      url: 'http://localhost:5000/auth',
+      url: 'http://localhost:5678/auth',
       data: bodyFormData,
       headers: { 'Content-Type': 'multipart/form-data' },
     });

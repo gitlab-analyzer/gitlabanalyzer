@@ -42,7 +42,7 @@ const Repo = ({ repo }) => {
                   src="https://cdn4.iconfinder.com/data/icons/logos-and-brands-1/512/144_Gitlab_logo_logos-512.png"
                 />
               }
-              title={<a href="http://localhost:5050/overview">{item}</a>}
+              title={<a href="http://localhost:5678/overview">{item}</a>}
               description="Web app for GitLab Analyzer"
             />
           </List.Item>
