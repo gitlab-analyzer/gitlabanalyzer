@@ -1,12 +1,11 @@
 import React from "react";
-import "./FloatBar.css";
-
 import Data from './FloatBarData.json'
-
 import HorizontalScroll from './Scroll'
+import "./EveryoneScore.css";
+
 var FloatBarData = Data.users;
 
-
+const usercolours = ["#b0911d", "#1d2cb0", "#1db084", "#0091e3", "#489850", "#bb4824", "#a34d9a", "#ab3ca6"];
 function EveryoneScore() {
     const scrollRef = HorizontalScroll();
 
@@ -14,7 +13,7 @@ function EveryoneScore() {
         <div className="floatbar-mid-container">
             <div className="floatbar-labels">
                 <div className="rawscore-label">
-                    raw score
+                    weighted score
                 </div>
                 <div className="remaining-labels">
                     <div>commits</div>
@@ -23,26 +22,22 @@ function EveryoneScore() {
                 </div>
             </div>
             <div className="floatbar-scores" ref={scrollRef}>
-                {/* everyonescore */}
-                <div className="data2" >
+                <div className="floatbar-map-container" >
                     {FloatBarData.map((Detail, index) => {
                         return (
-                            <div className="data">
-                                <div className= "user">@{Detail.username}</div>
+                            <div className="score-array">
+                                <div className= "user" style={{color: usercolours[index]}}>@{Detail.username}</div>
                                 <div className="userscore">{Detail.score}</div>
                                 <div className="userscore_details">
                                     <div>{Detail.number_commits}</div>
                                     <div>{Detail.lines_of_code}</div>
                                     <div>{Detail.number_issues}</div>
                                 </div>
-                            </div>
-                            
+                            </div>                            
                         );
                     })}
                 </div>            
             </div>
-
-
         </div>
     );
 }

@@ -1,57 +1,56 @@
 import React from "react";
-import Data from './FloatBarData.json'
+import { Progress } from 'antd';
+import Data from './FloatBarData.json';
+import './IndividualScore.css';
 
 var FloatBarData = Data.users;
 
-function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-}
-
-export default function IndividualScore(props) {
-    let userkey = props.children;
-    var useruser = FloatBarData.userkey;
+function IndividualScore(props) {
     return (
        <div>
-            {FloatBarData.map((Detail, index) => {
+            {FloatBarData.map((Detail) => {
                 if (Detail.username === props.children){
                     <div>{Detail.username}</div>
                     return (
-                        <div className="individualscore">
-                            {/* <div>{Detail.username}</div> */}
-                            <div className="smallscore">
-                                <div className="numberscore">{Detail.score}</div>
-                                <div className="scoretext">raw score</div>
+                        <div className="score-container">
+                            <div className="rank">rank #</div>
+                            <div className="individualscore">
+                                {/* <div>{Detail.username}</div> */}
+                                <div className="smallscore">
+                                    <div className="numberscore">{Detail.score}</div>
+                                    <div className="scoretext">weighted score</div>
+                                    <div className="progressbar">
+                                        <Progress percent={Detail.score%100} size="small" status="active" strokeColor="#00ABFF"/>
+                                    </div>
+                                </div>
+                                <div className="smallscore">
+                                    <div className="numberscore">{Detail.number_commits}</div>
+                                    <div className="scoretext">commits</div>
+                                    <div className="progressbar">
+                                        <Progress percent={Detail.number_commits%100} size="small" status="active" strokeColor="#85D6FE"/>
+                                    </div>
+                                </div>
+                                <div className="smallscore">
+                                    <div className="numberscore">{Detail.lines_of_code}</div>
+                                    <div className="scoretext">lines of code</div>
+                                    <div className="progressbar">
+                                        <Progress percent={Detail.lines_of_code%100} size="small" status="active" strokeColor="#85D6FE"/>
+                                    </div>
+                                </div>
+                                <div className="smallscore">
+                                    <div className="numberscore">{Detail.number_issues}</div>
+                                    <div className="scoretext">issues & reviews</div>
+                                    <div className="progressbar">
+                                        <Progress percent={Detail.number_issues%100} size="small" status="active" strokeColor="#85D6FE"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="smallscore">
-                                <div className="numberscore">{Detail.number_commits}</div>
-                                <div className="scoretext">commits</div>
-                               </div>
-                            <div className="smallscore">
-                                <div className="numberscore">{Detail.lines_of_code}</div>
-                                <div className="scoretext">lines of code</div>
-                            </div>
-                            <div className="smallscore">
-                                <div className="numberscore">{Detail.number_issues}</div>
-                                <div className="scoretext">issues & reviews</div>
-                            </div>
-                        </div>
-                        
+                        </div>                        
                     );
                 }
-                // return (
-                //     <div className="data">
-                //         <div className= "user">@{Detail.username}</div>
-                //         <div className="userscore">{Detail.score}</div>
-                //         <div className="userscore_details">
-                //             <div>{Detail.number_commits}</div>
-                //             <div>{Detail.lines_of_code}</div>
-                //             <div>{Detail.number_issues}</div>
-                //         </div>
-                //     </div>
-                    
-                // );
             })}
-            <div>{getKeyByValue(FloatBarData, userkey)}</div>
         </div>
     );
 }
+
+export default IndividualScore;

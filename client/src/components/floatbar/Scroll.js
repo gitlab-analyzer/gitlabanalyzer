@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 
-export default function HorizontalScroll() {
+// Reference from https://stackoverflow.com/questions/56153797/horizontal-scrolling-on-react-component-using-vertical-mouse-wheel
+function HorizontalScroll() {
     const pRef = useRef();
 
     useEffect(() => {
@@ -18,6 +19,8 @@ export default function HorizontalScroll() {
             pos.addEventListener("wheel", onWheel);
             return () => pos.removeEventListener("wheel", onWheel);
         }
-    });
+    }, []);
     return pRef;
 }
+
+export default HorizontalScroll;

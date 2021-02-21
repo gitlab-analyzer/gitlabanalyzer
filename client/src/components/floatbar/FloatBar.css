@@ -1,84 +1,13 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap'); */
-
 * {
   box-sizing: border-box;
 }
 
-/* body {
-  font-family: 'Lato', sans-serif;
-} */
-.floatbar-labels,
-.floatbar-scores {
-  /* width: 100%; */
-  height: 170px;
-  /* height: auto; */
-}
-
-.floatbar-labels {
-  list-style-type: none;  
-  
-  /* background-color: red; */
-  color: black;
-  font-size: 14px;
-  text-align: right;
-  padding-top: 45px;
-  padding-right: 10px;
-  /* width: 270px; */
-  width: 150px;
-  /* line-height: 170%; */
-  border-radius: 10px 0px 0px 10px;
-
-}
-.rawscore-label {
-  line-height: 30px;
-}
-.remaining-labels {
-  line-height: 27px;
-}
-
-
-.floatbar-scores{
-  /* background-color: #E4E8EF; */  
-  /* background-color: antiquewhite; */
-  display: flex;
-  padding-left: 10px;
-  padding-top: 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  will-change: transform;  
-}
-
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: rgb(233, 238, 243);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-  background: #c8cbd4;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #9ea0a7;
-}
-/* .floatbar-container .floatbar-functions {
-  width: auto;
-} */
 .floatbar-functions {
-  /* background-color: #9aa0ac; */
-  /* position: absolute; */
   float: right;
   right: auto;
   width: 300px;
   padding-right: 20px;
-  border-radius: 0px 10px 10px 0px;
-  /* align-content: center; */
-  /* background-color: blue; */
-  
+  border-radius: 0px 10px 10px 0px;  
 }
 
 .floatbar-container {
@@ -86,17 +15,7 @@
   align-items: center;  
   vertical-align: middle;
   height: 170px;
-  /* background-color: #efefef; */
-  background-color: #eaf1f8;
-
-  /* MAYBE USE #f9fbfd FOR NAVBAR */
-  
-}
-
-.floatbar-mid-container {
-  display: flex;
-  height: 170px;
-  /* background-color: grey; */
+  background-color: #ecf2f5;  
 }
 
 .floatbaralign {
@@ -105,142 +24,4 @@
 }
 .daterange {
   display: flex;
-}
-
-
-.selectuser {
-  box-shadow: none;
-  background: none;
-  border:#E4E8EF;
-  border-color: white;
-  background-color: transparent;
-  border-width: 2px;
-  
-  border-radius: 10px;
-  border: none;
-  width: 150px;
-  /* font-family: 'Lato', sans-serif im !important; */
-}
-
-
-.selectuser .MuiOutlinedInput-root{
-  
-  border-radius: 10px;
-  box-shadow: none;
-  border-color: black;
-  background-color: #4A4F68;
-  color: white;
-  border: none;
-} 
-
-/* .copybutton {
-  border-radius: 10px;
-  background-color: transparent;
-  border: 2px solid #4A4F68;
-  width: 150px;
-  cursor: pointer;
-  text-transform: none;
-  font-family: 'Lato', sans-serif;
-}
-
-
-.copybutton .copyicon {
-
-  margin-left: 40%;
-  transform: scale(0.8);
-  color: #4A4F68;
-}  */
-
-.startdate {
-  color: #ffff;
-  background-color: #4A4F68;
-  border-radius: 10px 0px 0px 10px;
-}
-
-.enddate {
-  background-color: #ffff;
-  border-radius: 0px 10px 10px 0px;
-}
-
-.startdate,
-.enddate {
-  height: 35px;
-  line-height: 35px;  
-  width: 120px;
-  text-align: center;
-}
-.data {
-  padding-right: 50px;
-}
-.data2 {
-  display: flex;
-  flex-direction: row;  
-  text-align: right;
-  padding-top: 5px;
-
-}
-.user {
-  font-size: 15px;
-  text-align: right;
-}
-
-.userscore {
-  font-size: 25px;
-}
-.userscore_details {
-  font-size: 23px;
-  color: #6E7590;
-
-}
-
-.userscore,
-.userscore_details {
-  font-weight: bold;
-  line-height: 120%;
-}
-
-/* .listofusers2 {
-  border-radius: 10px;
-}
-.ant-select-selection {
-  background-color: transparent;
-}
-.listofusers2 {
-  background-color: pink;
-} */
-
-/* .ant-btn-primary {
-  background-color: red;
-}
-.ant-select-selection {
-  border-radius: 10px !important;
-  height: 53px;
-}
-.ant-select-selection-item {
-
-  border-radius: 20px;
-} 
-.ant-select-selection {
-  background-color: red;
-} */
-
-.individualscore {
-  width: 100%;
-  margin-left: 40px;
-  display: flex;
-  font-weight: bolder;
-  font-size: 50px;
-  /* align-content: flex-start; */
-}
-
-.smallscore {
-  margin-left: 70px;
-  text-align: left;
-  flex-direction: column;
-}
-.numberscore {
-  margin-bottom: 5px;
-}
-.scoretext {
-  font-size: 15px;
 }
