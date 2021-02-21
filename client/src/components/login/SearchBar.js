@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
 import { Input } from 'antd';
-import useStyles from './BarStyles';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const { Search } = Input;
 
-const SearchBarComp = () => {
+const SearchBarComp = ({ setLoading }) => {
   const [value, setValue] = useState('');
   const [reList, setReList] = useState([]);
 
   const { user, repo, setRepo } = useAuth();
-  const classes = useStyles();
 
   useEffect(() => {
     const getRepos = async () => {
+      setLoading(true);
       const repoList = await axios.get('http://localhost:5678/getProjectList');
-      console.log(repoList);
       setRepo(repoList.data.value);
       setReList([
         repoList.data.value,
@@ -25,6 +23,7 @@ const SearchBarComp = () => {
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',
       ]);
+      setLoading(false);
     };
     getRepos();
   }, [setRepo]);
