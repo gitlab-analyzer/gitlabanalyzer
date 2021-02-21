@@ -13,7 +13,6 @@ class CommitGraph extends Component {
           type: 'rangeBar',
         },
         plotOptions: {
-          
           bar: {
             horizontal: true,
             barHeight: '80%',
@@ -157,7 +156,7 @@ class CommitGraph extends Component {
     return (
       <div className="app">
         <div className="row">
-          <div className="mixed-chart">
+          <div className="mixed-chart" style={{ margin: 'auto' }}>
             <Chart
               options={this.state.options}
               series={this.state.series}
