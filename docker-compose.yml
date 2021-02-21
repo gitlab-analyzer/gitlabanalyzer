@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: flask.Dockerfile
     ports:
-     - "127.0.0.1:5678:5678"
+     - "5678:5678"
     depends_on:
      - "mangodb"
      
@@ -14,7 +14,7 @@ services:
      context: .
      dockerfile: reactjs.Dockerfile
     ports:
-     - "127.0.0.1:6789:6789"
+     - "6789:6789"
     depends_on:
      - "mangodb"
 
