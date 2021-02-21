@@ -3,44 +3,44 @@
       "users":[
          {
             "username":"fanghaof",
-            "number_commits":3,
-            "lines_of_code":19814,
+            "number_commits":213,
+            "lines_of_code":1981,
             "number_issues":45
          },
          {
             "username":"jlguo",
-            "number_commits":15,
-            "lines_of_code":44177,
+            "number_commits":315,
+            "lines_of_code":4417,
             "number_issues":78
          },
          {
             "username":"tkmin",
-            "number_commits":3,
-            "lines_of_code":19814,
+            "number_commits":213,
+            "lines_of_code":1981,
             "number_issues":45
          },
          {
             "username":"andrewe",
-            "number_commits":15,
-            "lines_of_code":44177,
+            "number_commits":315,
+            "lines_of_code":4417,
             "number_issues":78
          },
          {
             "username":"jaddiet",
-            "number_commits":3,
-            "lines_of_code":19814,
+            "number_commits":213,
+            "lines_of_code":1981,
             "number_issues":45
          },
          {
             "username":"jiwonj",
-            "number_commits":15,
-            "lines_of_code":44177,
+            "number_commits":315,
+            "lines_of_code":4417,
             "number_issues":78
          },
          {
             "username":"xtran",
-            "number_commits":3,
-            "lines_of_code":19814,
+            "number_commits":213,
+            "lines_of_code":1981,
             "number_issues":45
          }
       ]
