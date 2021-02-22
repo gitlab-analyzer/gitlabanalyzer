@@ -33,7 +33,7 @@ const LoginBar = () => {
           console.log('Log in Successful');
           setIncorrect(false);
           setUser(userInfo.data['username']);
-          localStorage.setItem('user', userInfo.data['username']);
+          sessionStorage.setItem('user', userInfo.data['username']);
         } else {
           setLoading(false);
           console.log('Incorrect token');

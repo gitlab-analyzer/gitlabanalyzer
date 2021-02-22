@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
@@ -8,6 +8,9 @@ import Data from './FloatBarData.json';
 import moment from 'moment';
 import "./FloatBar.css";
 
+import { useAuth } from '../../context/AuthContext.js';
+
+
 var FloatBarData = Data.users;
 
 const { Option } = Select;
@@ -15,13 +18,14 @@ const { RangePicker } = DatePicker;
 const iter1 = ["2021-01-18", "2021-02-22"];
 const iter2 = ["2021-02-23", "2021-03-29"];
 const iter3 = ["2021-03-30", "2021-04-26"];
-
 function FloatBar() {
-  const [user, setUser] = React.useState("everyone");
+  const { overview, setOverview } = useAuth();
 
+  const [user, setUser] = React.useState('everyone');
+  console.log(overview)
   function handleChange(value) {
     setUser(value);
-  };
+  }
 
   return (
     <div className="floatbar-container">
