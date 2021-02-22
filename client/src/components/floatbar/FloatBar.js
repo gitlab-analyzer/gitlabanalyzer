@@ -5,16 +5,20 @@ import { CopyOutlined } from '@ant-design/icons';
 import IndividualScore from './IndividualScore.js';
 import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
-import './FloatBar.css';
+import moment from 'moment';
+import "./FloatBar.css";
 
 var FloatBarData = Data.users;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-
+const iter1 = ["2021-01-18", "2021-02-22"];
+const iter2 = ["2021-02-23", "2021-03-29"];
+const iter3 = ["2021-03-30", "2021-04-26"];
 function FloatBar() {
-  const [user, setUser] = React.useState('everyone');
 
+
+  const [user, setUser] = React.useState('everyone');
   function handleChange(value) {
     setUser(value);
   }
@@ -22,15 +26,12 @@ function FloatBar() {
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
-        {(user && user === 'everyone' && (
-          <div>
-            <EveryoneScore />
-          </div>
-        )) || (
-          <div>
-            <IndividualScore>{user}</IndividualScore>
-          </div>
-        )}
+        {(user && user === "everyone" &&
+          <div><EveryoneScore /></div>
+        ) || (
+            <div><IndividualScore>{user}</IndividualScore></div>
+          )
+        }
       </div>
       <div className="floatbar-functions">
         <Grid
@@ -42,27 +43,29 @@ function FloatBar() {
         >
           <Grid item xs={12}>
             <div className="daterange">
-              <RangePicker />
+              <RangePicker 
+                defaultValue={[null, moment()]}
+                ranges={{
+                  Today: [moment(), moment()],
+                  'Iteration 1': [moment(iter1[0]), moment(iter1[1])],
+                  'Iteration 2': [moment(iter2[0]), moment(iter2[1])],
+                  'Iteration 3': [moment(iter3[0]), moment(iter3[1])],
+                }}
+              />
             </div>
           </Grid>
           <Grid item xs={12}>
-            <div className="listofusers2">
-              <Select
-                defaultValue="everyone"
-                style={{ width: 150 }}
-                onChange={handleChange}
-              >
+            <div className="selectUser">
+              <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
                 <Option value="everyone">@everyone</Option>
                 {FloatBarData.map((Detail) => {
-                  return (
-                    <Option value={Detail.username}>@{Detail.username}</Option>
-                  );
+                  return <Option value={Detail.username}>@{Detail.username}</Option>
                 })}
               </Select>
             </div>
           </Grid>
           <Grid item xs={12}>
-            <Button className="copybtn" style={{ width: 150 }}>
+            <Button style={{ width: 150 }}>
               Copy
               <CopyOutlined className="copyicon" />
             </Button>
