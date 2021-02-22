@@ -42,6 +42,7 @@ const LoginBar = () => {
           setUser(userInfo.data['username']);
           sessionStorage.setItem('user', userInfo.data['username']);
         } else {
+          console.log(userInfo);
           setLoading(false);
           console.log('Incorrect token');
           setIncorrect(true);
