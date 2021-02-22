@@ -59,7 +59,7 @@ const CommitBar = ({ username }) => {
         <List.Item
           actions={[
             <Button size="small" type="primary">
-              code
+              commits
             </Button>,
             // <Popover
             //   content={<a onClick={hide}>Close</a>}
