@@ -3,19 +3,24 @@ import './SearchBar.css';
 import { Input } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+require('dotenv').config();
 
 const { Search } = Input;
 
 const SearchBarComp = ({ setLoading }) => {
   const [value, setValue] = useState('');
   const [reList, setReList] = useState([]);
+  const authURL =
+    process.env.NODE_ENV === 'production'
+      ? process.env.REACT_APP_PROD_URL_BACKEND
+      : process.env.REACT_APP_DEV_URL_BACKEND;
 
   const { user, repo, setRepo } = useAuth();
 
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/getProjectList');
+      const repoList = await axios.get(`${authURL}/getProjectList`);
       setRepo(repoList.data.value);
       setReList([
         repoList.data.value,

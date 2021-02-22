@@ -3,10 +3,15 @@ import { Redirect } from 'react-router';
 import { Button, Checkbox, List, Avatar } from 'antd';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+require('dotenv').config();
 
 const Repo = ({ repo, setAnalyzing }) => {
   const { setOverview, setCommitsList } = useAuth();
   const [redirect, setRedirect] = useState(false);
+  const authURL =
+    process.env.NODE_ENV === 'production'
+      ? process.env.REACT_APP_PROD_URL_BACKEND
+      : process.env.REACT_APP_DEV_URL_BACKEND;
 
   const repoList = [
     repo,
@@ -19,7 +24,7 @@ const Repo = ({ repo, setAnalyzing }) => {
     try {
       setAnalyzing(true);
       const projectRes = await axios.post(
-        'http://localhost:5678/setProject',
+        `${authURL}/setProject`,
         {},
         {
           headers: {
@@ -36,13 +41,11 @@ const Repo = ({ repo, setAnalyzing }) => {
         throw new Error('Fetch request failed.');
       }
 
-      const overviewRes = await axios.get(
-        'http://localhost:5678/getProjectOverview'
-      );
+      const overviewRes = await axios.get(`${authURL}/getProjectOverview`);
       if (overviewRes) {
         setOverview(overviewRes.data.users);
       }
-      const commitsRes = await axios.get('http://localhost:5678/getCommits');
+      const commitsRes = await axios.get(`${authURL}/getCommits`);
       if (commitsRes) {
         const commitsArray = commitsRes.data.commit_list;
 
