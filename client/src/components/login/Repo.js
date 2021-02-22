@@ -25,7 +25,7 @@ const Repo = ({ repo, setAnalyzing }) => {
     try {
       setAnalyzing(true);
       const projectRes = await axios.post(
-        `${authURL}/setProject`,
+        `/setProject`,
         {},
         {
           headers: {
@@ -42,11 +42,11 @@ const Repo = ({ repo, setAnalyzing }) => {
         throw new Error('Fetch request failed.');
       }
 
-      const overviewRes = await axios.get(`${authURL}/getProjectOverview`);
+      const overviewRes = await axios.get(`/getProjectOverview`);
       if (overviewRes) {
         setOverview(overviewRes.data.users);
       }
-      const commitsRes = await axios.get(`${authURL}/getCommits`);
+      const commitsRes = await axios.get(`/getCommits`);
       if (commitsRes) {
         const commitsArray = commitsRes.data.commit_list;
 

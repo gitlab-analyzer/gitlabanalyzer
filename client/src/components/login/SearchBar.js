@@ -22,7 +22,7 @@ const SearchBarComp = ({ setLoading }) => {
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get(`${authURL}/getProjectList`);
+      const repoList = await axios.get(`/getProjectList`);
       setRepo(repoList.data.value);
       setReList([
         repoList.data.value,
