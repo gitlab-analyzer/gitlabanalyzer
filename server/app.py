@@ -4,6 +4,7 @@ from random import randint
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import pymongo
+import os
 import urllib.parse
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitlabProject
@@ -12,6 +13,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 gitlabProjectInterface: [GitlabProject] = GitlabProject(None)
+port2 = int(os.environ.get("PORT", 5678))
 
 
 @app.route('/')
@@ -124,5 +126,4 @@ def get_test_data() -> json:
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5678)
-
+    app.run(host='0.0.0.0', port=port2)
