@@ -17,7 +17,7 @@ const Header = () => {
               <Nav.Link>Overview</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/commits">
-              <Nav.Link>Commits & Code</Nav.Link>
+              <Nav.Link>Commits & MRs</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/table">
               <Nav.Link>Issues & Reviews</Nav.Link>
