@@ -10,10 +10,12 @@ const { Search } = Input;
 const SearchBarComp = ({ setLoading }) => {
   const [value, setValue] = useState('');
   const [reList, setReList] = useState([]);
-  const authURL =
-    process.env.NODE_ENV === 'production'
-      ? process.env.REACT_APP_PROD_URL_BACKEND
-      : process.env.REACT_APP_DEV_URL_BACKEND;
+  // const authURL =
+  //   process.env.NODE_ENV === 'production'
+  //     ? process.env.REACT_APP_PROD_URL_BACKEND
+  //     : process.env.REACT_APP_DEV_URL_BACKEND;
+
+  const authURL = 'http://142.58.22.167:5678';
 
   const { user, repo, setRepo } = useAuth();
 

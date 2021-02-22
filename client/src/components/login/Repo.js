@@ -8,11 +8,12 @@ require('dotenv').config();
 const Repo = ({ repo, setAnalyzing }) => {
   const { setOverview, setCommitsList } = useAuth();
   const [redirect, setRedirect] = useState(false);
-  const authURL =
-    process.env.NODE_ENV === 'production'
-      ? process.env.REACT_APP_PROD_URL_BACKEND
-      : process.env.REACT_APP_DEV_URL_BACKEND;
+  // const authURL =
+  //   process.env.NODE_ENV === 'production'
+  //     ? process.env.REACT_APP_PROD_URL_BACKEND
+  //     : process.env.REACT_APP_DEV_URL_BACKEND;
 
+  const authURL = 'http://142.58.22.167:5678';
   const repoList = [
     repo,
     'Administrator / Earth GitLab 373',

@@ -17,10 +17,12 @@ const LoginBar = () => {
   const [urlPost, setUrlPost] = useState('.ca');
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
-  const authURL =
-    process.env.NODE_ENV === 'production'
-      ? process.env.REACT_APP_PROD_URL_BACKEND
-      : process.env.REACT_APP_DEV_URL_BACKEND;
+  // const authURL =
+  //   process.env.NODE_ENV === 'production'
+  //     ? process.env.REACT_APP_PROD_URL_BACKEND
+  //     : process.env.REACT_APP_DEV_URL_BACKEND;
+
+  const authURL = 'http://142.58.22.167:5678';
 
   // Global states from Context API
   const { user, setUser, setIncorrect } = useAuth();
