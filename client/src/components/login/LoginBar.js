@@ -22,7 +22,7 @@ const LoginBar = () => {
   //     ? process.env.REACT_APP_PROD_URL_BACKEND
   //     : process.env.REACT_APP_DEV_URL_BACKEND;
 
-  const authURL = 'http://142.58.22.167:5678';
+  const authURL = 'https://gitlabanalyzer.herokuapp.com';
 
   // Global states from Context API
   const { user, setUser, setIncorrect } = useAuth();
@@ -72,7 +72,7 @@ const LoginBar = () => {
     bodyFormData.append('url', fullUrl);
     const response = await axios({
       method: 'post',
-      url: `/auth`,
+      url: `${authURL}/auth`,
       data: bodyFormData,
       headers: { 'Content-Type': 'multipart/form-data' },
     });

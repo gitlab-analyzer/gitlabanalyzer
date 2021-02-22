@@ -13,7 +13,7 @@ const Repo = ({ repo, setAnalyzing }) => {
   //     ? process.env.REACT_APP_PROD_URL_BACKEND
   //     : process.env.REACT_APP_DEV_URL_BACKEND;
 
-  const authURL = 'http://142.58.22.167:5678';
+  const authURL = 'https://gitlabanalyzer.herokuapp.com';
   const repoList = [
     repo,
     'Administrator / Earth GitLab 373',
@@ -25,7 +25,7 @@ const Repo = ({ repo, setAnalyzing }) => {
     try {
       setAnalyzing(true);
       const projectRes = await axios.post(
-        `/setProject`,
+        `${authURL}/setProject`,
         {},
         {
           headers: {
@@ -42,11 +42,11 @@ const Repo = ({ repo, setAnalyzing }) => {
         throw new Error('Fetch request failed.');
       }
 
-      const overviewRes = await axios.get(`/getProjectOverview`);
+      const overviewRes = await axios.get(`${authURL}/getProjectOverview`);
       if (overviewRes) {
         setOverview(overviewRes.data.users);
       }
-      const commitsRes = await axios.get(`/getCommits`);
+      const commitsRes = await axios.get(`${authURL}/getCommits`);
       if (commitsRes) {
         const commitsArray = commitsRes.data.commit_list;
 

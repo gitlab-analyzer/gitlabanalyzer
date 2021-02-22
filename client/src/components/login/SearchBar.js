@@ -15,14 +15,14 @@ const SearchBarComp = ({ setLoading }) => {
   //     ? process.env.REACT_APP_PROD_URL_BACKEND
   //     : process.env.REACT_APP_DEV_URL_BACKEND;
 
-  const authURL = 'http://142.58.22.167:5678';
+  const authURL = 'https://gitlabanalyzer.herokuapp.com';
 
   const { user, repo, setRepo } = useAuth();
 
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get(`/getProjectList`);
+      const repoList = await axios.get(`${authURL}/getProjectList`);
       setRepo(repoList.data.value);
       setReList([
         repoList.data.value,
