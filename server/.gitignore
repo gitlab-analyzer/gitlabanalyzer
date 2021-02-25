@@ -1,8 +1,4 @@
 .idea
 __pycache__
-<<<<<<< server/.gitignore
 requirements.txt
-=======
 venv
-.idea
->>>>>>> server/.gitignore
