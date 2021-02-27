@@ -11,22 +11,21 @@ class StackedBar extends React.Component {
       this.state = {
       
         options: {
-          colors: ['#F1E2AB', '#ABB2F1', '#ABF1DC', '#C7EBFF', '#D7ECD9', '#F5D5CB', '#F6ECF5', '#F3DDF2'],
-        //   stroke: {
-        //     show: true,
-        //     curve: 'smooth',
-        //     lineCap: 'butt',
-        //     colors: ['#CBB97B', '#7F87CF', '#55FFCC', '#6AB1D9', '#489850', '#bb4824', '#a34d9a', '#ab3ca6'],
-        //     width: 1,
-        //     dashArray: 0,      
-        // },
+          colors: [this.props.colors],
+          stroke: {
+            show: true,
+            curve: 'smooth',
+            lineCap: 'butt',
+            colors: [this.props.stroke],
+            width: 1,
+            dashArray: 0,      
+        },
           chart: {
             toolbar: {
               show: false
             },
             type: 'bar',
             height: 350,
-            stacked: true,
           },
           dataLabels: {
             enabled: false
@@ -49,9 +48,7 @@ class StackedBar extends React.Component {
             }
           },
           xaxis: {
-            categories: ['J1', 'J2', 'J3', 'J4', 'F1',
-            'F2', 'F3', 'F4', 'M1', 'M2'
-            ],
+            categories: ['Jan', 'Feb'],
           },
           legend: {
             position: 'right',

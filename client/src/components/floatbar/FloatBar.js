@@ -26,12 +26,7 @@ function FloatBar() {
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
-        {(user && user === "everyone" &&
           <div><EveryoneScore /></div>
-        ) || (
-            <div><IndividualScore>{user}</IndividualScore></div>
-          )
-        }
       </div>
       <div className="floatbar-functions">
         <Grid

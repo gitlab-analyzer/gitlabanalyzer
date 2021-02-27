@@ -6,6 +6,7 @@ import Heatmap from '../components/overview/Heatmap'
 import { Menu, Dropdown, Button } from 'antd';
 import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
+import IndividualScore from '../components/floatbar/IndividualScore'
 
 
 /* could probably move some of this stuff into other components */
@@ -25,44 +26,15 @@ const useStyles = makeStyles((theme) =>({
 const Overview = () => {
     const [startDate, setStartDate] = useState('Jan 2021')
     const [endDate, setEndDate] = useState('Mar 2021')
-    const [menuSelection, setMenuSelection] = useState('Commits')
+    const [menuSelection, setMenuSelection] = useState('Toggle')
     const classes = useStyles();
 
     // will be replaced once we find out how to get data from backend
-    const data = [[44, 55, 41, 67, 22, 43, 0, 30, 10, 10], 
-                    [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
-                    [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
-                    [21, 7, 25, 13, 22, 8, 0, 30, 10, 10],
-                    [44, 55, 41, 67, 22, 43, 0, 30, 10, 10], 
-                    [13, 23, 20, 8, 13, 27, 0, 30, 10, 10],
-                    [11, 17, 15, 15, 21, 14, 0, 30, 10, 10],
-                    [21, 7, 25, 13, 22, 8, 0, 30, 10, 10]
-                   ];
+    const data = [44, 55, 41, 67, 22, 43, 0, 30, 10, 10, 44, 55, 41, 43, 0, 30, 10, 10, 43, 0, 30, 10, 10]
+
 
     const [series, setSeries] = useState([{
-      name: '@bfraser',
-      data: data[0]
-    }, {
-      name: '@khangura',
-      data: data[1]
-    }, {
-      name: '@gbaker',
-      data: data[2]
-    }, {
-      name: '@afraser',
-      data: data[3]
-    }, {
-      name: '@cfraser',
-      data: data[0]
-    }, {
-      name: '@dfraser',
-      data: data[1]
-    }, {
-      name: '@efraser',
-      data: data[2]
-    }, {
-      name: '@ffraser',
-      data: data[3]
+      data: data
     }
     ])
 
@@ -71,112 +43,24 @@ const Overview = () => {
       if(e.key === "commits") {
         setMenuSelection("Commits")
         setSeries([{
-          name: '@bfraser',
-          data: data[0]
-        }, {
-          name: '@khangura',
-          data: data[1]
-        }, {
-          name: '@gbaker',
-          data: data[2]
-        }, {
-          name: '@afraser',
-          data: data[3]
-        }, {
-          name: '@cfraser',
-          data: data[0]
-        }, {
-          name: '@dfraser',
-          data: data[1]
-        }, {
-          name: '@efraser',
-          data: data[2]
-        }, {
-          name: '@ffraser',
-          data: data[3]
+          data: data
         }
         ])
       } else if (e.key === "mergereqs") {
         setMenuSelection("Merge Reqs")
         setSeries([{
-          name: '@bfraser',
-          data: data[6]
-        }, {
-          name: '@khangura',
-          data: data[3]
-        }, {
-          name: '@gbaker',
-          data: data[1]
-        }, {
-          name: '@afraser',
-          data: data[4]
-        }, {
-          name: '@cfraser',
-          data: data[5]
-        }, {
-          name: '@dfraser',
-          data: data[0]
-        }, {
-          name: '@efraser',
-          data: data[1]
-        }, {
-          name: '@ffraser',
-          data: data[3]
+          data: data
         }
         ])
       } else if (e.key ==="issues") {
         setMenuSelection("Issues")
         setSeries([{
-          name: '@bfraser',
-          data: data[3]
-        }, {
-          name: '@khangura',
-          data: data[5]
-        }, {
-          name: '@gbaker',
-          data: data[3]
-        }, {
-          name: '@afraser',
-          data: data[2]
-        }, {
-          name: '@cfraser',
-          data: data[1]
-        }, {
-          name: '@dfraser',
-          data: data[6]
-        }, {
-          name: '@efraser',
-          data: data[3]
-        }, {
-          name: '@ffraser',
-          data: data[2]
+          data: data
         }
         ])
       } else {
         setSeries([{
-          name: '@bfraser',
-          data: data[1]
-        }, {
-          name: '@khangura',
-          data: data[1]
-        }, {
-          name: '@gbaker',
-          data: data[3]
-        }, {
-          name: '@afraser',
-          data: data[3]
-        }, {
-          name: '@cfraser',
-          data: data[3]
-        }, {
-          name: '@dfraser',
-          data: data[5]
-        }, {
-          name: '@efraser',
-          data: data[5]
-        }, {
-          name: '@ffraser',
-          data: data[6]
+          data: data
         }
         ])
         setMenuSelection("Reviews")
@@ -196,10 +80,13 @@ const Overview = () => {
         <div>
             <Grid container className={classes.grid}>
             <Grid item xs={12}>                    
-                        <b>Commit Count from {startDate} to {endDate}</b>
+              <IndividualScore />
+            </Grid>
+            <Grid item xs={12}>                    
+                        <b>Merge Request Score from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <StackedBar series={series}/>
+                        <StackedBar series={series} colors={'#C7EBFF'} stroke={'#6AB1D9'}/>
             </Grid>
             <Grid item xs={2}>
                       <Dropdown overlay={menu}>
@@ -209,18 +96,43 @@ const Overview = () => {
               </Dropdown>
             </Grid>
             <Grid item xs={12}>                    
-                        <b>x Contributions This Year</b>
+                        <b>Commit Score from {startDate} to {endDate}</b>
             </Grid>
-            <Grid item xs={12}>
-                        <Heatmap />
+            <Grid item xs={10}>
+                      <StackedBar series={series} colors={'#ABF1DC'} stroke={'#1db084'}/>
             </Grid>
-            <Grid item xs={12}>
-                        <b>Top 10 Merge Requests and Commits</b>
-                        <ol>
-                            <li>@user1: Code Score of 10000, 100 additions, 0 deletions</li>
-                            <li>@user2: Code Score of 500, 2 additions, 0 deletions</li>
-                            <li>@user3: Code Score of 1, 1 additions, 0 deletions</li>
-                        </ol>
+            <Grid item xs={2}>
+                      <Dropdown overlay={menu}>
+                <Button>
+                  {menuSelection} <DownOutlined />
+                </Button>
+              </Dropdown>
+            </Grid>
+            <Grid item xs={12}>                    
+                        <b>Code Review Word Count from {startDate} to {endDate}</b>
+            </Grid>
+            <Grid item xs={10}>
+                        <StackedBar series={series} colors={'#F1E2AB'} stroke={'#CBB97B'}/>
+            </Grid>
+            <Grid item xs={2}>
+                      <Dropdown overlay={menu}>
+                <Button>
+                  {menuSelection} <DownOutlined />
+                </Button>
+              </Dropdown>
+            </Grid>
+            <Grid item xs={12}>                    
+                        <b>Commit Count from {startDate} to {endDate}</b>
+            </Grid>
+            <Grid item xs={10}>
+                        <StackedBar series={series} colors={'#ABB2F1'} stroke={'#7F87CF'}/>
+            </Grid>
+            <Grid item xs={2}>
+                      <Dropdown overlay={menu}>
+                <Button>
+                  {menuSelection} <DownOutlined />
+                </Button>
+              </Dropdown>
             </Grid>
 
             </Grid>
