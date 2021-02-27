@@ -3,6 +3,7 @@ from model.issue import Issue
 from datetime import datetime
 from dateutil import parser
 
+
 class IssueManager:
     def __init__(self, gitlab_issue_list: list) -> None:
         self.__issue_list: List[Issue] = []

@@ -6,7 +6,7 @@ from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 
 
-class GitlabProject:
+class GitLabProject:
     def __init__(self, myGitlab: gitlab):
         self.__membersManager: MemberManager = MemberManager()
         # self.__issuesManager

@@ -9,7 +9,7 @@ class MemberManager:
     def __init__(self) -> None:
         self.__memberList: List[member] = []
 
-    def getMemberList(self) -> list:
+    def get_member_list(self) -> list:
         return self.__memberList
 
     def add_member(self, member: gitlab) -> None:

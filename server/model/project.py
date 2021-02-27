@@ -2,6 +2,7 @@ from model.data_object import DataObject
 from typing import Union, Optional, List, Tuple
 from gitlab.v4.objects import Project as gl_Project
 
+
 class Project(DataObject):
     """
         attributes:

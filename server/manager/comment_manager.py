@@ -4,11 +4,12 @@ import gitlab
 from datetime import datetime
 from dateutil import parser
 
+
 class CommentManager:
     def __init__(self) -> None:
         self.__commentList: List[Comment] = []
 
-    def getCommentList(self) -> list:
+    def get_comment_list(self) -> list:
         return self.__commentList
 
     def add_comment(self, comment: gitlab, sha=None) -> None:
