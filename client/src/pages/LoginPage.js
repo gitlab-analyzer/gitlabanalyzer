@@ -5,11 +5,9 @@ import Logo from '../components/Logo';
 import LoginBar from '../components/login/LoginBar';
 import SearchBar from '../components/login/SearchBar';
 import { useAuth } from '../context/AuthContext';
-import { Button, Alert, Layout, Spin } from 'antd';
+import { Button, Alert, Spin } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import Repo from '../components/login/Repo';
-
-const { Content } = Layout;
 
 function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -59,15 +57,6 @@ function LoginPage() {
     }
   };
 
-  const disclaimerContainer = !user ? (
-    <div>
-      <p style={{ textAlign: 'center', margin: 'auto' }}>
-        Disclaimer: This is a development mode application. Please only use the
-        provided GitLab token and URL to test the application.{' '}
-      </p>
-    </div>
-  ) : null;
-
   return (
     <div className="App">
       <div className="main_container">
@@ -88,7 +77,6 @@ function LoginPage() {
           {user ? <SearchBar setLoading={setLoading} /> : <LoginBar />}
           {loadingContainer()}
           {repo ? <Repo setAnalyzing={setAnalyzing} repo={repo} /> : null}
-          {/* {disclaimerContainer} */}
           {incorrect ? (
             <Alert
               message="Access token or url wrong, please try again"
