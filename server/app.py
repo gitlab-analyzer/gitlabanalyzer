@@ -16,6 +16,7 @@ gitlabProjectInterface: [GitlabProject] = GitlabProject(None)
 
 @app.route('/')
 def index():
+    # Below is just an example to use mangodb
     # username = urllib.parse.quote_plus('root')
     # password = urllib.parse.quote_plus('pass')
     # myClient = pymongo.MongoClient(

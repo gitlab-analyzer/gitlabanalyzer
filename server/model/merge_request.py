@@ -1,4 +1,4 @@
-from model.DataObject import DataObject
+from model.data_object import DataObject
 from typing import Optional, List
 import gitlab
 import re

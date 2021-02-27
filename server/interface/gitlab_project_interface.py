@@ -1,8 +1,8 @@
 import gitlab
 from interface.gitlab_interface import GitLab
-from manager.CommentManager import CommentManager
-from manager.Commit_manager import CommitManager
-from manager.Member_manager import MemberManager
+from manager.comment_manager import CommentManager
+from manager.commit_manager import CommitManager
+from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 
 

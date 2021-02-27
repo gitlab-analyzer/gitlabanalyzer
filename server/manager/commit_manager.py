@@ -1,6 +1,6 @@
 import json
 from typing import Union, Optional, List
-from model.Commit import *
+from model.commit import *
 import gitlab
 from datetime import datetime
 from dateutil import parser

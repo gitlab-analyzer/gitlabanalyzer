@@ -1,4 +1,4 @@
-from model.DataObject import DataObject
+from model.data_object import DataObject
 import gitlab
 from typing import Union, Optional, List
 

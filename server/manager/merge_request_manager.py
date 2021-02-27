@@ -2,7 +2,7 @@ from typing import Union
 import datetime
 from dateutil import parser
 from interface.gitlab_interface import GitLab
-from model.MergeRequest import MergeRequest
+from model.merge_request import MergeRequest
 import gitlab
 
 
