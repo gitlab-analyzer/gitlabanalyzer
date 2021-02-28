@@ -6,16 +6,17 @@ from flask_cors import CORS, cross_origin
 import pymongo
 import urllib.parse
 from interface.gitlab_interface import GitLab
-from interface.gitlab_project_interface import GitlabProject
+from interface.gitlab_project_interface import GitLabProject
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-gitlabProjectInterface: [GitlabProject] = GitlabProject(None)
+gitlabProjectInterface: [GitLabProject] = GitLabProject(None)
 
 
 @app.route('/')
 def index():
+    # Below is just an example to use mangodb
     # username = urllib.parse.quote_plus('root')
     # password = urllib.parse.quote_plus('pass')
     # myClient = pymongo.MongoClient(
@@ -54,7 +55,7 @@ def auth():
     myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
         global gitlabProjectInterface
-        gitlabProjectInterface = GitlabProject(myGitlab=myGitLab)
+        gitlabProjectInterface = GitLabProject(myGitlab=myGitLab)
         return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
     else:
         return jsonify({'username': '', 'response': 'invalid'})
@@ -87,7 +88,7 @@ def set_project():
 def get_project_overview():
     global gitlabProjectInterface
     memberObjectList = []
-    memberList = gitlabProjectInterface.member_manager.getMemberList()
+    memberList = gitlabProjectInterface.member_manager.get_member_list()
 
     for member in memberList:
         memberObjectList.append(

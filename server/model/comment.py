@@ -1,4 +1,4 @@
-from model.DataObject import DataObject
+from model.data_object import DataObject
 from typing import Union, Optional
 import gitlab
 
@@ -16,8 +16,8 @@ For comments from Commit:
 
 """
 
-class Comment(DataObject):
 
+class Comment(DataObject):
 	def __init__(self, commentForIssueMR: gitlab = None, commentForCommit: gitlab = None, commitSha: str = None) -> None:
 		if commentForIssueMR is not None: 	#comment of either MergeRequest or Issue
 			self.__author: int = commentForIssueMR.author['id']

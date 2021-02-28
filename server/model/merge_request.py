@@ -1,7 +1,8 @@
-from model.DataObject import DataObject
+from model.data_object import DataObject
 from typing import Optional, List
 import gitlab
 import re
+
 
 class MergeRequest(DataObject):
     def __init__(self, mr: gitlab) -> None:
@@ -12,7 +13,7 @@ class MergeRequest(DataObject):
         self.__description: str = mr.description
         self.__state: str = mr.state
         self.__created_date: str = mr.created_at
-        self.__related_issue_iid: Optional[int] = self.parseRelatedIssueIID(mr.description)
+        self.__related_issue_iid: Optional[int] = self.parse_related_issue_iid(mr.description)
 
         if mr.state == "merged":
             self.__merged_by: Optional[int] = mr.merged_by['id']
@@ -25,7 +26,7 @@ class MergeRequest(DataObject):
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
 
-    def parseRelatedIssueIID(self, description) -> int: 
+    def parse_related_issue_iid(self, description) -> int:
         substring = "Closes #"
         if substring in description:
             temp = description[description.index(substring) + len(substring):]

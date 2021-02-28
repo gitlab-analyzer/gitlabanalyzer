@@ -1,6 +1,6 @@
 import json
 from typing import Union, Optional, List
-from model.Commit import *
+from model.commit import *
 import gitlab
 from datetime import datetime
 from dateutil import parser
@@ -29,7 +29,7 @@ class CommitManager:
                 return commit
         return None
 
-    def get_commits_by_userID(self, userID) -> Union[List[Commit], None]:
+    def get_commits_by_userid(self, userID) -> Union[List[Commit], None]:
         listCommits = []
         for commit in self.__commitList:
             if commit.author == userID:

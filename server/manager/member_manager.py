@@ -1,5 +1,5 @@
 from typing import Union, Optional, List
-from model.Member import *
+from model.member import *
 import gitlab
 from datetime import datetime
 from dateutil import parser
@@ -9,7 +9,7 @@ class MemberManager:
     def __init__(self) -> None:
         self.__memberList: List[member] = []
 
-    def getMemberList(self) -> list:
+    def get_member_list(self) -> list:
         return self.__memberList
 
     def add_member(self, member: gitlab) -> None:
