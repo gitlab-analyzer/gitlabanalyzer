@@ -13,6 +13,7 @@ const Repo = ({ repo, setAnalyzing }) => {
     'Administrator / Earth GitLab 373',
     'Administrator / Mars GitLab 373',
     'Administrator / Jupiter GitLab 373',
+    'Administrator / Saturn GitLab 373',
   ];
 
   const handleAnalyze = async () => {
@@ -74,7 +75,6 @@ const Repo = ({ repo, setAnalyzing }) => {
       <List
         style={{ marginTop: '20px' }}
         className="demo-loadmore-list"
-        // loading={initLoading}
         itemLayout="horizontal"
         dataSource={repoList}
         renderItem={(item) => (

@@ -9,6 +9,10 @@ import { Button, Alert, Spin } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import Repo from '../components/login/Repo';
 
+/**
+ * LoginPage loads the Login Bar component and handles the Log in authentication Logic.
+ * It conditionally renders the Search Bar and Repository list if user is logged in.
+ */
 function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -20,6 +24,7 @@ function LoginPage() {
     }
   }, [user, setUser]);
 
+  // TODO: Change to cookie based authentication
   const handleLogOut = (e) => {
     e.preventDefault();
     sessionStorage.removeItem('user');
@@ -27,6 +32,9 @@ function LoginPage() {
     setUser(null);
   };
 
+  /**
+   * Component to show loading animation
+   */
   const loadingContainer = () => {
     if (loading) {
       return (

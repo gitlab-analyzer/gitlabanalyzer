@@ -8,21 +8,17 @@ const { Search } = Input;
 
 const SearchBarComp = ({ setLoading }) => {
   const [value, setValue] = useState('');
-  const [reList, setReList] = useState([]);
-
   const { user, repo, setRepo } = useAuth();
 
+  /**
+   * On component load, useffect will fetch project list from the api
+   * and populate the repo context state
+   */
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
       const repoList = await axios.get('http://localhost:5678/getProjectList');
       setRepo(repoList.data.value);
-      setReList([
-        repoList.data.value,
-        'Administrator / Earth GitLab 373',
-        'Administrator / Mars GitLab 373',
-        'Administrator / Jupiter GitLab 373',
-      ]);
       setLoading(false);
     };
     getRepos();
@@ -50,7 +46,6 @@ const SearchBarComp = ({ setLoading }) => {
             onChange={(event) => {
               setValue(event.target.value);
             }}
-            // onSearch={onSearch}
           />
         </form>
       </div>
