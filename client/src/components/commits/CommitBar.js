@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Dropdown, Menu, Button } from 'antd';
+import { Table, Space, Badge, Dropdown, Menu, Button, Switch } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
@@ -49,16 +49,26 @@ const CommitBar = ({ username }) => {
    */
   const expandedRowRender = () => {
     const columns = [
-      { title: 'Commits', dataIndex: 'commits', key: 'commits' },
-      { title: 'Date', dataIndex: 'date', key: 'date' },
-      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'Commit ID', dataIndex: 'commitid', key: 'commitid' },
+      {
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
+        filterMultiple: false,
+        // TODO: Fix the sorter
+        onFilter: (value, record) => record.date.indexOf(value) === 0,
+        sorter: (a, b) => a.data.length - b.date.length,
+        sortDirections: ['descend', 'ascend'],
+      },
+      { title: 'Message', dataIndex: 'message', key: 'message' },
+      { title: 'Score', dataIndex: 'score', key: 'score' },
       {
         title: 'Status',
         key: 'state',
         render: () => (
           <span>
             <Badge status="success" />
-            Finished
+            Merged
           </span>
         ),
       },
@@ -68,8 +78,8 @@ const CommitBar = ({ username }) => {
         key: 'operation',
         render: () => (
           <Space size="middle">
-            <a>Pause</a>
-            <a>Stop</a>
+            <a>Code</a>
+            <a>Diffs</a>
             <Dropdown overlay={menu}>
               <a>
                 More <DownOutlined />
@@ -85,20 +95,28 @@ const CommitBar = ({ username }) => {
       data.push({
         key: i,
         date: '2021-02-21 23:12:00',
-        name: 'This is production name',
-        commits: 'e71b2010',
+        message: 'Add new routes for retrieving code & code diffs',
+        commitid: 'e71b2010',
+        score: '175',
       });
     }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
+    return (
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
+        pagination={false}
+      />
+    );
   };
 
   /**
    * Column title for the Merge Requests
    */
   const columns = [
+    { title: 'Branch', dataIndex: 'branch', key: 'branch' },
     { title: 'Username', dataIndex: 'username', key: 'username' },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-    { title: 'Title', dataIndex: 'title', key: 'title' },
     { title: 'Score', dataIndex: 'Score', key: 'Score' },
     { title: 'Creator', dataIndex: 'creator', key: 'creator' },
     { title: 'Action', key: 'operation', render: () => <a>Publish</a> },
@@ -112,24 +130,43 @@ const CommitBar = ({ username }) => {
     data.push({
       key: i,
       username: 'bfraser',
-      title: '#57 Refactor get projects API',
+      branch: '#57 Refactor get projects API',
       Score: 515,
       creator: 'Jack',
       createdAt: '2021-02-24 23:12:00',
     });
   }
 
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows
+      );
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
+
   /**
    * Render the Table component which represents the Merge Requests
    */
   return (
-    <Table
-      className="components-table-demo-nested"
-      columns={columns}
-      pagination={false}
-      expandable={{ expandedRowRender }}
-      dataSource={data}
-    />
+    <>
+      <Table
+        className="components-table-demo-nested"
+        columns={columns}
+        pagination={false}
+        expandable={{ expandedRowRender }}
+        dataSource={data}
+        rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
+      />
+    </>
   );
 };
 
