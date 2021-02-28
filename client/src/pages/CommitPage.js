@@ -36,7 +36,6 @@ const CommitPage = () => {
 
   return (
     <div className="open-sans">
-      <CommitGraph />
       <div style={{ margin: '10px 0 10px 0' }}>
         <Dropdown.Button
           overlay={menu}
