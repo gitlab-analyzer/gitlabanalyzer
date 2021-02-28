@@ -6,6 +6,8 @@ import { Menu, Dropdown, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
 import './CommitsPage.css';
+import CommitsHeatBar from '../components/commits/CommitsHeatBar';
+import { data } from '../components/commits/HeatData';
 
 const CommitPage = () => {
   const [userNames, setUserNames] = useState([]);
@@ -44,6 +46,9 @@ const CommitPage = () => {
         >
           {selectUser}
         </Dropdown.Button>
+      </div>
+      <div style={{ height: '200px' }}>
+        <CommitsHeatBar data={data} />
       </div>
       <CommitBar username={userNames[0]} />
     </div>
