@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts'
 
 // adapted from: https://apexcharts.com/react-chart-demos/column-charts/stacked/
 
-class StackedBar extends React.Component {
+class BarGraph extends React.Component {
 
     constructor(props) {
       super(props);
@@ -84,4 +84,4 @@ class StackedBar extends React.Component {
     }
   }
 
-export default StackedBar
+export default BarGraph

@@ -29,6 +29,7 @@ const Header = () => {
               <Nav.Link>Config</Nav.Link>
             </LinkContainer>
           </Nav>
+          test
         </Navbar.Collapse>
       </Navbar>
     </div>

@@ -1,12 +1,10 @@
 import React, {useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import StackedBar from '../components/overview/StackedBarGraph'
-import Heatmap from '../components/overview/Heatmap'
+import BarGraph from '../components/overview/BarGraph'
 import { Menu, Dropdown, Button } from 'antd';
 import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
-import IndividualScore from '../components/floatbar/IndividualScore'
 
 
 /* could probably move some of this stuff into other components */
@@ -26,72 +24,124 @@ const useStyles = makeStyles((theme) =>({
 const Overview = () => {
     const [startDate, setStartDate] = useState('Jan 2021')
     const [endDate, setEndDate] = useState('Mar 2021')
-    const [menuSelection, setMenuSelection] = useState('Toggle')
+
+    const [mrDropdown, setMrDropdown] = useState('Number')
+    const [commitDropdown, setCommitDropdown] = useState('Number')
+    const [crDropdown, setCrDropdown] = useState('All')
     const classes = useStyles();
 
     // will be replaced once we find out how to get data from backend
     const data = [44, 55, 41, 67, 22, 43, 0, 30, 10, 10, 44, 55, 41, 43, 0, 30, 10, 10, 43, 0, 30, 10, 10]
 
+    const data2 = [55, 41, 43, 0, 30, 10, 10, 43, 0, 30, 10, 10, 44, 44, 55, 41, 67, 22, 43, 0, 30, 10, 10]
 
-    const [series, setSeries] = useState([{
+    const data3 = [10, 44, 55, 41, 43, 0, 30, 10, 10, 10, 44, 44, 55, 41, 67, 22, 10, 44, 44, 55, 41, 55, 41]
+
+
+    const [mrSeries, setMrSeries] = useState([{
+      data: data
+    }
+    ])
+
+    const [commitSeries, setCommitSeries] = useState([{
+      data: data
+    }
+    ])
+
+    const [crSeries, setCrSeries] = useState([{
+      data: data
+    }
+    ])
+
+    const [issueSeries, setIssueSeries] = useState([{
       data: data
     }
     ])
 
     const handleMenuClick = (e) => {
       console.log('Key test:', e);
-      if(e.key === "commits") {
-        setMenuSelection("Commits")
-        setSeries([{
+
+      if(e.key === "mrNum") {
+        setMrDropdown("Number")
+        setMrSeries([{
           data: data
         }
         ])
-      } else if (e.key === "mergereqs") {
-        setMenuSelection("Merge Reqs")
-        setSeries([{
+      } else if(e.key === "mrScore") {
+        setMrDropdown("Score")
+        setMrSeries([{
+          data: data2
+        }
+        ])
+      } else if(e.key === "commitNum") {
+        setCommitDropdown("Commits")
+        setCommitSeries([{
           data: data
         }
         ])
-      } else if (e.key ==="issues") {
-        setMenuSelection("Issues")
-        setSeries([{
+      } else if (e.key === "commitScore") {
+        setCommitDropdown("Score")
+        setCommitSeries([{
+          data: data3
+        }
+        ])
+      } else if (e.key ==="crAll") {
+        setCrDropdown("All")
+        setCrSeries([{
           data: data
         }
         ])
-      } else {
-        setSeries([{
-          data: data
+      } else if (e.key === "crOwn") {
+        setCrDropdown("Own")
+        setCrSeries([{
+          data: data2
         }
         ])
-        setMenuSelection("Reviews")
+      } else if (e.key === "crOthers") {
+        setCrDropdown("Others")
+        setCrSeries([{
+          data: data3
+        }
+        ])
       }
  
     };
 
-    const menu = (
+    const mrMenu = (
       <Menu onClick={handleMenuClick} >
-        <Menu.Item key="commits">Commits</Menu.Item>
-        <Menu.Item key="mergereqs">Merge Reqs</Menu.Item>
-        <Menu.Item key="issues">Issues</Menu.Item>
-        <Menu.Item key="code_reviews">Reviews</Menu.Item>
+        <Menu.Item key="mrNum">Number</Menu.Item>
+        <Menu.Item key="mrScore">Score</Menu.Item>
       </Menu>
     )
+
+    const commitMenu = (
+      <Menu onClick={handleMenuClick} >
+        <Menu.Item key="commitNum">Number</Menu.Item>
+        <Menu.Item key="commitScore">Score</Menu.Item>
+      </Menu>
+    )
+
+    const crMenu = (
+      <Menu onClick={handleMenuClick} >
+        <Menu.Item key="crAll">All</Menu.Item>
+        <Menu.Item key="crOwn">Own</Menu.Item>
+        <Menu.Item key="crOthers">Others</Menu.Item>
+      </Menu>
+    )
+
     return (
         <div>
             <Grid container className={classes.grid}>
             <Grid item xs={12}>                    
-              <IndividualScore />
-            </Grid>
-            <Grid item xs={12}>                    
                         <b>Merge Request Score from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <StackedBar series={series} colors={'#C7EBFF'} stroke={'#6AB1D9'}/>
+                        <BarGraph series={mrSeries} colors={'#C7EBFF'} stroke={'#6AB1D9'}/>
             </Grid>
             <Grid item xs={2}>
-                      <Dropdown overlay={menu}>
+                      <Dropdown overlay={mrMenu}>
                 <Button>
-                  {menuSelection} <DownOutlined />
+                  {mrDropdown} <DownOutlined />
                 </Button>
               </Dropdown>
             </Grid>
@@ -99,12 +149,12 @@ const Overview = () => {
                         <b>Commit Score from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                      <StackedBar series={series} colors={'#ABF1DC'} stroke={'#1db084'}/>
+                      <BarGraph series={commitSeries} colors={'#ABF1DC'} stroke={'#1db084'}/>
             </Grid>
             <Grid item xs={2}>
-                      <Dropdown overlay={menu}>
+                      <Dropdown overlay={commitMenu}>
                 <Button>
-                  {menuSelection} <DownOutlined />
+                  {commitDropdown} <DownOutlined />
                 </Button>
               </Dropdown>
             </Grid>
@@ -112,27 +162,22 @@ const Overview = () => {
                         <b>Code Review Word Count from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <StackedBar series={series} colors={'#F1E2AB'} stroke={'#CBB97B'}/>
+                        <BarGraph series={crSeries} colors={'#F1E2AB'} stroke={'#CBB97B'}/>
             </Grid>
             <Grid item xs={2}>
-                      <Dropdown overlay={menu}>
+                      <Dropdown overlay={crMenu}>
                 <Button>
-                  {menuSelection} <DownOutlined />
+                  {crDropdown} <DownOutlined />
                 </Button>
               </Dropdown>
             </Grid>
             <Grid item xs={12}>                    
-                        <b>Commit Count from {startDate} to {endDate}</b>
+                        <b>Issue Word Count from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <StackedBar series={series} colors={'#ABB2F1'} stroke={'#7F87CF'}/>
+                        <BarGraph series={issueSeries} colors={'#ABB2F1'} stroke={'#7F87CF'}/>
             </Grid>
             <Grid item xs={2}>
-                      <Dropdown overlay={menu}>
-                <Button>
-                  {menuSelection} <DownOutlined />
-                </Button>
-              </Dropdown>
             </Grid>
 
             </Grid>
