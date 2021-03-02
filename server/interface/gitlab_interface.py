@@ -104,7 +104,7 @@ class GitLab:
             list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort)
+            state=state, order_by=order_by, sort=sort, per_page=100)    # 100 is the maximum # of objects you can get
 
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
