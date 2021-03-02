@@ -13,11 +13,16 @@ class GitLabProject:
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
+        self.__projectID: int = -1
         self.__gitlab: GitLab = myGitlab
 
     def set_project(self, projectID: int):
-        self.__gitlab.set_project(projectID=projectID)
-        self.__update_managers()
+        self.__projectID = projectID
+        if self.__gitlab.set_project(projectID=projectID):
+            self.__update_managers()
+            return True
+        else:
+            return False
 
     def __update_managers(self):
         self.__update_comment_manager()
@@ -71,8 +76,6 @@ class GitLabProject:
     def commits_manager(self) -> CommitManager:
         return self.__commitsManager
 
-# gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
-# gl.authenticate()
-# gl.get_project_list()
-# gl.set_project(25515)
-# list = gl.get_commit_list_for_project()
+    @property
+    def project_id(self) -> int:
+        return self.__projectID

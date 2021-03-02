@@ -1,0 +1,54 @@
+1. GET /auth
+{
+    "response": true,
+    "username": "fanghaof"
+}
+
+{
+    "Cause": "Invalid token or url",
+    "response": false,
+    "username": ""
+}
+
+2. GET /projects
+{
+    "response": true,
+    "projects": [
+        "fanghaof / 373_c",
+        "373-2021-1-Makemake / GitLabAnalyzer",
+    ]
+}
+
+3. POST /projects/set?projectID=id
+{
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+4. GET /projects/<int:projectID>/overview
+{
+    "members": [
+        {
+            "lines_of_code": 2273,
+            "number_commits": 25,
+            "number_issues": 24,
+            "username": "cprabhu"
+        },
+        {
+            "lines_of_code": 30104,
+            "number_commits": 55,
+            "number_issues": 9,
+            "username": "andrewe"
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
