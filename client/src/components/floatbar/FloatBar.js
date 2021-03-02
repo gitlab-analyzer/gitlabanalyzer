@@ -6,9 +6,11 @@ import IndividualScore from './IndividualScore.js';
 import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
+import Settings from "./Settings.json"
 import "./FloatBar.css";
 
 var FloatBarData = Data.users;
+var Dates = Settings.dates;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -51,6 +53,8 @@ function FloatBar() {
                   'Iteration 2': [moment(iter2[0]), moment(iter2[1])],
                   'Iteration 3': [moment(iter3[0]), moment(iter3[1])],
                 }}
+                showTime
+                format="YYYY/MM/DD hh:mm:ss"
               />
             </div>
           </Grid>

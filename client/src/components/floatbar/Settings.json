@@ -1,0 +1,19 @@
+{
+    "dates" : [
+        {
+            "name": "Iteration 1",
+            "startdate": "2021-01-18",
+            "enddate": "2021-02-22"
+        },
+        {
+            "name": "Iteration 2",
+            "startdate": "2021-02-23",
+            "enddate": "2021-03-15"
+        },
+        {
+            "name": "Iteration 3",
+            "startdate": "2021-03-16",
+            "enddate": "2021-04-12"
+        }
+    ]
+}
