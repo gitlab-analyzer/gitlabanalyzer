@@ -1,8 +1,11 @@
 .center {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: auto;
+  margin-top: 20vh;
+}
+
+.center-login {
+  margin: auto;
+  margin-top: 25vh;
 }
 
 .m-bot {
@@ -13,9 +16,12 @@
   position: relative;
 }
 
+.rightalign {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .logout {
-  position: absolute;
-  margin-left: auto;
-  top: 20px;
-  right: 20px;
+  margin-top: 20px;
+  margin-right: 20px;
 }

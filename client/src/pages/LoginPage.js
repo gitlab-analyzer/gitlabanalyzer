@@ -17,18 +17,23 @@ function LoginPage() {
     }
   }, [user, setUser, redirect]);
 
+  /**
+   * If the user is Logged in, or just logged in, we redirect to repo serch page
+   * Otherwise Login page will be shown.
+   */
   if (redirect || user) {
     return <Redirect to="/reposearch" />;
   } else {
     return (
       <div className="App">
-        <div className="center">
+        <div className="center-login">
           <div className="m-bot">
             <Logo />
           </div>
           <LoginBar setRedirect={setRedirect} />
           {incorrect ? (
             <Alert
+              style={{ marginTop: '10px' }}
               message="Access token or url wrong, please try again"
               type="error"
               showIcon

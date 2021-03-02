@@ -5,12 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const { Search } = Input;
 
-const SearchBarComp = ({
-  setLoading,
-  reList,
-  setFilteredList,
-  filteredList,
-}) => {
+const SearchBarComp = ({ reList, setFilteredList }) => {
   const [value, setValue] = useState('');
 
   const { user } = useAuth();
@@ -29,11 +24,6 @@ const SearchBarComp = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (user) {
-      console.log('Logged in');
-    } else {
-      console.log('Logged Out');
-    }
   };
 
   const handleOnChange = async (event) => {

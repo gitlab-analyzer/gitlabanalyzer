@@ -11,10 +11,9 @@ import axios from 'axios';
 import { Redirect } from 'react-router';
 
 function SearchPage() {
-  const { loggedIn } = useAuth();
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setUser, repo, setRepo, incorrect } = useAuth();
+  const { user, setUser, setRepo } = useAuth();
   const [reList, setReList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
@@ -79,32 +78,36 @@ function SearchPage() {
 
   if (user) {
     return (
-      <div className="App">
-        <Button
-          type="primary"
-          onClick={handleLogOut}
-          icon={<LogoutOutlined />}
-          className="logout"
-          size="large"
-        >
-          Log Out
-        </Button>
-        <div className="center">
-          <div className="m-bot">
-            <Logo />
+      <div className="main_container">
+        <div className="rightalign">
+          <Button
+            type="primary"
+            onClick={handleLogOut}
+            icon={<LogoutOutlined />}
+            className="logout"
+            size="large"
+          >
+            Log Out
+          </Button>
+        </div>
+        <div className="App">
+          <div className="center">
+            <div className="m-bot">
+              <Logo />
+            </div>
+            <SearchBar
+              reList={reList}
+              setLoading={setLoading}
+              setFilteredList={setFilteredList}
+              filteredList={filteredList}
+            />
+            {loadingContainer()}
+            <Repo
+              setAnalyzing={setAnalyzing}
+              filteredList={filteredList}
+              setFilteredList={setFilteredList}
+            />
           </div>
-          <SearchBar
-            reList={reList}
-            setLoading={setLoading}
-            setFilteredList={setFilteredList}
-            filteredList={filteredList}
-          />
-          {loadingContainer()}
-          <Repo
-            setAnalyzing={setAnalyzing}
-            filteredList={filteredList}
-            setFilteredList={setFilteredList}
-          />
         </div>
       </div>
     );
