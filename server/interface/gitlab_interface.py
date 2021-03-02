@@ -33,15 +33,15 @@ class GitLab:
         self.__token: str = token
 
         self.__url: Optional[str] = url
-        if (url is None) or (url == ''):
+        if (url is None) or (url == ""):
             self.__url = "https://csil-git1.cs.surrey.sfu.ca/"
 
         self.__project_lists: Optional[list] = None
         self.__project: Optional[gl_Project] = None
-        
+
         self.gl: gitlab = gitlab.Gitlab(self.__url, self.__token)
         if self.authenticate():
-            self.__project_lists = self.gl.projects.list(visibility='private')
+            self.__project_lists = self.gl.projects.list(visibility="private")
 
     def __find_project(self, projectID: int) -> Optional[gl_Project]:
         for project in self.__project_lists:
@@ -52,7 +52,7 @@ class GitLab:
     def get_username(self) -> str:
         userList: gitlab = self.gl.namespaces.list()
         for user in userList:
-            if user.kind == 'user':
+            if user.kind == "user":
                 return user.name
 
     def get_all_members(self) -> list:
@@ -75,44 +75,51 @@ class GitLab:
         return self.__project.commits.list(all=True)
 
     # Example: since='2016-01-01T00:00:00Z'
-    def get_commit_list_for_project_with_range(self, sinceDate: str, untilDate: str) -> Optional[list]:
+    def get_commit_list_for_project_with_range(
+        self, sinceDate: str, untilDate: str
+    ) -> Optional[list]:
         return self.__project.commits.list(since=sinceDate, until=untilDate)
 
     # Return a list of commit diff for a project
-    def get_commit_diff_list(self, sinceDate: str = None, untilDate: str = None) -> list:
+    def get_commit_diff_list(
+        self, sinceDate: str = None, untilDate: str = None
+    ) -> list:
         commitDiff: list = []
         if not (sinceDate and untilDate):
             commitList = self.get_commit_list_for_project()
         else:
             commitList = self.get_commit_list_for_project_with_range(
-                sinceDate, untilDate)
+                sinceDate, untilDate
+            )
 
         for oneCommit in commitList:
             commitDiff.append(oneCommit.diff())
         return commitDiff
 
-    '''
+    """
         state: state of the MR. It can be one of all, merged, opened or closed
         order_by: sort by created_at or updated_at
         sort: sort order (asc or desc)
-    '''
+    """
     # First return value: a list of merge requests
     # Ex: [mergeRequest1, mergeRequest2]
     # Second return value: a list of all commits for each merge requests
     # Ex: [[commit1, commit2], [commit1]]
-    def get_merge_requests_and_commits(self, state: str = None, order_by: str = None, sort: str = None) -> Tuple[
-            list, list]:
+    def get_merge_requests_and_commits(
+        self, state: str = None, order_by: str = None, sort: str = None
+    ) -> Tuple[list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort, per_page=100)    # 100 is the maximum # of objects you can get
+            state=state, order_by=order_by, sort=sort, per_page=100
+        )  # 100 is the maximum # of objects you can get
 
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
             commitsList: list = []
             for commit in myCommits:
                 try:
-                    #commitsList.append(myCommits.next())
-                    commitsList.append(commit.short_id)     #store only the short_id
+                    # commitsList.append(myCommits.next())
+                    commitsList.append(commit.short_id)  # store only the short_id
                 except StopIteration:
                     pass
             commitsForMergeRequests.append(commitsList)
@@ -136,28 +143,25 @@ class GitLab:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
 
-    def get_specific_mr(self, mr_iid:Union[str, int]) -> list:
+    def get_specific_mr(self, mr_iid: Union[str, int]) -> list:
         project = self.__project
         return project.mergerequests.get(mr_iid)
 
-    def get_specific_issue(self, issue_iid:int) -> list:
+    def get_specific_issue(self, issue_iid: int) -> list:
         project = self.__project
         return project.issues.get(issue_iid)
 
-    def get_specific_commit(self, commit_sha:str) -> list:
+    def get_specific_commit(self, commit_sha: str) -> list:
         project = self.__project
         return project.commits.get(commit_sha)
 
-    def get_comments_of_mr(self, mergeRequest:gitlab) -> list:
-        #project = self.__project
-        #mr_notes = mergeRequest.notes.list()
+    def get_comments_of_mr(self, mergeRequest: gitlab) -> list:
+        # project = self.__project
+        # mr_notes = mergeRequest.notes.list()
         return mergeRequest.notes.list()
 
-    def get_comments_of_issue(self, issue:gitlab) -> list:
+    def get_comments_of_issue(self, issue: gitlab) -> list:
         return issue.notes.list()
 
-    def get_comments_of_commit(self, commit:gitlab) -> list:
-        return commit.comments.list() 
-
-
-
+    def get_comments_of_commit(self, commit: gitlab) -> list:
+        return commit.comments.list()
