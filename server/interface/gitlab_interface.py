@@ -134,3 +134,18 @@ class GitLab:
         for mergeRequest in mergeRequestList:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
+
+    def get_specific_mr(self, mr_iid:Union[str, int]) -> list:
+        project = self.__project
+        return project.mergerequests.get(mr_iid)
+
+    def get_specific_issue(self, issue_iid:int) -> list:
+        project = self.__project
+        return project.issues.get(issue_iid)
+
+    def get_specific_commit(self, commit_sha:str) -> list:
+        project = self.__project
+        return project.commits.get(commit_sha)
+
+
+

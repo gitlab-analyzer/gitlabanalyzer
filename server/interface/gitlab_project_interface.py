@@ -1,9 +1,10 @@
 import gitlab
-from interface.gitlab_interface import GitLab
+from gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
+
 
 
 class GitLabProject:
@@ -27,10 +28,41 @@ class GitLabProject:
         self.__update_issues_manager()
         pass
 
-    def __update_comment_manager(self):
-        # TODO: This needs to be discussed
-        # https://python-gitlab.readthedocs.io/en/stable/gl_objects/notes.html
-        pass
+    def update_comment_manager(self):
+        #Get comments on MR
+        mrList = self.__gitlab.get_merge_requests_and_commits(state='all')[0] #get only the MRs
+        for mr in mrList:
+            mergeRequest = self.__gitlab.get_specific_mr(mr.iid)
+            mr_notes = mergeRequest.notes.list()
+
+            for item in mr_notes:
+                print(item.body)
+                self.__commentsManager.add_comment(item)
+
+        print ("\n")
+
+        #Get comments on Issue
+        issueList = self.__gitlab.get_issue_list()
+        for issue in issueList:
+            anIssue = self.__gitlab.get_specific_issue(issue.iid)
+            issue_notes = anIssue.notes.list()
+
+            for item in issue_notes:
+                print(item.body)
+                self.__commentsManager.add_comment(item)
+
+        print ("\n")
+
+        #Get comments on Code Commits
+        allCommits = self.__gitlab.get_commit_list_for_project()     #get list of all commits
+        for commit in allCommits:
+            aCommit = self.__gitlab.get_specific_commit(commit.short_id)     
+            commit_notes = aCommit.comments.list()      #get list of all comments of a commit 
+
+            for item in commit_notes:
+                print(item.note)
+                self.__commentsManager.add_comment(item, commit.short_id)
+
 
     def __update_merge_request_manager(self):
         mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state='all')
@@ -71,8 +103,29 @@ class GitLabProject:
     def commits_manager(self) -> CommitManager:
         return self.__commitsManager
 
-# gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
-# gl.authenticate()
-# gl.get_project_list()
-# gl.set_project(25515)
-# list = gl.get_commit_list_for_project()
+    def get_comment_list(self): 
+        return self.__commentsManager.get_comment_list()
+
+
+
+print("START TESTING\n")
+
+gl = GitLab(token='c-Z7RjtQ1qtt2vWVYbjx', url='https://csil-git1.cs.surrey.sfu.ca/')
+gl.authenticate()
+gl.get_project_list()
+gl.set_project(26637)
+"""
+list = gl.get_commit_list_for_project()
+
+for item in list:
+    print(item)
+"""
+
+test = GitLabProject(gl)
+test.update_comment_manager()
+
+
+print("\n")
+for item in test.get_comment_list():
+    print(item.to_json())
+print("Length total: ", len(test.get_comment_list()))
