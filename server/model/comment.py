@@ -69,13 +69,3 @@ class Comment(DataObject):
 	def id(self) -> Optional[int]:
 		return self.__id
 
-"""
-#Test
-
-test = Comment(123, "body", "CREATED date", 28830, "Issue", noteable_iid=1, id=12345)
-
-print(test)
-print("_______")
-print(test.to_json())
-
-"""
