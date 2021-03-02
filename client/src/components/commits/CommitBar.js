@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Dropdown, Menu, Button, Switch } from 'antd';
+import { Table, Space, Badge, Dropdown, Menu } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
@@ -10,7 +10,6 @@ import { useAuth } from '../../context/AuthContext';
  */
 const CommitBar = ({ username }) => {
   const [commits, setCommits] = useState([]);
-  const [hover, setHover] = useState({ visible: false });
   const { selectUser } = useAuth();
 
   useEffect(() => {
@@ -119,7 +118,7 @@ const CommitBar = ({ username }) => {
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
     { title: 'Score', dataIndex: 'Score', key: 'Score' },
     { title: 'Creator', dataIndex: 'creator', key: 'creator' },
-    { title: 'Action', key: 'operation', render: () => <a>Publish</a> },
+    { title: 'Action', key: 'operation', render: () => <a>Expand</a> },
   ];
 
   /**
