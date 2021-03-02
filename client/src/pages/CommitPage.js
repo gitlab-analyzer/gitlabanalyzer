@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchNames } from '../components/commits/commitData';
 import CommitBar from '../components/commits/CommitBar';
-import CommitGraph from '../components/commits/CommitGraph';
 import { Menu, Dropdown, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
@@ -37,7 +36,7 @@ const CommitPage = () => {
   const menu = <Menu onClick={handleMenuClick}>{userItems}</Menu>;
 
   return (
-    <div className="open-sans">
+    <main>
       <div style={{ margin: '10px 0 10px 0' }}>
         <Dropdown.Button
           overlay={menu}
@@ -51,7 +50,7 @@ const CommitPage = () => {
         <CommitsHeatBar data={data} />
       </div>
       <CommitBar username={userNames[0]} />
-    </div>
+    </main>
   );
 };
 

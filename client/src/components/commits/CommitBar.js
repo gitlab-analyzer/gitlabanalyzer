@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Dropdown, Menu, Card } from 'antd';
+import { Table, Space, Badge, Dropdown, Menu, Card, Tag, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 /**
  * Used boilerplate from https://ant.design/components/table/
@@ -22,24 +23,6 @@ const CommitBar = ({ username }) => {
     setCommits(data);
   };
 
-  /**
-   * Experiment
-   */
-  const tabListNoTitle = [
-    {
-      key: 'article',
-      tab: 'article',
-    },
-    {
-      key: 'app',
-      tab: 'app',
-    },
-    {
-      key: 'project',
-      tab: 'project',
-    },
-  ];
-
   const onTabChange = (key, type) => {
     console.log(key, type);
     setKeyTab({ ...keyTab, [type]: key });
@@ -50,26 +33,6 @@ const CommitBar = ({ username }) => {
     app: <p>app content</p>,
     project: <p>project content</p>,
   };
-
-  const codeDiff = () => {
-    return (
-      <Card
-        style={{ width: '100%', height: '200px' }}
-        tabList={tabListNoTitle}
-        activeTabKey={'app'}
-        tabBarExtraContent={<a href="#">More</a>}
-        onTabChange={(key) => {
-          onTabChange(key, 'noTitleKey');
-        }}
-      >
-        {contentListNoTitle[keyTab.noTitleKey]}
-      </Card>
-    );
-  };
-
-  /**
-   * experiment end
-   */
 
   const filterCommits = (username, commits) => {
     const filteredCommits = commits.filter((commit) => {
@@ -116,8 +79,8 @@ const CommitBar = ({ username }) => {
         key: 'state',
         render: () => (
           <span>
-            <Badge status="success" />
-            Included
+            <Badge status="success" color={'blue'} />
+            <Tag color="blue">Included</Tag>
           </span>
         ),
       },
@@ -155,11 +118,6 @@ const CommitBar = ({ username }) => {
         dataSource={data}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
         pagination={false}
-        expandable={{
-          expandedRowRender: (record) => {
-            codeDiff();
-          },
-        }}
       />
     );
   };
@@ -180,11 +138,15 @@ const CommitBar = ({ username }) => {
       render: () => (
         <span>
           <Badge status="success" />
-          Merged
+          <Tag color="green">Merged</Tag>
         </span>
       ),
     },
-    { title: 'Action', key: 'operation', render: () => <a>Expand</a> },
+    {
+      title: 'Action',
+      key: 'operation',
+      render: () => <Button type="primary">Expand</Button>,
+    },
   ];
 
   /**
