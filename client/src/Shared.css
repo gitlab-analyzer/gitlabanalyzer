@@ -12,3 +12,10 @@
 .main_container {
   position: relative;
 }
+
+.logout {
+  position: absolute;
+  margin-left: auto;
+  top: 20px;
+  right: 20px;
+}

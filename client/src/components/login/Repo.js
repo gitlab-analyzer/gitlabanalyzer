@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import { Button, Checkbox, List, Avatar } from 'antd';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
-const Repo = ({ repo, setAnalyzing }) => {
+const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
   const { setOverview, setCommitsList } = useAuth();
   const [redirect, setRedirect] = useState(false);
 
-  const repoList = [
-    repo,
-    'Administrator / Earth GitLab 373',
-    'Administrator / Mars GitLab 373',
-    'Administrator / Jupiter GitLab 373',
-  ];
+  useEffect(() => {}, [filteredList]);
 
   const handleAnalyze = async () => {
     try {
@@ -67,41 +62,40 @@ const Repo = ({ repo, setAnalyzing }) => {
 
   if (redirect) {
     return <Redirect to="/overview" />;
+  } else {
+    return (
+      <div>
+        <List
+          style={{ marginTop: '20px' }}
+          className="demo-loadmore-list"
+          itemLayout="horizontal"
+          dataSource={filteredList}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Button key="details">Details</Button>,
+                <Button onClick={handleAnalyze} key="analyze">
+                  Analyze
+                </Button>,
+                <Checkbox>Batch</Checkbox>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    shape="square"
+                    src="https://cdn4.iconfinder.com/data/icons/logos-and-brands-1/512/144_Gitlab_logo_logos-512.png"
+                  />
+                }
+                title={item}
+                description="Web app for GitLab Analyzer"
+              />
+            </List.Item>
+          )}
+        />
+      </div>
+    );
   }
-
-  return (
-    <div>
-      <List
-        style={{ marginTop: '20px' }}
-        className="demo-loadmore-list"
-        // loading={initLoading}
-        itemLayout="horizontal"
-        dataSource={repoList}
-        renderItem={(item) => (
-          <List.Item
-            actions={[
-              <Button key="details">Details</Button>,
-              <Button onClick={handleAnalyze} key="analyze">
-                Analyze
-              </Button>,
-              <Checkbox>Batch</Checkbox>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  shape="square"
-                  src="https://cdn4.iconfinder.com/data/icons/logos-and-brands-1/512/144_Gitlab_logo_logos-512.png"
-                />
-              }
-              title={item}
-              description="Web app for GitLab Analyzer"
-            />
-          </List.Item>
-        )}
-      />
-    </div>
-  );
 };
 
 export default Repo;

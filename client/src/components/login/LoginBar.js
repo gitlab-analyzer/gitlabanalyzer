@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const { Option } = Select;
 
-const LoginBar = () => {
+const LoginBar = ({ setRedirect }) => {
   // Local states
   const [token, setToken] = useState('');
   const [url, setUrl] = useState('');
@@ -34,6 +34,7 @@ const LoginBar = () => {
           setIncorrect(false);
           setUser(userInfo.data['username']);
           sessionStorage.setItem('user', userInfo.data['username']);
+          setRedirect(true);
         } else {
           setLoading(false);
           console.log('Incorrect token');
