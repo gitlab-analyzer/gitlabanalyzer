@@ -64,7 +64,7 @@ class GitLab:
     def authenticate(self) -> bool:
         try:
             self.gl.auth()
-        except:
+        except gitlab.exceptions.GitlabAuthenticationError:
             return False
         return True
 
