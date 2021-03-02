@@ -63,10 +63,38 @@ class GitLabProject:
                 print(item.note)
                 self.__commentsManager.add_comment(item, commit.short_id)
 
-    def __update_merge_request_manager(self):
-        mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state='all')
+    def update_merge_request_manager(self):
+        mergeRequests, commitsForMR = self.__gitlab.get_merge_requests_and_commits(state='all')
+
+        """
+        for commit in commitsForMR:
+            print(commit)
         for mergeRequest in mergeRequests:
-            self.__mergeRequestManager.add_merge_request(mergeRequest)
+            print(mergeRequest.iid)
+        
+        
+        for mergeRequest in mergeRequests:
+            self.__mergeRequestManager.add_merge_request(mergeRequest, commitsForMR[i])
+    
+        """
+
+        for i in range (0, len(mergeRequests)):
+            self.__mergeRequestManager.add_merge_request(mergeRequests[i], commitsForMR[i])
+
+        """
+        commits_of_mr = []
+
+        mergeRequests = self.__gitlab.get_merge_requests(state='all')
+        for mr in mergeRequests:
+            #print(mr.iid)
+            commits = self.__gitlab.get_commits_of_merge_requests(mr)
+            for commit in commits:      #get related commits
+                #print(commit.short_id)
+                commits_of_mr.append(commit.short_id)
+            self.__mergeRequestManager.add_merge_request(mr, commits_of_mr)
+
+        """
+
 
     def __update_member_manager(self):
         members: list = self.__gitlab.get_all_members()
@@ -102,6 +130,9 @@ class GitLabProject:
     def get_comment_list(self): 
         return self.__commentsManager.get_comment_list()
 
+    def get_merge_request_list(self):
+        return self.__mergeRequestManager.merge_request_list
+
 
 
 # gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
@@ -131,3 +162,13 @@ print("\n")
 for item in test.get_comment_list():
     print(item.to_json())
 print("Length total: ", len(test.get_comment_list()))
+
+
+print("\n")
+test.update_merge_request_manager()
+for item in test.get_merge_request_list():
+    print(item.to_json())
+print("Length total: ", len(test.get_merge_request_list()))
+
+
+

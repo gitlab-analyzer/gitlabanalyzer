@@ -109,13 +109,20 @@ class GitLab:
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
             commitsList: list = []
-            for _ in range(myCommits.total_pages):
+            for commit in myCommits:
                 try:
-                    commitsList.append(myCommits.next())
+                    #commitsList.append(myCommits.next())
+                    commitsList.append(commit.short_id)     #store only the short_id
                 except StopIteration:
                     pass
             commitsForMergeRequests.append(commitsList)
         return mergeRequests, commitsForMergeRequests
+
+    def get_merge_requests(self, state: str = None) -> list:
+        return self.__project.mergerequests.list()
+
+    def get_commits_of_merge_requests(self, mergeRequest:gitlab) -> list:    #erase
+        return mergeRequest.commits()
 
     def get_issue_list(self, status: str = None) -> list:
         project = self.__project
