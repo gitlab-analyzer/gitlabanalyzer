@@ -1,5 +1,6 @@
 import json
 from random import randint
+from typing import Optional
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
@@ -11,7 +12,11 @@ from interface.gitlab_project_interface import GitLabProject
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-gitlabProjectInterface: [GitLabProject] = GitLabProject(None)
+
+
+# These cannot stay as globals. Change when possible
+myGitLab: Optional[GitLab] = None
+gitlabProjectInterface: Optional[GitLabProject] = None
 
 
 @app.route('/')
@@ -52,10 +57,9 @@ def hello_world():
 @app.route('/auth', methods=['post'])
 @cross_origin()
 def auth():
+    global myGitLab
     myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
-        global gitlabProjectInterface
-        gitlabProjectInterface = GitLabProject(myGitlab=myGitLab)
         return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
     else:
         return jsonify({'username': '', 'response': 'invalid'})
@@ -63,14 +67,15 @@ def auth():
 
 @app.route('/getProjectList', methods=['get'])
 def get_project_list():
-    global gitlabProjectInterface
-    projectList = gitlabProjectInterface.project_list
+    global myGitLab
     myResponse = []
-    """
-    This is for testing only, need to be changed later
-    """
-    for project in projectList:
-        myResponse.append(project.name_with_namespace)
+    if myGitLab is not None:
+        projectList = myGitLab.get_project_list()
+        """
+        This is for testing only, need to be changed later
+        """
+        for project in projectList:
+            myResponse.append(project.name_with_namespace)
     return jsonify({'value': myResponse})
 
 
@@ -78,9 +83,10 @@ def get_project_list():
 @app.route('/setProject', methods=['post'])
 @cross_origin()
 def set_project():
+    global myGitLab
     global gitlabProjectInterface
     projectID = request.args.get('projectID', default=None, type=int)
-    gitlabProjectInterface.set_project(projectID=projectID)
+    gitlabProjectInterface = GitLabProject(myGitLab, projectID)
     return jsonify({"response": "ok"})
 
 
