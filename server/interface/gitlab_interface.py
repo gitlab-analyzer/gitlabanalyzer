@@ -147,5 +147,16 @@ class GitLab:
         project = self.__project
         return project.commits.get(commit_sha)
 
+    def get_comments_of_mr(self, mergeRequest:gitlab) -> list:
+        #project = self.__project
+        #mr_notes = mergeRequest.notes.list()
+        return mergeRequest.notes.list()
+
+    def get_comments_of_issue(self, issue:gitlab) -> list:
+        return issue.notes.list()
+
+    def get_comments_of_commit(self, commit:gitlab) -> list:
+        return commit.comments.list() 
+
 
 

@@ -33,7 +33,8 @@ class GitLabProject:
         mrList = self.__gitlab.get_merge_requests_and_commits(state='all')[0] #get only the MRs
         for mr in mrList:
             mergeRequest = self.__gitlab.get_specific_mr(mr.iid)
-            mr_notes = mergeRequest.notes.list()
+            #mr_notes = mergeRequest.notes.list()
+            mr_notes = self.__gitlab.get_comments_of_mr(mergeRequest)
 
             for item in mr_notes:
                 print(item.body)
@@ -45,7 +46,8 @@ class GitLabProject:
         issueList = self.__gitlab.get_issue_list()
         for issue in issueList:
             anIssue = self.__gitlab.get_specific_issue(issue.iid)
-            issue_notes = anIssue.notes.list()
+            #issue_notes = anIssue.notes.list()
+            issue_notes = self.__gitlab.get_comments_of_issue(anIssue)
 
             for item in issue_notes:
                 print(item.body)
@@ -57,7 +59,8 @@ class GitLabProject:
         allCommits = self.__gitlab.get_commit_list_for_project()     #get list of all commits
         for commit in allCommits:
             aCommit = self.__gitlab.get_specific_commit(commit.short_id)     
-            commit_notes = aCommit.comments.list()      #get list of all comments of a commit 
+            #commit_notes = aCommit.comments.list()      
+            commit_notes = self.__gitlab.get_comments_of_commit(aCommit) #get list of all comments of a commit 
 
             for item in commit_notes:
                 print(item.note)
