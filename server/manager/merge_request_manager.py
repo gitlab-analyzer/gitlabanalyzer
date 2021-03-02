@@ -15,7 +15,6 @@ class MergeRequestManager:
         return self.__mergeRequestList
 
     def add_merge_request(self, mergeRequest: gitlab, commits_list: List[str]) -> None:
-        #self.__mergeRequestList.append(MergeRequest(mergeRequest))
         self.__mergeRequestList.append(MergeRequest(mergeRequest, commits_list))
 
     def get_merge_request_by_id(self, myId) -> Union[MergeRequest, None]:

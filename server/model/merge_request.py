@@ -8,22 +8,21 @@ class MergeRequest(DataObject):
     def __init__(self, mr: gitlab, commits_list: List[str]) -> None:
         self.__id = int = mr.id
         self.__iid: int = mr.iid
-        self.__author: int = mr.author['id']
+        self.__author: int = mr.author["id"]
         self.__title: str = mr.title
         self.__description: str = mr.description
         self.__state: str = mr.state
         self.__created_date: str = mr.created_at
-        self.__related_issue_iid: Optional[int] = self.parse_related_issue_iid(mr.description)
-
+        self.__related_issue_iid: Optional[int] = self.parse_related_issue_iid(
+            mr.description
+        )
         if mr.state == "merged":
-            self.__merged_by: Optional[int] = mr.merged_by['id']
-        else:
-            self.__merged_by: Optional[int] = None # merge request is not merged
-        
+            self.__merged_by: Optional[int] = mr.merged_by["id"]
+        else:  # merge request is not merged
+            self.__merged_by: Optional[int] = None
         self.__merged_date: Optional[str] = mr.merged_at
         self.__comments: Optional[List[str]] = None
-        
-        self.__related_commits_sha: List[str] = commits_list 
+        self.__related_commits_sha: List[str] = commits_list
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
@@ -31,11 +30,12 @@ class MergeRequest(DataObject):
     def parse_related_issue_iid(self, description) -> int:
         substring = "Closes #"
         if substring in description:
-            temp = description[description.index(substring) + len(substring):]
-            iid = re.search('[0-9]+', temp).group()
+            tempIndex = description.index(substring) + len(substring)
+            temp = description[tempIndex:]
+            iid = re.search("[0-9]+", temp).group()
             if iid.isnumeric():
                 return int(iid)
-            return None #there is no related issue for this merge request
+            return None  # there is no related issue for this merge request
         return None
 
     # Getters
@@ -84,5 +84,5 @@ class MergeRequest(DataObject):
     def comments(self) -> Optional[List[str]]:
         return self.__comments
 
-    def setComments(self, commentList : List[str]):
+    def setComments(self, commentList: List[str]):
         self.__comments = commentList
