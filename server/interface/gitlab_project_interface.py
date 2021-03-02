@@ -26,20 +26,19 @@ class GitLabProject:
         #self.__update_issues_manager() # TODO fix Issue
 
     def update_comment_manager(self):
-        #Get comments on MR
-        mrList = self.__gitlab.get_merge_requests_and_commits(state='all')[0] #get only the MRs
+        # Get comments on MR
+        mrList = self.__gitlab.get_merge_requests_and_commits(state='all')[0] 
         for mr in mrList:
             mergeRequest = self.__gitlab.get_specific_mr(mr.iid)
-            #mr_notes = mergeRequest.notes.list()
             mr_notes = self.__gitlab.get_comments_of_mr(mergeRequest)
 
             for item in mr_notes:
-                print(item.body)
+                print(item.body)    # print for testing purposes for now
                 self.__commentsManager.add_comment(item)
 
-        print ("\n")
+        print ("\n")    # print for testing purposes
 
-        #Get comments on Issue
+        # Get comments on Issue
         issueList = self.__gitlab.get_issue_list()
         for issue in issueList:
             anIssue = self.__gitlab.get_specific_issue(issue.iid)
@@ -52,12 +51,11 @@ class GitLabProject:
 
         print ("\n")
 
-        #Get comments on Code Commits
-        allCommits = self.__gitlab.get_commit_list_for_project()     #get list of all commits
+        # Get comments on Code Commits
+        allCommits = self.__gitlab.get_commit_list_for_project()     # get list of all commits
         for commit in allCommits:
-            aCommit = self.__gitlab.get_specific_commit(commit.short_id)     
-            #commit_notes = aCommit.comments.list()      
-            commit_notes = self.__gitlab.get_comments_of_commit(aCommit) #get list of all comments of a commit 
+            aCommit = self.__gitlab.get_specific_commit(commit.short_id)           
+            commit_notes = self.__gitlab.get_comments_of_commit(aCommit) # get list of all comments of a commit 
 
             for item in commit_notes:
                 print(item.note)
@@ -65,35 +63,8 @@ class GitLabProject:
 
     def update_merge_request_manager(self):
         mergeRequests, commitsForMR = self.__gitlab.get_merge_requests_and_commits(state='all')
-
-        """
-        for commit in commitsForMR:
-            print(commit)
-        for mergeRequest in mergeRequests:
-            print(mergeRequest.iid)
-        
-        
-        for mergeRequest in mergeRequests:
-            self.__mergeRequestManager.add_merge_request(mergeRequest, commitsForMR[i])
-    
-        """
-
         for i in range (0, len(mergeRequests)):
             self.__mergeRequestManager.add_merge_request(mergeRequests[i], commitsForMR[i])
-
-        """
-        commits_of_mr = []
-
-        mergeRequests = self.__gitlab.get_merge_requests(state='all')
-        for mr in mergeRequests:
-            #print(mr.iid)
-            commits = self.__gitlab.get_commits_of_merge_requests(mr)
-            for commit in commits:      #get related commits
-                #print(commit.short_id)
-                commits_of_mr.append(commit.short_id)
-            self.__mergeRequestManager.add_merge_request(mr, commits_of_mr)
-
-        """
 
 
     def __update_member_manager(self):
@@ -154,20 +125,21 @@ for item in list:
     print(item)
 """
 
-test = GitLabProject(gl, 26637)
-test.update_comment_manager()
+test = GitLabProject(gl, 25515)
 
+"""
+test.update_comment_manager()
 
 print("\n")
 for item in test.get_comment_list():
     print(item.to_json())
 print("Length total: ", len(test.get_comment_list()))
-
+"""
 
 print("\n")
 test.update_merge_request_manager()
 for item in test.get_merge_request_list():
-    print(item.to_json())
+    print(item.to_json(), "\n")
 print("Length total: ", len(test.get_merge_request_list()))
 
 

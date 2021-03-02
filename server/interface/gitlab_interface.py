@@ -118,12 +118,6 @@ class GitLab:
             commitsForMergeRequests.append(commitsList)
         return mergeRequests, commitsForMergeRequests
 
-    def get_merge_requests(self, state: str = None) -> list:
-        return self.__project.mergerequests.list()
-
-    def get_commits_of_merge_requests(self, mergeRequest:gitlab) -> list:    #erase
-        return mergeRequest.commits()
-
     def get_issue_list(self, status: str = None) -> list:
         project = self.__project
         return project.issues.list(status=status, all=True)
