@@ -22,7 +22,7 @@ myGitLab.set_project(project_id)
 """
 
 """
-By default GitLab does not return the complete list of items. 
+By default GitLab does not return the complete list of items.
 Use the all parameter to get all the items when using listing methods:
 Ex: all_groups = gl.groups.list(all=True)
 """
@@ -110,16 +110,15 @@ class GitLab:
     ) -> Tuple[list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort, per_page=100
-        )  # 100 is the maximum # of objects you can get
+            state=state, order_by=order_by, sort=sort
+        )
 
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
             commitsList: list = []
-            for commit in myCommits:
+            for _ in range(myCommits.total_pages):
                 try:
-                    # commitsList.append(myCommits.next())
-                    commitsList.append(commit.short_id)  # store only the short_id
+                    commitsList.append(myCommits.next())
                 except StopIteration:
                     pass
             commitsForMergeRequests.append(commitsList)
@@ -142,26 +141,3 @@ class GitLab:
         for mergeRequest in mergeRequestList:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
-
-    def get_specific_mr(self, mr_iid: Union[str, int]) -> list:
-        project = self.__project
-        return project.mergerequests.get(mr_iid)
-
-    def get_specific_issue(self, issue_iid: int) -> list:
-        project = self.__project
-        return project.issues.get(issue_iid)
-
-    def get_specific_commit(self, commit_sha: str) -> list:
-        project = self.__project
-        return project.commits.get(commit_sha)
-
-    def get_comments_of_mr(self, mergeRequest: gitlab) -> list:
-        # project = self.__project
-        # mr_notes = mergeRequest.notes.list()
-        return mergeRequest.notes.list()
-
-    def get_comments_of_issue(self, issue: gitlab) -> list:
-        return issue.notes.list()
-
-    def get_comments_of_commit(self, commit: gitlab) -> list:
-        return commit.comments.list()

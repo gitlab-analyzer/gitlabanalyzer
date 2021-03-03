@@ -29,7 +29,7 @@ class GitLabProject:
         pass
 
     def __update_merge_request_manager(self):
-        mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state='all')
+        mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state="all")
         for mergeRequest in mergeRequests:
             self.__mergeRequestManager.add_merge_request(mergeRequest)
 
