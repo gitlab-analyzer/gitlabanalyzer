@@ -5,7 +5,7 @@ import BarGraph from '../components/overview/BarGraph'
 import { Menu, Dropdown, Button } from 'antd';
 import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
-
+import StackedBarGraph from '../components/overview/StackedBar'
 
 /* could probably move some of this stuff into other components */
 
@@ -25,9 +25,9 @@ const Overview = () => {
     const [startDate, setStartDate] = useState('Jan 2021')
     const [endDate, setEndDate] = useState('Mar 2021')
 
-    const [mrDropdown, setMrDropdown] = useState('Number')
-    const [commitDropdown, setCommitDropdown] = useState('Number')
+    const [combinedDropdown, setCombinedDropdown] = useState('Number')
     const [crDropdown, setCrDropdown] = useState('All')
+    const [textRender, setTextRender] = useState('Number')
     const classes = useStyles();
 
     // will be replaced once we find out how to get data from backend
@@ -38,22 +38,32 @@ const Overview = () => {
     const data3 = [10, 44, 55, 41, 43, 0, 30, 10, 10, 10, 44, 44, 55, 41, 67, 22, 10, 44, 44, 55, 41, 55, 41]
 
 
-    const [mrSeries, setMrSeries] = useState([{
-      data: data
-    }
-    ])
+    // const [mrSeries, setMrSeries] = useState([{
+    //   data: data
+    // }
+    // ])
 
-    const [commitSeries, setCommitSeries] = useState([{
+    // const [commitSeries, setCommitSeries] = useState([{
+    //   data: data
+    // }
+    // ])
+    const [combinedSeries, setCombinedSeries] = useState([{
+      name: "Merge Requests",
       data: data
+    }, {
+      name: "Commits",
+      data: data2
     }
-    ])
+])
 
     const [crSeries, setCrSeries] = useState([{
+      name: "Code Review Words",
       data: data
     }
     ])
 
     const [issueSeries, setIssueSeries] = useState([{
+      name: "Issue Words",
       data: data
     }
     ])
@@ -61,30 +71,24 @@ const Overview = () => {
     const handleMenuClick = (e) => {
       console.log('Key test:', e);
 
-      if(e.key === "mrNum") {
-        setMrDropdown("Number")
-        setMrSeries([{
+      if(e.key === "Num") {
+        setCombinedDropdown("Number")
+        setCombinedSeries([{
           data: data
-        }
-        ])
-      } else if(e.key === "mrScore") {
-        setMrDropdown("Score")
-        setMrSeries([{
+        },{
           data: data2
         }
         ])
-      } else if(e.key === "commitNum") {
-        setCommitDropdown("Commits")
-        setCommitSeries([{
+        setTextRender('Number')
+      } else if(e.key === "Score") {
+        setCombinedDropdown("Score")
+        setCombinedSeries([{
+          data: data2
+        }, {
           data: data
         }
         ])
-      } else if (e.key === "commitScore") {
-        setCommitDropdown("Score")
-        setCommitSeries([{
-          data: data3
-        }
-        ])
+        setTextRender('Score')
       } else if (e.key ==="crAll") {
         setCrDropdown("All")
         setCrSeries([{
@@ -107,17 +111,10 @@ const Overview = () => {
  
     };
 
-    const mrMenu = (
+    const combinedMenu = (
       <Menu onClick={handleMenuClick} >
-        <Menu.Item key="mrNum">Number</Menu.Item>
-        <Menu.Item key="mrScore">Score</Menu.Item>
-      </Menu>
-    )
-
-    const commitMenu = (
-      <Menu onClick={handleMenuClick} >
-        <Menu.Item key="commitNum">Number</Menu.Item>
-        <Menu.Item key="commitScore">Score</Menu.Item>
+        <Menu.Item key="Num">Number</Menu.Item>
+        <Menu.Item key="Score">Score</Menu.Item>
       </Menu>
     )
 
@@ -133,28 +130,15 @@ const Overview = () => {
         <div>
             <Grid container className={classes.grid}>
             <Grid item xs={12}>                    
-                        <b>Merge Request Score from {startDate} to {endDate}</b>
+                        <b>Merge Request & Commit {textRender} from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <BarGraph series={mrSeries} colors={'#C7EBFF'} stroke={'#6AB1D9'}/>
+                        <StackedBarGraph series={combinedSeries} />
             </Grid>
             <Grid item xs={2}>
-                      <Dropdown overlay={mrMenu}>
+                      <Dropdown overlay={combinedMenu}>
                 <Button>
-                  {mrDropdown} <DownOutlined />
-                </Button>
-              </Dropdown>
-            </Grid>
-            <Grid item xs={12}>                    
-                        <b>Commit Score from {startDate} to {endDate}</b>
-            </Grid>
-            <Grid item xs={10}>
-                      <BarGraph series={commitSeries} colors={'#ABF1DC'} stroke={'#1db084'}/>
-            </Grid>
-            <Grid item xs={2}>
-                      <Dropdown overlay={commitMenu}>
-                <Button>
-                  {commitDropdown} <DownOutlined />
+                  {combinedDropdown} <DownOutlined />
                 </Button>
               </Dropdown>
             </Grid>

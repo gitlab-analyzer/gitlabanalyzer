@@ -49,16 +49,6 @@ function FloatBar() {
             </div>
           </Grid>
           <Grid item xs={12}>
-            <div className="selectUser">
-              <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
-                <Option value="everyone">@everyone</Option>
-                {FloatBarData.map((Detail) => {
-                  return <Option value={Detail.username}>@{Detail.username}</Option>
-                })}
-              </Select>
-            </div>
-          </Grid>
-          <Grid item xs={12}>
             <Button style={{ width: 150 }}>
               Copy
               <CopyOutlined className="copyicon" />

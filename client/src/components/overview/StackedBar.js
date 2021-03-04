@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts'
 
 // adapted from: https://apexcharts.com/react-chart-demos/column-charts/stacked/
 
-class BarGraph extends React.Component {
+class StackedBarGraph extends React.Component {
 
     constructor(props) {
       super(props);
@@ -11,12 +11,12 @@ class BarGraph extends React.Component {
       this.state = {
       
         options: {
-          colors: [this.props.colors],
+          colors: [ '#ABF1DC', '#C7EBFF'],
           stroke: {
             show: true,
             curve: 'smooth',
             lineCap: 'butt',
-            colors: [this.props.stroke],
+            colors: [ '#1db084', '#6AB1D9'],
             width: 1,
             dashArray: 0,      
         },
@@ -24,6 +24,7 @@ class BarGraph extends React.Component {
             toolbar: {
               show: false
             },
+            stacked: true,
             type: 'bar',
             height: 350,
           },
@@ -50,6 +51,18 @@ class BarGraph extends React.Component {
           xaxis: {
             categories: ['Jan', 'Feb'],
           },
+          // yaxis: {
+          //   title: {
+          //     text: 'Number'
+          //   }
+          // },
+          // legend: {
+          //   position: 'right',
+          //   offsetY: 40,
+          //   onItemClick: {
+          //     toggleDataSeries: false
+          //   }
+          // },
           fill: {
             type: 'solid',
             opacity: 1
@@ -69,7 +82,7 @@ class BarGraph extends React.Component {
         
 
   <div id="chart">
-<Chart options={this.state.options} series={this.props.series} type="bar" height={200} />
+<Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
 </div>
 
 
@@ -77,4 +90,4 @@ class BarGraph extends React.Component {
     }
   }
 
-export default BarGraph
+export default StackedBarGraph
