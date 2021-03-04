@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar, Nav, Link} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import FloatBar from './floatbar/FloatBar';
-import { Select, Button} from 'antd';
 import Logo from './Logo';
 
 const Header = () => {
@@ -30,8 +29,6 @@ const Header = () => {
               <Nav.Link>Config</Nav.Link>
             </LinkContainer>
           </Nav>
-          <Select defaultValue="@someone" style={{ width: 150 }} >
-              </Select>
         </Navbar.Collapse>
       </Navbar>
     </div>

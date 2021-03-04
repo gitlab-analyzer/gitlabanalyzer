@@ -51,18 +51,19 @@ class StackedBarGraph extends React.Component {
           xaxis: {
             categories: ['Jan', 'Feb'],
           },
+          // add labels later
           // yaxis: {
           //   title: {
           //     text: 'Number'
           //   }
           // },
-          // legend: {
-          //   position: 'right',
-          //   offsetY: 40,
-          //   onItemClick: {
-          //     toggleDataSeries: false
-          //   }
-          // },
+          legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            onItemClick: {
+              toggleDataSeries: false
+            }
+          },
           fill: {
             type: 'solid',
             opacity: 1
