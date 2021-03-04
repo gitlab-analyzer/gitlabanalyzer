@@ -41,7 +41,8 @@ def hello_world():
     username = urllib.parse.quote_plus('root')
     password = urllib.parse.quote_plus('pass')
     myClient = pymongo.MongoClient(
-        "mongodb://%s:%s@mangodb:27017/" % (username, password))
+        "mongodb://%s:%s@mangodb:27017/" % (username, password)
+    )
     myDB = myClient["student_repo"]
     myCol = myDB["students"]
 
@@ -102,7 +103,7 @@ def get_project_overview():
                 "username": member.username,
                 "number_commits": randint(0, 100),
                 "lines_of_code": randint(0, 100000),
-                "number_issues": randint(0, 100)
+                "number_issues": randint(0, 100),
             }
         )
     # TODO: The format of this response need to be changed
@@ -121,7 +122,9 @@ def get_commits():
 @app.route('/getMergeRequests', methods=['get'])
 def get_merge_request():
     global gitlabProjectInterface
-    mergeRequestList: list = gitlabProjectInterface.merge_request_manager.merge_request_list
+    mergeRequestList: list = (
+        gitlabProjectInterface.merge_request_manager.merge_request_list
+    )
     return jsonify({"merge_request_list": mergeRequestList})
 
 

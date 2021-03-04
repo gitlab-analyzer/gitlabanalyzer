@@ -5,33 +5,33 @@ from gitlab.v4.objects import ProjectIssue
 
 class Issue(DataObject):
     """
-        attributes:     
-            issue_id -> int                 # the issue's number in the context of the project (iid)
-            upvotes -> int
-            downvotes -> int
-            merge_requests_count -> int     # number of merge requests made for the issue
-            comments_count -> int           # (user_notes_count)
-            author_id -> int
-            milestone_id -> Optional[int]
-            closer_id -> Optional[int]      # Member who closes this issue (closed_by)
+    attributes:
+        issue_id -> int                 # the issue's number in the context of the project (iid)
+        upvotes -> int
+        downvotes -> int
+        merge_requests_count -> int     # number of merge requests made for the issue
+        comments_count -> int           # (user_notes_count)
+        author_id -> int
+        milestone_id -> Optional[int]
+        closer_id -> Optional[int]      # Member who closes this issue (closed_by)
 
-            project_id -> Union[int, str]   # project ID or URL-encoded path of the project
+        project_id -> Union[int, str]   # project ID or URL-encoded path of the project
 
-            title -> str
-            description -> str
-            state -> str                    # where the issue is on the issues board e.g. "Open", "Closed", "In Progress", etc.
-            updated_date -> str             # string datetime in ISO 8601 format (updated_at)
-            created_date -> str             # string datetime in ISO 8601 format (created_at)
-            closed_at -> Optional[str]                # string datetime in ISO 8601 format (closed_at)
-            due_date -> Optional[str]                 # string datetime in ISO 8601 format
+        title -> str
+        description -> str
+        state -> str                    # where the issue is on the issues board e.g. "Open", "Closed", "In Progress", etc.
+        updated_date -> str             # string datetime in ISO 8601 format (updated_at)
+        created_date -> str             # string datetime in ISO 8601 format (created_at)
+        closed_at -> Optional[str]                # string datetime in ISO 8601 format (closed_at)
+        due_date -> Optional[str]                 # string datetime in ISO 8601 format
 
-            assignees_list -> List[int]     # An immutable list of Members' id assigned to the issue
-            labels_list -> List[str]        # An immutable list of tags/labels e.g. "Critical", "Back-End", etc.
+        assignees_list -> List[int]     # An immutable list of Members' id assigned to the issue
+        labels_list -> List[str]        # An immutable list of tags/labels e.g. "Critical", "Back-End", etc.
 
-        methods:
-            Getters for all attributes
-            __str__()                       # implicit "to string" method
-            to_json()
+    methods:
+        Getters for all attributes
+        __str__()                       # implicit "to string" method
+        to_json()
     """
 
     def __init__(self, gitlab_issue: ProjectIssue) -> None:
@@ -41,8 +41,9 @@ class Issue(DataObject):
         self.__merge_requests_count: int = gitlab_issue.merge_requests_count
         self.__comment_count: int = gitlab_issue.user_notes_count
         self.__author_id: int = gitlab_issue.author.id
-        self.__milestone_id: Optional[
-            int] = None if gitlab_issue.milestone is None else gitlab_issue.milestone.id  # maybe not needed
+        self.__milestone_id: Optional[int] = (
+            None if gitlab_issue.milestone is None else gitlab_issue.milestone.id
+        )  # maybe not needed
         # self.__closer_id: Optional[int] = gitlab_issue.closed_by.id # TODO: fix bug
 
         self.__project_id: Union[int, str] = gitlab_issue.project_id
@@ -55,7 +56,9 @@ class Issue(DataObject):
         self.__closed_date: Optional[str] = gitlab_issue.closed_at
         self.__due_date: Optional[str] = gitlab_issue.due_date
 
-        self.__assignee_id_list: List[int] = [member.id for member in gitlab_issue.assignees]
+        self.__assignee_id_list: List[int] = [
+            member.id for member in gitlab_issue.assignees
+        ]
         self.__labels_list: List[str] = gitlab_issue.labels
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE

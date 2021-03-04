@@ -16,6 +16,6 @@ class DataObject:
 
     def to_json(self) -> str:
         return json.dumps(self.__thisDict)
-        
+
     def __str__(self) -> str:
         return self.to_dict().__str__()

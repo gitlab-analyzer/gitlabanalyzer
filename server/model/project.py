@@ -5,32 +5,33 @@ from gitlab.v4.objects import Project as gl_Project
 
 class Project(DataObject):
     """
-        attributes:
-            project_id -> int
-            name -> str
-            description -> str
-            web_url -> str
-            path_with_namespace -> str
-            runners_token -> str                        # TODO idk what this is, but it might be important
+    attributes:
+        project_id -> int
+        name -> str
+        description -> str
+        web_url -> str
+        path_with_namespace -> str
+        runners_token -> str                        # TODO idk what this is, but it might be important
 
-            default_branch -> str
-            visibility -> str
-            archived -> bool
+        default_branch -> str
+        visibility -> str
+        archived -> bool
 
-            created_date -> str                         # ISO 8601 format
-            updated_date -> str                         # ISO 8601 format
+        created_date -> str                         # ISO 8601 format
+        updated_date -> str                         # ISO 8601 format
 
-            forks_count -> int
-            star_count -> int
+        forks_count -> int
+        star_count -> int
 
-            owner_id -> int
+        owner_id -> int
 
-            tag_list -> List[str]
-            # issues_id_list -> List[int]
-            # merge_requests_id_list -> List[int]
-            # branches_id_list -> List[int]
-            # members_id_list -> List[id]
+        tag_list -> List[str]
+        # issues_id_list -> List[int]
+        # merge_requests_id_list -> List[int]
+        # branches_id_list -> List[int]
+        # members_id_list -> List[id]
     """
+
     def __init__(self, gitlab_project: gl_Project) -> None:
         self.__project_id: int = gitlab_project.id
         self.__name: str = gitlab_project.name
@@ -68,19 +69,19 @@ class Project(DataObject):
 
     @property
     def project_id(self) -> int:
-        return self.__project_id 
-    
+        return self.__project_id
+
     @property
     def name(self) -> str:
         return self.__name
-    
+
     @property
     def namespace(self) -> str:
         return self.__namespace
-    
+
     @property
     def name_with_namespace(self) -> str:
-        return "{} / {}".format(self.__name, self.__namespace) 
+        return "{} / {}".format(self.__name, self.__namespace)
 
     @property
     def path(self) -> str:
@@ -97,7 +98,7 @@ class Project(DataObject):
     @property
     def web_url(self) -> str:
         return self.__web_url
-    
+
     @property
     def description(self) -> str:
         return self.__description
@@ -109,11 +110,11 @@ class Project(DataObject):
     @property
     def visibility(self) -> str:
         return self.__visibility
-    
+
     @property
     def is_archived(self) -> bool:
         return self.__is_archived
-    
+
     @property
     def created_date(self) -> str:
         return self.__created_date
@@ -121,11 +122,11 @@ class Project(DataObject):
     @property
     def updated_date(self) -> str:
         return self.__updated_date
-    
+
     @property
     def fork_count(self) -> int:
         return self.__fork_count
-    
+
     @property
     def star_count(self) -> int:
         return self.__star_count
