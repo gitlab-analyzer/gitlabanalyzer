@@ -13,8 +13,9 @@ backend format:
   tags:
     - docker
   rules:
-    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
+    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $STAGING_BRANCH'
       changes:
+        - server/*
         - server/**/*
       when: always
   before_script:
@@ -31,6 +32,7 @@ backend build:
   rules:
     - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
       changes:
+        - server/*
         - server/**/*
       when: always
   before_script:
