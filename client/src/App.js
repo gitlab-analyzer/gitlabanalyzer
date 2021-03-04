@@ -20,6 +20,7 @@ function App() {
         <Switch>
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
+          <Route path="/reposearch" component={SearchPage} />
           <Container maxWidth="lg">
             <Header />
             <Route path="/overview" exact component={OverviewPage} />

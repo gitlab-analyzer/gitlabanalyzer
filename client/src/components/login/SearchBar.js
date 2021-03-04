@@ -2,39 +2,32 @@ import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
 import { Input } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
 
 const { Search } = Input;
 
-const SearchBarComp = ({ setLoading }) => {
+const SearchBarComp = ({ reList, setFilteredList }) => {
   const [value, setValue] = useState('');
-  const [reList, setReList] = useState([]);
 
-  const { user, repo, setRepo } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const getRepos = async () => {
-      setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/getProjectList');
-      setRepo(repoList.data.value);
-      setReList([
-        repoList.data.value,
-        'Administrator / Earth GitLab 373',
-        'Administrator / Mars GitLab 373',
-        'Administrator / Jupiter GitLab 373',
-      ]);
-      setLoading(false);
-    };
-    getRepos();
-  }, [setRepo]);
+    if (value === '') {
+      setFilteredList(reList);
+    } else {
+      setFilteredList(
+        reList.filter((repo) =>
+          repo.toLowerCase().includes(value.toLowerCase())
+        )
+      );
+    }
+  }, [value]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (user) {
-      console.log('Logged in');
-    } else {
-      console.log('Logged Out');
-    }
+  };
+
+  const handleOnChange = async (event) => {
+    setValue(event.target.value);
   };
 
   return (
@@ -42,15 +35,13 @@ const SearchBarComp = ({ setLoading }) => {
       <div className="bar_container">
         <form className="flex" onSubmit={handleSubmit}>
           <Search
+            value={value}
             style={{ width: '650px' }}
             placeholder="Search a repository"
             allowClear
             enterButton="Search"
             size="large"
-            onChange={(event) => {
-              setValue(event.target.value);
-            }}
-            // onSearch={onSearch}
+            onChange={handleOnChange}
           />
         </form>
       </div>

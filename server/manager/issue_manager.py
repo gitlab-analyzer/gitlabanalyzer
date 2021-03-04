@@ -5,9 +5,10 @@ from dateutil import parser
 
 
 class IssueManager:
-    def __init__(self, gitlab_issue_list: list) -> None:
+    def __init__(self) -> None:
         self.__issue_list: List[Issue] = []
 
+    def populate_issue_list(self, gitlab_issue_list: list):
         for issue in gitlab_issue_list:
             newIssue = Issue(issue)
             self.__issue_list.append(newIssue)

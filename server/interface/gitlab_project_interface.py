@@ -1,31 +1,27 @@
-import gitlab
 from interface.gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
+from manager.issue_manager import IssueManager
 
 
 class GitLabProject:
-    def __init__(self, myGitlab: gitlab):
+    def __init__(self, myGitlab: GitLab, projectID: int):
+        self.__gitlab: GitLab = myGitlab
+        self.__gitlab.set_project(projectID=projectID)
+
         self.__membersManager: MemberManager = MemberManager()
-        # self.__issuesManager
+        self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
-        self.__gitlab: GitLab = myGitlab
 
-    def set_project(self, projectID: int):
-        self.__gitlab.set_project(projectID=projectID)
-        self.__update_managers()
-
-    def __update_managers(self):
         self.__update_comment_manager()
         self.__update_merge_request_manager()
         self.__update_member_manager()
         self.__update_commits_manager()
-        self.__update_issues_manager()
-        pass
+        #self.__update_issues_manager() # TODO fix Issue
 
     def __update_comment_manager(self):
         # TODO: This needs to be discussed
@@ -50,10 +46,7 @@ class GitLabProject:
 
     def __update_issues_manager(self):
         issueList: list = self.__gitlab.get_issue_list()
-        for issue in issueList:
-            # TODO: add issue to issueManager
-            pass
-        pass
+        self.__issuesManager.populate_issue_list(issueList)
 
     @property
     def project_list(self) -> list:
