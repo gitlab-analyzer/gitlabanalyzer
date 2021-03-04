@@ -1,5 +1,6 @@
 from typing import Union, Optional, List
-from model.member import *
+from model import member
+from model.member import Member
 import gitlab
 from datetime import datetime
 from dateutil import parser
