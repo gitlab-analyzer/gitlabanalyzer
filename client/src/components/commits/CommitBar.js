@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Dropdown, Menu, Card, Tag, Button } from 'antd';
+import { Table, Space, Badge, Dropdown, Menu, Tag, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Drawer from 'rc-drawer';
 
 /**
  * Used boilerplate from https://ant.design/components/table/
@@ -12,7 +12,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 const CommitBar = ({ username }) => {
   const [commits, setCommits] = useState([]);
   const { selectUser } = useAuth();
-  const [keyTab, setKeyTab] = useState({ key: 'tab1', noTitleKey: 'app' });
 
   useEffect(() => {
     getFakeData();
@@ -21,17 +20,6 @@ const CommitBar = ({ username }) => {
   const getFakeData = async () => {
     const data = await fetchData();
     setCommits(data);
-  };
-
-  const onTabChange = (key, type) => {
-    console.log(key, type);
-    setKeyTab({ ...keyTab, [type]: key });
-  };
-
-  const contentListNoTitle = {
-    article: <p>article content</p>,
-    app: <p>app content</p>,
-    project: <p>project content</p>,
   };
 
   const filterCommits = (username, commits) => {
@@ -183,6 +171,7 @@ const CommitBar = ({ username }) => {
   /**
    * Render the Table component which represents the Merge Requests
    */
+
   return (
     <>
       <Table
