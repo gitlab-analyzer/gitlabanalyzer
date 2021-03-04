@@ -133,4 +133,3 @@ class Project(DataObject):
     @property
     def owner_id(self) -> int:
         return self.__owner_id
-

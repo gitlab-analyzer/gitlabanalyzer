@@ -50,5 +50,3 @@ class CommitManager:
 
     def get_number_of_commits(self) -> int:
         return len(self.__commitList)
-
-
