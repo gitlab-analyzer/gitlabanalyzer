@@ -4,13 +4,13 @@ import { Select, Button, DatePicker } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import IndividualScore from './IndividualScore.js';
 import EveryoneScore from './EveryoneScore.js';
-import Data from './FloatBarData.json';
+// import Data from './FloatBarData.json';
 import moment from 'moment';
 import "./FloatBar.css";
 
-var FloatBarData = Data.users;
+// var FloatBarData = Data.users;
 
-const { Option } = Select;
+// const { Option } = Select;
 const { RangePicker } = DatePicker;
 const iter1 = ["2021-01-18", "2021-02-22"];
 const iter2 = ["2021-02-23", "2021-03-29"];
@@ -54,7 +54,7 @@ function FloatBar() {
               />
             </div>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <div className="selectUser">
               <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
                 <Option value="everyone">@everyone</Option>
@@ -63,7 +63,7 @@ function FloatBar() {
                 })}
               </Select>
             </div>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <Button style={{ width: 150 }}>
               Copy

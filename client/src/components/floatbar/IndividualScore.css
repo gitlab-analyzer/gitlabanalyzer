@@ -1,34 +1,57 @@
 * {
-    box-sizing: border-box;
-  }
+  box-sizing: border-box;
+}
 
 .individualscore {
-    width: 100%;
-    margin-left: 60px;
-    display: flex;
-  }
+  width: 100%;
+  margin-left: 60px;
+  display: flex;
+}
+
+.smallscore {
+  text-align: left;
+  flex-direction: column;
+  width: 23%;
+}
+
+.numberscore {
+  font-weight: bolder;
+  font-size: 50px;
+  line-height:75%;
+}
+
+.scoretext {
+  font-size: 15px;
+}
   
-  .smallscore {
-    text-align: left;
-    flex-direction: column;
-    width: 23%;
-  }
-  
-  .numberscore {
-    font-weight: bolder;
-    font-size: 50px;
-    line-height:75%;
-  }
-  
-  .scoretext {
-    font-size: 15px;
-  }
-  
-  .rank {
-    padding-bottom: 15px;
-    margin-left: 60px;
-  }
-  
-  .progressbar {
-    width: 150px;
-  }
+.rank {
+  padding-bottom: 15px;
+  margin-left: 60px;
+}
+
+.progressbar {
+  width: 150px;
+}
+
+
+
+.ant-card {
+  width: 300px;
+}
+
+.ant-card-head-title {
+  font-size: 50px;
+  text-align: center;
+  padding: 10px 0px 0px 0px !important;
+}
+
+.ant-card-body {
+  text-align: center;
+  padding: 7px !important;
+}
+
+.cardContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0px 10px 0px;
+}

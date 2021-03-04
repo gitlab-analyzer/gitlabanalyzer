@@ -2,9 +2,12 @@ import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import FloatBar from './floatbar/FloatBar';
+import SelectUser from './SelectUser';
 import Logo from './Logo';
 
 const Header = () => {
+
+
   return (
     <div>
       <Logo />
@@ -31,6 +34,8 @@ const Header = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+      <SelectUser />
+      {/* <IndividualScore></IndividualScore> */}
     </div>
   );
 };
