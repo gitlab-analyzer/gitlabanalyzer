@@ -1,15 +1,23 @@
+from typing import Optional
 from interface.gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
-
+from model.project import Project
 
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         self.__gitlab: GitLab = myGitlab
+
+        # Is this necessary? -Josh
         self.__gitlab.set_project(projectID=projectID)
+
+        self.__project: Optional[Project] = None
+        for project in self.__gitlab.get_project_list():
+            if project.id == projectID:
+                self.__project = Project(project)
 
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
@@ -47,6 +55,12 @@ class GitLabProject:
     def __update_issues_manager(self):
         issueList: list = self.__gitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
+
+    # Getters
+
+    @property
+    def project_id(self) -> Project:
+        return self.__project
 
     @property
     def project_list(self) -> list:
