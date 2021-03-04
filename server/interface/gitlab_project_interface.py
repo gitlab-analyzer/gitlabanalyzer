@@ -21,7 +21,7 @@ class GitLabProject:
         self.__update_merge_request_manager()
         self.__update_member_manager()
         self.__update_commits_manager()
-        #self.__update_issues_manager() # TODO fix Issue
+        self.__update_issues_manager() # TODO fix Issue
 
     def __update_comment_manager(self):
         # TODO: This needs to be discussed
