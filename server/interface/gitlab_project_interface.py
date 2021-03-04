@@ -1,4 +1,4 @@
-from interface.gitlab_interface import GitLab
+from gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
@@ -33,8 +33,9 @@ class GitLabProject:
             mr_notes = self.__gitlab.get_comments_of_mr(mergeRequest)
 
             for item in mr_notes:
-                # print(item.body)  # print for testing purposes
-                self.__commentsManager.add_comment(item)
+            	# print(item.body)  # print for testing purposes
+            	if item.system is False:
+            		self.__commentsManager.add_comment(item)
 
         # print("\n")  # print for testing purposes
 
@@ -46,7 +47,9 @@ class GitLabProject:
 
             for item in issue_notes:
                 # print(item.body)
-                self.__commentsManager.add_comment(item)
+                # print(item.system)
+                if item.system is False:
+                	self.__commentsManager.add_comment(item)
 
         # print("\n")
 
@@ -123,19 +126,21 @@ gl = GitLab(token="c-Z7RjtQ1qtt2vWVYbjx", url="https://csil-git1.cs.surrey.sfu.c
 gl.authenticate()
 gl.get_project_list()
 
-"""
+
 test = GitLabProject(gl, 26637)
+# test = GitLabProject(gl, 25515)
 test.update_comment_manager()
 
 print("\n")
 for item in test.get_comment_list():
     print(item.to_json())
 print("Length total: ", len(test.get_comment_list()))
-"""
 
+"""
 print("\n")
 test = GitLabProject(gl, 25515)
 test.update_merge_request_manager()
 for item in test.get_merge_request_list():
     print(item.to_json(), "\n")
 print("Length total: ", len(test.get_merge_request_list()))
+"""
