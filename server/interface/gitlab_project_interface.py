@@ -1,4 +1,4 @@
-from gitlab_interface import GitLab
+from interface.gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager

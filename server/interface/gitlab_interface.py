@@ -22,7 +22,7 @@ myGitLab.set_project(project_id)
 """
 
 """
-By default GitLab does not return the complete list of items. 
+By default GitLab does not return the complete list of items.
 Use the all parameter to get all the items when using listing methods:
 Ex: all_groups = gl.groups.list(all=True)
 """
@@ -64,7 +64,7 @@ class GitLab:
     def authenticate(self) -> bool:
         try:
             self.gl.auth()
-        except:
+        except gitlab.exceptions.GitlabAuthenticationError:
             return False
         return True
 

@@ -13,7 +13,7 @@ backend format:
   tags:
     - docker
   rules:
-    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $STAGING_BRANCH'
+    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
       changes:
         - server/**/*
       when: always
@@ -21,7 +21,7 @@ backend format:
     - pip install --upgrade pip
     - pip install black
   script:
-    - black --check --exclude 'server/test' server
+    - black --check -S --exclude 'server/test' server
 
 backend build:
   stage: build
@@ -31,7 +31,7 @@ backend build:
   rules:
     - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
       changes:
-        - server/*
+        - server/**/*
       when: always
   before_script:
     - pip install --upgrade pip
