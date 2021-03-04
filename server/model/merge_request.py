@@ -84,5 +84,5 @@ class MergeRequest(DataObject):
     def comments(self) -> Optional[List[str]]:
         return self.__comments
 
-    def setComments(self, commentList: List[str]):
+    def set_comments(self, commentList: List[str]):
         self.__comments = commentList
