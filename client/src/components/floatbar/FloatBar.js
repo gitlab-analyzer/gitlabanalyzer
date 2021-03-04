@@ -10,7 +10,7 @@ import "./FloatBar.css";
 
 // var FloatBarData = Data.users;
 
-// const { Option } = Select;
+const { Option } = Select;
 const { RangePicker } = DatePicker;
 const iter1 = ["2021-01-18", "2021-02-22"];
 const iter2 = ["2021-02-23", "2021-03-29"];
@@ -18,20 +18,24 @@ const iter3 = ["2021-03-30", "2021-04-26"];
 function FloatBar() {
 
 
-  const [user, setUser] = React.useState('everyone');
-  function handleChange(value) {
-    setUser(value);
-  }
+  // const [user, setUser] = React.useState('everyone');
+  const [sortType, setSortType] = React.useState('');
+  // function sortChange(value) {
+  //   setSortType(value);
+  
+  //   console.log(sortType);
+  // }
 
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
-        {(user && user === "everyone" &&
+        <EveryoneScore />
+        {/* {(user && user === "everyone" &&
           <div><EveryoneScore /></div>
         ) || (
             <div><IndividualScore>{user}</IndividualScore></div>
           )
-        }
+        } */}
       </div>
       <div className="floatbar-functions">
         <Grid
@@ -64,6 +68,19 @@ function FloatBar() {
               </Select>
             </div>
           </Grid> */}
+          <Grid item xs={12}>
+            <div className="selectSort">
+              <Select 
+                placeholder = "Sort" 
+                style={{ width: 150 }} 
+                onChange={value => setSortType(value)}
+              >
+                <Option value="Alphabetical">Alphabetical</Option>
+                <Option value="Low to High">Low to High</Option>
+                <Option value="High to Low">High to Low</Option>
+              </Select>
+            </div>
+          </Grid>
           <Grid item xs={12}>
             <Button style={{ width: 150 }}>
               Copy

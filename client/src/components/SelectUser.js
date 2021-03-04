@@ -16,7 +16,6 @@ function SelectUser() {
     return (
         <div className="selectUser">
         <Select defaultValue={Settings.user} style={{ width: 150 }} onChange={handleChange}>
-            <Option value="everyone">@everyone</Option>
             {FloatBarData.map((Detail) => {
             return <Option value={Detail.username}>@{Detail.username}</Option>
             })}
