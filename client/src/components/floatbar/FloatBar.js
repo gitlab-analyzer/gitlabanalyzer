@@ -2,6 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
+import IndividualScore from './IndividualScore.js';
 import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
@@ -25,7 +26,12 @@ function FloatBar() {
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
+        {(user && user === "everyone" &&
           <div><EveryoneScore /></div>
+        ) || (
+            <div><IndividualScore>{user}</IndividualScore></div>
+          )
+        }
       </div>
       <div className="floatbar-functions">
         <Grid
@@ -46,6 +52,16 @@ function FloatBar() {
                   'Iteration 3': [moment(iter3[0]), moment(iter3[1])],
                 }}
               />
+            </div>
+          </Grid>
+          <Grid item xs={12}>
+            <div className="selectUser">
+              <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
+                <Option value="everyone">@everyone</Option>
+                {FloatBarData.map((Detail) => {
+                  return <Option value={Detail.username}>@{Detail.username}</Option>
+                })}
+              </Select>
             </div>
           </Grid>
           <Grid item xs={12}>
