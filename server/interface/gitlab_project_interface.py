@@ -21,7 +21,7 @@ class GitLabProject:
         self.__update_merge_request_manager()
         self.__update_member_manager()
         self.__update_commits_manager()
-        #self.__update_issues_manager() # TODO fix Issue
+        # self.__update_issues_manager() # TODO fix Issue
 
     def __update_comment_manager(self):
         # TODO: This needs to be discussed
@@ -29,7 +29,7 @@ class GitLabProject:
         pass
 
     def __update_merge_request_manager(self):
-        mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state='all')
+        mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state="all")
         for mergeRequest in mergeRequests:
             self.__mergeRequestManager.add_merge_request(mergeRequest)
 
@@ -63,9 +63,3 @@ class GitLabProject:
     @property
     def commits_manager(self) -> CommitManager:
         return self.__commitsManager
-
-# gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
-# gl.authenticate()
-# gl.get_project_list()
-# gl.set_project(25515)
-# list = gl.get_commit_list_for_project()

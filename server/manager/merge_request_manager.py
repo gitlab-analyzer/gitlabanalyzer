@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 import datetime
 from dateutil import parser
 from interface.gitlab_interface import GitLab

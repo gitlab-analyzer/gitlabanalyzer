@@ -1,0 +1,6 @@
+flask
+flask-cors
+pika
+pymongo
+python-dateutil
+python-gitlab
