@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Dropdown, Menu, Tag, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Table, Space, Badge, Tag, Button } from 'antd';
+import { CodeFilled, CodeOutlined } from '@ant-design/icons';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
-import Drawer from 'rc-drawer';
+import { Drawer } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 /**
  * Used boilerplate from https://ant.design/components/table/
  */
-const CommitBar = ({ username }) => {
+const CommitBar = () => {
   const [commits, setCommits] = useState([]);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const { selectUser } = useAuth();
 
   useEffect(() => {
@@ -36,13 +38,6 @@ const CommitBar = ({ username }) => {
       return filterCommits(selectUser, commits);
     }
   };
-
-  const menu = (
-    <Menu>
-      <Menu.Item>Action 1</Menu.Item>
-      <Menu.Item>Action 2</Menu.Item>
-    </Menu>
-  );
 
   /**
    * Expandable Row for Commits inside a specific Merge Request
@@ -78,13 +73,9 @@ const CommitBar = ({ username }) => {
         key: 'operation',
         render: () => (
           <Space size="middle">
-            <a>Code</a>
-            <a>Diffs</a>
-            <Dropdown overlay={menu}>
-              <a>
-                More <DownOutlined />
-              </a>
-            </Dropdown>
+            <Button icon={<CodeOutlined />} onClick={showDrawer}>
+              Code Diffs
+            </Button>
           </Space>
         ),
       },
@@ -133,7 +124,11 @@ const CommitBar = ({ username }) => {
     {
       title: 'Action',
       key: 'operation',
-      render: () => <Button type="primary">Expand</Button>,
+      render: () => (
+        <Button type="primary" onClick={showDrawer} icon={<CodeFilled />}>
+          Expand
+        </Button>
+      ),
     },
   ];
 
@@ -168,10 +163,28 @@ const CommitBar = ({ username }) => {
     },
   };
 
+  const showDrawer = () => {
+    setDrawerVisible(true);
+  };
+
+  const onClose = () => {
+    setDrawerVisible(false);
+  };
+
+  const drawerHeight = 240;
+
+  const useStyles = makeStyles((theme) => ({
+    drawer: {
+      height: drawerHeight,
+      flexShrink: 0,
+    },
+  }));
+
+  const classes = useStyles;
+
   /**
    * Render the Table component which represents the Merge Requests
    */
-
   return (
     <>
       <Table
@@ -182,6 +195,42 @@ const CommitBar = ({ username }) => {
         dataSource={data}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
       />
+      {/* <Drawer
+        title="Basic Drawer"
+        placement={'bottom'}
+        closable={true}
+        mask={false}
+        height={'800px'}
+        onClose={onClose}
+        visible={drawerVisible}
+        key={'bottom'}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Drawer> */}
+      <Drawer
+        variant={'persistent'}
+        styles={{ height: '90%' }}
+        anchor={'bottom'}
+        open={drawerVisible}
+        onClose={onClose}
+      >
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+        <h1>Hello</h1>
+      </Drawer>
     </>
   );
 };
