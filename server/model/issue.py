@@ -40,9 +40,9 @@ class Issue(DataObject):
         self.__downvotes: int = gitlab_issue.downvotes
         self.__merge_requests_count: int = gitlab_issue.merge_requests_count
         self.__comment_count: int = gitlab_issue.user_notes_count
-        self.__author_id: int = gitlab_issue.author.id
+        self.__author_id: int = gitlab_issue.author['id']
         self.__milestone_id: Optional[int] = (
-            None if gitlab_issue.milestone is None else gitlab_issue.milestone.id
+            None if gitlab_issue.milestone is None else gitlab_issue.milestone['id']
         )  # maybe not needed
         # self.__closer_id: Optional[int] = gitlab_issue.closed_by.id # TODO: fix bug
 
@@ -57,7 +57,7 @@ class Issue(DataObject):
         self.__due_date: Optional[str] = gitlab_issue.due_date
 
         self.__assignee_id_list: List[int] = [
-            member.id for member in gitlab_issue.assignees
+            member['id'] for member in gitlab_issue.assignees
         ]
         self.__labels_list: List[str] = gitlab_issue.labels
 
