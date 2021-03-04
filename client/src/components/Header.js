@@ -35,7 +35,6 @@ const Header = () => {
         </Navbar.Collapse>
       </Navbar>
       <SelectUser />
-      {/* <IndividualScore></IndividualScore> */}
     </div>
   );
 };

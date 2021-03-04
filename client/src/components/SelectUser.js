@@ -10,14 +10,16 @@ const { Option } = Select;
 
 function SelectUser() {
     const [user, setUser] = React.useState(Settings.user);
-    function handleChange(value) {
-      setUser(value);
-    }
     return (
         <div className="selectUser">
-        <Select defaultValue={Settings.user} style={{ width: 150 }} onChange={handleChange}>
+        <Select 
+            defaultValue={Settings.user} 
+            style={{ width: 200 }} 
+            onChange={value => setUser(value)}
+            showSearch
+        >
             {FloatBarData.map((Detail) => {
-            return <Option value={Detail.username}>@{Detail.username}</Option>
+            return <Option value={Detail.username}>{Detail.username}</Option>
             })}
         </Select>
         <IndividualScore>{user}</IndividualScore>
