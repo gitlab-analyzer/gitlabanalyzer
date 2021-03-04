@@ -144,16 +144,13 @@ class GitLab:
         return mergeRequestCommentsList
 
     def get_specific_mr(self, mr_iid: Union[str, int]) -> list:
-        project = self.__project
-        return project.mergerequests.get(mr_iid)
+        return self.__project.mergerequests.get(mr_iid)
 
     def get_specific_issue(self, issue_iid: int) -> list:
-        project = self.__project
-        return project.issues.get(issue_iid)
+        return self.__project.issues.get(issue_iid)
 
     def get_specific_commit(self, commit_sha: str) -> list:
-        project = self.__project
-        return project.commits.get(commit_sha)
+        return self.__project.commits.get(commit_sha)
 
     def get_comments_of_mr(self, mergeRequest: gitlab) -> list:
         return mergeRequest.notes.list()
