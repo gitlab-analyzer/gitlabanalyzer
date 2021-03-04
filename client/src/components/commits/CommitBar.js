@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Tag, Button } from 'antd';
+import { Card, Table, Space, Badge, Tag, Button } from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
 import { fetchData } from './commitData';
 import { useAuth } from '../../context/AuthContext';
@@ -105,9 +105,9 @@ const CommitBar = () => {
    * Column title for the Merge Requests
    */
   const columns = [
-    { title: 'Branch', dataIndex: 'branch', key: 'branch' },
     { title: 'Username', dataIndex: 'username', key: 'username' },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
+    { title: 'Branch', dataIndex: 'branch', key: 'branch' },
     { title: 'Score', dataIndex: 'score', key: 'score' },
     {
       title: 'Status',
@@ -195,20 +195,6 @@ const CommitBar = () => {
         dataSource={data}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
       />
-      {/* <Drawer
-        title="Basic Drawer"
-        placement={'bottom'}
-        closable={true}
-        mask={false}
-        height={'800px'}
-        onClose={onClose}
-        visible={drawerVisible}
-        key={'bottom'}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Drawer> */}
       <Drawer
         variant={'persistent'}
         styles={{ height: '90%' }}
@@ -216,20 +202,28 @@ const CommitBar = () => {
         open={drawerVisible}
         onClose={onClose}
       >
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
-        <h1>Hello</h1>
+        <Button
+          onClick={onClose}
+          style={{
+            marginTop: '10px',
+            marginBottom: '5px',
+            marginLeft: '67.5%',
+            float: 'right',
+            width: 100,
+          }}
+        >
+          Close
+        </Button>
+        <div style={{ diplay: 'flex' }}>
+          <Card style={{ margin: 'auto', width: '80%', height: '70vh' }}>
+            <h1>Sample Code Diffs</h1>
+            <p>Hello World</p>
+            <p>Hello World</p>
+            <p>Hello World</p>
+            <p>Hello World</p>
+            <p>Hello World</p>
+          </Card>
+        </div>
       </Drawer>
     </>
   );
