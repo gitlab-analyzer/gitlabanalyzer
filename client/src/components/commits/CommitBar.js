@@ -105,7 +105,7 @@ const CommitBar = () => {
    * Column title for the Merge Requests
    */
   const columns = [
-    { title: 'Username', dataIndex: 'username', key: 'username' },
+    { title: 'Merge Request ID', dataIndex: 'mrid', key: 'mrid' },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
     { title: 'Branch', dataIndex: 'branch', key: 'branch' },
     { title: 'Score', dataIndex: 'score', key: 'score' },
@@ -139,10 +139,9 @@ const CommitBar = () => {
   for (let i = 0; i < 20; ++i) {
     data.push({
       key: i,
-      username: 'bfraser',
+      mrid: 'a2f306a4',
       branch: '#57 Refactor get projects API',
       score: 515,
-      creator: 'Jack',
       createdAt: '2021-02-24 23:12:00',
     });
   }
