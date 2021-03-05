@@ -13,8 +13,8 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <LinkContainer to="/overview" test="hello">
-              <Nav.Link>Overview</Nav.Link>
+            <LinkContainer to="/summary" test="hello">
+              <Nav.Link>Summary</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/commits">
               <Nav.Link>Commits & MRs</Nav.Link>

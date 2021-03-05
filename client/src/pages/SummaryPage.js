@@ -1,11 +1,11 @@
 import React, {useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import BarGraph from '../components/overview/BarGraph'
+import BarGraph from '../components/summary/BarGraph'
 import { Menu, Dropdown, Button } from 'antd';
 import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
-import StackedBarGraph from '../components/overview/StackedBar'
+import StackedBarGraph from '../components/summary/StackedBar'
 
 /* could probably move some of this stuff into other components */
 
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) =>({
     }
   }));
 
-const Overview = () => {
+const Summary = () => {
     const [startDate, setStartDate] = useState('Jan 2021')
     const [endDate, setEndDate] = useState('Mar 2021')
 
@@ -164,4 +164,4 @@ const Overview = () => {
     )
 }
 
-export default Overview
+export default Summary
