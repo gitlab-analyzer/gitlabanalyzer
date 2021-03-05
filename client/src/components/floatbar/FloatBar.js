@@ -7,7 +7,11 @@ import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
 import Settings from "./Settings.json"
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import ScoreCalculator from './ScoreCalculator';
 import "./FloatBar.css";
+
+import { renderToStaticMarkup } from 'react-dom/server'
 
 var FloatBarData = Data.users;
 var Dates = Settings.dates;
@@ -24,7 +28,7 @@ function FloatBar() {
   function handleChange(value) {
     setUser(value);
   }
-
+  var x = "one", y = "two", z= "three";
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
@@ -69,10 +73,32 @@ function FloatBar() {
             </div>
           </Grid>
           <Grid item xs={12}>
-            <Button style={{ width: 150 }}>
-              Copy
-              <CopyOutlined className="copyicon" />
-            </Button>
+            <CopyToClipboard
+              format = {"text/plain"}
+              text = {
+                renderToStaticMarkup(
+                  <div>
+                    {FloatBarData.map((Detail) => {
+                      return (
+                        <div>
+                          <div>{Detail.username}</div>
+                          <div>{ScoreCalculator(Detail.number_commits, Detail.lines_of_code, Detail.number_issues)}</div>
+                          <div>{Detail.number_commits}</div>
+                          <div>{Detail.lines_of_code}</div>
+                          <div>{Detail.number_issues}</div>
+                          <br/>
+                        </div>
+                      ); 
+                    })}                  
+                  </div>
+                  ).replaceAll("</div><br/></div>","\n").replaceAll("<div>", "").replaceAll("</div>", "\t")
+              }
+            >
+              <Button style={{ width: 150 }}>
+                Copy
+                <CopyOutlined className="copyicon" />
+              </Button>              
+            </CopyToClipboard>
           </Grid>
         </Grid>
       </div>

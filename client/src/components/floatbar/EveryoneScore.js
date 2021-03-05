@@ -8,8 +8,6 @@ var FloatBarData = Data.users;
 
 const usercolours = ["#b0911d", "#1d2cb0", "#1db084", "#0091e3", "#489850", "#bb4824", "#a34d9a", "#ab3ca6"];
 
-
-
 function EveryoneScore() {
     const scrollRef = HorizontalScroll();
 
