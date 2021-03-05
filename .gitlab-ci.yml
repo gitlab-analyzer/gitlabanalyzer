@@ -1,0 +1,57 @@
+stages:
+  - format
+  - build
+
+variables:
+  MASTER_BRANCH: "master"
+  PYTHON_IMAGE: "python:3.8"
+  NODE_IMAGE: "node:13.12.0-alpine"
+
+backend format:
+  stage: format
+  image: $PYTHON_IMAGE
+  tags:
+    - docker
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
+      changes:
+        - server/**/*
+      when: always
+  before_script:
+    - pip install --upgrade pip
+    - pip install black
+  script:
+    - black --check -S --exclude 'server/test' server
+
+backend build:
+  stage: build
+  image: $PYTHON_IMAGE
+  tags:
+    - docker
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
+      changes:
+        - server/**/*
+      when: always
+  before_script:
+    - pip install --upgrade pip
+    - pip install -r server/requirements.txt
+    - pip install pylint
+  script:
+    - pylint --errors-only server
+
+frontend build:
+  stage: build
+  image: $NODE_IMAGE
+  tags:
+    - docker
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID != null || $CI_COMMIT_BRANCH == $MASTER_BRANCH'
+      changes:
+        - client/**/*
+      when: always
+  before_script:
+    - cd client
+    - npm install
+  script:
+    - CI=false ./node_modules/.bin/eslint src

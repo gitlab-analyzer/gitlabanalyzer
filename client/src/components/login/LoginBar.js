@@ -8,7 +8,10 @@ import axios from 'axios';
 
 const { Option } = Select;
 
-const LoginBar = () => {
+/**
+ * Login Bar component: has Token bar, Url bar, and buttons to submit
+ */
+const LoginBar = ({ setRedirect }) => {
   // Local states
   const [token, setToken] = useState('');
   const [url, setUrl] = useState('');
@@ -30,17 +33,17 @@ const LoginBar = () => {
         const userInfo = await logIn();
         if (userInfo.data['response'] === 'valid') {
           setLoading(false);
-          console.log('Log in Successful');
           setIncorrect(false);
           setUser(userInfo.data['username']);
           sessionStorage.setItem('user', userInfo.data['username']);
+          setRedirect(true);
         } else {
           setLoading(false);
-          console.log('Incorrect token');
           setIncorrect(true);
         }
         // TODO Error handling on failed request
       } catch (err) {
+        setIncorrect(true);
         console.log(err);
       }
     }
@@ -107,7 +110,6 @@ const LoginBar = () => {
             value={token}
             onChange={(event) => {
               setToken(event.target.value);
-              console.log(token);
             }}
             placeholder="Enter your GitLab token"
             prefix={<GitlabOutlined />}
@@ -125,7 +127,6 @@ const LoginBar = () => {
               value={url}
               onChange={(event) => {
                 setUrl(event.target.value);
-                console.log(urlPre, url, urlPost);
               }}
             />
           </div>

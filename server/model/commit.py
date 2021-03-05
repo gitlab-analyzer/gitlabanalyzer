@@ -37,4 +37,3 @@ class Commit(DataObject):
     @property
     def committed_date(self) -> str:
         return self.__committed_date
-

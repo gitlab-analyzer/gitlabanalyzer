@@ -1,6 +1,7 @@
 import json
 import os
 from random import randint
+from typing import Optional
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
@@ -12,7 +13,11 @@ from interface.gitlab_project_interface import GitLabProject
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-gitlabProjectInterface: [GitLabProject] = GitLabProject(None)
+
+
+# These cannot stay as globals. Change when possible
+myGitLab: Optional[GitLab] = None
+gitlabProjectInterface: Optional[GitLabProject] = None
 
 # Error respond body list:
 projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
@@ -40,7 +45,8 @@ def hello_world():
     username = urllib.parse.quote_plus('root')
     password = urllib.parse.quote_plus('pass')
     myClient = pymongo.MongoClient(
-        "mongodb://%s:%s@mangodb:27017/" % (username, password))
+        "mongodb://%s:%s@mangodb:27017/" % (username, password)
+    )
     myDB = myClient["student_repo"]
     myCol = myDB["students"]
 
@@ -56,6 +62,7 @@ def hello_world():
 @app.route('/auth', methods=['post'])
 @cross_origin()
 def auth():
+    global myGitLab
     myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
         global gitlabProjectInterface
