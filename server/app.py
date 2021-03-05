@@ -65,7 +65,9 @@ def auth():
     if myGitLab.authenticate():
         return jsonify({'username': myGitLab.get_username(), 'response': True})
     else:
-        return jsonify({'username': '', 'response': False, 'Cause': "Invalid token or url"})
+        return jsonify(
+            {'username': '', 'response': False, 'Cause': "Invalid token or url"}
+        )
 
 
 @app.route('/projects', methods=['get'])
@@ -106,7 +108,7 @@ def get_project_overview(projectID):
                     "username": member.username,
                     "number_commits": randint(0, 100),
                     "lines_of_code": randint(0, 100000),
-                    "number_issues": randint(0, 100)
+                    "number_issues": randint(0, 100),
                 }
             )
         # memberObjectList = get_test_data()["get_project_overview"]["users"]
@@ -121,7 +123,9 @@ def get_commits(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         commitList: list = gitlabProjectInterface.commits_manager.get_commit_list_json()
-        return jsonify({"response": True, "commit_list": json.loads(json.dumps(commitList))})
+        return jsonify(
+            {"response": True, "commit_list": json.loads(json.dumps(commitList))}
+        )
     else:
         return jsonify(projectIDError)
 
@@ -130,7 +134,9 @@ def get_commits(projectID):
 def get_merge_request(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
-        mergeRequestList: list = gitlabProjectInterface.merge_request_manager.merge_request_list
+        mergeRequestList: list = (
+            gitlabProjectInterface.merge_request_manager.merge_request_list
+        )
         return jsonify({"response": True, "merge_request_list": mergeRequestList})
     else:
         return jsonify(projectIDError)
