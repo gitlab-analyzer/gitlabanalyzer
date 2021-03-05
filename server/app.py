@@ -1,8 +1,6 @@
 import json
-import os
 from random import randint
 from typing import Optional
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import pymongo
@@ -65,8 +63,6 @@ def auth():
     global myGitLab
     myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
-        global gitlabProjectInterface
-        gitlabProjectInterface = GitLabProject(myGitlab=myGitLab)
         return jsonify({'username': myGitLab.get_username(), 'response': True})
     else:
         return jsonify({'username': '', 'response': False, 'Cause': "Invalid token or url"})
