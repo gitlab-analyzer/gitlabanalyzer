@@ -1,11 +1,15 @@
 import React from "react";
-import Data from './FloatBarData.json'
-import HorizontalScroll from './Scroll'
+import Data from './FloatBarData.json';
+import HorizontalScroll from './Scroll';
+import ScoreCalculator from './ScoreCalculator';
 import "./EveryoneScore.css";
 
 var FloatBarData = Data.users;
 
 const usercolours = ["#b0911d", "#1d2cb0", "#1db084", "#0091e3", "#489850", "#bb4824", "#a34d9a", "#ab3ca6"];
+
+
+
 function EveryoneScore() {
     const scrollRef = HorizontalScroll();
 
@@ -27,7 +31,7 @@ function EveryoneScore() {
                         return (
                             <div className="score-array">
                                 <div className= "user" style={{color: usercolours[index]}}>@{Detail.username}</div>
-                                <div className="userscore">{Detail.score}</div>
+                                <div className="userscore">{ScoreCalculator(Detail.number_commits, Detail.lines_of_code, Detail.number_issues)}</div>
                                 <div className="userscore_details">
                                     <div>{Detail.number_commits}</div>
                                     <div>{Detail.lines_of_code}</div>
