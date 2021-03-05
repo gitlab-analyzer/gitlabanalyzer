@@ -120,45 +120,44 @@ const Summary = () => {
     return (
         <div>
             <Grid container className={classes.grid}>
-            <Grid item xs={12}>                    
-                        <b>Merge Request & Commit {textRender} from {startDate} to {endDate}</b>
-            </Grid>
-            <Grid item xs={10}>
-                        <StackedBarGraph series={combinedSeries} />
-            </Grid>
-            <Grid item xs={1}>
-            </Grid>
-            <Grid item xs={1}>
-                      <Dropdown overlay={combinedMenu}>
-                <Button>
-                  {combinedDropdown} <DownOutlined />
-                </Button>
-              </Dropdown>
-            </Grid>
-            <Grid item xs={12}>                    
-                        <b>Code Review Word Count from {startDate} to {endDate}</b>
-            </Grid>
-            <Grid item xs={10}>
-                        <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'}/>
-            </Grid>
-            <Grid item xs={1}>
-            </Grid>
-            <Grid item xs={1}>
-                      <Dropdown overlay={crMenu}>
-                <Button>
-                  {crDropdown} <DownOutlined />
-                </Button>
-              </Dropdown>
-            </Grid>
-            <Grid item xs={12}>                    
-                        <b>Issue Word Count from {startDate} to {endDate}</b>
-            </Grid>
-            <Grid item xs={10}>
-                        <BarGraph series={issueSeries} colors={'#d4d8f8'} stroke={'#7F87CF'}/>
-            </Grid>
-            <Grid item xs={2}>
-            </Grid>
-
+              <Grid item xs={12}>                    
+                          <b>Merge Request & Commit {textRender} from {startDate} to {endDate}</b>
+              </Grid>
+              <Grid item xs={10}>
+                          <StackedBarGraph series={combinedSeries} />
+              </Grid>
+              <Grid item xs={1}>
+              </Grid>
+              <Grid item xs={1}>
+                <Dropdown overlay={combinedMenu}>
+                  <Button>
+                    {combinedDropdown} <DownOutlined />
+                  </Button>
+                </Dropdown>
+              </Grid>
+              <Grid item xs={12}>                    
+                <b>Code Review Word Count from {startDate} to {endDate}</b>
+              </Grid>
+              <Grid item xs={10}>
+                <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'}/>
+              </Grid>
+              <Grid item xs={1}>
+              </Grid>
+              <Grid item xs={1}>
+                <Dropdown overlay={crMenu}>
+                  <Button>
+                    {crDropdown} <DownOutlined />
+                  </Button>
+                </Dropdown>
+              </Grid>
+              <Grid item xs={12}>                    
+                <b>Issue Word Count from {startDate} to {endDate}</b>
+              </Grid>
+              <Grid item xs={10}>
+                <BarGraph series={issueSeries} colors={'#d4d8f8'} stroke={'#7F87CF'}/>
+              </Grid>
+              <Grid item xs={2}>
+              </Grid>
             </Grid>
         </div>
     )
