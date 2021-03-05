@@ -1,5 +1,4 @@
 import React from "react";
-// import { Progress } from 'antd';
 import Data from './FloatBarData.json';
 import './IndividualScore.css';
 import { Card } from 'antd';
