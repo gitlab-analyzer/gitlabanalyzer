@@ -11,12 +11,12 @@ class StackedBarGraph extends React.Component {
       this.state = {
       
         options: {
-          colors: [ '#ABF1DC', '#C7EBFF'],
+          colors: [ '#E2F0CB', '#C7EBFF'],
           stroke: {
             show: true,
             curve: 'smooth',
             lineCap: 'butt',
-            colors: [ '#1db084', '#6AB1D9'],
+            colors: [ '#7dab31', '#6AB1D9'],
             width: 1,
             dashArray: 0,      
         },
@@ -51,12 +51,11 @@ class StackedBarGraph extends React.Component {
           xaxis: {
             categories: ['Jan', 'Feb'],
           },
-          // add labels later
-          // yaxis: {
-          //   title: {
-          //     text: 'Number'
-          //   }
-          // },
+          yaxis: {
+            title: {
+              text: this.props.ylabel
+            }
+          },
           legend: {
             position: 'top',
             horizontalAlign: 'right',
@@ -74,18 +73,12 @@ class StackedBarGraph extends React.Component {
       };
     }
 
-  
-
     render() {
       console.log(this.props)
-
       return (
-        
-
   <div id="chart">
 <Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
 </div>
-
 
       );
     }

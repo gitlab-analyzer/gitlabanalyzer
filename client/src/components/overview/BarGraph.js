@@ -55,24 +55,16 @@ class BarGraph extends React.Component {
             opacity: 1
           }
         },
-      
-      
       };
     }
-
-  
 
     render() {
       console.log(this.props)
 
       return (
-        
-
   <div id="chart">
 <Chart options={this.state.options} series={this.props.series} type="bar" height={200} />
 </div>
-
-
       );
     }
   }

@@ -38,16 +38,6 @@ const Overview = () => {
 
     const data3 = [10, 44, 55, 41, 43, 0, 30, 10, 10, 10, 44, 44, 55, 41, 67, 22, 10, 44, 44, 55, 41, 55, 41]
 
-
-    // const [mrSeries, setMrSeries] = useState([{
-    //   data: data
-    // }
-    // ])
-
-    // const [commitSeries, setCommitSeries] = useState([{
-    //   data: data
-    // }
-    // ])
     const [combinedSeries, setCombinedSeries] = useState([{
       name: "Merge Requests",
       data: data
@@ -136,7 +126,9 @@ const Overview = () => {
             <Grid item xs={10}>
                         <StackedBarGraph series={combinedSeries} />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
+            </Grid>
+            <Grid item xs={1}>
                       <Dropdown overlay={combinedMenu}>
                 <Button>
                   {combinedDropdown} <DownOutlined />
@@ -147,9 +139,11 @@ const Overview = () => {
                         <b>Code Review Word Count from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <BarGraph series={crSeries} colors={'#F1E2AB'} stroke={'#CBB97B'}/>
+                        <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'}/>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
+            </Grid>
+            <Grid item xs={1}>
                       <Dropdown overlay={crMenu}>
                 <Button>
                   {crDropdown} <DownOutlined />
@@ -160,7 +154,7 @@ const Overview = () => {
                         <b>Issue Word Count from {startDate} to {endDate}</b>
             </Grid>
             <Grid item xs={10}>
-                        <BarGraph series={issueSeries} colors={'#ABB2F1'} stroke={'#7F87CF'}/>
+                        <BarGraph series={issueSeries} colors={'#d4d8f8'} stroke={'#7F87CF'}/>
             </Grid>
             <Grid item xs={2}>
             </Grid>
