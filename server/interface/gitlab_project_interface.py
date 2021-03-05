@@ -48,6 +48,22 @@ class GitLabProject:
         issueList: list = self.__gitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
 
+    def get_commits_for_all_users(self):
+        commitListsForAllUsers = {}
+
+        for commit in self.__commitsManager.get_commit_list():
+            authorName = commit.author_name
+            if commitListsForAllUsers.get(authorName) is None:
+                commitListsForAllUsers[authorName] = []
+            else:
+                commitListsForAllUsers.get(authorName).append(commit.to_dict())
+
+    def get_merge_request_and_commit_list(self):
+        mergeRequestForAllUsers = {}
+        mrs, commits = self.__gitlab.get_merge_requests_and_commits()
+        # TODO
+        pass
+
     @property
     def project_list(self) -> list:
         return self.__gitlab.get_project_list()
