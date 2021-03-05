@@ -3,11 +3,10 @@
 }
 
 .floatbar-functions {
-  float: right;
-  right: auto;
   width: 300px;
-  padding-right: 20px;
-  border-radius: 0px 10px 10px 0px;  
+  padding-right: 20px; 
+  position: absolute;
+  right: 0;
 }
 
 .floatbar-container {
@@ -16,12 +15,11 @@
   vertical-align: middle;
   height: 170px;
   background-color: #ecf2f5;  
+  position: relative;  
 }
 
 .floatbaralign {
   float: left;
-  width: 100%;
-}
-.daterange {
-  display: flex;
+  margin-right: 310px; 
+  overflow: hidden;
 }
