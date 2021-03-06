@@ -59,10 +59,16 @@ class GitLabProject:
                 commitListsForAllUsers.get(authorName).append(commit.to_dict())
 
     def get_merge_request_and_commit_list(self):
-        mergeRequestForAllUsers = {}
-        mrs, commits = self.__gitlab.get_merge_requests_and_commits()
-        # TODO
-        pass
+        mergeRequestForAllUsers = []
+        mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
+        for mr, commits in zip(mrs, commits_lists):
+            data = mr.to_dict()
+            commitList = []
+            for commit in commits:
+                commitList.append(commit.to_dict())
+            data["commit_list"] = commitList
+            mergeRequestForAllUsers.append(data)
+        
 
     @property
     def project_list(self) -> list:
