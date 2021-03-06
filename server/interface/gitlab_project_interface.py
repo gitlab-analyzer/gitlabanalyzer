@@ -4,28 +4,23 @@ from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
+from model.merge_request import MergeRequest
+from model.commit import Commit
 
 
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         self.__gitlab: GitLab = myGitlab
         self.__gitlab.set_project(projectID=projectID)
-
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
-        self.__projectID: int = -1
+        self.__projectID: int = projectID
         self.__gitlab: GitLab = myGitlab
 
-    def set_project(self, projectID: int):
-        self.__projectID = projectID
-        if self.__gitlab.set_project(projectID=projectID):
-            self.__update_managers()
-            return True
-        else:
-            return False
+        self.__update_managers()
 
     def __update_managers(self):
         self.__update_comment_manager()
@@ -61,7 +56,7 @@ class GitLabProject:
 
     def get_commits_for_all_users(self):
         commitListsForAllUsers = {}
-
+        # TODO: resume from here
         for commit in self.__commitsManager.get_commit_list():
             authorName = commit.author_name
             if commitListsForAllUsers.get(authorName) is None:
@@ -73,13 +68,15 @@ class GitLabProject:
         mergeRequestForAllUsers = []
         mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
         for mr, commits in zip(mrs, commits_lists):
+            mr = MergeRequest(mr)
             data = mr.to_dict()
             commitList = []
             for commit in commits:
+                commit = Commit(commit)
                 commitList.append(commit.to_dict())
             data["commit_list"] = commitList
             mergeRequestForAllUsers.append(data)
-        
+        return mergeRequestForAllUsers
 
     @property
     def project_list(self) -> list:

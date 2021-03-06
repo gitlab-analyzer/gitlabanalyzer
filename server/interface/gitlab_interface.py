@@ -43,7 +43,7 @@ class GitLab:
         if self.authenticate():
             self.__project_lists = self.gl.projects.list(visibility="private")
 
-    def __find_project(self, projectID: int) -> Optional[gl_Project]:
+    def find_project(self, projectID: int) -> Optional[gl_Project]:
         for project in self.__project_lists:
             if project.id == projectID:
                 return project
@@ -59,7 +59,7 @@ class GitLab:
         return self.__project.members.list()
 
     def set_project(self, projectID: int) -> bool:
-        self.__project = self.__find_project(projectID)
+        self.__project = self.find_project(projectID)
         if self.__project is not None:
             return True
         else:
@@ -114,7 +114,7 @@ class GitLab:
     ) -> Tuple[list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort
+            state=state, order_by=order_by, sort=sort, all=True
         )
 
         for mergeRequest in mergeRequests:

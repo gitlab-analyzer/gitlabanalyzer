@@ -88,8 +88,11 @@ def get_project_list():
 @cross_origin()
 def set_project():
     global gitlabProjectInterface
+    global myGitLab
     projectID = request.args.get('projectID', default=None, type=int)
-    if gitlabProjectInterface.set_project(projectID=projectID):
+
+    if myGitLab.find_project(projectID) is not None:
+        gitlabProjectInterface = GitLabProject(myGitLab, projectID)
         return jsonify({"response": True})
     else:
         return jsonify(projectIDError)
@@ -118,7 +121,7 @@ def get_project_overview(projectID):
         return jsonify(projectIDError)
 
 
-@app.route('/projects/<int:projectID>/commits', methods=['get'])
+@app.route('/projects/<int:projectID>/commit', methods=['get'])
 def get_commits(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
@@ -130,12 +133,24 @@ def get_commits(projectID):
         return jsonify(projectIDError)
 
 
-@app.route('/projects/<int:projectID>/merge_requests', methods=['get'])
-def get_merge_request(projectID):
+@app.route('/projects/<int:projectID>/commit/user/all')
+def get_commits_for_users(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         mergeRequestList: list = (
-            gitlabProjectInterface.merge_request_manager.merge_request_list
+            gitlabProjectInterface.get_commits_for_all_users()
+        )
+        return jsonify({"response": True, "merge_request_list": mergeRequestList})
+    else:
+        return jsonify(projectIDError)
+
+
+@app.route('/projects/<int:projectID>/merge_request/all')
+def get_merge_requests_for_users(projectID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        mergeRequestList: list = (
+            gitlabProjectInterface.get_merge_request_and_commit_list()
         )
         return jsonify({"response": True, "merge_request_list": mergeRequestList})
     else:

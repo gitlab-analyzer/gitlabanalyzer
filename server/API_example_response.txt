@@ -53,7 +53,7 @@
     "response": false
 }
 
-5. GET /projects/<int:projectID>/commits
+5. GET /projects/<int:projectID>/commit
 {
     "commit_list": [
         {
@@ -69,6 +69,54 @@
             "committer_name": "fanghaof",
             "id": "1bf88c3f32f1fb5d6186dc9d348e997937b6f91e",
             "title": "Add .gitlab-ci.yml"
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+6. GET /projects/<int:projectID>/commit/user/all
+{
+    "merge_request_list": [
+        {
+            "author": 2787,
+            "comments": null,
+            "commit_list": [],
+            "created_date": "2021-02-05T14:38:07.647-08:00",
+            "description": "Closes #7",
+            "id": 38087,
+            "iid": 2,
+            "merged_by": null,
+            "merged_date": null,
+            "related_issue_iid": 7,
+            "state": "closed",
+            "title": "Draft: Resolve \"Create navigation bar UI\""
+        },
+        {
+            "author": 4354,
+            "comments": null,
+            "commit_list": [
+                {
+                    "author_name": "Thomas Min",
+                    "committed_date": "2021-02-08T16:44:05.000-08:00",
+                    "committer_name": "Thomas Min",
+                    "id": "271727b700424504ca8fb686b4a29ab0a5153fc8",
+                    "title": "Fix errors to compile"
+                }
+            ],
+            "created_date": "2021-02-04T21:04:11.776-08:00",
+            "description": "Finished UI components of the Login and SearchBar. The routes are not implemented and should be agreed by the team before setting up individual pages.",
+            "id": 38080,
+            "iid": 1,
+            "merged_by": 4354,
+            "merged_date": "2021-02-08T16:46:07.968-08:00",
+            "related_issue_iid": null,
+            "state": "merged",
+            "title": "Resolve \"Create login UI and search bar for repo\""
         }
     ],
     "response": true
