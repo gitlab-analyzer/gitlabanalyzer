@@ -88,8 +88,11 @@ def get_project_list():
 @cross_origin()
 def set_project():
     global gitlabProjectInterface
+    global myGitLab
     projectID = request.args.get('projectID', default=None, type=int)
-    if gitlabProjectInterface.set_project(projectID=projectID):
+
+    if myGitLab.find_project(projectID) is not None:
+        gitlabProjectInterface = GitLabProject(myGitLab, projectID)
         return jsonify({"response": True})
     else:
         return jsonify(projectIDError)
