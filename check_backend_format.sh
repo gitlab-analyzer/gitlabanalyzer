@@ -1,1 +1,1 @@
-black --check -S --exclude 'server/test' server
+black --diff -S --exclude 'server/test' server
