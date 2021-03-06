@@ -1,7 +1,6 @@
 import json
 from random import randint
 from typing import Optional
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import pymongo
@@ -17,6 +16,9 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # These cannot stay as globals. Change when possible
 myGitLab: Optional[GitLab] = None
 gitlabProjectInterface: Optional[GitLabProject] = None
+
+# Error respond body list:
+projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
 
 
 @app.route('/')
@@ -61,76 +63,88 @@ def auth():
     global myGitLab
     myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
     if myGitLab.authenticate():
-        return jsonify({'username': myGitLab.get_username(), 'response': 'valid'})
+        return jsonify({'username': myGitLab.get_username(), 'response': True})
     else:
-        return jsonify({'username': '', 'response': 'invalid'})
+        return jsonify(
+            {'username': '', 'response': False, 'Cause': "Invalid token or url"}
+        )
 
 
-@app.route('/getProjectList', methods=['get'])
+@app.route('/projects', methods=['get'])
 def get_project_list():
-    global myGitLab
+    global gitlabProjectInterface
+    projectList = gitlabProjectInterface.project_list
     myResponse = []
-    if myGitLab is not None:
-        projectList = myGitLab.get_project_list()
-        """
-        This is for testing only, need to be changed later
-        """
-        for project in projectList:
-            myResponse.append(project.name_with_namespace)
-    return jsonify({'value': myResponse})
+    """
+    This is for testing only, need to be changed later
+    """
+    for project in projectList:
+        myResponse.append(project.name_with_namespace)
+    return jsonify({'projects': myResponse, "response": True})
 
 
-# Example: /setProject?projectID=projectID_variable
-@app.route('/setProject', methods=['post'])
+# Example: /projects/set?projectID=projectID_variable
+@app.route('/projects/set', methods=['post'])
 @cross_origin()
 def set_project():
-    global myGitLab
     global gitlabProjectInterface
     projectID = request.args.get('projectID', default=None, type=int)
-    gitlabProjectInterface = GitLabProject(myGitLab, projectID)
-    return jsonify({"response": "ok"})
+    if gitlabProjectInterface.set_project(projectID=projectID):
+        return jsonify({"response": True})
+    else:
+        return jsonify(projectIDError)
 
 
-@app.route('/getProjectOverview', methods=['get'])
-def get_project_overview():
+@app.route('/projects/<int:projectID>/overview', methods=['get'])
+def get_project_overview(projectID):
     global gitlabProjectInterface
     memberObjectList = []
-    memberList = gitlabProjectInterface.member_manager.get_member_list()
 
-    for member in memberList:
-        memberObjectList.append(
-            {
-                "username": member.username,
-                "number_commits": randint(0, 100),
-                "lines_of_code": randint(0, 100000),
-                "number_issues": randint(0, 100),
-            }
+    if projectID == gitlabProjectInterface.project_id:
+        memberList = gitlabProjectInterface.member_manager.get_member_list()
+        for member in memberList:
+            memberObjectList.append(
+                {
+                    "username": member.username,
+                    "number_commits": randint(0, 100),
+                    "lines_of_code": randint(0, 100000),
+                    "number_issues": randint(0, 100),
+                }
+            )
+        # memberObjectList = get_test_data()["get_project_overview"]["users"]
+
+        return jsonify({"members": memberObjectList, "response": True})
+    else:
+        return jsonify(projectIDError)
+
+
+@app.route('/projects/<int:projectID>/commits', methods=['get'])
+def get_commits(projectID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        commitList: list = gitlabProjectInterface.commits_manager.get_commit_list_json()
+        return jsonify(
+            {"response": True, "commit_list": json.loads(json.dumps(commitList))}
         )
-    # TODO: The format of this response need to be changed
-    # print({"users": memberObjectList})
-    memberObjectList = get_test_data()["get_project_overview"]["users"]
-    return jsonify({"users": memberObjectList})
+    else:
+        return jsonify(projectIDError)
 
 
-@app.route('/getCommits', methods=['get'])
-def get_commits():
+@app.route('/projects/<int:projectID>/merge_requests', methods=['get'])
+def get_merge_request(projectID):
     global gitlabProjectInterface
-    commitList: list = gitlabProjectInterface.commits_manager.get_commit_list_json()
-    return jsonify({"commit_list": json.loads(json.dumps(commitList))})
+    if projectID == gitlabProjectInterface.project_id:
+        mergeRequestList: list = (
+            gitlabProjectInterface.merge_request_manager.merge_request_list
+        )
+        return jsonify({"response": True, "merge_request_list": mergeRequestList})
+    else:
+        return jsonify(projectIDError)
 
 
-@app.route('/getMergeRequests', methods=['get'])
-def get_merge_request():
-    global gitlabProjectInterface
-    mergeRequestList: list = (
-        gitlabProjectInterface.merge_request_manager.merge_request_list
-    )
-    return jsonify({"merge_request_list": mergeRequestList})
-
-
-# This function should only be used
+# This function should only be used for testing purpose
 def get_test_data() -> json:
-    return json.load(open('test_data.json'))
+    return json.load(open('test/test_dataset/test_data.json'))
 
 
 if __name__ == '__main__':

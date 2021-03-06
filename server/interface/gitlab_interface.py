@@ -58,8 +58,12 @@ class GitLab:
     def get_all_members(self) -> list:
         return self.__project.members.list()
 
-    def set_project(self, projectID: int) -> None:
+    def set_project(self, projectID: int) -> bool:
         self.__project = self.__find_project(projectID)
+        if self.__project is not None:
+            return True
+        else:
+            return False
 
     def authenticate(self) -> bool:
         try:
