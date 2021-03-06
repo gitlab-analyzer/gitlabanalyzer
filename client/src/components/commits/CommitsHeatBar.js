@@ -3,6 +3,7 @@ import React from 'react';
 // yarn add @nivo/core @nivo/calendar
 import { ResponsiveCalendar } from '@nivo/calendar';
 
+// Boilerplate referenced from nivo rocks chart library
 const CommitsHeatBar = ({ data }) => {
   return (
     <ResponsiveCalendar
