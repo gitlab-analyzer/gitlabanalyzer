@@ -22,3 +22,33 @@
   justify-content: space-between;
   margin: 10px 0px 10px 0px;
 }
+.individualscore {
+    width: 100%;
+    margin-left: 60px;
+    display: flex;
+  }
+  
+  .smallscore {
+    text-align: left;
+    flex-direction: column;
+    width: 23%;
+  }
+  
+  .numberscore {
+    font-weight: bolder;
+    font-size: 50px;
+    line-height:75%;
+  }
+  
+  .scoretext {
+    font-size: 15px;
+  }
+  
+  .rank {
+    padding-bottom: 15px;
+    margin-left: 60px;
+  }
+  
+  .progressbar {
+    width: 150px;
+  }

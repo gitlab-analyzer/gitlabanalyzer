@@ -1,0 +1,80 @@
+1. GET /auth
+{
+    "response": true,
+    "username": "fanghaof"
+}
+
+{
+    "Cause": "Invalid token or url",
+    "response": false,
+    "username": ""
+}
+
+2. GET /projects
+{
+    "response": true,
+    "projects": [
+        "fanghaof / 373_c",
+        "373-2021-1-Makemake / GitLabAnalyzer",
+    ]
+}
+
+3. POST /projects/set?projectID=id
+{
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+4. GET /projects/<int:projectID>/overview
+{
+    "members": [
+        {
+            "lines_of_code": 2273,
+            "number_commits": 25,
+            "number_issues": 24,
+            "username": "cprabhu"
+        },
+        {
+            "lines_of_code": 30104,
+            "number_commits": 55,
+            "number_issues": 9,
+            "username": "andrewe"
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+5. GET /projects/<int:projectID>/commits
+{
+    "commit_list": [
+        {
+            "author_name": "Joshua Li Guo",
+            "committed_date": "2021-03-01T20:06:31.000-08:00",
+            "committer_name": "Joshua Li Guo",
+            "id": "9b993412b23c5fcf28a51578b604b44d96a9bcf9",
+            "title": "Merge branch '56-refactor-gitlab_project_interface' into 'master'"
+        },
+        {
+            "author_name": "fanghaof",
+            "committed_date": "2021-03-01T20:03:42.000-08:00",
+            "committer_name": "fanghaof",
+            "id": "1bf88c3f32f1fb5d6186dc9d348e997937b6f91e",
+            "title": "Add .gitlab-ci.yml"
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}

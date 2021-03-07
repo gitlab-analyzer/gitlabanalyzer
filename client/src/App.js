@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 import './App.css';
 import './Shared.css';
-import OverviewPage from './pages/OverviewPage';
+import SummaryPage from './pages/SummaryPage';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
 import CommitPage from './pages/CommitPage';
@@ -23,7 +23,7 @@ function App() {
           <Route path="/reposearch" component={SearchPage} />
           <Container maxWidth="lg">
             <Header />
-            <Route path="/overview" exact component={OverviewPage} />
+            <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />
             <Route path="/table" component={Table} />
             <Route path="/batch" component={Batch} />

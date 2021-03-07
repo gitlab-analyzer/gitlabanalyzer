@@ -43,7 +43,7 @@ class GitLab:
         if self.authenticate():
             self.__project_lists = self.gl.projects.list(visibility="private")
 
-    def __find_project(self, projectID: int) -> Optional[gl_Project]:
+    def find_project(self, projectID: int) -> Optional[gl_Project]:
         for project in self.__project_lists:
             if project.id == projectID:
                 return project
@@ -58,8 +58,12 @@ class GitLab:
     def get_all_members(self) -> list:
         return self.__project.members.list()
 
-    def set_project(self, projectID: int) -> None:
-        self.__project = self.__find_project(projectID)
+    def set_project(self, projectID: int) -> bool:
+        self.__project = self.find_project(projectID)
+        if self.__project is not None:
+            return True
+        else:
+            return False
 
     def authenticate(self) -> bool:
         try:
@@ -110,16 +114,15 @@ class GitLab:
     ) -> Tuple[list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort, per_page=100
-        )  # 100 is the maximum # of objects you can get
+            state=state, order_by=order_by, sort=sort
+        )
 
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
             commitsList: list = []
-            for commit in myCommits:
+            for _ in range(myCommits.total_pages):
                 try:
-                    # commitsList.append(myCommits.next())
-                    commitsList.append(commit.short_id)  # store only the short_id
+                    commitsList.append(myCommits.next())
                 except StopIteration:
                     pass
             commitsForMergeRequests.append(commitsList)
@@ -142,21 +145,3 @@ class GitLab:
         for mergeRequest in mergeRequestList:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
-
-    def get_specific_mr(self, mr_iid: Union[str, int]) -> list:
-        return self.__project.mergerequests.get(mr_iid)
-
-    def get_specific_issue(self, issue_iid: int) -> list:
-        return self.__project.issues.get(issue_iid)
-
-    def get_specific_commit(self, commit_sha: str) -> list:
-        return self.__project.commits.get(commit_sha)
-
-    def get_comments_of_mr(self, mergeRequest: gitlab) -> list:
-        return mergeRequest.notes.list()
-
-    def get_comments_of_issue(self, issue: gitlab) -> list:
-        return issue.notes.list()
-
-    def get_comments_of_commit(self, commit: gitlab) -> list:
-        return commit.comments.list()
