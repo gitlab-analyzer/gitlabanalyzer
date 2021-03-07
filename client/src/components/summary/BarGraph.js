@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts'
 
 // adapted from: https://apexcharts.com/react-chart-demos/column-charts/stacked/
 
-class StackedBar extends React.Component {
+class BarGraph extends React.Component {
 
     constructor(props) {
       super(props);
@@ -11,22 +11,21 @@ class StackedBar extends React.Component {
       this.state = {
       
         options: {
-          colors: ['#F1E2AB', '#ABB2F1', '#ABF1DC', '#C7EBFF', '#D7ECD9', '#F5D5CB', '#F6ECF5', '#F3DDF2'],
-        //   stroke: {
-        //     show: true,
-        //     curve: 'smooth',
-        //     lineCap: 'butt',
-        //     colors: ['#CBB97B', '#7F87CF', '#55FFCC', '#6AB1D9', '#489850', '#bb4824', '#a34d9a', '#ab3ca6'],
-        //     width: 1,
-        //     dashArray: 0,      
-        // },
+          colors: [this.props.colors],
+          stroke: {
+            show: true,
+            curve: 'smooth',
+            lineCap: 'butt',
+            colors: [this.props.stroke],
+            width: 1,
+            dashArray: 0,      
+        },
           chart: {
             toolbar: {
               show: false
             },
             type: 'bar',
             height: 350,
-            stacked: true,
           },
           dataLabels: {
             enabled: false
@@ -49,42 +48,25 @@ class StackedBar extends React.Component {
             }
           },
           xaxis: {
-            categories: ['J1', 'J2', 'J3', 'J4', 'F1',
-            'F2', 'F3', 'F4', 'M1', 'M2'
-            ],
-          },
-          legend: {
-            position: 'right',
-            offsetY: 40,
-            onItemClick: {
-              toggleDataSeries: false
-            }
+            categories: ['Jan', 'Feb'],
           },
           fill: {
             type: 'solid',
             opacity: 1
           }
         },
-      
-      
       };
     }
-
-  
 
     render() {
       console.log(this.props)
 
       return (
-        
-
   <div id="chart">
-<Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
+<Chart options={this.state.options} series={this.props.series} type="bar" height={200} />
 </div>
-
-
       );
     }
   }
 
-export default StackedBar
+export default BarGraph

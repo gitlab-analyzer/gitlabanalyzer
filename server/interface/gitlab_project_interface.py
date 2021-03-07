@@ -16,14 +16,23 @@ class GitLabProject:
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
+        self.__projectID: int = -1
+        self.__gitlab: GitLab = myGitlab
 
-        """
+    def set_project(self, projectID: int):
+        self.__projectID = projectID
+        if self.__gitlab.set_project(projectID=projectID):
+            self.__update_managers()
+            return True
+        else:
+            return False
+
+    def __update_managers(self):
         self.__update_comment_manager()
         self.__update_merge_request_manager()
         self.__update_member_manager()
         self.__update_commits_manager()
         self.__update_issues_manager()
-        """
 
     def update_comment_manager(self):
         # Get comments on MR
@@ -107,6 +116,10 @@ class GitLabProject:
     @property
     def commits_manager(self) -> CommitManager:
         return self.__commitsManager
+
+    @property
+    def project_id(self) -> int:
+        return self.__projectID
 
     def get_comment_list(self):
         return self.__commentsManager.get_comment_list()

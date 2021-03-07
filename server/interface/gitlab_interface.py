@@ -43,7 +43,7 @@ class GitLab:
         if self.authenticate():
             self.__project_lists = self.gl.projects.list(visibility="private")
 
-    def __find_project(self, projectID: int) -> Optional[gl_Project]:
+    def find_project(self, projectID: int) -> Optional[gl_Project]:
         for project in self.__project_lists:
             if project.id == projectID:
                 return project
@@ -58,8 +58,12 @@ class GitLab:
     def get_all_members(self) -> list:
         return self.__project.members.list()
 
-    def set_project(self, projectID: int) -> None:
-        self.__project = self.__find_project(projectID)
+    def set_project(self, projectID: int) -> bool:
+        self.__project = self.find_project(projectID)
+        if self.__project is not None:
+            return True
+        else:
+            return False
 
     def authenticate(self) -> bool:
         try:
