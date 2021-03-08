@@ -71,18 +71,14 @@ class GitLabProject:
         commitListsForAllUsers = []
 
         for user in name_list:
-            commitListsForAllUsers.append(
-                {
-                    "user_name": user,
-                    "commits": []
-                }
-            )
+            commitListsForAllUsers.append({"user_name": user, "commits": []})
         return commitListsForAllUsers
 
     def get_commits_for_all_users(self):
         member_and_user_list: list = self.__get_members_and_user_names()
-        commitListsForAllUsers: list = \
-            self.__initialize_member_and_user_list(member_and_user_list)
+        commitListsForAllUsers: list = self.__initialize_member_and_user_list(
+            member_and_user_list
+        )
 
         for commit in self.__commitsManager.get_commit_list():
             for user in commitListsForAllUsers:

@@ -151,9 +151,7 @@ def get_commits(projectID):
 def get_commits_for_users(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
-        mergeRequestList: list = (
-            gitlabProjectInterface.get_commits_for_all_users()
-        )
+        mergeRequestList: list = gitlabProjectInterface.get_commits_for_all_users()
         return jsonify({"response": True, "commit_list": mergeRequestList})
     else:
         return jsonify(projectIDError)
