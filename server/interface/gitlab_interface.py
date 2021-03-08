@@ -122,7 +122,6 @@ class GitLab:
             commitsList: list = []
             for commit in myCommits:
                 try:
-                    # commitsList.append(myCommits.next())
                     commitsList.append(commit.short_id)  # store only the short_id
                 except StopIteration:
                     pass

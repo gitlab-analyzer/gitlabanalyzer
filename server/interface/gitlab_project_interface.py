@@ -126,35 +126,3 @@ class GitLabProject:
 
     def get_merge_request_list(self):
         return self.__mergeRequestManager.merge_request_list
-
-
-# gl = GitLab(token='Cy2V5TYVWRwmwf9trh-X', url='https://csil-git1.cs.surrey.sfu.ca/')
-# gl.authenticate()
-# gl.get_project_list()
-# gl.set_project(25515)
-# list = gl.get_commit_list_for_project()
-
-print("START TESTING")
-
-gl = GitLab(token="c-Z7RjtQ1qtt2vWVYbjx", url="https://csil-git1.cs.surrey.sfu.ca/")
-gl.authenticate()
-gl.get_project_list()
-
-"""
-print("\n")
-# test = GitLabProject(gl, 26637)
-test = GitLabProject(gl, 25515)
-test.update_comment_manager()
-
-print("\n")
-for item in test.get_comment_list():
-    print(item.to_json())
-print("Length total: ", len(test.get_comment_list()))
-
-"""
-print("\n")
-test = GitLabProject(gl, 25515)
-test.update_merge_request_manager()
-for item in test.get_merge_request_list():
-    print(item.to_json(), "\n")
-print("Length total: ", len(test.get_merge_request_list()))
