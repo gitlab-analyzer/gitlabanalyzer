@@ -1,7 +1,27 @@
 * {
-    box-sizing: border-box;
-  }
+  box-sizing: border-box;
+}
 
+.ant-card {
+  width: 300px;
+}
+
+.ant-card-head-title {
+  font-size: 50px;
+  text-align: center;
+  padding: 10px 0px 0px 0px !important;
+}
+
+.ant-card-body {
+  text-align: center;
+  padding: 7px !important;
+}
+
+.cardContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0px 10px 0px;
+}
 .individualscore {
     width: 100%;
     margin-left: 60px;
