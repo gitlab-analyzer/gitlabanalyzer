@@ -10,17 +10,7 @@ from model.project import Project
 from model.code_diff import CodeDiff
 
 class GitLabProject:
-    def __init__(self, myGitlab: GitLab, projectID: int):
-        self.__gitlab: GitLab = myGitlab
-
-        # should this be necessary? -Josh
-        self.__gitlab.set_project(projectID=projectID)
-
-        self.__project: Optional[Project] = None
-        for project in self.__gitlab.get_project_list():
-            if project.id == projectID:
-                self.__project = Project(project)
-
+    def __init__(self, myGitlab: GitLab):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -69,6 +59,9 @@ class GitLabProject:
         issueList: list = self.__gitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
 
+    def __map_commit_author_to_members(self) -> None:
+        pass
+
     def get_commits_in_merge_request(self, merge_request_id: int) -> List[Commit]:
         # returns list of commits in the merge request
         pass
@@ -87,7 +80,7 @@ class GitLabProject:
         if commit is not None:
 
             # TODO: CodeDiffManager & get_code_diff_by_commit_id method & sha attribute in commit
-            codeDiffs: List[CodeDiff] = [] # GET CODE DIFFS FOR COMMIT METHOD HERE
+            codeDiffs: List[CodeDiff] = [] # GET CODE DIFFS BY COMMIT ID METHOD HERE
 
             for diff in codeDiffs:
                 scoreData["lines_added"] += diff.lines_added()
@@ -142,10 +135,10 @@ class GitLabProject:
 
     # If only knowing the name of the member, then you must convert the name to id using
     # the mapping (name -> id) done by the front-end or something.
-    def get_member_score_data(self, member_id: int) -> dict:
+    def get_member_score_data(self, member_id: int):
         pass
 
-    def get_file_type_score_data(self) -> dict:
+    def get_file_type_score_data(self):
         pass
 
     # Getters
