@@ -1,89 +1,69 @@
-import React from 'react'
-import { useTable } from "react-table";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
+const useStyles = makeStyles({
+  root: {
+      margin: '50px'
+  },
+  table: {
+    minWidth: 650,
+  },
+});
+
+function createData(date, wordcount, ownership, type) {
+    return { date, wordcount, ownership, type}
+}
+
+const rows = [
+  createData('01/01/2021', 15, 'Own', 'Code Review'),
+  createData('01/01/2021', 2, 'Own', 'Issue'),
+  createData('01/01/2021', 55, 'Other', 'Code Review'),
+  createData('01/01/2021', 65, 'Own', 'Issue'),
+  createData('01/01/2021', 44, 'Other', 'Code Review'),
+  createData('01/01/2021', 111, 'Own', 'Code Review'),
+  createData('01/01/2021', 15, 'Own', 'Code Review'),
+  createData('01/01/2021', 2, 'Own', 'Issue'),
+  createData('01/01/2021', 55, 'Other', 'Code Review'),
+  createData('01/01/2021', 65, 'Own', 'Issue'),
+  createData('01/01/2021', 44, 'Other', 'Code Review'),
+  createData('01/01/2021', 111, 'Own', 'Code Review'),
+];
+
 
 const TablePage = () => {
-    const columns = [
-        {
-          Header: "Date",
-          accessor: "date",
-        },
-        {
-          Header: "Word Count",
-          accessor: "wordcount",
-        },
-        {
-          Header: "Ownership",
-          accessor: "ownership",
-        },
-        {
-          Header: "Type",
-          accessor: "type",
-        },
-      ];
-
-      const data = [
-        {
-          date: "01/28/2021",
-          wordcount: 26,
-          ownership:'Own',
-          type:'Code Review'
-        },
-        {
-            date: "01/28/2021",
-            wordcount: 26,
-            ownership:'Own',
-            type:'Code Review'
-          },
-          {
-            date: "01/28/2021",
-            wordcount: 26,
-            ownership:'Own',
-            type:'Code Review'
-          },
-          {
-            date: "01/28/2021",
-            wordcount: 26,
-            ownership:'Own',
-            type:'Code Review'
-          },
-      ];
-
-      const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data,
-  });
+    const classes = useStyles();
     return (
-        <div className="containers">
-        <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      </div>
+        <TableContainer component={Paper}>
+            <Table className={classes.table}>
+                <TableHead>
+                <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell align="right">Word Count</TableCell>
+                    <TableCell align="right">Ownership</TableCell>
+                    <TableCell align="right">Type</TableCell>
+                </TableRow>
+                </TableHead>
+                <TableBody>
+                {rows.map((row) => (
+                    <TableRow key={row.name}>
+                    <TableCell component="th" scope="row">
+                        {row.date}
+                    </TableCell>
+                    <TableCell align="right">{row.wordcount}</TableCell>
+                    <TableCell align="right">{row.ownership}</TableCell>
+                    <TableCell align="right">{row.type}</TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 }
 
