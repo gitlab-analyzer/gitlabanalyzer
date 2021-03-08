@@ -105,6 +105,7 @@ class GitLabProject:
                 commitScoreData = self.get_commit_score_data(commit.id)
 
                 for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
+                    assert key1 == key2
                     scoreData[key1] += commitScoreData[key2]
         
         return scoreData
@@ -123,6 +124,7 @@ class GitLabProject:
             mergeRequestScoreData = self.get_merge_request_score_data(mr.id)
 
             for key1, key2 in zip(scoreData.keys(), mergeRequestScoreData.keys()):
+                assert key1 == key2
                 scoreData[key1] += scoreData[key2]
         
         return scoreData
