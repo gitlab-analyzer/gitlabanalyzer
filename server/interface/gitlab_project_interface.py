@@ -156,11 +156,6 @@ class GitLabProject:
     # Getters
 
     @property
-    def project_id(self) -> Project:
-        return self.__project
-
-    # shouldn't this functionality be in GitLab instead?
-    @property
     def project_list(self) -> list:
         return self.__gitlab.get_project_list()
 
