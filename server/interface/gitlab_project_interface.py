@@ -17,6 +17,7 @@ class GitLabProject:
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
+        self.__user_list: list = []
         self.__projectID: int = projectID
         self.__gitlab: GitLab = myGitlab
 
@@ -47,22 +48,48 @@ class GitLabProject:
 
     def __update_commits_manager(self):
         commitList: list = self.__gitlab.get_commit_list_for_project()
+        tempUserSet: set = set()
         for commit in commitList:
+            # Get all git users, set will only store unique values
+            tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
+        self.__user_list = list(tempUserSet)
 
     def __update_issues_manager(self):
         issueList: list = self.__gitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
 
+    def __get_members_and_user_names(self):
+        member_and_user_list: set = set()
+        for member in self.member_manager.get_member_list():
+            member_and_user_list.add(member.username)
+        for user in self.__user_list:
+            member_and_user_list.add(user)
+        return list(member_and_user_list)
+
+    def __initialize_member_and_user_list(self, name_list: list):
+        commitListsForAllUsers = []
+
+        for user in name_list:
+            commitListsForAllUsers.append(
+                {
+                    "user_name": user,
+                    "commits": []
+                }
+            )
+        return commitListsForAllUsers
+
     def get_commits_for_all_users(self):
-        commitListsForAllUsers = {}
-        # TODO: resume from here
+        member_and_user_list: list = self.__get_members_and_user_names()
+        commitListsForAllUsers: list = \
+            self.__initialize_member_and_user_list(member_and_user_list)
+
         for commit in self.__commitsManager.get_commit_list():
-            authorName = commit.author_name
-            if commitListsForAllUsers.get(authorName) is None:
-                commitListsForAllUsers[authorName] = []
-            else:
-                commitListsForAllUsers.get(authorName).append(commit.to_dict())
+            for user in commitListsForAllUsers:
+                if user["user_name"] == commit.author_name:
+                    user["commits"].append(commit.to_dict())
+                    break
+        return commitListsForAllUsers
 
     def get_merge_request_and_commit_list(self):
         mergeRequestForAllUsers = []
@@ -97,3 +124,7 @@ class GitLabProject:
     @property
     def project_id(self) -> int:
         return self.__projectID
+
+    @property
+    def user_list(self) -> list:
+        return self.__user_list

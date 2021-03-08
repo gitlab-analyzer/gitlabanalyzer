@@ -72,12 +72,13 @@ def auth():
 
 @app.route('/projects', methods=['get'])
 def get_project_list():
-    global gitlabProjectInterface
-    projectList = gitlabProjectInterface.project_list
+    global myGitLab
+    projectList = myGitLab.get_project_list()
     myResponse = []
     """
     This is for testing only, need to be changed later
     """
+    myGitLab.get_project_list()
     for project in projectList:
         myResponse.append(project.name_with_namespace)
     return jsonify({'projects': myResponse, "response": True})
@@ -98,25 +99,38 @@ def set_project():
         return jsonify(projectIDError)
 
 
+@app.route('/projects/<int:projectID>/members', methods=['get'])
+def get_project_members(projectID):
+    global gitlabProjectInterface
+
+    if projectID == gitlabProjectInterface.project_id:
+        members_name: list = []
+        memberList = gitlabProjectInterface.member_manager.get_member_list()
+        for member in memberList:
+            members_name.append(member.username)
+        return jsonify({"members": members_name, "response": True})
+    else:
+        return jsonify(projectIDError)
+
+
 @app.route('/projects/<int:projectID>/overview', methods=['get'])
 def get_project_overview(projectID):
     global gitlabProjectInterface
-    memberObjectList = []
+    userObjectList = []
 
     if projectID == gitlabProjectInterface.project_id:
-        memberList = gitlabProjectInterface.member_manager.get_member_list()
-        for member in memberList:
-            memberObjectList.append(
+        userList: list = gitlabProjectInterface.user_list
+        # TODO: below code will be replaced by a function call to gitlab project list
+        for user in userList:
+            userObjectList.append(
                 {
-                    "username": member.username,
+                    "username": user,
                     "number_commits": randint(0, 100),
                     "lines_of_code": randint(0, 100000),
                     "number_issues": randint(0, 100),
                 }
             )
-        # memberObjectList = get_test_data()["get_project_overview"]["users"]
-
-        return jsonify({"members": memberObjectList, "response": True})
+        return jsonify({"users": userObjectList, "response": True})
     else:
         return jsonify(projectIDError)
 
@@ -140,7 +154,7 @@ def get_commits_for_users(projectID):
         mergeRequestList: list = (
             gitlabProjectInterface.get_commits_for_all_users()
         )
-        return jsonify({"response": True, "merge_request_list": mergeRequestList})
+        return jsonify({"response": True, "commit_list": mergeRequestList})
     else:
         return jsonify(projectIDError)
 
