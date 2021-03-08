@@ -11,7 +11,7 @@ class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         self.__gitlab: GitLab = myGitlab
 
-        # Is this necessary? -Josh
+        # should this be necessary? -Josh
         self.__gitlab.set_project(projectID=projectID)
 
         self.__project: Optional[Project] = None
@@ -62,6 +62,7 @@ class GitLabProject:
     def project_id(self) -> Project:
         return self.__project
 
+    # shouldn't this functionality be in GitLab instead?
     @property
     def project_list(self) -> list:
         return self.__gitlab.get_project_list()
