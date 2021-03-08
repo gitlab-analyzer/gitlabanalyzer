@@ -12,6 +12,7 @@ import SummaryPage from './pages/SummaryPage';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
 import CommitPage from './pages/CommitPage';
+import TablePage from './pages/TablePage';
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
             <Header />
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />
-            <Route path="/table" component={Table} />
+            <Route path="/table" component={TablePage} />
             <Route path="/batch" component={Batch} />
             <Route path="/config" component={Config} />
           </Container>
