@@ -141,11 +141,7 @@ class GitLabProject:
     def project_id(self) -> Project:
         return self.__project
 
-<<<<<<< HEAD
     # shouldn't this functionality be in GitLab instead?
-=======
-    # Should this be here? -Josh
->>>>>>> 0af94516c7bbe32dc516b59fb60d89cd59469876
     @property
     def project_list(self) -> list:
         return self.__gitlab.get_project_list()
