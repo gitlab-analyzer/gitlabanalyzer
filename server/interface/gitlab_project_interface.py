@@ -19,8 +19,6 @@ class GitLabProject:
         self.__projectID: int = -1
         self.__gitlab: GitLab = myGitlab
 
-        self.__authorToMemberMap = dict()
-
     def set_project(self, projectID: int) -> bool:
         self.__projectID = projectID
         if self.__gitlab.set_project(projectID=projectID):
@@ -60,19 +58,6 @@ class GitLabProject:
     def __update_issues_manager(self) -> None:
         issueList: list = self.__gitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
-
-    def __map_commit_author_to_members(self) -> None:
-        if self.__projectID != -1:
-            pass
-
-    # using the author to member id map (author -> member)
-    def get_member_id_by_author(self, author_name: str) -> Optional[int]:
-        if len(self.__authorToMemberMap) == 0:
-            self.__map_commit_author_to_members()
-
-        if author_name in self.__authorToMemberMap:
-            return self.__authorToMemberMap[author_name]
-        return -1
 
     def get_commits_in_merge_request(self, merge_request_id: int) -> List[Commit]:
         # returns list of commits in the merge request
@@ -154,10 +139,6 @@ class GitLabProject:
         pass
 
     # Getters
-
-    @property
-    def project_list(self) -> list:
-        return self.__gitlab.get_project_list()
 
     @property
     def member_manager(self) -> MemberManager:
