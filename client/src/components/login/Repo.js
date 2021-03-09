@@ -26,9 +26,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
           },
         }
       );
-      console.log('Set project ID here');
       if (projectRes.data['response'] !== true) {
-        console.log('Failed to set project ID here');
         throw new Error('Fetch request failed.');
       }
 
