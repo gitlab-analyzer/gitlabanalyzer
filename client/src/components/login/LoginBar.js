@@ -31,7 +31,8 @@ const LoginBar = ({ setRedirect }) => {
       try {
         setLoading(true);
         const userInfo = await logIn();
-        if (userInfo.data['response'] === 'valid') {
+        if (userInfo.data['response'] === true) {
+          console.log('Authorized');
           setLoading(false);
           setIncorrect(false);
           setUser(userInfo.data['username']);
