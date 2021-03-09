@@ -11,6 +11,7 @@ from model.commit import Commit
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         myGitlab.set_project(projectID=projectID)
+        self.__gitlab = myGitlab  # TODO: This need to be deleted
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -101,7 +102,7 @@ class GitLabProject:
 
     def get_merge_request_and_commit_list(self) -> list:
         mergeRequestForAllUsers = []
-        mrs, commits_lists = myGitlab.get_merge_requests_and_commits()
+        mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
         for mr, commits in zip(mrs, commits_lists):
             mr = MergeRequest(mr, commits)
             data = mr.to_dict()
