@@ -11,7 +11,6 @@ from model.commit import Commit
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         myGitlab.set_project(projectID=projectID)
-        self.__gitlab = myGitlab  # TODO: This need to be deleted after
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -39,7 +38,7 @@ class GitLabProject:
                 mergeRequests[i], commitsForMR[i]
             )
             # Get comments
-            mr_notes = self.__gitlab.get_comments_of_mr(mergeRequests[i].iid)
+            mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
                     self.__commentsManager.add_comment(item)
@@ -58,7 +57,7 @@ class GitLabProject:
             self.__commitsManager.add_commit(commit)
 
             # Get comments
-            commit_notes = self.__gitlab.get_comments_of_commit(commit.short_id)
+            commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
             for item in commit_notes:
                 self.__commentsManager.add_comment(item, commit.short_id)
 
@@ -70,7 +69,7 @@ class GitLabProject:
 
         # Get comments
         for issue in issueList:
-            issue_notes = self.__gitlab.get_comments_of_issue(issue.iid)
+            issue_notes = myGitlab.get_comments_of_issue(issue.iid)
             for item in issue_notes:
                 if item.system is False:
                     self.__commentsManager.add_comment(item)
@@ -102,7 +101,7 @@ class GitLabProject:
 
     def get_merge_request_and_commit_list(self) -> list:
         mergeRequestForAllUsers = []
-        mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
+        mrs, commits_lists = myGitlab.get_merge_requests_and_commits()
         for mr, commits in zip(mrs, commits_lists):
             mr = MergeRequest(mr, commits)
             data = mr.to_dict()
