@@ -10,44 +10,39 @@ from model.commit import Commit
 
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
-        self.__gitlab: GitLab = myGitlab
-        self.__gitlab.set_project(projectID=projectID)
+        myGitlab.set_project(projectID=projectID)
+        self.__gitlab = myGitlab  # TODO: This need to be deleted after
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
-        self.__user_list: list = []
         self.__projectID: int = projectID
-        self.__gitlab: GitLab = myGitlab
 
-        self.__update_managers()
+        # This will be filled after the call to self.__update_commits_manager(myGitlab)
+        self.__user_list: list = []
 
-    def __update_managers(self):
-        self.__update_comment_manager()
-        self.__update_merge_request_manager()
-        self.__update_member_manager()
-        self.__update_commits_manager()
-        self.__update_issues_manager()
+        self.__update_managers(myGitlab)
 
-    def __update_comment_manager(self):
-        # TODO: This needs to be discussed
-        # https://python-gitlab.readthedocs.io/en/stable/gl_objects/notes.html
-        pass
+    def __update_managers(self, myGitlab: GitLab):
+        self.__update_merge_request_manager(myGitlab)
+        self.__update_member_manager(myGitlab)
+        self.__update_commits_manager(myGitlab)
+        self.__update_issues_manager(myGitlab)
 
-    def __update_merge_request_manager(self):
-        mergeRequests, _ = self.__gitlab.get_merge_requests_and_commits(state="all")
+    def __update_merge_request_manager(self, myGitlab: GitLab):
+        mergeRequests, _ = myGitlab.get_merge_requests_and_commits(state="all")
         for mergeRequest in mergeRequests:
             self.__mergeRequestManager.add_merge_request(mergeRequest)
 
-    def __update_member_manager(self):
-        members: list = self.__gitlab.get_all_members()
+    def __update_member_manager(self, myGitlab: GitLab):
+        members: list = myGitlab.get_all_members()
         for member in members:
             self.__membersManager.add_member(member)
         pass
 
-    def __update_commits_manager(self):
-        commitList: list = self.__gitlab.get_commit_list_for_project()
+    def __update_commits_manager(self, myGitlab: GitLab):
+        commitList: list = myGitlab.get_commit_list_for_project()
         tempUserSet: set = set()
         for commit in commitList:
             # Get all git users, set will only store unique values
@@ -55,8 +50,8 @@ class GitLabProject:
             self.__commitsManager.add_commit(commit)
         self.__user_list = list(tempUserSet)
 
-    def __update_issues_manager(self):
-        issueList: list = self.__gitlab.get_issue_list()
+    def __update_issues_manager(self, myGitlab: GitLab):
+        issueList: list = myGitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
 
     def __get_members_and_user_names(self):
@@ -67,18 +62,15 @@ class GitLabProject:
             member_and_user_list.add(user)
         return list(member_and_user_list)
 
-    def __initialize_member_and_user_list(self, name_list: list):
+    def __initialize_member_and_user_list(self):
         commitListsForAllUsers = []
 
-        for user in name_list:
+        for user in self.__user_list:
             commitListsForAllUsers.append({"user_name": user, "commits": []})
         return commitListsForAllUsers
 
     def get_commits_for_all_users(self):
-        member_and_user_list: list = self.__get_members_and_user_names()
-        commitListsForAllUsers: list = self.__initialize_member_and_user_list(
-            member_and_user_list
-        )
+        commitListsForAllUsers: list = self.__initialize_member_and_user_list()
 
         for commit in self.__commitsManager.get_commit_list():
             for user in commitListsForAllUsers:
@@ -100,10 +92,6 @@ class GitLabProject:
             data["commit_list"] = commitList
             mergeRequestForAllUsers.append(data)
         return mergeRequestForAllUsers
-
-    @property
-    def project_list(self) -> list:
-        return self.__gitlab.get_project_list()
 
     @property
     def member_manager(self) -> MemberManager:
