@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
 const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
-  const { setOverview, setCommitsList } = useAuth();
+  const { setOverview, setCommitsList, setMergeList } = useAuth();
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {}, [filteredList]);
@@ -26,9 +26,9 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
           },
         }
       );
-      if (projectRes.data['response'] !== true) {
+      if (!projectRes.data['response']) {
         console.log('Failed to set project ID here');
-        throw new Error('Fetch request failed.');
+        throw new Error('Set projects request failed.');
       }
 
       const overviewRes = await axios.get(
@@ -52,6 +52,25 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
             title: commit.title,
           }))
         );
+      }
+
+      const mergeListRes = await axios.get(
+        'http://localhost:5678/projects/2/merge_request/all'
+      );
+      if (!mergeListRes.data['response']) {
+        console.log('Failed to retrieve merge requests.');
+        throw new Error('Fetch merge request failed.');
+      }
+
+      if (mergeListRes) {
+        const mergeArray = mergeListRes.data.merge_request_list;
+        console.log(mergeArray);
+        // setMergeList(
+        //   mergeArray.map((merge) => ({
+        //     authorId: merge.author,
+
+        //   }))
+        // );
       }
 
       setAnalyzing(false);
