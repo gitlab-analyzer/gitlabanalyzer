@@ -31,15 +31,23 @@ class GitLabProject:
         self.__update_issues_manager(myGitlab)
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
-        mergeRequests, _ = myGitlab.get_merge_requests_and_commits(state="all")
-        for mergeRequest in mergeRequests:
-            self.__mergeRequestManager.add_merge_request(mergeRequest)
+        mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
+            state="all"
+        )
+        for i in range(0, len(mergeRequests)):
+            self.__mergeRequestManager.add_merge_request(
+                mergeRequests[i], commitsForMR[i]
+            )
+            # Get comments
+            mr_notes = self.__gitlab.get_comments_of_mr(mergeRequests[i].iid)
+            for item in mr_notes:
+                if item.system is False:
+                    self.__commentsManager.add_comment(item)
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
         members: list = myGitlab.get_all_members()
         for member in members:
             self.__membersManager.add_member(member)
-        pass
 
     def __update_commits_manager(self, myGitlab: GitLab) -> None:
         commitList: list = myGitlab.get_commit_list_for_project()
@@ -48,11 +56,24 @@ class GitLabProject:
             # Get all git users, set will only store unique values
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
+
+            # Get comments
+            commit_notes = self.__gitlab.get_comments_of_commit(commit.short_id)
+            for item in commit_notes:
+                self.__commentsManager.add_comment(item, commit.short_id)
+
         self.__user_list = list(tempUserSet)
 
     def __update_issues_manager(self, myGitlab: GitLab) -> None:
         issueList: list = myGitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
+
+        # Get comments
+        for issue in issueList:
+            issue_notes = self.__gitlab.get_comments_of_issue(issue.iid)
+            for item in issue_notes:
+                if item.system is False:
+                    self.__commentsManager.add_comment(item)
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
@@ -104,6 +125,10 @@ class GitLabProject:
     @property
     def commits_manager(self) -> CommitManager:
         return self.__commitsManager
+
+    @property
+    def issue_manager(self) -> IssueManager:
+        return self.__issuesManager
 
     @property
     def project_id(self) -> int:
