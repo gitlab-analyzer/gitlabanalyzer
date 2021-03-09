@@ -9,7 +9,8 @@ const AuthProvider = (props) => {
   const [selectUser, setSelectUser] = useState('@everyone');
   const [overview, setOverview] = useState([]);
   const [commitsList, setCommitsList] = useState([]);
-  const [mergeList, setMergeList] = useState([]);
+  const [mergeList, setMergeList] = useState({});
+  const [userScores, setUserScores] = useState({});
 
   const authContextValue = {
     user,
