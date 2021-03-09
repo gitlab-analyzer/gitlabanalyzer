@@ -22,9 +22,9 @@ class codeDiffManager:
                 found = found.group(1)
                 splitGroup = found.split()
                 add = splitGroup[1].split(',')
-                newLine = int(add[1])
+                newLine = int(add[len(add)-1])
                 delete = splitGroup[0].split(',')
-                deleteLine = int (delete[1])
+                deleteLine = int (delete[len(delete)-1])
             else:
                 isEmpty = True
                 for i in line[1:]:
