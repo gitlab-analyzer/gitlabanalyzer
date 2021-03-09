@@ -62,7 +62,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
   };
 
   if (redirect) {
-    return <Redirect to="/overview" />;
+    return <Redirect to="/summary" />;
   } else {
     return (
       <div>
