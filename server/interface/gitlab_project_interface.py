@@ -104,7 +104,7 @@ class GitLabProject:
         mergeRequestForAllUsers = []
         mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
         for mr, commits in zip(mrs, commits_lists):
-            mr = MergeRequest(mr)
+            mr = MergeRequest(mr, commits)
             data = mr.to_dict()
             commitList = []
             for commit in commits:
