@@ -36,11 +36,12 @@ const rows = [
   createData('01/01/2021', 111, 'Own', 'Code Review'),
 ];
 
-
+// style={{width:300}}
 const TablePage = () => {
     const classes = useStyles();
     return (
         <TableContainer component={Paper}>
+
             <Table className={classes.table}>
                 <TableHead>
                 <TableRow>
