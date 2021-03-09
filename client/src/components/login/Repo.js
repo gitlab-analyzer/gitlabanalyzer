@@ -65,6 +65,40 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       if (mergeListRes) {
         const mergeArray = mergeListRes.data.merge_request_list;
         console.log(mergeArray);
+        const mergeListDone = {};
+
+        const organizeMergeList = (item, _index) => {
+          console.log(item);
+          let id = item.author;
+          id = id.toString();
+
+          const mrToAppend = {
+            comments: item.comments,
+            createdDate: Date.parse(item.created_date),
+            description: item.description,
+            title: item.title,
+            state: item.state,
+            commitsList: item.commit_list.map((item) => ({
+              authorName: item.author_name,
+              commitedDate: Date.parse(item.committed_date),
+              id: item.id,
+              title: item.title,
+            })),
+          };
+
+          if (id in mergeListDone) {
+            // If user exists, handle data by appending
+            mergeListDone[id].push(mrToAppend);
+          } else {
+            // Handle user object creation and append
+            mergeListDone[id] = [mrToAppend];
+          }
+        };
+        mergeArray.forEach(organizeMergeList);
+        console.log('well well here it is');
+        console.log(mergeListDone);
+        setMergeList(mergeListDone);
+
         // setMergeList(
         //   mergeArray.map((merge) => ({
         //     authorId: merge.author,
