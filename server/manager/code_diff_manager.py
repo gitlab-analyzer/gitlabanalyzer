@@ -48,7 +48,7 @@ class codeDiffManager:
             if("{" == line or "}" == line):
                 syntax = syntax + 1
                 newLine = newLine - 1
-            if(line == '+' or isComment or isSpacing):  # comment and spacing add no value (trg hop comment o giua + nhieu spacing)
+            if(line == '+' or isComment or isSpacing):  # comment and spacing add no value
                 newLine = newLine - 1
         if(line[0:1] == '-'):
             deleteLine = deleteLine + 1
