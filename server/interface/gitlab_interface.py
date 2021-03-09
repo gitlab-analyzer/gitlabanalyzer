@@ -157,7 +157,3 @@ class GitLab:
     def get_comments_of_commit(self, commit_sha: str) -> list:
         commit = self.__project.commits.get(commit_sha)
         return commit.comments.list()
-
-
-    def get_specific_mr(self, mr_iid: Union[str, int]) -> gitlab:
-        return self.__project.mergerequests.get(mr_iid)
