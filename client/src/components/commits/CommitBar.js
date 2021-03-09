@@ -1,91 +1,195 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Popover, Checkbox, List, Avatar, Button, Skeleton } from 'antd';
-import { fetchData } from './commitData';
-import { useAuth } from '../../context/AuthContext';
+import { Card, Table, Space, Badge, Tag, Button } from 'antd';
+import { CodeFilled, CodeOutlined } from '@ant-design/icons';
+import { Drawer } from '@material-ui/core';
 
-// Used boilerplate from https://ant.design/components/list/
-const CommitBar = ({ username }) => {
-  const [commits, setCommits] = useState([]);
-  const [hover, setHover] = useState({ visible: false });
-  const { selectUser } = useAuth();
+/**
+ * Used boilerplate from https://ant.design/components/table/
+ */
+const CommitBar = () => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
-  useEffect(() => {
-    getFakeData();
-  }, []);
-
-  const getFakeData = async () => {
-    const data = await fetchData();
-    setCommits(data);
-  };
-
-  const hide = () => {
-    setHover({ visible: false });
-  };
-
-  const handleVisibleChange = (visible) => {
-    setHover({ visible });
-  };
-
-  const filterCommits = (username, commits) => {
-    const filteredCommits = commits.filter((commit) => {
-      return commit.username === username;
+  /**
+   * Populate Merge Requests with dummy data for testing
+   */
+  const data = [];
+  for (let i = 0; i < 20; ++i) {
+    data.push({
+      key: i,
+      mrid: 'a2f306a4',
+      branch: '#57 Refactor get projects API',
+      score: 515,
+      createdAt: '2021-02-24 23:12:00',
     });
-    return filteredCommits;
-  };
+  }
 
-  const getDataSource = () => {
-    if (selectUser === '@everyone') {
-      return commits;
-    } else {
-      return filterCommits(selectUser, commits);
+  /**
+   * Expandable Row for Commits inside a specific Merge Request
+   */
+  const expandedRowRender = () => {
+    const columns = [
+      { title: 'Commit ID', dataIndex: 'commitid', key: 'commitid' },
+      {
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
+        filterMultiple: false,
+        // TODO: Fix the sorter once API Data is available to link up
+        onFilter: (value, record) => record.date.indexOf(value) === 0,
+        sorter: (a, b) => a.data.length - b.date.length,
+        sortDirections: ['descend', 'ascend'],
+      },
+      { title: 'Message', dataIndex: 'message', key: 'message' },
+      { title: 'Score', dataIndex: 'score', key: 'score' },
+      {
+        title: 'Status',
+        key: 'state',
+        render: () => (
+          <span>
+            <Badge status="success" color={'blue'} />
+            <Tag color="blue">Included</Tag>
+          </span>
+        ),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'operation',
+        key: 'operation',
+        render: () => (
+          <Space size="middle">
+            <Button icon={<CodeOutlined />} onClick={showDrawer}>
+              Code Diffs
+            </Button>
+          </Space>
+        ),
+      },
+    ];
+
+    /**
+     * Populate Commits with dummy data for testing
+     */
+    const commitsData = [];
+    for (let i = 0; i < 3; ++i) {
+      commitsData.push({
+        key: i,
+        date: '2021-02-21 23:12:00',
+        message: 'Add new routes for retrieving code & code diffs',
+        commitid: 'e71b2010',
+        score: '175',
+      });
     }
+    return (
+      <Table
+        columns={columns}
+        dataSource={commitsData}
+        rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
+        pagination={false}
+      />
+    );
   };
 
+  /**
+   * Column title for the Merge Requests
+   */
+  const columns = [
+    { title: 'Merge Request ID', dataIndex: 'mrid', key: 'mrid' },
+    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
+    { title: 'Branch', dataIndex: 'branch', key: 'branch' },
+    { title: 'Score', dataIndex: 'score', key: 'score' },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+
+      render: () => (
+        <span>
+          <Badge status="success" />
+          <Tag color="green">Merged</Tag>
+        </span>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'operation',
+      render: () => (
+        <Button type="primary" onClick={showDrawer} icon={<CodeFilled />}>
+          Expand
+        </Button>
+      ),
+    },
+  ];
+
+  // This object defines the behavior of ignore selectors
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows
+      );
+    },
+    // Selection Logic to be implemented once API data is done
+    onSelect: (record, selected, selectedRows) => {
+      console.log(record, selected, selectedRows);
+    },
+    // Selection Logic to be implemented once API data is done
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
+
+  // Controllers for the Code Diff Drawer
+  const showDrawer = () => {
+    setDrawerVisible(true);
+  };
+
+  const onClose = () => {
+    setDrawerVisible(false);
+  };
+
+  /**
+   * Render the Table component which represents the Merge Requests
+   * Table represents the MR/Commits data bars
+   * Drawer is an experimental feature that renders the Code Diffs for each MR and Commit
+   */
   return (
-    <List
-      className="demo-loadmore-list"
-      // loading={initLoading}
-      itemLayout="horizontal"
-      // loadMore={loadMore}
-      pagination={{
-        onChange: (page) => {
-          console.log(page);
-        },
-        pageSize: 8,
-      }}
-      dataSource={getDataSource()}
-      renderItem={(commits) => (
-        <List.Item
-          actions={[
-            <Button size="small" type="primary">
-              commits
-            </Button>,
-            // <Popover
-            //   content={<a onClick={hide}>Close</a>}
-            //   title="Title"
-            //   trigger="click"
-            //   visible={hover.visible}
-            //   onVisibleChange={handleVisibleChange}
-            // >
-            <Button ghost size="small" type="primary">
-              details
-            </Button>,
-            // </Popover>,
-            <Checkbox>ignore</Checkbox>,
-          ]}
+    <>
+      <Table
+        className="components-table-demo-nested"
+        columns={columns}
+        pagination={false}
+        expandable={{ expandedRowRender }}
+        dataSource={data}
+        rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
+      />
+      <Drawer
+        variant={'persistent'}
+        styles={{ height: '90%' }}
+        anchor={'bottom'}
+        open={drawerVisible}
+        onClose={onClose}
+      >
+        <Button
+          onClick={onClose}
+          style={{
+            marginTop: '10px',
+            marginBottom: '5px',
+            marginLeft: '67.5%',
+            float: 'right',
+            width: 100,
+          }}
         >
-          {/* <Skeleton avatar title={false} loading={item.loading} active> */}
-          <List.Item.Meta
-            avatar={<Avatar shape="square" size="large" src={commits.avatar} />}
-            title={<a href="/commits">{commits.title}</a>}
-            description={`${commits.username} Updated: ${commits.date}`}
-          />
-          <div>{commits.weighting}%</div>
-          {/* </Skeleton> */}
-        </List.Item>
-      )}
-    />
+          Close
+        </Button>
+        <div style={{ diplay: 'flex' }}>
+          <Card style={{ margin: 'auto', width: '80%', height: '70vh' }}>
+            <h1>Sample Code Diffs</h1>
+            <p>Sample Code</p>
+          </Card>
+        </div>
+      </Drawer>
+    </>
   );
 };
 
