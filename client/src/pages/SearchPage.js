@@ -21,15 +21,16 @@ function SearchPage() {
     const getRepos = async () => {
       setLoading(true);
       const repoList = await axios.get('http://localhost:5678/projects');
-      setRepo(repoList.data.projects);
+      console.log(repoList);
+      setRepo(repoList.data.value);
       setReList([
-        ...repoList.data.projects,
+        ...repoList.data.value,
         'Administrator / Earth GitLab 373',
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',
       ]);
       setFilteredList([
-        ...repoList.data.projects,
+        ...repoList.data.value,
         'Administrator / Earth GitLab 373',
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',
