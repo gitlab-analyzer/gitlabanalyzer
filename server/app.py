@@ -169,6 +169,28 @@ def get_merge_requests_for_users(projectID):
         return jsonify(projectIDError)
 
 
+@app.route('/projects/<int:projectID>/merge_request/<int:mergeRequestID>/code_diff')
+def get_merge_request_diff(projectID, mergeRequestID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        # TODO
+        return jsonify({"response": True, "code_diff": "Request not implemented"})
+    else:
+        return jsonify(projectIDError)
+    pass
+
+
+@app.route('/projects/<int:projectID>/commit/<int:commit_short_ID>/code_diff')
+def get_merge_request_diff(projectID, commit_short_ID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        # TODO
+        return jsonify({"response": True, "code_diff": "Request not implemented"})
+    else:
+        return jsonify(projectIDError)
+    pass
+
+
 # This function should only be used for testing purpose
 def get_test_data() -> json:
     return json.load(open('test/test_dataset/test_data.json'))
