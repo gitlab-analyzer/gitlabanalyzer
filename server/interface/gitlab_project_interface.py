@@ -10,7 +10,7 @@ from model.project import Project
 from model.code_diff import CodeDiff
 
 class GitLabProject:
-    def __init__(self, myGitlab: GitLab):
+    def __init__(self, myGitlab: GitLab, projectID: int) -> None:
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -21,7 +21,7 @@ class GitLabProject:
 
         self.__authorToMemberMap = dict()
 
-    def set_project(self, projectID: int):
+    def set_project(self, projectID: int) -> bool:
         self.__projectID = projectID
         if self.__gitlab.set_project(projectID=projectID):
             self.__update_managers()
