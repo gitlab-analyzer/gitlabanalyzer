@@ -7,8 +7,11 @@ import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
 import Settings from "./Settings.json"
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ReactExport from "react-export-excel";
 import ScoreCalculator from './ScoreCalculator';
+import exportFromJSON from 'export-from-json'
+
 import "./FloatBar.css";
 
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -21,9 +24,23 @@ const { RangePicker } = DatePicker;
 const iter1 = ["2021-01-18", "2021-02-22"];
 const iter2 = ["2021-02-23", "2021-03-29"];
 const iter3 = ["2021-03-30", "2021-04-26"];
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+
 function FloatBar() {
 
-
+  const data = [
+    {
+      one: "one",
+      two: "two"
+    },
+    {
+      one: "onetwo",
+      two: "twotwo"
+    }
+  ];
+  const name = 'download';
+  const type = 'json';
   const [user, setUser] = React.useState('everyone');
   function handleChange(value) {
     setUser(value);
@@ -76,22 +93,34 @@ function FloatBar() {
             <CopyToClipboard
               format = {"text/plain"}
               text = {
-                renderToStaticMarkup(
-                  <div>
-                    {FloatBarData.map((Detail) => {
-                      return (
-                        <div>
-                          <div>{Detail.username}</div>
-                          <div>{ScoreCalculator(Detail.number_commits, Detail.lines_of_code, Detail.number_issues)}</div>
-                          <div>{Detail.number_commits}</div>
-                          <div>{Detail.lines_of_code}</div>
-                          <div>{Detail.number_issues}</div>
-                          <br/>
-                        </div>
-                      ); 
-                    })}                  
-                  </div>
-                  ).replaceAll("</div><br/></div>","\n").replaceAll("<div>", "").replaceAll("</div>", "\t")
+                exportFromJSON({ data, name, type })
+                // renderToStaticMarkup( 
+                  // JSON.stringify(
+                  //    FloatBarData
+                  // )
+                    // <ExcelSheet data = {data} name="data">
+                    //   <ExcelColumn label="one" value="one" />
+                    //   <ExcelColumn label="two" value="two" />
+                    // </ExcelSheet>      
+                // )
+
+                // renderToStaticMarkup(
+                //   <div>
+                //     {/* {FloatBarData.map((Detail) => {
+                //       return (
+                //         <div>
+                //           <div>{Detail.username}</div>
+                //           <div>{ScoreCalculator(Detail.number_commits, Detail.lines_of_code, Detail.number_issues)}</div>
+                //           <div>{Detail.number_commits}</div>
+                //           <div>{Detail.lines_of_code}</div>
+                //           <div>{Detail.number_issues}</div>
+                //           <br/>
+                //         </div>
+                //       ); 
+                //     })}    */}
+                //     <ExcelSheet data = {FloatBarData} name="data" />        
+                //   </div>
+                //   ).replaceAll("</div><br/></div>","\r").replaceAll("<div>", "").replaceAll("</div>", "\t")
               }
             >
               <Button style={{ width: 150 }}>
