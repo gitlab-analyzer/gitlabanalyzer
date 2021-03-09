@@ -76,7 +76,7 @@ class GitLab:
         return self.__project_lists
 
     def get_commit_list_for_project(self) -> Optional[list]:
-        return self.__project.commits.list(all=True)
+        return self.__project.commits.list(state="all", all=True)
 
     # Example: since='2016-01-01T00:00:00Z'
     def get_commit_list_for_project_with_range(
@@ -122,7 +122,7 @@ class GitLab:
             commitsList: list = []
             for commit in myCommits:
                 try:
-                    commitsList.append(commit.short_id)  # store only the short_id
+                    commitsList.append(commit)
                 except StopIteration:
                     pass
             commitsForMergeRequests.append(commitsList)

@@ -39,8 +39,8 @@ class MergeRequestManager:
                 tempMergeRequestList.append(mergeRequest)
         return tempMergeRequestList
 
-    def get_related_commitIds(self, myIid) -> list:
+    def get_related_commit_ids(self, myIid) -> list:
         for mergeRequest in self.__mergeRequestList:
             if mergeRequest.iid == myIid:
                 return mergeRequest.related_commits_sha
-        return None
+        return []

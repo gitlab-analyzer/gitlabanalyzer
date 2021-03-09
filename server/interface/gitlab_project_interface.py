@@ -4,14 +4,11 @@ from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
-from model.merge_request import MergeRequest
-from model.commit import Commit
 
 
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         myGitlab.set_project(projectID=projectID)
-        self.__gitlab = myGitlab  # TODO: This need to be deleted
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -102,16 +99,16 @@ class GitLabProject:
 
     def get_merge_request_and_commit_list(self) -> list:
         mergeRequestForAllUsers = []
-        mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
-        for mr, commits in zip(mrs, commits_lists):
-            mr = MergeRequest(mr, commits)
-            data = mr.to_dict()
+
+        for mr in self.merge_request_manager.merge_request_list:
+            mr = mr.to_dict()
             commitList = []
-            for commit in commits:
-                commit = Commit(commit)
+            for commit in mr["related_commits_list"]:
                 commitList.append(commit.to_dict())
-            data["commit_list"] = commitList
-            mergeRequestForAllUsers.append(data)
+            mr["commit_list"] = commitList
+            # delete the list of commits so jsonify won't throw error
+            del mr['related_commits_list']
+            mergeRequestForAllUsers.append(mr)
         return mergeRequestForAllUsers
 
     @property
