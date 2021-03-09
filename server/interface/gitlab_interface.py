@@ -146,20 +146,18 @@ class GitLab:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
 
-    def get_specific_mr(self, mr_iid: Union[str, int]) -> list:
-        return self.__project.mergerequests.get(mr_iid)
-
-    def get_specific_issue(self, issue_iid: int) -> list:
-        return self.__project.issues.get(issue_iid)
-
-    def get_specific_commit(self, commit_sha: str) -> list:
-        return self.__project.commits.get(commit_sha)
-
-    def get_comments_of_mr(self, mergeRequest: gitlab) -> list:
+    def get_comments_of_mr(self, mr_iid: Union[str, int]) -> list:
+        mergeRequest = self.__project.mergerequests.get(mr_iid)
         return mergeRequest.notes.list()
 
-    def get_comments_of_issue(self, issue: gitlab) -> list:
+    def get_comments_of_issue(self, issue_iid: int) -> list:
+        issue = self.__project.issues.get(issue_iid)
         return issue.notes.list()
 
-    def get_comments_of_commit(self, commit: gitlab) -> list:
+    def get_comments_of_commit(self, commit_sha: str) -> list:
+        commit = self.__project.commits.get(commit_sha)
         return commit.comments.list()
+
+
+    def get_specific_mr(self, mr_iid: Union[str, int]) -> gitlab:
+        return self.__project.mergerequests.get(mr_iid)

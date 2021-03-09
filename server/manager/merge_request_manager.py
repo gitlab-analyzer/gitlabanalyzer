@@ -38,3 +38,9 @@ class MergeRequestManager:
             if myStartDate <= tempStartDate <= myEndDate:
                 tempMergeRequestList.append(mergeRequest)
         return tempMergeRequestList
+
+    def get_related_commitIds(self, myIid) -> list:
+        for mergeRequest in self.__mergeRequestList:
+            if mergeRequest.iid == myIid:
+                return mergeRequest.related_commits_sha
+        return None
