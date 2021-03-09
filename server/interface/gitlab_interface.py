@@ -114,7 +114,7 @@ class GitLab:
     ) -> Tuple[list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort
+            state=state, order_by=order_by, sort=sort, all=True
         )
 
         for mergeRequest in mergeRequests:
