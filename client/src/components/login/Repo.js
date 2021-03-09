@@ -10,9 +10,17 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
 
   useEffect(() => {}, [filteredList]);
 
+  /**
+   * Function that handles setting project ID and fetching all necessary data
+   * for analysis
+   * Parses all fetched data and store them in global context state
+   */
   const handleAnalyze = async () => {
     try {
       setAnalyzing(true);
+
+      // Set project ID to the users chosen ID
+      // Currently it is hard coded to 2 since no other projects exist
       const projectRes = await axios.post(
         'http://localhost:5678/projects/set',
         {},
@@ -26,17 +34,22 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
           },
         }
       );
+
       if (!projectRes.data['response']) {
         console.log('Failed to set project ID here');
         throw new Error('Set projects request failed.');
       }
 
+      // Retrieve overview data and set to Context State
       const overviewRes = await axios.get(
         'http://localhost:5678/projects/2/overview'
       );
+
       if (overviewRes) {
         setOverview(overviewRes.data.users);
       }
+
+      // Retrieve Commits List data and set them to Context State
       const commitsRes = await axios.get(
         'http://localhost:5678/projects/2/commit'
       );
@@ -54,6 +67,8 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
         );
       }
 
+      // Retrieve Merge List data and set them to Context State
+      // Use by calling: mergeList and setMergeList from AuthContext
       const mergeListRes = await axios.get(
         'http://localhost:5678/projects/2/merge_request/all'
       );
@@ -76,13 +91,20 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
             comments: item.comments,
             createdDate: Date.parse(item.created_date),
             description: item.description,
+            id: item.id,
             title: item.title,
             state: item.state,
+            ignore: false,
+            score: 0,
+            loc: 0,
             commitsList: item.commit_list.map((item) => ({
               authorName: item.author_name,
               commitedDate: Date.parse(item.committed_date),
               id: item.id,
               title: item.title,
+              ignore: false,
+              score: 0,
+              loc: 0,
             })),
           };
 
@@ -98,13 +120,6 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
         console.log('well well here it is');
         console.log(mergeListDone);
         setMergeList(mergeListDone);
-
-        // setMergeList(
-        //   mergeArray.map((merge) => ({
-        //     authorId: merge.author,
-
-        //   }))
-        // );
       }
 
       setAnalyzing(false);
