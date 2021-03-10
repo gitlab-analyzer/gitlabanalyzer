@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles({
   root: {
@@ -15,6 +16,11 @@ const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
+  grid: {
+    width: '100%',
+    margin:'0px',
+    textAlign: 'left',
+  }
 });
 
 function createData(date, wordcount, ownership, type) {
@@ -40,31 +46,40 @@ const rows = [
 const TablePage = () => {
     const classes = useStyles();
     return (
-        <TableContainer component={Paper}>
+        <Grid container className={classes.grid}>
+            <Grid item xs={9}>   
+                <TableContainer component={Paper}>
 
-            <Table className={classes.table}>
-                <TableHead>
-                <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell align="right">Word Count</TableCell>
-                    <TableCell align="right">Ownership</TableCell>
-                    <TableCell align="right">Type</TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {rows.map((row) => (
-                    <TableRow key={row.name}>
-                    <TableCell component="th" scope="row">
-                        {row.date}
-                    </TableCell>
-                    <TableCell align="right">{row.wordcount}</TableCell>
-                    <TableCell align="right">{row.ownership}</TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    <Table className={classes.table}>
+                        <TableHead>
+                        <TableRow>
+                            <TableCell>Date</TableCell>
+                            <TableCell align="right">Word Count</TableCell>
+                            <TableCell align="right">Ownership</TableCell>
+                            <TableCell align="right">Type</TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {rows.map((row) => (
+                            <TableRow key={row.name}>
+                            <TableCell component="th" scope="row">
+                                {row.date}
+                            </TableCell>
+                            <TableCell align="right">{row.wordcount}</TableCell>
+                            <TableCell align="right">{row.ownership}</TableCell>
+                            <TableCell align="right">{row.type}</TableCell>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            <Grid item xs={1}>
+            </Grid>
+            <Grid item xs={2}>
+                <button>Filter</button>
+            </Grid>
+        </Grid>
     )
 }
 
