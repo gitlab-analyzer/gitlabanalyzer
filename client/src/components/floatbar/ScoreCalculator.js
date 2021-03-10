@@ -1,6 +1,6 @@
 
 function ScoreCalculator(commits, lines, issues) {
-    var score = commits + lines + issues;
+    let score = commits + lines + issues;
     return score;
 }
 
