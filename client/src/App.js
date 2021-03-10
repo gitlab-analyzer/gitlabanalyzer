@@ -9,6 +9,7 @@ import { Container } from '@material-ui/core';
 import './App.css';
 import './Shared.css';
 import SummaryPage from './pages/SummaryPage';
+import BatchPage from './pages/BatchPage';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
 import CommitPage from './pages/CommitPage';
@@ -27,7 +28,7 @@ function App() {
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />
             <Route path="/table" component={Table} />
-            <Route path="/batch" component={Batch} />
+            <Route path="/batch" component={BatchPage} />
             <Route path="/config" component={Config} />
             <FooterBar />
           </Container>
