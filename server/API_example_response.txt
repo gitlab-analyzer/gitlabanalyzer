@@ -29,6 +29,41 @@ POST /projects/set?projectID=id
     "response": false
 }
 
+GET /projects/<int:projectID>/members
+{
+    "response": true,
+    "users": [
+        "root",
+        "jlguo",
+        "TestUserHenry",
+        "makemaketest5"
+    ]
+}
+
+GET /projects/<int:projectID>/users
+{
+    "users": [
+        "Joseph Test",
+        "TestUser H",
+        "HenryPC",
+        "Andrew",
+        "Henry Fang",
+        "fanghaof",
+        "Joshua Li Guo",
+        "jaddiet",
+        "springbro294",
+        "xtran",
+        "Thomas Min",
+        "jiwonj"
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
 GET /projects/<int:projectID>/overview
 {
     "response": true,
@@ -129,44 +164,89 @@ GET /projects/<int:projectID>/commit/user/all
 
 GET /projects/<int:projectID>/merge_request/all
 {
-    "merge_request_list": [
-        {
-            "author": 2787,
-            "comments": null,
-            "commit_list": [],
-            "created_date": "2021-02-05T14:38:07.647-08:00",
-            "description": "Closes #7",
-            "id": 38087,
-            "iid": 2,
-            "merged_by": null,
-            "merged_date": null,
-            "related_issue_iid": 7,
-            "state": "closed",
-            "title": "Draft: Resolve \"Create navigation bar UI\""
-        },
-        {
-            "author": 4354,
-            "comments": null,
-            "commit_list": [
-                {
-                    "author_name": "Thomas Min",
-                    "committed_date": "2021-02-08T16:44:05.000-08:00",
-                    "committer_name": "Thomas Min",
-                    "id": "271727b700424504ca8fb686b4a29ab0a5153fc8",
-                    "title": "Fix errors to compile"
-                }
-            ],
-            "created_date": "2021-02-04T21:04:11.776-08:00",
-            "description": "Finished UI components of the Login and SearchBar. The routes are not implemented and should be agreed by the team before setting up individual pages.",
-            "id": 38080,
-            "iid": 1,
-            "merged_by": 4354,
-            "merged_date": "2021-02-08T16:46:07.968-08:00",
-            "related_issue_iid": null,
-            "state": "merged",
-            "title": "Resolve \"Create login UI and search bar for repo\""
-        }
-    ],
+    "merge_request_list": {
+        "Joseph Test": [
+            {
+                "author": 6,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "Joseph Test",
+                        "committed_date": "2021-03-09T05:02:05.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "17980749b76491432d860d38b59789898fc2f3e7",
+                        "short_id": "17980749",
+                        "title": "Another big add"
+                    }
+                ],
+                "created_date": "2021-03-09T05:02:41.345Z",
+                "description": "Closes #5",
+                "id": 5,
+                "iid": 5,
+                "merged_by": null,
+                "merged_date": null,
+                "related_issue_iid": 5,
+                "state": "opened",
+                "title": "Resolve \"Make header component visible\""
+            },
+            {
+                "author": 6,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "Joseph Test",
+                        "committed_date": "2021-03-09T04:52:31.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "0f9b680b2740b1e09ade093a0ade8be0e98ee917",
+                        "short_id": "0f9b680b",
+                        "title": "Add logic to logout component"
+                    },
+                    {
+                        "author_name": "Joseph Test",
+                        "committed_date": "2021-03-09T04:51:28.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "9531c118a2e6db08f1d36db542e0b90964c2fa09",
+                        "short_id": "9531c118",
+                        "title": "Made logout stub"
+                    }
+                ],
+                "created_date": "2021-03-09T04:53:15.171Z",
+                "description": "Finished another component",
+                "id": 4,
+                "iid": 4,
+                "merged_by": 6,
+                "merged_date": "2021-03-09T05:03:02.746Z",
+                "related_issue_iid": null,
+                "state": "merged",
+                "title": "Resolve \"Another issue with frontend\""
+            }
+        ],
+        "TestUser H": [
+            {
+                "author": 5,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "TestUser H",
+                        "committed_date": "2021-03-09T04:30:47.000Z",
+                        "committer_name": "TestUser H",
+                        "id": "16e45c9e7ed5a71bb0ced8129f91abff0ef2672d",
+                        "short_id": "16e45c9e",
+                        "title": "Update server/model/commit.py, server/random.py files"
+                    }
+                ],
+                "created_date": "2021-03-09T04:32:16.109Z",
+                "description": "Closes #3",
+                "id": 2,
+                "iid": 2,
+                "merged_by": 5,
+                "merged_date": "2021-03-09T04:41:57.594Z",
+                "related_issue_iid": 3,
+                "state": "merged",
+                "title": "Update server/model/commit.py, server/random.py files"
+            }
+        ]
+    },
     "response": true
 }
 
