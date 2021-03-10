@@ -19,7 +19,7 @@
     text-align: right;
     padding-top: 45px;
     padding-right: 10px;
-    width: 150px;
+    min-width: 150px;
     border-radius: 10px 0px 0px 10px;
 }
 
@@ -27,6 +27,7 @@
     display: flex;
     padding-left: 10px;
     padding-top: 10px;
+
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;

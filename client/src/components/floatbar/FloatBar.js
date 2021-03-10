@@ -2,7 +2,6 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
-import IndividualScore from './IndividualScore.js';
 import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
@@ -28,20 +27,12 @@ const copySuccessful =() =>{
 };
 
 function FloatBar() {
-  const [user, setUser] = React.useState('everyone');
-  function handleChange(value) {
-    setUser(value);
-  }
-
+  const [sortType, setSortType] = React.useState('');
+  
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
-        {(user && user === "everyone" &&
-          <div><EveryoneScore /></div>
-        ) || (
-            <div><IndividualScore>{user}</IndividualScore></div>
-          )
-        }
+        <EveryoneScore />
       </div>
       <div className="floatbar-functions">
         <Grid
@@ -67,12 +58,15 @@ function FloatBar() {
             </div>
           </Grid>
           <Grid item xs={12}>
-            <div className="selectUser">
-              <Select defaultValue="everyone" style={{ width: 150 }} onChange={handleChange}>
-                <Option value="everyone">@everyone</Option>
-                {FloatBarData.map((Detail) => {
-                  return <Option value={Detail.username}>@{Detail.username}</Option>
-                })}
+            <div className="selectSort">
+              <Select 
+                placeholder = "Sort" 
+                style={{ width: 150 }} 
+                onChange={value => setSortType(value)}
+              >
+                <Option value="Alphabetical">Alphabetical</Option>
+                <Option value="Low to High">Low to High</Option>
+                <Option value="High to Low">High to Low</Option>
               </Select>
             </div>
           </Grid>

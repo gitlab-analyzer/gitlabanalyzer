@@ -1,0 +1,176 @@
+GET /auth
+{
+    "response": true,
+    "username": "fanghaof"
+}
+
+{
+    "Cause": "Invalid token or url",
+    "response": false,
+    "username": ""
+}
+
+GET /projects
+{
+    "response": true,
+    "projects": [
+        "fanghaof / 373_c",
+        "373-2021-1-Makemake / GitLabAnalyzer",
+    ]
+}
+
+POST /projects/set?projectID=id
+{
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/overview
+{
+    "response": true,
+    "users": [
+        {
+            "lines_of_code": 12175,
+            "number_commits": 64,
+            "number_issues": 99,
+            "username": "Henry Fang"
+        },
+        {
+            "lines_of_code": 15628,
+            "number_commits": 49,
+            "number_issues": 8,
+            "username": "springbro294"
+        },
+        {
+            "lines_of_code": 28646,
+            "number_commits": 92,
+            "number_issues": 19,
+            "username": "Joshua Li Guo"
+        }
+    ]
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/commit
+{
+    "commit_list": [
+        {
+            "author_name": "Joshua Li Guo",
+            "committed_date": "2021-03-01T20:06:31.000-08:00",
+            "committer_name": "Joshua Li Guo",
+            "id": "9b993412b23c5fcf28a51578b604b44d96a9bcf9",
+            "title": "Merge branch '56-refactor-gitlab_project_interface' into 'master'"
+        },
+        {
+            "author_name": "fanghaof",
+            "committed_date": "2021-03-01T20:03:42.000-08:00",
+            "committer_name": "fanghaof",
+            "id": "1bf88c3f32f1fb5d6186dc9d348e997937b6f91e",
+            "title": "Add .gitlab-ci.yml"
+        }
+    ],
+    "response": true
+}
+
+GET /projects/<int:projectID>/commit/user/all
+{
+    "commit_list": [
+        {
+            "commits": [],
+            "user_name": "tkmin"
+        },
+        {
+            "commits": [
+                {
+                    "author_name": "Henry Fang",
+                    "committed_date": "2021-03-05T15:33:20.000-08:00",
+                    "committer_name": "Henry Fang",
+                    "id": "4a95e2347852ed3435750e32d5a6193bd371fb48",
+                    "title": "Fix formatting issue and add backend_format_check script"
+                },
+                {
+                    "author_name": "Henry Fang",
+                    "committed_date": "2021-03-05T12:22:59.000-08:00",
+                    "committer_name": "Henry Fang",
+                    "id": "0fbc83d28199565971879ecdb5b0adf369316744",
+                    "title": "fixed a bug for /auth"
+                },
+            ],
+            "user_name": "Henry Fang"
+        },
+        {
+            "commits": [
+                {
+                    "author_name": "Joshua Li Guo",
+                    "committed_date": "2021-03-03T19:08:39.000-08:00",
+                    "committer_name": "Joshua Li Guo",
+                    "id": "6eba461e7507f6a68f1c04699ad445c2b4b04303",
+                    "title": "Merge branch '58-fix-issue-data-class' into 'master'"
+                },
+            ],
+            "user_name": "Joshua Li Guo"
+        },
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/merge_request/all
+{
+    "merge_request_list": [
+        {
+            "author": 2787,
+            "comments": null,
+            "commit_list": [],
+            "created_date": "2021-02-05T14:38:07.647-08:00",
+            "description": "Closes #7",
+            "id": 38087,
+            "iid": 2,
+            "merged_by": null,
+            "merged_date": null,
+            "related_issue_iid": 7,
+            "state": "closed",
+            "title": "Draft: Resolve \"Create navigation bar UI\""
+        },
+        {
+            "author": 4354,
+            "comments": null,
+            "commit_list": [
+                {
+                    "author_name": "Thomas Min",
+                    "committed_date": "2021-02-08T16:44:05.000-08:00",
+                    "committer_name": "Thomas Min",
+                    "id": "271727b700424504ca8fb686b4a29ab0a5153fc8",
+                    "title": "Fix errors to compile"
+                }
+            ],
+            "created_date": "2021-02-04T21:04:11.776-08:00",
+            "description": "Finished UI components of the Login and SearchBar. The routes are not implemented and should be agreed by the team before setting up individual pages.",
+            "id": 38080,
+            "iid": 1,
+            "merged_by": 4354,
+            "merged_date": "2021-02-08T16:46:07.968-08:00",
+            "related_issue_iid": null,
+            "state": "merged",
+            "title": "Resolve \"Create login UI and search bar for repo\""
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
