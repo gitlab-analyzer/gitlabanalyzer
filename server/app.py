@@ -108,7 +108,7 @@ def get_project_members(projectID):
         memberList = gitlabProjectInterface.member_manager.get_member_list()
         for member in memberList:
             members_name.append(member.username)
-        return jsonify({"users": members_name, "response": True})
+        return jsonify({"members": members_name, "response": True})
     else:
         return jsonify(projectIDError)
 
@@ -118,7 +118,7 @@ def get_project_users(projectID):
     global gitlabProjectInterface
 
     if projectID == gitlabProjectInterface.project_id:
-        return jsonify({"members": gitlabProjectInterface.user_list, "response": True})
+        return jsonify({"users": gitlabProjectInterface.user_list, "response": True})
     else:
         return jsonify(projectIDError)
 
