@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Select, Button, DatePicker } from 'antd';
+import { Select, Button, DatePicker, notification } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import IndividualScore from './IndividualScore.js';
 import EveryoneScore from './EveryoneScore.js';
@@ -9,6 +9,7 @@ import moment from 'moment';
 import Settings from "./Settings.json"
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
 import "./FloatBar.css";
 
@@ -18,7 +19,13 @@ var Dates = Settings.dates;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-
+const copySuccessful =() =>{
+  notification.open({
+    message: 'Copy Successful!',
+    icon: <CheckCircleOutlined style={{ color: '#00D100' }}/>,
+    duration: 1,
+  });
+};
 
 function FloatBar() {
   const [user, setUser] = React.useState('everyone');
@@ -77,7 +84,7 @@ function FloatBar() {
                 JSON.stringify(FloatBarData).replaceAll('},{', '\r\n').replace(/[,]/g,'\t').replace(/[[{}"\]]/g, "").replace(/[^\n\t]+(?=):/g, "")                
               }              
             >
-              <Button style={{ width: 150 }}>
+              <Button style={{ width: 150 }} onClick={copySuccessful}>
                 Copy
                 <CopyOutlined className="copyicon" />
               </Button>              
