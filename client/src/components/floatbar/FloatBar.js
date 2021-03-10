@@ -8,9 +8,9 @@ import Data from './FloatBarData.json';
 import moment from 'moment';
 import Settings from "./Settings.json"
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ReactExport from "react-export-excel";
+// import ReactExport from "react-export-excel";
 import ScoreCalculator from './ScoreCalculator';
-import exportFromJSON from 'export-from-json'
+// import exportFromJSON from 'export-from-json';
 
 import "./FloatBar.css";
 
@@ -24,8 +24,6 @@ const { RangePicker } = DatePicker;
 const iter1 = ["2021-01-18", "2021-02-22"];
 const iter2 = ["2021-02-23", "2021-03-29"];
 const iter3 = ["2021-03-30", "2021-04-26"];
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 function FloatBar() {
 
@@ -46,6 +44,7 @@ function FloatBar() {
     setUser(value);
   }
   var x = "one", y = "two", z= "three";
+
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
@@ -92,42 +91,16 @@ function FloatBar() {
           <Grid item xs={12}>
             <CopyToClipboard
               format = {"text/plain"}
-              text = {
-                exportFromJSON({ data, name, type })
-                // renderToStaticMarkup( 
-                  // JSON.stringify(
-                  //    FloatBarData
-                  // )
-                    // <ExcelSheet data = {data} name="data">
-                    //   <ExcelColumn label="one" value="one" />
-                    //   <ExcelColumn label="two" value="two" />
-                    // </ExcelSheet>      
-                // )
-
-                // renderToStaticMarkup(
-                //   <div>
-                //     {/* {FloatBarData.map((Detail) => {
-                //       return (
-                //         <div>
-                //           <div>{Detail.username}</div>
-                //           <div>{ScoreCalculator(Detail.number_commits, Detail.lines_of_code, Detail.number_issues)}</div>
-                //           <div>{Detail.number_commits}</div>
-                //           <div>{Detail.lines_of_code}</div>
-                //           <div>{Detail.number_issues}</div>
-                //           <br/>
-                //         </div>
-                //       ); 
-                //     })}    */}
-                //     <ExcelSheet data = {FloatBarData} name="data" />        
-                //   </div>
-                //   ).replaceAll("</div><br/></div>","\r").replaceAll("<div>", "").replaceAll("</div>", "\t")
-              }
+              text = {                
+                JSON.stringify(FloatBarData).replaceAll('},{', '\r\n').replace(/[,]/g,'\t').replace(/[[{}"\]]/g, "").replace(/[^\n\t]+(?=):/g, "")                
+              }              
             >
               <Button style={{ width: 150 }}>
                 Copy
                 <CopyOutlined className="copyicon" />
               </Button>              
             </CopyToClipboard>
+            
           </Grid>
         </Grid>
       </div>
