@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,7 +12,15 @@ import Grid from '@material-ui/core/Grid';
 import { Checkbox } from 'antd';
 import { InputNumber } from 'antd';
 
-import './CommitsPage.css'
+const StyledTableCell = withStyles((theme) => ({
+    head: {
+      backgroundColor: '#f8f9fa',
+      fontFamily: 'Comfortaa'
+    },
+    body: {
+      fontFamily: 'Comfortaa'
+    }
+  }))(TableCell);
 
 const useStyles = makeStyles({
   root: {
@@ -60,7 +68,6 @@ const rows = [
   createData('01/01/2021', 111,'asdf', 'Own', 'Code Review'),
 ];
 
-// style={{width:300}}
 const TablePage = () => {
     const classes = useStyles();
     return (
@@ -72,23 +79,23 @@ const TablePage = () => {
                     <Table className={classes.table}>
                         <TableHead>
                         <TableRow>
-                            <TableCell>Date</TableCell>
-                            <TableCell align="right">Word Count</TableCell>
-                            <TableCell align="right">Comment</TableCell>
-                            <TableCell align="right">Ownership</TableCell>
-                            <TableCell align="right">Type</TableCell>
+                            <StyledTableCell>Date</StyledTableCell>
+                            <StyledTableCell align="right">Word Count</StyledTableCell>
+                            <StyledTableCell align="right">Comment</StyledTableCell>
+                            <StyledTableCell align="right">Ownership</StyledTableCell>
+                            <StyledTableCell align="right">Type</StyledTableCell>
                         </TableRow>
                         </TableHead>
                         <TableBody>
                         {rows.map((row) => (
                             <TableRow key={row.name}>
-                            <TableCell component="th" scope="row">
+                            <StyledTableCell component="th" scope="row">
                                 {row.date}
-                            </TableCell>
-                            <TableCell align="right">{row.wordcount}</TableCell>
-                            <TableCell align="right">{row.comment}</TableCell>
-                            <TableCell align="right">{row.ownership}</TableCell>
-                            <TableCell align="right">{row.type}</TableCell>
+                            </StyledTableCell>
+                            <StyledTableCell align="right">{row.wordcount}</StyledTableCell>
+                            <StyledTableCell align="right">{row.comment}</StyledTableCell>
+                            <StyledTableCell align="right">{row.ownership}</StyledTableCell>
+                            <StyledTableCell align="right">{row.type}</StyledTableCell>
                             </TableRow>
                         ))}
                         </TableBody>
@@ -98,7 +105,6 @@ const TablePage = () => {
             <Grid item xs={3} style={{textAlign: 'center'}} component={Paper}>
                 <h4 className={classes.filterText}><b>Filter</b></h4>
                 <h6 className={classes.filterText}>Word Count</h6>
-                {/* there might be a better way for adding whitespace lol */}
                 <p className={classes.filterText}>Min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Max</p>
                 <InputNumber className={classes.input} min={0} max={100} defaultValue={0} onChange={onChange} />
                 <InputNumber className={classes.input}min={0} max={100} defaultValue={100} onChange={onChange} />
