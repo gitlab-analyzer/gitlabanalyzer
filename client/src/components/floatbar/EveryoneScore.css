@@ -2,17 +2,17 @@
     box-sizing: border-box;
 }
   
-.floatbar-mid-container {
+.floatbarContainer {
     display: flex;
     height: 170px;
 }
 
-.floatbar-labels,
-.floatbar-scores {
+.floatbarLabels,
+.scoreContainer {
     height: 170px;
 }
 
-.floatbar-labels {
+.floatbarLabels {
     list-style-type: none;  
     /* color: black; */
     font-size: 14px;
@@ -23,7 +23,7 @@
     border-radius: 10px 0px 0px 10px;
 }
 
-.floatbar-scores{
+.scoreContainer{
     display: flex;
     padding-left: 10px;
     padding-top: 10px;
@@ -53,20 +53,20 @@
 }
   
 
-.rawscore-label {
+.scoreLabel {
     line-height: 30px;
 }
-.remaining-labels {
+.remainingLabels {
     line-height: 27px;
 }
 
-.floatbar-map-container {
+.fbMapContainer {
     display: flex;
     flex-direction: row;  
     text-align: right;
     padding-top: 5px;
 }
-.score-array {
+.scoreArray {
     padding-right: 50px;
 }
 
@@ -75,16 +75,16 @@
     text-align: right;
 }
 
-.userscore {
+.userScore {
     font-size: 25px;
 }
-.userscore_details {
+.userScoreDetails {
     font-size: 23px;
     color: #6E7590;
 }
 
-.userscore,
-.userscore_details {
+.userScore,
+.userScoreDetails {
     font-weight: bold;
     line-height: 120%;
 }
