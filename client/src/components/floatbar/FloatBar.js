@@ -81,7 +81,10 @@ function FloatBar() {
               format = {"text/plain"}
               text = {                
                 "\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n"+
-                JSON.stringify(FloatBarData).replaceAll('},{', '\r\n').replace(/[,]/g,'\t').replace(/[[{}"\]]/g, "").replace(/[^\n\t]+(?=):/g, "")                
+                JSON.stringify(FloatBarData).replaceAll('},{', '\r\n')
+                  .replace(/[,]/g,'\t')
+                  .replace(/[[{}"\]]/g, "")
+                  .replace(/[^\n\t]+(?=):/g, "")                
               }              
             >
               <Button style={{ width: 150 }} onClick={copySuccessful}>
