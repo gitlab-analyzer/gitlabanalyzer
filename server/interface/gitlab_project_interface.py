@@ -58,13 +58,6 @@ class GitLabProject:
         issueList: list = myGitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
 
-    def __initialize_member_and_user_list(self) -> list:
-        commitListsForAllUsers = []
-
-        for user in self.__user_list:
-            commitListsForAllUsers.append({"user_name": user, "commits": []})
-        return commitListsForAllUsers
-
     def get_commits_in_merge_request(self, merge_request_id: int) -> List[Commit]:
         # returns list of commits in the merge request
         pass
@@ -138,12 +131,11 @@ class GitLabProject:
 
     # If only knowing the name of the member, then you must convert the name to id using
     # the mapping (name -> id) done by the front-end or something.
-    def get_member_score_data(self, member_id: int):
+    def get_user_score_data(self, member_id: int):
         pass
 
     def get_file_type_score_data(self):
         pass
-
 
     # Getters
     def __get_members_and_user_names(self) -> list:
@@ -153,6 +145,13 @@ class GitLabProject:
         for user in self.__user_list:
             member_and_user_list.add(user)
         return list(member_and_user_list)
+
+    def __initialize_member_and_user_list(self) -> list:
+        commitListsForAllUsers = []
+
+        for user in self.__user_list:
+            commitListsForAllUsers.append({"user_name": user, "commits": []})
+        return commitListsForAllUsers
 
     def get_commits_for_all_users(self) -> list:
         commitListsForAllUsers: list = self.__initialize_member_and_user_list()
