@@ -6,6 +6,7 @@ from typing import Union, Optional, List
 class Commit(DataObject):
     def __init__(self, commit: gitlab = None) -> None:
         self.__id: int = commit.id
+        self.__short_id: int = commit.short_id
         self.__title: str = commit.title
         self.__author_name: str = commit.author_name
         self.__committer_name: str = commit.committer_name
@@ -21,6 +22,10 @@ class Commit(DataObject):
     @property
     def id(self) -> Union[int, str]:
         return self.__id
+
+    @property
+    def short_id(self) -> Union[int, str]:
+        return self.__short_id
 
     @property
     def author_name(self) -> str:

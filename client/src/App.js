@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
 import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
+import FooterBar from './components/FooterBar';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/table" component={TablePage} />
             <Route path="/batch" component={Batch} />
             <Route path="/config" component={Config} />
+            <FooterBar />
           </Container>
         </Switch>
       </div>

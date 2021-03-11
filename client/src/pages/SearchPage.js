@@ -20,16 +20,16 @@ function SearchPage() {
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/getProjectList');
-      setRepo(repoList.data.value);
+      const repoList = await axios.get('http://localhost:5678/projects');
+      setRepo(repoList.data.projects);
       setReList([
-        ...repoList.data.value,
+        ...repoList.data.projects,
         'Administrator / Earth GitLab 373',
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',
       ]);
       setFilteredList([
-        ...repoList.data.value,
+        ...repoList.data.projects,
         'Administrator / Earth GitLab 373',
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',

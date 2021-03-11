@@ -29,11 +29,25 @@ class CommitManager:
                 return commit
         return None
 
+    def get_commit_by_short_id(self, shortID) -> Union[Commit, None]:
+        print(len(self.__commitList))
+        for commit in self.__commitList:
+            if commit.short_id == shortID:
+                return commit
+        return None
+
     def get_commits_by_userid(self, userID) -> Union[List[Commit], None]:
         listCommits = []
         for commit in self.__commitList:
-            if commit.author == userID:
+            if commit.author_name == userID:
                 listCommits.append(commit)
+        return listCommits
+
+    def get_commits_by_userid_json(self, userID) -> Union[list, None]:
+        listCommits = []
+        for commit in self.__commitList:
+            if commit.author_name == userID:
+                listCommits.append(commit.to_dict())
         return listCommits
 
     def get_commits_by_range(self, startDate, endDate) -> Union[List[Commit], None]:

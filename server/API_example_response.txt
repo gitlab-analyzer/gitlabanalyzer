@@ -1,4 +1,4 @@
-1. GET /auth
+GET /auth
 {
     "response": true,
     "username": "fanghaof"
@@ -10,7 +10,7 @@
     "username": ""
 }
 
-2. GET /projects
+GET /projects
 {
     "response": true,
     "projects": [
@@ -19,7 +19,7 @@
     ]
 }
 
-3. POST /projects/set?projectID=id
+POST /projects/set?projectID=id
 {
     "response": true
 }
@@ -29,21 +29,32 @@
     "response": false
 }
 
-4. GET /projects/<int:projectID>/overview
+GET /projects/<int:projectID>/members
 {
+    "response": true,
     "members": [
-        {
-            "lines_of_code": 2273,
-            "number_commits": 25,
-            "number_issues": 24,
-            "username": "cprabhu"
-        },
-        {
-            "lines_of_code": 30104,
-            "number_commits": 55,
-            "number_issues": 9,
-            "username": "andrewe"
-        }
+        "root",
+        "jlguo",
+        "TestUserHenry",
+        "makemaketest5"
+    ]
+}
+
+GET /projects/<int:projectID>/users
+{
+    "users": [
+        "Joseph Test",
+        "TestUser H",
+        "HenryPC",
+        "Andrew",
+        "Henry Fang",
+        "fanghaof",
+        "Joshua Li Guo",
+        "jaddiet",
+        "springbro294",
+        "xtran",
+        "Thomas Min",
+        "jiwonj"
     ],
     "response": true
 }
@@ -53,7 +64,37 @@
     "response": false
 }
 
-5. GET /projects/<int:projectID>/commits
+GET /projects/<int:projectID>/overview
+{
+    "response": true,
+    "users": [
+        {
+            "lines_of_code": 12175,
+            "number_commits": 64,
+            "number_issues": 99,
+            "username": "Henry Fang"
+        },
+        {
+            "lines_of_code": 15628,
+            "number_commits": 49,
+            "number_issues": 8,
+            "username": "springbro294"
+        },
+        {
+            "lines_of_code": 28646,
+            "number_commits": 92,
+            "number_issues": 19,
+            "username": "Joshua Li Guo"
+        }
+    ]
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/commit
 {
     "commit_list": [
         {
@@ -71,6 +112,141 @@
             "title": "Add .gitlab-ci.yml"
         }
     ],
+    "response": true
+}
+
+GET /projects/<int:projectID>/commit/user/all
+{
+    "commit_list": [
+        {
+            "commits": [],
+            "user_name": "tkmin"
+        },
+        {
+            "commits": [
+                {
+                    "author_name": "Henry Fang",
+                    "committed_date": "2021-03-05T15:33:20.000-08:00",
+                    "committer_name": "Henry Fang",
+                    "id": "4a95e2347852ed3435750e32d5a6193bd371fb48",
+                    "title": "Fix formatting issue and add backend_format_check script"
+                },
+                {
+                    "author_name": "Henry Fang",
+                    "committed_date": "2021-03-05T12:22:59.000-08:00",
+                    "committer_name": "Henry Fang",
+                    "id": "0fbc83d28199565971879ecdb5b0adf369316744",
+                    "title": "fixed a bug for /auth"
+                },
+            ],
+            "user_name": "Henry Fang"
+        },
+        {
+            "commits": [
+                {
+                    "author_name": "Joshua Li Guo",
+                    "committed_date": "2021-03-03T19:08:39.000-08:00",
+                    "committer_name": "Joshua Li Guo",
+                    "id": "6eba461e7507f6a68f1c04699ad445c2b4b04303",
+                    "title": "Merge branch '58-fix-issue-data-class' into 'master'"
+                },
+            ],
+            "user_name": "Joshua Li Guo"
+        },
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/merge_request/all
+{
+    "merge_request_list": {
+        "Joseph Test": [
+            {
+                "author": 6,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "Joseph Test",
+                        "committed_date": "2021-03-09T05:02:05.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "17980749b76491432d860d38b59789898fc2f3e7",
+                        "short_id": "17980749",
+                        "title": "Another big add"
+                    }
+                ],
+                "created_date": "2021-03-09T05:02:41.345Z",
+                "description": "Closes #5",
+                "id": 5,
+                "iid": 5,
+                "merged_by": null,
+                "merged_date": null,
+                "related_issue_iid": 5,
+                "state": "opened",
+                "title": "Resolve \"Make header component visible\""
+            },
+            {
+                "author": 6,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "Joseph Test",
+                        "committed_date": "2021-03-09T04:52:31.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "0f9b680b2740b1e09ade093a0ade8be0e98ee917",
+                        "short_id": "0f9b680b",
+                        "title": "Add logic to logout component"
+                    },
+                    {
+                        "author_name": "Joseph Test",
+                        "committed_date": "2021-03-09T04:51:28.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "9531c118a2e6db08f1d36db542e0b90964c2fa09",
+                        "short_id": "9531c118",
+                        "title": "Made logout stub"
+                    }
+                ],
+                "created_date": "2021-03-09T04:53:15.171Z",
+                "description": "Finished another component",
+                "id": 4,
+                "iid": 4,
+                "merged_by": 6,
+                "merged_date": "2021-03-09T05:03:02.746Z",
+                "related_issue_iid": null,
+                "state": "merged",
+                "title": "Resolve \"Another issue with frontend\""
+            }
+        ],
+        "TestUser H": [
+            {
+                "author": 5,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "TestUser H",
+                        "committed_date": "2021-03-09T04:30:47.000Z",
+                        "committer_name": "TestUser H",
+                        "id": "16e45c9e7ed5a71bb0ced8129f91abff0ef2672d",
+                        "short_id": "16e45c9e",
+                        "title": "Update server/model/commit.py, server/random.py files"
+                    }
+                ],
+                "created_date": "2021-03-09T04:32:16.109Z",
+                "description": "Closes #3",
+                "id": 2,
+                "iid": 2,
+                "merged_by": 5,
+                "merged_date": "2021-03-09T04:41:57.594Z",
+                "related_issue_iid": 3,
+                "state": "merged",
+                "title": "Update server/model/commit.py, server/random.py files"
+            }
+        ]
+    },
     "response": true
 }
 

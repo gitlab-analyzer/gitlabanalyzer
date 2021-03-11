@@ -30,7 +30,7 @@ class MemberManager:
             if member.access_level == accessLevel:
                 listMember.append(member)
 
-    def get_member_by_access_level(self, role) -> Union[List[Member], None]:
+    def get_member_list_by_access_level(self, role) -> Union[List[Member], None]:
         listMember = []
         if role == "no access":
             self.loop_through_list(0, listMember)
