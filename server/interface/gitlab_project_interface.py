@@ -83,16 +83,22 @@ class GitLabProject:
 
     def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
         # update codeDiff ID for commits in master branch
-        self.__update_code_diff_for_commit_list(self.__commitsManager.get_commit_list(), myGitlab)
+        self.__update_code_diff_for_commit_list(
+            self.__commitsManager.get_commit_list(), myGitlab
+        )
         self.__update_code_diff_for_merge_request_and_commits(myGitlab)
 
-    def __update_code_diff_for_commit_list(self, commitList: [Commit], myGitLab: GitLab) -> None:
+    def __update_code_diff_for_commit_list(
+        self, commitList: [Commit], myGitLab: GitLab
+    ) -> None:
         for commit in commitList:
             codeDiff = myGitLab.get_commits_code_diff(commit.short_id)
             codeDiffID = self.__CodeDiffManager.append_code_diff(codeDiff)
             commit.code_diff_id = codeDiffID
 
-    def __update_code_diff_for_merge_request_and_commits(self, myGitlab: GitLab) -> None:
+    def __update_code_diff_for_merge_request_and_commits(
+        self, myGitlab: GitLab
+    ) -> None:
         mr: MergeRequest
         for mr in self.__mergeRequestManager.merge_request_list:
             codeDiff = myGitlab.get_merge_request_code_diff_latest_version(mr.id)

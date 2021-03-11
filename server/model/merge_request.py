@@ -7,7 +7,9 @@ import re
 
 
 class MergeRequest(DataObject):
-    def __init__(self, mr: gitlab, commits_list: List[Commit], codeDiffID: int = -1) -> None:
+    def __init__(
+        self, mr: gitlab, commits_list: List[Commit], codeDiffID: int = -1
+    ) -> None:
         self.__id: int = mr.id
         self.__iid: int = mr.iid
         self.__author: int = mr.author["id"]
