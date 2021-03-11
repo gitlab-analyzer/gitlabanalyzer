@@ -12,11 +12,11 @@ class codeDiffManager:
 
     def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
 
-        #TODO:
-        #Case where the commit diff is a block of comment
-        #Case where there is some insertion into the middle of a line of code
-        #without any deletion (current code will mark it as one addition and one deletion)
-        #This need to be just one addition
+        # TODO:
+        # Case where the commit diff is a block of comment
+        # Case where there is some insertion into the middle of a line of code
+        # without any deletion (current code will mark it as one addition and one deletion)
+        # This need to be just one addition
 
         newLine = 0
         deleteLine = 0
@@ -26,6 +26,7 @@ class codeDiffManager:
         deleteBlank = 0
         syntax = 0
         spacing = 0
+        
         oldLine = ""
         python = False
 
