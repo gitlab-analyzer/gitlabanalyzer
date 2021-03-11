@@ -7,13 +7,12 @@ import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles({
     button: {
-      paddingTop: '10px',
-      paddingBottom: '20px'
+      paddingTop: '5px',
+      paddingBottom: '20px',
+      textAlign: 'left'
     },
     grid: {
         width: '100%',
-        margin:'0px',
-        textAlign: 'center',
     },
     filterText: {
       paddingTop: '15px'
@@ -28,7 +27,8 @@ const FilterMenu = () => {
     const classes = useStyles();
     return (
         <div>
-            <Grid container className={classes.grid}>
+            <Grid container className={classes.grid} direction="column"
+          alignItems="center">
                 <Grid item xs={12}>
                     <h4 className={classes.filterText}><b>Filter</b></h4>
                     <h6 className={classes.filterText}>Word Count</h6>
@@ -44,15 +44,19 @@ const FilterMenu = () => {
                     <h6 className={classes.filterText}>Ownership</h6>
                 </Grid>
                 <Grid item xs={12}>
-                    <Checkbox className={classes.button} onChange={onChange} checked="true">Own</Checkbox>
-                    <Checkbox className={classes.button} onChange={onChange} checked="true">Other</Checkbox>
+                    <Checkbox className={classes.button} onChange={onChange} >Own</Checkbox>
+                </Grid>
+                <Grid item xs={12}>
+                    <Checkbox className={classes.button} onChange={onChange} >Other</Checkbox>
                 </Grid>
                 <Grid item xs={12}>
                     <h6>Type</h6>
                 </Grid>
                 <Grid item xs={12}>
-                    <Checkbox className={classes.button} onChange={onChange} checked="true">Code Review</Checkbox>
-                    <Checkbox className={classes.button} onChange={onChange} checked="true">Issue</Checkbox>
+                    <Checkbox className={classes.button} onChange={onChange} >Code<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Review</Checkbox>
+                </Grid>
+                <Grid item xs={12}>
+                    <Checkbox className={classes.button} onChange={onChange} >Issue</Checkbox>
                 </Grid>
             </Grid>
         </div>

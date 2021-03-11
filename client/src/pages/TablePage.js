@@ -47,7 +47,7 @@ const rows = [
   createData('01/01/2021', 2, 'asdf','Own', 'Issue'),
   createData('01/01/2021', 55, 'asdf','Other', 'Code Review'),
   createData('01/01/2021', 65, 'asdf','Own', 'Issue'),
-  createData('01/01/2021', 44, 'asdf','Other', 'Code Review'),
+  createData('01/01/2021', 44, 'asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf ','Other', 'Code Review'),
   createData('01/01/2021', 111,'asdf', 'Own', 'Code Review'),
   createData('01/01/2021', 15,'asdf', 'Own', 'Code Review'),
   createData('01/01/2021', 2,'asdf', 'Own', 'Issue'),
@@ -70,7 +70,7 @@ const TablePage = () => {
                         <TableRow>
                             <StyledTableCell>Date</StyledTableCell>
                             <StyledTableCell align="right">Word Count</StyledTableCell>
-                            <StyledTableCell align="right">Comment</StyledTableCell>
+                            <StyledTableCell style={{width: '50%'}} align="left">Comment</StyledTableCell>
                             <StyledTableCell align="right">Ownership</StyledTableCell>
                             <StyledTableCell align="right">Type</StyledTableCell>
                         </TableRow>
@@ -82,7 +82,7 @@ const TablePage = () => {
                                 {row.date}
                             </StyledTableCell>
                             <StyledTableCell align="right">{row.wordcount}</StyledTableCell>
-                            <StyledTableCell align="right">{row.comment}</StyledTableCell>
+                            <StyledTableCell size="medium" align="left">{row.comment}</StyledTableCell>
                             <StyledTableCell align="right">{row.ownership}</StyledTableCell>
                             <StyledTableCell align="right">{row.type}</StyledTableCell>
                             </TableRow>
