@@ -16,6 +16,8 @@ class codeDiffManager:
         deleteLine = 0
         newCommentLine = 0
         deleteCommentLine = 0
+        newBlank = 0
+        deleteBlank = 0
         syntax = 0
         spacing = 0
         oldLine = ""
@@ -33,6 +35,8 @@ class codeDiffManager:
                     deleteLine,
                     newCommentLine,
                     deleteCommentLine,
+                    newBlank,
+                    deleteBlank,
                     spacing,
                     syntax,
                     tempLine,
@@ -45,6 +49,8 @@ class codeDiffManager:
                     deleteLine,
                     newCommentLine,
                     deleteCommentLine,
+                    newBlank,
+                    deleteBlank,
                     spacing,
                     syntax,
                     tempLine,
@@ -56,6 +62,8 @@ class codeDiffManager:
                     deleteLine,
                     newCommentLine,
                     deleteCommentLine,
+                    newBlank,
+                    deleteBlank,
                     spacing,
                     syntax,
                     line,
@@ -67,6 +75,8 @@ class codeDiffManager:
             "lines_deleted": deleteLine,
             "comments_added": newCommentLine,
             "comments_deleted": deleteCommentLine,
+            "blanks_added": newBlank,
+            "blanks_deleted": deleteBlank,
             "spacing_changes": spacing,
             "syntax_changes": syntax,
         }
@@ -78,14 +88,19 @@ class codeDiffManager:
         deleteLine,
         newCommentLine,
         deleteCommentLine,
+        newBlank,
+        deleteBlank,
         spacing,
         syntax,
         line,
         python,
     ) -> None:
 
-        if len(line[1:]) == 0:
-            spacing = spacing + 1
+        if line == '+':
+            newBlank = newBlank + 1
+            return
+        if line == '-':
+            deleteBlank = deleteBlank + 1
             return
 
         if self.check_for_spacing_or_comment(
@@ -118,19 +133,17 @@ class codeDiffManager:
     def check_for_spacing_or_comment(
         self, signal, newCommentLine, deleteCommentLine, spacing, str, python
     ) -> bool:
-        isSpacing = False
         isModify = False
 
         for i in str:
             if i == " ":
-                isSpacing = True
+                continue
             elif i == "#" and python is True:
                 isModify = True
                 if signal == '+':
                     newCommentLine = newCommentLine + 1
                 else:
                     deleteCommentLine = deleteCommentLine + 1
-                isSpacing = False
                 break
             elif i == "//" and python is False:
                 isModify = True
@@ -138,12 +151,10 @@ class codeDiffManager:
                     newCommentLine = newCommentLine + 1
                 else:
                     deleteCommentLine = deleteCommentLine + 1
-                isSpacing = False
                 break
             else:
-                isSpacing = False
                 break
-        if isSpacing:
+        if str.isspace():
             spacing = spacing + 1
             isModify = True
 
