@@ -1,3 +1,4 @@
+import re
 from typing import Union, Optional, List
 from model.code_diff import *
 import gitlab
@@ -26,7 +27,7 @@ class codeDiffManager:
         deleteBlank = 0
         syntax = 0
         spacing = 0
-        
+
         oldLine = ""
         python = False
 
