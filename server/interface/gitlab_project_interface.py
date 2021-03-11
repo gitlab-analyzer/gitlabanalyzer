@@ -10,6 +10,7 @@ from model.project import Project
 from model.code_diff import CodeDiff
 from model.merge_request import MergeRequest
 from model.commit import Commit
+from copy import deepcopy
 
 
 class GitLabProject:
@@ -60,9 +61,10 @@ class GitLabProject:
 
     def get_commits_in_merge_request(self, merge_request_id: int) -> List[Commit]:
         # returns list of commits in the merge request
+        # Maybe not needed
         pass
 
-    def get_commit_score_data(self, commit_id: int) -> dict:
+    def get_commit_score_data(self, commit: Commit) -> dict:
         scoreData = {
             "lines_added": 0,
             "lines_deleted": 0,
@@ -72,23 +74,12 @@ class GitLabProject:
             "syntax_changes": 0
         }
 
-        commit = self.__commitsManager.get_commit_by_id(commit_id)
         if commit is not None:
-
-            # TODO: CodeDiffManager & get_code_diff_by_commit_id method & sha attribute in commit
-            codeDiffs: List[CodeDiff] = [] # GET CODE DIFFS BY COMMIT ID METHOD HERE
-
-            for diff in codeDiffs:
-                scoreData["lines_added"] += diff.lines_added()
-                scoreData["lines_deleted"] += diff.lines_deleted()
-                scoreData["blanks_added"] += diff.blanks_added()
-                scoreData["blanks_deleted"] += diff.blanks_deleted()
-                scoreData["spacing_changes"] += diff.spacing_change()
-                scoreData["syntax_changes"] += diff.syntax_change()
+            scoreData = deepcopy(commit.score_body)
         
         return scoreData
 
-    def get_merge_request_score_data(self, merge_request_id: int) -> dict:
+    def get_merge_request_score_data(self, mergeRequest: MergeRequest) -> dict:
         scoreData = {
             "lines_added": 0,
             "lines_deleted": 0,
@@ -98,18 +89,17 @@ class GitLabProject:
             "syntax_changes": 0
         }
 
-        commits = self.get_commits_in_merge_request(merge_request_id)
-        if len(commits) > 0:
+        commits = mergeRequest.related_commits
+        for commit in commits:
+            commitScoreData = self.get_commit_score_data(commit.id)
 
-            for commit in commits:
-                commitScoreData = self.get_commit_score_data(commit.id)
-
-                for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
-                    assert key1 == key2
-                    scoreData[key1] += commitScoreData[key2]
+            for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
+                assert key1 == key2
+                scoreData[key1] += commitScoreData[key2]
         
         return scoreData
 
+    # might not be needed?
     def get_all_merge_request_score_data(self) -> dict:
         scoreData = {
             "lines_added": 0,
@@ -129,12 +119,19 @@ class GitLabProject:
         
         return scoreData
 
-    # If only knowing the name of the member, then you must convert the name to id using
-    # the mapping (name -> id) done by the front-end or something.
-    def get_user_score_data(self, member_id: int):
-        pass
+    # might not be needed?
+    def get_user_score_data(self, user_name: str) -> dict:
+        scoreData = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0
+        }
 
     def get_file_type_score_data(self):
+        # TODO
         pass
 
     # Getters
@@ -163,6 +160,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
+    # deprecated
     def get_merge_request_and_commit_list(self) -> list:
         mergeRequestForAllUsers = []
         mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
