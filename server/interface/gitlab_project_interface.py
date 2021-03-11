@@ -1,22 +1,19 @@
-from model.commit import Commit
 from typing import Optional, List
+from copy import copy, deepcopy
+
 from interface.gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
-from model.project import Project
-from model.code_diff import CodeDiff
 from model.merge_request import MergeRequest
 from model.commit import Commit
-from copy import deepcopy
 
 
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         myGitlab.set_project(projectID=projectID)
-        self.__gitlab = myGitlab  # TODO: This need to be deleted after
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -36,15 +33,23 @@ class GitLabProject:
         self.__update_issues_manager(myGitlab)
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
-        mergeRequests, _ = myGitlab.get_merge_requests_and_commits(state="all")
-        for mergeRequest in mergeRequests:
-            self.__mergeRequestManager.add_merge_request(mergeRequest)
+        mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
+            state="all"
+        )
+        for i in range(0, len(mergeRequests)):
+            self.__mergeRequestManager.add_merge_request(
+                mergeRequests[i], commitsForMR[i]
+            )
+            # Get comments
+            mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
+            for item in mr_notes:
+                if item.system is False:
+                    self.__commentsManager.add_comment(item)
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
         members: list = myGitlab.get_all_members()
         for member in members:
             self.__membersManager.add_member(member)
-        pass
 
     def __update_commits_manager(self, myGitlab: GitLab) -> None:
         commitList: list = myGitlab.get_commit_list_for_project()
@@ -53,16 +58,23 @@ class GitLabProject:
             # Get all git users, set will only store unique values
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
+
+            # Get comments
+            commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
+            for item in commit_notes:
+                self.__commentsManager.add_comment(item, commit.short_id)
+
         self.__user_list = list(tempUserSet)
 
     def __update_issues_manager(self, myGitlab: GitLab) -> None:
         issueList: list = myGitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
-
-    def get_commits_in_merge_request(self, merge_request_id: int) -> List[Commit]:
-        # returns list of commits in the merge request
-        # Maybe not needed
-        pass
+        # Get comments
+        for issue in issueList:
+            issue_notes = myGitlab.get_comments_of_issue(issue.iid)
+            for item in issue_notes:
+                if item.system is False:
+                    self.__commentsManager.add_comment(item)
 
     def get_commit_score_data(self, commit: Commit) -> dict:
         scoreData = {
@@ -135,6 +147,7 @@ class GitLabProject:
         pass
 
     # Getters
+
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
         for member in self.member_manager.get_member_list():
@@ -160,19 +173,38 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    # deprecated
-    def get_merge_request_and_commit_list(self) -> list:
-        mergeRequestForAllUsers = []
-        mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
-        for mr, commits in zip(mrs, commits_lists):
-            mr = MergeRequest(mr)
-            data = mr.to_dict()
-            commitList = []
-            for commit in commits:
-                commit = Commit(commit)
-                commitList.append(commit.to_dict())
-            data["commit_list"] = commitList
-            mergeRequestForAllUsers.append(data)
+    def __get_commit_list_and_authors(self, commitIDs) -> [list, list]:
+        commitList = []
+        authors = set()
+        for commit in commitIDs:
+            commit = commit.to_dict()
+            commitList.append(commit)
+            authors.add(commit['author_name'])
+        return commitList, list(authors)
+
+    def __add_mr_to_associated_users(
+        self, mergeRequestForAllUsers, authors, mr
+    ) -> None:
+        for author in authors:
+            if author not in mergeRequestForAllUsers:
+                mergeRequestForAllUsers[author] = []
+            mergeRequestForAllUsers[author].append(mr)
+
+    def get_merge_request_and_commit_list(self) -> dict:
+        mergeRequestForAllUsers = {}
+
+        for mr in self.merge_request_manager.merge_request_list:
+            singleMR = deepcopy(mr).to_dict()
+            commitList, authors = self.__get_commit_list_and_authors(
+                singleMR["related_commits_list"]
+            )
+            singleMR["commit_list"] = commitList
+            # delete related_commits_list so jsonify won't throw error
+            del singleMR['related_commits_list']
+            self.__add_mr_to_associated_users(
+                mergeRequestForAllUsers, authors, singleMR
+            )
+
         return mergeRequestForAllUsers
 
     @property
@@ -186,6 +218,10 @@ class GitLabProject:
     @property
     def commits_manager(self) -> CommitManager:
         return self.__commitsManager
+
+    @property
+    def issue_manager(self) -> IssueManager:
+        return self.__issuesManager
 
     @property
     def project_id(self) -> int:
