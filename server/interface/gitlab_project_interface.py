@@ -102,9 +102,18 @@ class GitLabProject:
             "syntax_changes": 0,
         }
 
+        # WTF is with the way GitLab API is? Why is it so confusing? Why.
         # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(mergeRequest.code_diff)
         
-        # Deprecated {
+        # You will get a mergeRequest object. The mergeRequest will have a list of Commit objects.
+        # Both mergeRequest and the Commit objects will have a single code_diff id.
+        # Pass the id into a find method in codeDiffManager to get the code diff.
+        # the code diff is a List[dict].
+        # For each dict in the list, pass the dict into a new CodeDiff object (wrap dict into object)
+        # Pass the object into the get_code_diff_statistics method in codeDiffManager.
+        # the return will be what you need.
+
+        # Deprecated? {
         commits: List[Commit] = mergeRequest.related_commits_list
         for commit in commits:
             commitScoreData = self.get_commit_score_data(commit)
