@@ -120,7 +120,7 @@ def get_merge_requests_for_users(projectID):
 
 
 @app.route('/projects/<int:projectID>/merge_request/all')
-def get_merge_requests_for_users(projectID):
+def get_all_merge_requests(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         mergeRequestList: list = (

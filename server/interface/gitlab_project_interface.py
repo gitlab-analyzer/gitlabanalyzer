@@ -6,6 +6,9 @@ from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
+from model.code_diff_manager import CodeDiffManager
+from model.commit import Commit
+from model.merge_request import MergeRequest
 
 
 class GitLabProject:
@@ -16,6 +19,7 @@ class GitLabProject:
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
+        self.__CodeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__projectID: int = projectID
 
         # This will be filled after the call to self.__update_commits_manager(myGitlab)
@@ -23,11 +27,14 @@ class GitLabProject:
 
         self.__update_managers(myGitlab)
 
+    # Note: after this function call, commits in commit/mergeRequest manager
+    #       will be converted into dict() for fast data processing
     def __update_managers(self, myGitlab: GitLab) -> None:
         self.__update_merge_request_manager(myGitlab)
         self.__update_member_manager(myGitlab)
         self.__update_commits_manager(myGitlab)
         self.__update_issues_manager(myGitlab)
+        self.__update_code_diff_manager(myGitlab)
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
         mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
@@ -37,11 +44,11 @@ class GitLabProject:
             self.__mergeRequestManager.add_merge_request(
                 mergeRequests[i], commitsForMR[i]
             )
-            # Get comments
-            mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
-            for item in mr_notes:
-                if item.system is False:
-                    self.__commentsManager.add_comment(item)
+            # # Get comments
+            # mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
+            # for item in mr_notes:
+            #     if item.system is False:
+            #         self.__commentsManager.add_comment(item)
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
         members: list = myGitlab.get_all_members()
@@ -56,10 +63,10 @@ class GitLabProject:
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
 
-            # Get comments
-            commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
-            for item in commit_notes:
-                self.__commentsManager.add_comment(item, commit.short_id)
+            # # Get comments
+            # commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
+            # for item in commit_notes:
+            #     self.__commentsManager.add_comment(item, commit.short_id)
 
         self.__user_list = list(tempUserSet)
 
@@ -73,6 +80,25 @@ class GitLabProject:
             for item in issue_notes:
                 if item.system is False:
                     self.__commentsManager.add_comment(item)
+
+    def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
+        # update codeDiff ID for commits in master branch
+        self.__update_code_diff_for_commit_list(self.__commitsManager.get_commit_list(), myGitlab)
+        self.__update_code_diff_for_merge_request_and_commits(myGitlab)
+
+    def __update_code_diff_for_commit_list(self, commitList: [Commit], myGitLab: GitLab) -> None:
+        for commit in commitList:
+            codeDiff = myGitLab.get_commits_code_diff(commit.short_id)
+            codeDiffID = self.__CodeDiffManager.append_code_diff(codeDiff)
+            commit.code_diff_id = codeDiffID
+
+    def __update_code_diff_for_merge_request_and_commits(self, myGitlab: GitLab) -> None:
+        mr: MergeRequest
+        for mr in self.__mergeRequestManager.merge_request_list:
+            codeDiff = myGitlab.get_merge_request_code_diff_latest_version(mr.id)
+            codeDiffID = self.__CodeDiffManager.append_code_diff(codeDiff)
+            mr.code_diff_id = codeDiffID
+            self.__update_code_diff_for_commit_list(mr.related_commits_list, myGitlab)
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
@@ -99,10 +125,10 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commitIDs) -> [list, list]:
+    def __get_commit_list_and_authors(self, commits: [str]) -> [list, list]:
         commitList = []
         authors = set()
-        for commit in commitIDs:
+        for commit in commits:
             commit = commit.to_dict()
             commitList.append(commit)
             authors.add(commit['author_name'])
@@ -119,8 +145,8 @@ class GitLabProject:
     def get_merge_request_and_commit_list_for_users(self) -> dict:
         mergeRequestForAllUsers = {}
 
-        for mr in self.merge_request_manager.merge_request_list:
-            singleMR = deepcopy(mr).to_dict()
+        for mr in self.__mergeRequestManager.merge_request_list:
+            singleMR = mr.to_dict()
             commitList, authors = self.__get_commit_list_and_authors(
                 singleMR["related_commits_list"]
             )
@@ -135,8 +161,11 @@ class GitLabProject:
     def get_all_merge_request_and_commit(self) -> list:
         mergeRequests = []
 
-        for mr in self.merge_request_manager.merge_request_list:
-            singleMR = deepcopy(mr).to_dict()
+        for mr in self.__mergeRequestManager.merge_request_list:
+            singleMR = mr.to_dict()
+            singleMR["commit_list"] = []
+            for commits in singleMR['related_commits_list']:
+                singleMR["commit_list"].append(commits.to_dict())
             del singleMR['related_commits_list']
             mergeRequests.append(singleMR)
         return mergeRequests

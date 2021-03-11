@@ -1,3 +1,4 @@
+from model.code_diff import CodeDiff
 from model.commit import Commit
 from model.data_object import DataObject
 from typing import Optional, List
@@ -6,8 +7,8 @@ import re
 
 
 class MergeRequest(DataObject):
-    def __init__(self, mr: gitlab, commits_list) -> None:
-        self.__id = int = mr.id
+    def __init__(self, mr: gitlab, commits_list: List[Commit], codeDiffID: int = -1) -> None:
+        self.__id: int = mr.id
         self.__iid: int = mr.iid
         self.__author: int = mr.author["id"]
         self.__title: str = mr.title
@@ -17,6 +18,7 @@ class MergeRequest(DataObject):
         self.__related_issue_iid: Optional[int] = self.parse_related_issue_iid(
             mr.description
         )
+        self.__code_diff_id: int = codeDiffID
         if mr.state == "merged":
             self.__merged_by: Optional[int] = mr.merged_by["id"]
         else:  # merge request is not merged
@@ -45,7 +47,6 @@ class MergeRequest(DataObject):
         return None
 
     # Getters
-
     @property
     def id(self) -> int:
         return self.__id
@@ -91,8 +92,16 @@ class MergeRequest(DataObject):
         return self.__comments
 
     @property
-    def related_commits_list(self):
-        return self.related_commits_list
+    def related_commits_list(self) -> List[Commit]:
+        return self.__related_commits_list
+
+    @property
+    def code_diff_id(self) -> int:
+        return self.__code_diff_id
+
+    @code_diff_id.setter
+    def code_diff_id(self, codeDiffID: int) -> None:
+        self.__code_diff_id = codeDiffID
 
     def set_comments(self, commentList: List[str]):
         self.__comments = commentList
