@@ -14,8 +14,8 @@ class MergeRequestManager:
     def merge_request_list(self) -> list:
         return self.__mergeRequestList
 
-    def add_merge_request(self, mergeRequest: gitlab) -> None:
-        self.__mergeRequestList.append(MergeRequest(mergeRequest))
+    def add_merge_request(self, mergeRequest: gitlab, commits_list: List[str]) -> None:
+        self.__mergeRequestList.append(MergeRequest(mergeRequest, commits_list))
 
     def get_merge_request_by_id(self, myId) -> Union[MergeRequest, None]:
         for mergeRequest in self.__mergeRequestList:
@@ -38,3 +38,9 @@ class MergeRequestManager:
             if myStartDate <= tempStartDate <= myEndDate:
                 tempMergeRequestList.append(mergeRequest)
         return tempMergeRequestList
+
+    def get_related_commitIds(self, myIid) -> list:
+        for mergeRequest in self.__mergeRequestList:
+            if mergeRequest.iid == myIid:
+                return mergeRequest.related_commits_sha
+        return None

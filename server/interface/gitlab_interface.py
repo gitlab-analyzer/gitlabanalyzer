@@ -114,15 +114,15 @@ class GitLab:
     ) -> Tuple[list, list]:
         commitsForMergeRequests: list = []
         mergeRequests = self.__project.mergerequests.list(
-            state=state, order_by=order_by, sort=sort, all=True
-        )
+            state=state, order_by=order_by, sort=sort, per_page=100
+        )  # 100 is the maximum # of objects you can get
 
         for mergeRequest in mergeRequests:
             myCommits: gitlab = mergeRequest.commits()
             commitsList: list = []
-            for _ in range(myCommits.total_pages):
+            for commit in myCommits:
                 try:
-                    commitsList.append(myCommits.next())
+                    commitsList.append(commit.short_id)  # store only the short_id
                 except StopIteration:
                     pass
             commitsForMergeRequests.append(commitsList)
@@ -145,3 +145,15 @@ class GitLab:
         for mergeRequest in mergeRequestList:
             mergeRequestCommentsList.append(mergeRequest.notes.list())
         return mergeRequestCommentsList
+
+    def get_comments_of_mr(self, mr_iid: Union[str, int]) -> list:
+        mergeRequest = self.__project.mergerequests.get(mr_iid)
+        return mergeRequest.notes.list()
+
+    def get_comments_of_issue(self, issue_iid: int) -> list:
+        issue = self.__project.issues.get(issue_iid)
+        return issue.notes.list()
+
+    def get_comments_of_commit(self, commit_sha: str) -> list:
+        commit = self.__project.commits.get(commit_sha)
+        return commit.comments.list()

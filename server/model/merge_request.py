@@ -5,7 +5,7 @@ import re
 
 
 class MergeRequest(DataObject):
-    def __init__(self, mr: gitlab) -> None:
+    def __init__(self, mr: gitlab, commits_list) -> None:
         self.__id = int = mr.id
         self.__iid: int = mr.iid
         self.__author: int = mr.author["id"]
@@ -22,7 +22,7 @@ class MergeRequest(DataObject):
             self.__merged_by: Optional[int] = None
         self.__merged_date: Optional[str] = mr.merged_at
         self.__comments: Optional[List[str]] = None
-        # self.__related_commits_sha: List[str] = commits_list
+        self.__related_commits_sha: List[str] = commits_list
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
@@ -83,6 +83,10 @@ class MergeRequest(DataObject):
     @property
     def comments(self) -> Optional[List[str]]:
         return self.__comments
+
+    @property
+    def related_commits_sha(self) -> List[str]:
+        return self.__related_commits_sha
 
     def set_comments(self, commentList: List[str]):
         self.__comments = commentList
