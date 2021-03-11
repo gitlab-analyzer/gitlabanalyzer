@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from copy import copy, deepcopy
 
 from interface.gitlab_interface import GitLab
@@ -87,7 +87,8 @@ class GitLabProject:
         }
 
         if commit is not None:
-            scoreData = deepcopy(commit.score_body)
+            #scoreData = deepcopy(commit.score_body) # score_body attribute in commit not implemented yet
+            pass
         
         return scoreData
 
@@ -101,46 +102,15 @@ class GitLabProject:
             "syntax_changes": 0
         }
 
-        commits = mergeRequest.related_commits
+        commits: List[Commit] = mergeRequest.related_commits_list
         for commit in commits:
-            commitScoreData = self.get_commit_score_data(commit.id)
+            commitScoreData = self.get_commit_score_data(commit)
 
             for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
                 assert key1 == key2
                 scoreData[key1] += commitScoreData[key2]
         
         return scoreData
-
-    # might not be needed?
-    def get_all_merge_request_score_data(self) -> dict:
-        scoreData = {
-            "lines_added": 0,
-            "lines_deleted": 0,
-            "blanks_added": 0,
-            "blanks_deleted": 0,
-            "spacing_changes": 0,
-            "syntax_changes": 0
-        }
-
-        for mr in self.__mergeRequestManager.merge_request_list:
-            mergeRequestScoreData = self.get_merge_request_score_data(mr.id)
-
-            for key1, key2 in zip(scoreData.keys(), mergeRequestScoreData.keys()):
-                assert key1 == key2
-                scoreData[key1] += scoreData[key2]
-        
-        return scoreData
-
-    # might not be needed?
-    def get_user_score_data(self, user_name: str) -> dict:
-        scoreData = {
-            "lines_added": 0,
-            "lines_deleted": 0,
-            "blanks_added": 0,
-            "blanks_deleted": 0,
-            "spacing_changes": 0,
-            "syntax_changes": 0
-        }
 
     def get_file_type_score_data(self):
         # TODO
@@ -173,7 +143,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commitIDs) -> [list, list]:
+    def __get_commit_list_and_authors(self, commitIDs) -> Tuple[list]:
         commitList = []
         authors = set()
         for commit in commitIDs:
