@@ -83,13 +83,11 @@ class GitLabProject:
             "blanks_added": 0,
             "blanks_deleted": 0,
             "spacing_changes": 0,
-            "syntax_changes": 0
+            "syntax_changes": 0,
         }
 
-        if commit is not None:
-            #scoreData = deepcopy(commit.score_body) # score_body attribute in commit not implemented yet
-            pass
-        
+        # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(commit.code_diff)
+
         return scoreData
 
     def get_merge_request_score_data(self, mergeRequest: MergeRequest) -> dict:
@@ -99,9 +97,12 @@ class GitLabProject:
             "blanks_added": 0,
             "blanks_deleted": 0,
             "spacing_changes": 0,
-            "syntax_changes": 0
+            "syntax_changes": 0,
         }
 
+        # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(mergeRequest.code_diff)
+        
+        # Deprecated {
         commits: List[Commit] = mergeRequest.related_commits_list
         for commit in commits:
             commitScoreData = self.get_commit_score_data(commit)
@@ -109,7 +110,8 @@ class GitLabProject:
             for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
                 assert key1 == key2
                 scoreData[key1] += commitScoreData[key2]
-        
+        # }
+
         return scoreData
 
     def get_file_type_score_data(self):
@@ -149,7 +151,7 @@ class GitLabProject:
         for commit in commitIDs:
             commit = commit.to_dict()
             commitList.append(commit)
-            authors.add(commit['author_name'])
+            authors.add(commit["author_name"])
         return commitList, list(authors)
 
     def __add_mr_to_associated_users(
@@ -170,7 +172,7 @@ class GitLabProject:
             )
             singleMR["commit_list"] = commitList
             # delete related_commits_list so jsonify won't throw error
-            del singleMR['related_commits_list']
+            del singleMR["related_commits_list"]
             self.__add_mr_to_associated_users(
                 mergeRequestForAllUsers, authors, singleMR
             )
