@@ -14,7 +14,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     try {
       setAnalyzing(true);
       const projectRes = await axios.post(
-        'http://localhost:5678/setProject',
+        'http://localhost:5678/projects/set',
         {},
         {
           headers: {
@@ -26,18 +26,20 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
           },
         }
       );
-
-      if (projectRes.data['response'] !== 'ok') {
+      if (projectRes.data['response'] !== true) {
+        console.log('Failed to set project ID here');
         throw new Error('Fetch request failed.');
       }
 
       const overviewRes = await axios.get(
-        'http://localhost:5678/getProjectOverview'
+        'http://localhost:5678/projects/2/overview'
       );
       if (overviewRes) {
         setOverview(overviewRes.data.users);
       }
-      const commitsRes = await axios.get('http://localhost:5678/getCommits');
+      const commitsRes = await axios.get(
+        'http://localhost:5678/projects/2/commit'
+      );
       if (commitsRes) {
         const commitsArray = commitsRes.data.commit_list;
 
@@ -61,7 +63,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
   };
 
   if (redirect) {
-    return <Redirect to="/overview" />;
+    return <Redirect to="/summary" />;
   } else {
     return (
       <div>

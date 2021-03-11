@@ -36,6 +36,13 @@ class CommitManager:
                 listCommits.append(commit)
         return listCommits
 
+    def get_commits_by_userid_json(self, userID) -> Union[list, None]:
+        listCommits = []
+        for commit in self.__commitList:
+            if commit.author == userID:
+                listCommits.append(commit.to_dict())
+        return listCommits
+
     def get_commits_by_range(self, startDate, endDate) -> Union[List[Commit], None]:
         listTimeRange = []
         start = parser.parse(startDate)
