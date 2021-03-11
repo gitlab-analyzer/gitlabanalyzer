@@ -9,8 +9,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
-import { Checkbox } from 'antd';
-import { InputNumber } from 'antd';
+import FilterMenu from '../components/table/FilterMenu';
+
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -36,22 +36,11 @@ const useStyles = makeStyles({
     textAlign: 'left',
     paddingBottom: '50px',
   },
-  button: {
-    paddingTop: '10px',
-    paddingBottom: '20px'
-  },
-  filterText: {
-    paddingTop: '15px'
-  },
 });
 
 function createData(date, wordcount, comment, ownership, type) {
     return { date, wordcount, comment,ownership, type}
 }
-
-function onChange(e) {
-    console.log(`checked = ${e.target.checked}`);
-  }
 
 const rows = [
   createData('01/01/2021', 15, 'asdf', 'Own', 'Code Review'),
@@ -103,19 +92,7 @@ const TablePage = () => {
                 </TableContainer>
             </Grid>
             <Grid item xs={3} style={{textAlign: 'center'}} component={Paper}>
-                <h4 className={classes.filterText}><b>Filter</b></h4>
-                <h6 className={classes.filterText}>Word Count</h6>
-                <p className={classes.filterText}>Min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Max</p>
-                <InputNumber className={classes.input} min={0} max={100} defaultValue={0} onChange={onChange} />
-                <InputNumber className={classes.input}min={0} max={100} defaultValue={100} onChange={onChange} />
-                <h6 className={classes.filterText}>Ownership</h6>
-                
-                <Checkbox className={classes.button} onChange={onChange} checked="true">Own</Checkbox>
-                <Checkbox className={classes.button} onChange={onChange} checked="true">Other</Checkbox>
-
-                <h6>Type</h6>
-                <Checkbox className={classes.button} onChange={onChange} checked="true">Code Review</Checkbox>
-                <Checkbox className={classes.button} onChange={onChange} checked="true">Issue</Checkbox>
+              <FilterMenu />
             </Grid>
         </Grid>
         </div>
