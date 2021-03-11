@@ -94,6 +94,6 @@ class codeDiffManager:
     def check_for_code_type(self, codeDiffObject: gitlab) -> None:
         diffCode = CodeDiff(codeDiffObject)
         fileName = diffCode.new_path
-        found = re.search('\.(.+?)$', diff).group(1)
+        found = re.search('\.(.+?)$', fileName).group(1)
         if found == 'py':
             python = True
