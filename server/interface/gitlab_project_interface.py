@@ -86,7 +86,9 @@ class GitLabProject:
             "syntax_changes": 0,
         }
 
-        # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(commit.code_diff)
+        # for diff in commit.code_diff:
+            # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(diff)
+            # add stats to scoreData
 
         return scoreData
 
