@@ -116,7 +116,7 @@ class GitLabProject:
                 mergeRequestForAllUsers[author] = []
             mergeRequestForAllUsers[author].append(mr)
 
-    def get_merge_request_and_commit_list(self) -> dict:
+    def get_merge_request_and_commit_list_for_users(self) -> dict:
         mergeRequestForAllUsers = {}
 
         for mr in self.merge_request_manager.merge_request_list:
@@ -130,8 +130,16 @@ class GitLabProject:
             self.__add_mr_to_associated_users(
                 mergeRequestForAllUsers, authors, singleMR
             )
-
         return mergeRequestForAllUsers
+
+    def get_all_merge_request_and_commit(self) -> list:
+        mergeRequests = []
+
+        for mr in self.merge_request_manager.merge_request_list:
+            singleMR = deepcopy(mr).to_dict()
+            del singleMR['related_commits_list']
+            mergeRequests.append(singleMR)
+        return mergeRequests
 
     @property
     def member_manager(self) -> MemberManager:

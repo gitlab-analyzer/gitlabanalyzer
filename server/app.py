@@ -1,10 +1,7 @@
 import json
-from random import randint
 from typing import Optional
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-import pymongo
-import urllib.parse
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitLabProject
 
@@ -19,41 +16,6 @@ gitlabProjectInterface: Optional[GitLabProject] = None
 
 # Error respond body list:
 projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
-
-
-@app.route('/')
-def index():
-    # Below is just an example to use mangodb
-    # username = urllib.parse.quote_plus('root')
-    # password = urllib.parse.quote_plus('pass')
-    # myClient = pymongo.MongoClient(
-    #     "mongodb://%s:%s@mangodb:27017/" % (username, password))
-    # myDB = myClient["student_repo"]
-    # myCol = myDB["students"]
-    #
-    # myCol.insert_one({"name": "John", "repoInfo": "this is a test"})
-    #
-    # print(myDB.list_collection_names(), flush=True)
-    # print(myCol.find_one(), flush=True)
-    return "Hello World from index"
-
-
-@app.route('/hello')
-def hello_world():
-    username = urllib.parse.quote_plus('root')
-    password = urllib.parse.quote_plus('pass')
-    myClient = pymongo.MongoClient(
-        "mongodb://%s:%s@mangodb:27017/" % (username, password)
-    )
-    myDB = myClient["student_repo"]
-    myCol = myDB["students"]
-
-    myCol.insert_one({"name": "John", "repoInfo": "this is a test"})
-
-    print(myDB.list_collection_names(), flush=True)
-    temp = str(myCol.find_one())
-    print(temp, flush=True)
-    return {'result': temp}
 
 
 # Note: Should pass both the gitlab url and the access token when making post call to /auth
@@ -123,28 +85,6 @@ def get_project_users(projectID):
         return jsonify(projectIDError)
 
 
-@app.route('/projects/<int:projectID>/overview', methods=['get'])
-def get_project_overview(projectID):
-    global gitlabProjectInterface
-    userObjectList = []
-
-    if projectID == gitlabProjectInterface.project_id:
-        userList: list = gitlabProjectInterface.user_list
-        # TODO: below code will be replaced by a function call to gitlab project list
-        for user in userList:
-            userObjectList.append(
-                {
-                    "username": user,
-                    "number_commits": randint(0, 100),
-                    "lines_of_code": randint(0, 100000),
-                    "number_issues": randint(0, 100),
-                }
-            )
-        return jsonify({"users": userObjectList, "response": True})
-    else:
-        return jsonify(projectIDError)
-
-
 @app.route('/projects/<int:projectID>/commit', methods=['get'])
 def get_commits(projectID):
     global gitlabProjectInterface
@@ -167,21 +107,28 @@ def get_commits_for_users(projectID):
         return jsonify(projectIDError)
 
 
-@app.route('/projects/<int:projectID>/merge_request/all')
+@app.route('/projects/<int:projectID>/merge_request/user/all')
 def get_merge_requests_for_users(projectID):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         mergeRequestList: dict = (
-            gitlabProjectInterface.get_merge_request_and_commit_list()
+            gitlabProjectInterface.get_merge_request_and_commit_list_for_users()
         )
-        return jsonify({"response": True, "merge_request_list": mergeRequestList})
+        return jsonify({"response": True, "merge_request_users_list": mergeRequestList})
     else:
         return jsonify(projectIDError)
 
 
-# This function should only be used for testing purpose
-def get_test_data() -> json:
-    return json.load(open('test/test_dataset/test_data.json'))
+@app.route('/projects/<int:projectID>/merge_request/all')
+def get_merge_requests_for_users(projectID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        mergeRequestList: list = (
+            gitlabProjectInterface.get_all_merge_request_and_commit()
+        )
+        return jsonify({"response": True, "merge_request_list": mergeRequestList})
+    else:
+        return jsonify(projectIDError)
 
 
 if __name__ == '__main__':

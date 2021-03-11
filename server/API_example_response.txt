@@ -64,36 +64,6 @@ GET /projects/<int:projectID>/users
     "response": false
 }
 
-GET /projects/<int:projectID>/overview
-{
-    "response": true,
-    "users": [
-        {
-            "lines_of_code": 12175,
-            "number_commits": 64,
-            "number_issues": 99,
-            "username": "Henry Fang"
-        },
-        {
-            "lines_of_code": 15628,
-            "number_commits": 49,
-            "number_issues": 8,
-            "username": "springbro294"
-        },
-        {
-            "lines_of_code": 28646,
-            "number_commits": 92,
-            "number_issues": 19,
-            "username": "Joshua Li Guo"
-        }
-    ]
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
-
 GET /projects/<int:projectID>/commit
 {
     "commit_list": [
@@ -162,9 +132,9 @@ GET /projects/<int:projectID>/commit/user/all
     "response": false
 }
 
-GET /projects/<int:projectID>/merge_request/all
+GET /projects/<int:projectID>/merge_request/user/all
 {
-    "merge_request_list": {
+    "merge_request_users_list": {
         "Joseph Test": [
             {
                 "author": 6,
