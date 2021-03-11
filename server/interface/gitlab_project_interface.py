@@ -1,17 +1,16 @@
+from copy import copy, deepcopy
+
 from interface.gitlab_interface import GitLab
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
-from model.merge_request import MergeRequest
-from model.commit import Commit
 
 
 class GitLabProject:
     def __init__(self, myGitlab: GitLab, projectID: int):
         myGitlab.set_project(projectID=projectID)
-        self.__gitlab = myGitlab  # TODO: This need to be deleted
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -100,18 +99,38 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def get_merge_request_and_commit_list(self) -> list:
-        mergeRequestForAllUsers = []
-        mrs, commits_lists = self.__gitlab.get_merge_requests_and_commits()
-        for mr, commits in zip(mrs, commits_lists):
-            mr = MergeRequest(mr, commits)
-            data = mr.to_dict()
-            commitList = []
-            for commit in commits:
-                commit = Commit(commit)
-                commitList.append(commit.to_dict())
-            data["commit_list"] = commitList
-            mergeRequestForAllUsers.append(data)
+    def __get_commit_list_and_authors(self, commitIDs) -> [list, list]:
+        commitList = []
+        authors = set()
+        for commit in commitIDs:
+            commit = commit.to_dict()
+            commitList.append(commit)
+            authors.add(commit['author_name'])
+        return commitList, list(authors)
+
+    def __add_mr_to_associated_users(
+        self, mergeRequestForAllUsers, authors, mr
+    ) -> None:
+        for author in authors:
+            if author not in mergeRequestForAllUsers:
+                mergeRequestForAllUsers[author] = []
+            mergeRequestForAllUsers[author].append(mr)
+
+    def get_merge_request_and_commit_list(self) -> dict:
+        mergeRequestForAllUsers = {}
+
+        for mr in self.merge_request_manager.merge_request_list:
+            singleMR = deepcopy(mr).to_dict()
+            commitList, authors = self.__get_commit_list_and_authors(
+                singleMR["related_commits_list"]
+            )
+            singleMR["commit_list"] = commitList
+            # delete related_commits_list so jsonify won't throw error
+            del singleMR['related_commits_list']
+            self.__add_mr_to_associated_users(
+                mergeRequestForAllUsers, authors, singleMR
+            )
+
         return mergeRequestForAllUsers
 
     @property
