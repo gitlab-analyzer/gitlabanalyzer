@@ -1,4 +1,3 @@
-import re
 from typing import Union, Optional, List
 from model.code_diff import *
 import gitlab
@@ -12,6 +11,13 @@ class codeDiffManager:
         return self.__codeDiffList
 
     def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
+
+        #TODO:
+        #Case where the commit diff is a block of comment
+        #Case where there is some insertion into the middle of a line of code
+        #without any deletion (current code will mark it as one addition and one deletion)
+        #This need to be just one addition
+
         newLine = 0
         deleteLine = 0
         newCommentLine = 0
@@ -27,6 +33,9 @@ class codeDiffManager:
 
         diffCode = CodeDiff(codeDiffObject)
         for line in diffCode.diff.splitlines():
+            if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
+                if self.check_middle_syntax_addition(line, oldLine, syntax, python):
+                    return
 
             if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
                 tempLine = '+' + line[1:].replace(oldLine[1:], '')
@@ -133,32 +142,29 @@ class codeDiffManager:
     def check_for_spacing_or_comment(
         self, signal, newCommentLine, deleteCommentLine, spacing, str, python
     ) -> bool:
-        isModify = False
 
         for i in str:
             if i == " ":
                 continue
             elif i == "#" and python is True:
-                isModify = True
                 if signal == '+':
                     newCommentLine = newCommentLine + 1
                 else:
                     deleteCommentLine = deleteCommentLine + 1
-                break
+                return True
             elif i == "//" and python is False:
-                isModify = True
                 if signal == '+':
                     newCommentLine = newCommentLine + 1
                 else:
                     deleteCommentLine = deleteCommentLine + 1
-                break
+                return True
             else:
                 break
         if str.isspace():
             spacing = spacing + 1
-            isModify = True
+            return True
 
-        return isModify
+        return False
 
     def check_for_code_type(self, codeDiffObject: gitlab) -> None:
         diffCode = CodeDiff(codeDiffObject)
@@ -166,3 +172,41 @@ class codeDiffManager:
         found = re.search('\.(.+?)$', fileName).group(1)
         if found == 'py':
             python = True
+
+    def check_middle_syntax_addition(self, line, oldLine, syntax, python) -> bool:
+        temp = 0
+
+        if len(line) > len(oldLine):
+            length = len(oldLine)
+            lastChar = line[len(line)]
+        else:
+            length = len(line)
+            lastChar = oldLine[len(oldLine)]
+
+        for i in range(1, length):
+            if oldLine[i] != line[i]:
+                temp = i
+                break
+        if temp != 0:
+            if python:
+                if oldLine[temp] == ":" or line[temp] == ":":
+                    syntax = syntax + 1
+                    return True
+            else:
+                if oldLine[temp] == "{" or oldLine[temp] == "}":
+                    syntax = syntax + 1
+                    return True
+                if line[temp] == "{" or line[temp] == "}":
+                    syntax = syntax + 1
+                    return True
+        if temp == 0:
+            if python:
+                if lastChar == ":" or lastChar == ":":
+                    syntax = syntax + 1
+                    return True
+            else:
+                if lastChar == "{" or lastChar == "}":
+                    syntax = syntax + 1
+                    return True
+
+        return False
