@@ -5,6 +5,9 @@ import gitlab
 
 
 class codeDiffManager:
+    def __init__(self) -> None:
+        self.__codeDiffList: List[CodeDiff] = []
+
     def get_code_diff_statistic(self, codeDiffObject: gitlab) -> None:
         newLine = 0
         deleteLine = 0
