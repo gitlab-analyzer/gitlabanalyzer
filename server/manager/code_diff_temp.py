@@ -7,9 +7,13 @@ import gitlab
 class codeDiffManager:
     def __init__(self) -> None:
         self.__codeDiffList: List[CodeDiff] = []
+        self.__listSize: int = 0
 
     # TODO: a way to fill the code diff list
-    # TODO: get_code_diff_by_id()
+    
+    # The ID's of the codeDiffs are their index in the list
+    def get_code_diff_by_id(self, codeDiffId: int) -> list: 
+        return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
 
     def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
 
