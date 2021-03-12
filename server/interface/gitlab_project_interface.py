@@ -31,9 +31,9 @@ class GitLabProject:
 
     def __update_managers(self, myGitlab: GitLab) -> None:
         self.__update_merge_request_manager(myGitlab)
-        self.__update_member_manager(myGitlab)
+        # self.__update_member_manager(myGitlab)
         self.__update_commits_manager(myGitlab)
-        self.__update_issues_manager(myGitlab)
+        # self.__update_issues_manager(myGitlab)
         self.__update_code_diff_manager(myGitlab)
         self.__analyze_master_commits_code_diff()
         self.__analyze_merge_requests_code_diff()
@@ -47,10 +47,10 @@ class GitLabProject:
                 mergeRequests[i], commitsForMR[i]
             )
             # Get comments
-            mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
-            for item in mr_notes:
-                if item.system is False:
-                    self.__commentsManager.add_comment(item)
+            # mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
+            # for item in mr_notes:
+            #     if item.system is False:
+            #         self.__commentsManager.add_comment(item)
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
         members: list = myGitlab.get_all_members()
@@ -65,10 +65,10 @@ class GitLabProject:
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
 
-            # Get comments
-            commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
-            for item in commit_notes:
-                self.__commentsManager.add_comment(item, commit.short_id)
+            # # Get comments
+            # commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
+            # for item in commit_notes:
+            #     self.__commentsManager.add_comment(item, commit.short_id)
 
         self.__user_list = list(tempUserSet)
 
@@ -162,11 +162,16 @@ class GitLabProject:
         # TODO
         pass
 
-    def __analyze_master_commits_code_diff(self):
-        pass
+    def __analyze_master_commits_code_diff(self) -> None:
+        for commit in self.commits_manager.get_commit_list():
+            commit.line_counts = self.get_commit_score_data(commit)
 
-    def __analyze_merge_requests_code_diff(self):
-        pass
+    def __analyze_merge_requests_code_diff(self) -> None:
+        mr: MergeRequest
+        for mr in self.__mergeRequestManager.merge_request_list:
+            mr.line_counts = self.get_merge_request_score_data(mr)["mergeRequestScoreData"]
+            for commit in mr.related_commits_list:
+                commit.line_counts = self.get_commit_score_data(commit)
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()

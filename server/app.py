@@ -32,6 +32,7 @@ def auth():
         )
         # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
         response.set_cookie(key="id", value=hashlib.sha256(str.encode(myToken)).hexdigest())
+        return response
     else:
         return jsonify(
             {'username': '', 'response': False, 'Cause': "Invalid token or url"}

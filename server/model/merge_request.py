@@ -28,6 +28,7 @@ class MergeRequest(DataObject):
         self.__merged_date: Optional[str] = mr.merged_at
         self.__comments: Optional[List[str]] = None
         self.__related_commits_list: List[Commit] = []
+        self.__line_counts: dict = {}
         self.__add_commits_list(commits_list)
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
@@ -100,6 +101,14 @@ class MergeRequest(DataObject):
     @property
     def code_diff_id(self) -> int:
         return self.__code_diff_id
+
+    @property
+    def line_counts(self) -> dict:
+        return self.__line_counts
+
+    @line_counts.setter
+    def line_counts(self, lineCounts) -> None:
+        self.__line_counts = lineCounts
 
     @code_diff_id.setter
     def code_diff_id(self, codeDiffID: int) -> None:
