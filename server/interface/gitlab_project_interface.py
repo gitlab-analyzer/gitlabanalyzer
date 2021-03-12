@@ -1,20 +1,15 @@
-from model.code_diff import CodeDiff
-from typing import Optional, List, Tuple
-from copy import copy, deepcopy
-
+from copy import deepcopy
 from interface.gitlab_interface import GitLab
+from manager.code_diff_temp import CodeDiffAnalyzer
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
+from manager.issue_manager import IssueManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
-from manager.issue_manager import IssueManager
 from model.code_diff import CodeDiff
-from model.code_diff_manager import CodeDiffManager
+from manager.code_diff_manager import CodeDiffManager
 from model.commit import Commit
 from model.merge_request import MergeRequest
-from manager.code_diff_temp import codeDiffManager
-from model.merge_request import MergeRequest
-from model.commit import Commit
 
 
 class GitLabProject:
@@ -25,7 +20,8 @@ class GitLabProject:
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
-        self.__CodeDiffManager: CodeDiffManager = CodeDiffManager()
+        self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
+        self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
         self.__projectID: int = projectID
 
         # This will be filled after the call to self.__update_commits_manager(myGitlab)
@@ -33,14 +29,14 @@ class GitLabProject:
 
         self.__update_managers(myGitlab)
 
-    # TODO: Populate Code Diff Manager
-
     def __update_managers(self, myGitlab: GitLab) -> None:
         self.__update_merge_request_manager(myGitlab)
         self.__update_member_manager(myGitlab)
         self.__update_commits_manager(myGitlab)
         self.__update_issues_manager(myGitlab)
         self.__update_code_diff_manager(myGitlab)
+        self.__analyze_master_commits_code_diff()
+        self.__analyze_merge_requests_code_diff()
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
         mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
@@ -98,7 +94,7 @@ class GitLabProject:
     ) -> None:
         for commit in commitList:
             codeDiff = myGitLab.get_commits_code_diff(commit.short_id)
-            codeDiffID = self.__CodeDiffManager.append_code_diff(codeDiff)
+            codeDiffID = self.__codeDiffManager.append_code_diff(codeDiff)
             commit.code_diff_id = codeDiffID
 
     def __update_code_diff_for_merge_request_and_commits(
@@ -107,7 +103,7 @@ class GitLabProject:
         mr: MergeRequest
         for mr in self.__mergeRequestManager.merge_request_list:
             codeDiff = myGitlab.get_merge_request_code_diff_latest_version(mr.id)
-            codeDiffID = self.__CodeDiffManager.append_code_diff(codeDiff)
+            codeDiffID = self.__codeDiffManager.append_code_diff(codeDiff)
             mr.code_diff_id = codeDiffID
             self.__update_code_diff_for_commit_list(mr.related_commits_list, myGitlab)
 
@@ -123,9 +119,9 @@ class GitLabProject:
             "syntax_changes": 0,
         }
 
-        codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(commit.codeDiffId)
+        codeDiff: list = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
         for diff in codeDiff:
-            codeDiffStats: dict = self.__codeDiffManager.get_code_diff_statistic(CodeDiff(diff))
+            codeDiffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(CodeDiff(diff))
 
             for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
                 assert key1 == key2
@@ -148,9 +144,9 @@ class GitLabProject:
             }
         }
 
-        codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(mergeRequest.codeDiff)
+        codeDiff: list = self.__codeDiffAnalyzer.get_code_diff_by_id(mergeRequest.code_diff_id)
         for diff in codeDiff:
-            mergeRequestScoreData = self.__codeDiffManager.get_code_diff_statistic(CodeDiff(diff))
+            mergeRequestScoreData = self.__codeDiffAnalyzer.get_code_diff_statistic(CodeDiff(diff))
             scoreData["mergeRequestScoreData"] = deepcopy(mergeRequestScoreData)
 
         for commit in mergeRequest.related_commits_list:
@@ -166,7 +162,11 @@ class GitLabProject:
         # TODO
         pass
 
-    # Getters
+    def __analyze_master_commits_code_diff(self):
+        pass
+
+    def __analyze_merge_requests_code_diff(self):
+        pass
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
@@ -193,7 +193,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commits: [str]) -> Tuple[list]:
+    def __get_commit_list_and_authors(self, commits: [str]) -> (list, list):
         commitList = []
         authors = set()
         for commit in commits:
@@ -239,7 +239,7 @@ class GitLabProject:
         return mergeRequests
 
     def get_code_diff(self, codeDiffID: int) -> [dict]:
-        return self.__CodeDiffManager.get_code_diff(codeDiffID)
+        return self.__codeDiffManager.get_code_diff(codeDiffID)
 
     @property
     def member_manager(self) -> MemberManager:

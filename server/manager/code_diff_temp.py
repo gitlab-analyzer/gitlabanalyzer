@@ -4,7 +4,7 @@ from model.code_diff import *
 import gitlab
 
 
-class codeDiffManager:
+class CodeDiffAnalyzer:
     def __init__(self) -> None:
         self.__codeDiffList: List[CodeDiff] = []
         self.__listSize: int = 0
