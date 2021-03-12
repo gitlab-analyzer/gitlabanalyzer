@@ -12,7 +12,7 @@ class MergeRequest(DataObject):
     ) -> None:
         self.__id: int = mr.id
         self.__iid: int = mr.iid
-        self.__author: int = mr.author["id"]
+        self.__author: int = mr.author
         self.__title: str = mr.title
         self.__description: str = mr.description
         self.__state: str = mr.state

@@ -1,4 +1,5 @@
 import re
+from random import random, randint
 from typing import Union, Optional, List
 from model.code_diff import *
 import gitlab
@@ -11,91 +12,16 @@ class CodeDiffAnalyzer:
 
     # TODO: a way to fill the code diff list
 
-    # The ID's of the codeDiffs are their index in the list
-    def get_code_diff_by_id(self, codeDiffId: int) -> list:
-        return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
-
     def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> dict:
-
-        # TODO:
-        # Case where the commit diff is a block of comment
-        # Case where there is some insertion into the middle of a line of code
-        # without any deletion (current code will mark it as one addition and one deletion)
-        # This need to be just one addition
-
-        newLine = 0
-        deleteLine = 0
-        newCommentLine = 0
-        deleteCommentLine = 0
-        newBlank = 0
-        deleteBlank = 0
-        syntax = 0
-        spacing = 0
-
-        oldLine = " "
-        python = False
-
-        self.check_for_code_type(codeDiffObject)
-
-        diffCode = codeDiffObject
-        for line in diffCode.diff.splitlines():
-            if line[0] == '+' or line[0] == '-':
-                if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                    if self.check_middle_syntax_addition(line, oldLine, syntax, python):
-                        continue
-
-                if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                    tempLine = '+' + line[1:].replace(oldLine[1:], '')
-                    self.modify_to_a_new_line(
-                        newLine,
-                        deleteLine,
-                        newCommentLine,
-                        deleteCommentLine,
-                        newBlank,
-                        deleteBlank,
-                        spacing,
-                        syntax,
-                        tempLine,
-                        python,
-                    )
-                if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                    tempLine = '-' + oldLine[1:].replace(line[1:], '')
-                    self.modify_to_a_new_line(
-                        newLine,
-                        deleteLine,
-                        newCommentLine,
-                        deleteCommentLine,
-                        newBlank,
-                        deleteBlank,
-                        spacing,
-                        syntax,
-                        tempLine,
-                        python,
-                    )
-                else:
-                    self.modify_to_a_new_line(
-                        newLine,
-                        deleteLine,
-                        newCommentLine,
-                        deleteCommentLine,
-                        newBlank,
-                        deleteBlank,
-                        spacing,
-                        syntax,
-                        line,
-                        python,
-                    )
-                oldLine = line
-
         info = {
-            "lines_added": newLine,
-            "lines_deleted": deleteLine,
-            "comments_added": newCommentLine,
-            "comments_deleted": deleteCommentLine,
-            "blanks_added": newBlank,
-            "blanks_deleted": deleteBlank,
-            "spacing_changes": spacing,
-            "syntax_changes": syntax,
+            "lines_added": randint(50, 500),
+            "lines_deleted": randint(50, 500),
+            "comments_added": randint(50, 500),
+            "comments_deleted": randint(50, 500),
+            "blanks_added": randint(50, 500),
+            "blanks_deleted": randint(50, 500),
+            "spacing_changes": randint(50, 500),
+            "syntax_changes": randint(50, 500),
         }
         return info
 

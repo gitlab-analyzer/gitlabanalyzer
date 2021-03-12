@@ -68,19 +68,43 @@ GET /projects/<int:projectID>/commit
 {
     "commit_list": [
         {
-            "author_name": "Joshua Li Guo",
-            "committed_date": "2021-03-01T20:06:31.000-08:00",
-            "committer_name": "Joshua Li Guo",
-            "id": "9b993412b23c5fcf28a51578b604b44d96a9bcf9",
-            "title": "Merge branch '56-refactor-gitlab_project_interface' into 'master'"
+            "author_name": "Thomas Min",
+            "code_diff_id": 30,
+            "committed_date": "2021-03-08T19:27:24.000-08:00",
+            "committer_name": "Thomas Min",
+            "id": "a3a1afaca3cb55197d1c6db59c6b365341a56b15",
+            "line_counts": {
+                "blanks_added": 2940,
+                "blanks_deleted": 2398,
+                "comments_added": 3116,
+                "comments_deleted": 2604,
+                "lines_added": 2812,
+                "lines_deleted": 3287,
+                "spacing_changes": 3053,
+                "syntax_changes": 3536
+            },
+            "short_id": "a3a1afac",
+            "title": "Fix merge conflict with branch 51"
         },
         {
-            "author_name": "fanghaof",
-            "committed_date": "2021-03-01T20:03:42.000-08:00",
-            "committer_name": "fanghaof",
-            "id": "1bf88c3f32f1fb5d6186dc9d348e997937b6f91e",
-            "title": "Add .gitlab-ci.yml"
-        }
+            "author_name": "Thomas Min",
+            "code_diff_id": 31,
+            "committed_date": "2021-03-08T19:18:04.000-08:00",
+            "committer_name": "Thomas Min",
+            "id": "cd222643b1e9a99608f03de0c4b4c33a9b1984da",
+            "line_counts": {
+                "blanks_added": 1511,
+                "blanks_deleted": 1055,
+                "comments_added": 1391,
+                "comments_deleted": 1143,
+                "lines_added": 1080,
+                "lines_deleted": 619,
+                "spacing_changes": 1518,
+                "syntax_changes": 1122
+            },
+            "short_id": "cd222643",
+            "title": "Merge branch '68-request-routes-failing' into 'master'"
+        },
     ],
     "response": true
 }
@@ -95,18 +119,42 @@ GET /projects/<int:projectID>/commit/user/all
         {
             "commits": [
                 {
-                    "author_name": "Henry Fang",
-                    "committed_date": "2021-03-05T15:33:20.000-08:00",
-                    "committer_name": "Henry Fang",
-                    "id": "4a95e2347852ed3435750e32d5a6193bd371fb48",
-                    "title": "Fix formatting issue and add backend_format_check script"
+                    "author_name": "Thomas Min",
+                    "code_diff_id": 32,
+                    "committed_date": "2021-03-08T19:15:33.000-08:00",
+                    "committer_name": "Thomas Min",
+                    "id": "b14393f4009dab4561aa8b19e9859c78eb353940",
+                    "line_counts": {
+                        "blanks_added": 660,
+                        "blanks_deleted": 736,
+                        "comments_added": 743,
+                        "comments_deleted": 734,
+                        "lines_added": 906,
+                        "lines_deleted": 977,
+                        "spacing_changes": 1070,
+                        "syntax_changes": 552
+                    },
+                    "short_id": "b14393f4",
+                    "title": "Revert commit and add changes again due to eslintcache issues"
                 },
                 {
-                    "author_name": "Henry Fang",
-                    "committed_date": "2021-03-05T12:22:59.000-08:00",
-                    "committer_name": "Henry Fang",
-                    "id": "0fbc83d28199565971879ecdb5b0adf369316744",
-                    "title": "fixed a bug for /auth"
+                    "author_name": "Thomas Min",
+                    "code_diff_id": 33,
+                    "committed_date": "2021-03-08T19:10:43.000-08:00",
+                    "committer_name": "Thomas Min",
+                    "id": "5b8e17178bf57d5b3f255a161d80b15bb6e726ea",
+                    "line_counts": {
+                        "blanks_added": 986,
+                        "blanks_deleted": 1081,
+                        "comments_added": 944,
+                        "comments_deleted": 644,
+                        "lines_added": 1114,
+                        "lines_deleted": 1165,
+                        "spacing_changes": 948,
+                        "syntax_changes": 1050
+                    },
+                    "short_id": "5b8e1717",
+                    "title": "Quick fix to link route to summary"
                 },
             ],
             "user_name": "Henry Fang"
@@ -115,10 +163,22 @@ GET /projects/<int:projectID>/commit/user/all
             "commits": [
                 {
                     "author_name": "Joshua Li Guo",
-                    "committed_date": "2021-03-03T19:08:39.000-08:00",
+                    "code_diff_id": 372,
+                    "committed_date": "2021-02-03T20:24:07.000-08:00",
                     "committer_name": "Joshua Li Guo",
-                    "id": "6eba461e7507f6a68f1c04699ad445c2b4b04303",
-                    "title": "Merge branch '58-fix-issue-data-class' into 'master'"
+                    "id": "79ad0f63cd5db6caa91887ef3ef6d74856b1f306",
+                    "line_counts": {
+                        "blanks_added": 88,
+                        "blanks_deleted": 411,
+                        "comments_added": 280,
+                        "comments_deleted": 385,
+                        "lines_added": 208,
+                        "lines_deleted": 212,
+                        "spacing_changes": 133,
+                        "syntax_changes": 378
+                    },
+                    "short_id": "79ad0f63",
+                    "title": "added issue.py and basic docs for Issue class"
                 },
             ],
             "user_name": "Joshua Li Guo"
@@ -137,85 +197,163 @@ GET /projects/<int:projectID>/merge_request/user/all
     "merge_request_users_list": {
         "Joseph Test": [
             {
-                "author": 6,
+                "author": {
+                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                    "id": 6,
+                    "name": "Joseph Test",
+                    "state": "active",
+                    "username": "makemaketest5",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                },
+                "code_diff_id": 5,
                 "comments": null,
                 "commit_list": [
                     {
                         "author_name": "Joseph Test",
-                        "committed_date": "2021-03-09T05:02:05.000Z",
+                        "code_diff_id": 12,
+                        "committed_date": "2021-03-11T19:21:13.000Z",
                         "committer_name": "Joseph Test",
-                        "id": "17980749b76491432d860d38b59789898fc2f3e7",
-                        "short_id": "17980749",
-                        "title": "Another big add"
+                        "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
+                        "line_counts": {
+                            "blanks_added": 598,
+                            "blanks_deleted": 702,
+                            "comments_added": 346,
+                            "comments_deleted": 800,
+                            "lines_added": 588,
+                            "lines_deleted": 411,
+                            "spacing_changes": 257,
+                            "syntax_changes": 420
+                        },
+                        "short_id": "2e94747c",
+                        "title": "Add query notify class and logic"
                     }
                 ],
-                "created_date": "2021-03-09T05:02:41.345Z",
-                "description": "Closes #5",
-                "id": 5,
-                "iid": 5,
-                "merged_by": null,
-                "merged_date": null,
-                "related_issue_iid": 5,
-                "state": "opened",
-                "title": "Resolve \"Make header component visible\""
-            },
-            {
-                "author": 6,
-                "comments": null,
-                "commit_list": [
-                    {
-                        "author_name": "Joseph Test",
-                        "committed_date": "2021-03-09T04:52:31.000Z",
-                        "committer_name": "Joseph Test",
-                        "id": "0f9b680b2740b1e09ade093a0ade8be0e98ee917",
-                        "short_id": "0f9b680b",
-                        "title": "Add logic to logout component"
-                    },
-                    {
-                        "author_name": "Joseph Test",
-                        "committed_date": "2021-03-09T04:51:28.000Z",
-                        "committer_name": "Joseph Test",
-                        "id": "9531c118a2e6db08f1d36db542e0b90964c2fa09",
-                        "short_id": "9531c118",
-                        "title": "Made logout stub"
-                    }
-                ],
-                "created_date": "2021-03-09T04:53:15.171Z",
-                "description": "Finished another component",
-                "id": 4,
-                "iid": 4,
+                "created_date": "2021-03-11T19:26:26.371Z",
+                "description": "New features added. This is important branch",
+                "id": 8,
+                "iid": 8,
+                "line_counts": {
+                    "blanks_added": 469,
+                    "blanks_deleted": 170,
+                    "comments_added": 339,
+                    "comments_deleted": 269,
+                    "lines_added": 421,
+                    "lines_deleted": 456,
+                    "spacing_changes": 379,
+                    "syntax_changes": 274
+                },
                 "merged_by": 6,
-                "merged_date": "2021-03-09T05:03:02.746Z",
+                "merged_date": "2021-03-11T19:26:55.527Z",
                 "related_issue_iid": null,
                 "state": "merged",
-                "title": "Resolve \"Another issue with frontend\""
+                "title": "Resolve \"Refactor database orm\""
+            },
+            {
+                "author": {
+                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                    "id": 6,
+                    "name": "Joseph Test",
+                    "state": "active",
+                    "username": "makemaketest5",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                },
+                "code_diff_id": 13,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "Joseph Test",
+                        "code_diff_id": 14,
+                        "committed_date": "2021-03-11T19:15:24.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "81de4127034ca4cdb3af74fa2a45ea4c524f8d1a",
+                        "line_counts": {
+                            "blanks_added": 864,
+                            "blanks_deleted": 602,
+                            "comments_added": 608,
+                            "comments_deleted": 670,
+                            "lines_added": 533,
+                            "lines_deleted": 449,
+                            "spacing_changes": 218,
+                            "syntax_changes": 250
+                        },
+                        "short_id": "81de4127",
+                        "title": "Refactor issues object"
+                    }
+                ],
+                "created_date": "2021-03-11T19:16:41.993Z",
+                "description": "- Made updates for redefine models",
+                "id": 7,
+                "iid": 7,
+                "line_counts": {
+                    "blanks_added": 93,
+                    "blanks_deleted": 249,
+                    "comments_added": 314,
+                    "comments_deleted": 149,
+                    "lines_added": 372,
+                    "lines_deleted": 127,
+                    "spacing_changes": 181,
+                    "syntax_changes": 359
+                },
+                "merged_by": 6,
+                "merged_date": "2021-03-11T19:17:10.469Z",
+                "related_issue_iid": null,
+                "state": "merged",
+                "title": "Resolve \"Make fetch data calls\""
             }
         ],
         "TestUser H": [
             {
-                "author": 5,
+                "author": {
+                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                    "id": 6,
+                    "name": "Joseph Test",
+                    "state": "active",
+                    "username": "makemaketest5",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                },
+                "code_diff_id": 19,
                 "comments": null,
                 "commit_list": [
                     {
                         "author_name": "TestUser H",
-                        "committed_date": "2021-03-09T04:30:47.000Z",
+                        "code_diff_id": 23,
+                        "committed_date": "2021-03-11T04:00:52.000Z",
                         "committer_name": "TestUser H",
-                        "id": "16e45c9e7ed5a71bb0ced8129f91abff0ef2672d",
-                        "short_id": "16e45c9e",
-                        "title": "Update server/model/commit.py, server/random.py files"
+                        "id": "41f8eb336843f6a55e97721c50aeec4f80b2f1b9",
+                        "line_counts": {
+                            "blanks_added": 92,
+                            "blanks_deleted": 286,
+                            "comments_added": 183,
+                            "comments_deleted": 50,
+                            "lines_added": 337,
+                            "lines_deleted": 235,
+                            "spacing_changes": 397,
+                            "syntax_changes": 421
+                        },
+                        "short_id": "41f8eb33",
+                        "title": "Update app.py"
                     }
                 ],
-                "created_date": "2021-03-09T04:32:16.109Z",
-                "description": "Closes #3",
-                "id": 2,
-                "iid": 2,
-                "merged_by": 5,
-                "merged_date": "2021-03-09T04:41:57.594Z",
-                "related_issue_iid": 3,
-                "state": "merged",
-                "title": "Update server/model/commit.py, server/random.py files"
+                "created_date": "2021-03-11T04:01:02.426Z",
+                "description": "Closes #9",
+                "id": 6,
+                "iid": 6,
+                "line_counts": {
+                    "blanks_added": 453,
+                    "blanks_deleted": 194,
+                    "comments_added": 140,
+                    "comments_deleted": 276,
+                    "lines_added": 354,
+                    "lines_deleted": 398,
+                    "spacing_changes": 440,
+                    "syntax_changes": 395
+                },
+                "merged_by": null,
+                "merged_date": null,
+                "related_issue_iid": 9,
+                "state": "opened",
+                "title": "Update app.py"
             }
-        ]
     },
     "response": true
 }
@@ -229,76 +367,110 @@ GET /projects/<int:projectID>/merge_request/user/all
 
 {
     "merge_request_list": [
-        {
-            "author": 6,
-            "code_diff": null,
+ {
+            "author": {
+                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                "id": 6,
+                "name": "Joseph Test",
+                "state": "active",
+                "username": "makemaketest5",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+            },
+            "code_diff_id": 392,
             "comments": null,
-            "created_date": "2021-03-09T05:02:41.345Z",
-            "description": "Closes #5",
-            "id": 5,
-            "iid": 5,
-            "merged_by": null,
-            "merged_date": null,
-            "related_issue_iid": 5,
-            "state": "opened",
-            "title": "Resolve \"Make header component visible\""
-        },
-        {
-            "author": 6,
-            "code_diff": null,
-            "comments": null,
-            "created_date": "2021-03-09T04:53:15.171Z",
-            "description": "Finished another component",
-            "id": 4,
-            "iid": 4,
+            "commit_list": [
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 396,
+                    "committed_date": "2021-03-11T19:30:23.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "64bf8dd279947d857616317a55f0f45a78a27d0e",
+                    "line_counts": {
+                        "blanks_added": 122,
+                        "blanks_deleted": 474,
+                        "comments_added": 89,
+                        "comments_deleted": 365,
+                        "lines_added": 86,
+                        "lines_deleted": 497,
+                        "spacing_changes": 331,
+                        "syntax_changes": 286
+                    },
+                    "short_id": "64bf8dd2",
+                    "title": "Initial commit to create stubs and getters and setters"
+                }
+            ],
+            "created_date": "2021-03-11T19:36:08.651Z",
+            "description": "Closes #11",
+            "id": 9,
+            "iid": 9,
+            "line_counts": {
+                "blanks_added": 506,
+                "blanks_deleted": 349,
+                "comments_added": 614,
+                "comments_deleted": 746,
+                "lines_added": 431,
+                "lines_deleted": 625,
+                "spacing_changes": 379,
+                "syntax_changes": 491
+            },
             "merged_by": 6,
-            "merged_date": "2021-03-09T05:03:02.746Z",
-            "related_issue_iid": null,
+            "merged_date": "2021-03-11T19:36:19.943Z",
+            "related_issue_iid": 11,
             "state": "merged",
-            "title": "Resolve \"Another issue with frontend\""
+            "title": "Resolve \"Implemented paxo\""
         },
         {
-            "author": 6,
-            "code_diff": null,
+            "author": {
+                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                "id": 6,
+                "name": "Joseph Test",
+                "state": "active",
+                "username": "makemaketest5",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+            },
+            "code_diff_id": 397,
             "comments": null,
-            "created_date": "2021-03-09T04:43:45.120Z",
-            "description": "Created overview page",
-            "id": 3,
-            "iid": 3,
+            "commit_list": [
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 404,
+                    "committed_date": "2021-03-11T19:21:13.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
+                    "line_counts": {
+                        "blanks_added": 506,
+                        "blanks_deleted": 349,
+                        "comments_added": 614,
+                        "comments_deleted": 746,
+                        "lines_added": 431,
+                        "lines_deleted": 625,
+                        "spacing_changes": 379,
+                        "syntax_changes": 491
+                    },
+                    "short_id": "2e94747c",
+                    "title": "Add query notify class and logic"
+                }
+            ],
+            "created_date": "2021-03-11T19:26:26.371Z",
+            "description": "New features added. This is important branch",
+            "id": 8,
+            "iid": 8,
+            "line_counts": {
+                "blanks_added": 506,
+                "blanks_deleted": 349,
+                "comments_added": 614,
+                "comments_deleted": 746,
+                "lines_added": 431,
+                "lines_deleted": 625,
+                "spacing_changes": 379,
+                "syntax_changes": 491
+            },
             "merged_by": 6,
-            "merged_date": "2021-03-09T04:48:43.173Z",
+            "merged_date": "2021-03-11T19:26:55.527Z",
             "related_issue_iid": null,
             "state": "merged",
-            "title": "Resolve \"Create overview page\""
+            "title": "Resolve \"Refactor database orm\""
         },
-        {
-            "author": 5,
-            "code_diff": null,
-            "comments": null,
-            "created_date": "2021-03-09T04:32:16.109Z",
-            "description": "Closes #3",
-            "id": 2,
-            "iid": 2,
-            "merged_by": 5,
-            "merged_date": "2021-03-09T04:41:57.594Z",
-            "related_issue_iid": 3,
-            "state": "merged",
-            "title": "Update server/model/commit.py, server/random.py files"
-        },
-        {
-            "author": 5,
-            "code_diff": null,
-            "comments": null,
-            "created_date": "2021-03-09T04:27:56.379Z",
-            "description": "",
-            "id": 1,
-            "iid": 1,
-            "merged_by": 5,
-            "merged_date": "2021-03-09T04:41:46.096Z",
-            "related_issue_iid": null,
-            "state": "merged",
-            "title": "Deleted .gitlab-ci.yml"
-        }
     ],
     "response": true
 }
