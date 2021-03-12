@@ -177,9 +177,8 @@ class CodeDiffAnalyzer:
     def check_for_code_type(self, codeDiffObject: CodeDiff) -> None:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
-        found = re.search('\.(.+?)$', fileName)
-        if found != set():
-            found = found.group(1)
+        if(fileName is not False):
+            found = re.search('\.(.+?)$', fileName).group(1)
             if found == 'py':
                 python = True
 
