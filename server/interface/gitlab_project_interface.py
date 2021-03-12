@@ -1,3 +1,4 @@
+from model.code_diff import CodeDiff
 from typing import Optional, List, Tuple
 from copy import copy, deepcopy
 
@@ -7,6 +8,7 @@ from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
+from manager.code_diff_temp import codeDiffManager
 from model.merge_request import MergeRequest
 from model.commit import Commit
 
@@ -19,12 +21,15 @@ class GitLabProject:
         self.__commitsManager: CommitManager = CommitManager()
         self.__commentsManager: CommentManager = CommentManager()
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
+        self.__codeDiffManager: codeDiffManager = codeDiffManager()
         self.__projectID: int = projectID
 
         # This will be filled after the call to self.__update_commits_manager(myGitlab)
         self.__user_list: list = []
 
         self.__update_managers(myGitlab)
+
+    # TODO: Populate Code Diff Manager
 
     def __update_managers(self, myGitlab: GitLab) -> None:
         self.__update_merge_request_manager(myGitlab)
@@ -80,48 +85,50 @@ class GitLabProject:
         scoreData = {
             "lines_added": 0,
             "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
             "blanks_added": 0,
             "blanks_deleted": 0,
             "spacing_changes": 0,
             "syntax_changes": 0,
         }
 
-        # for diff in commit.code_diff:
-            # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(diff)
-            # add stats to scoreData
+        codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(commit.codeDiffId)
+        for diff in codeDiff:
+            codeDiffStats: dict = self.__code_diff_manager.get_code_diff_statistic(CodeDiff(diff))
+
+            for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
+                assert key1 == key2
+                scoreData[key1] += codeDiffStats[key2]
 
         return scoreData
 
     def get_merge_request_score_data(self, mergeRequest: MergeRequest) -> dict:
         scoreData = {
-            "lines_added": 0,
-            "lines_deleted": 0,
-            "blanks_added": 0,
-            "blanks_deleted": 0,
-            "spacing_changes": 0,
-            "syntax_changes": 0,
+            "mergeRequestScoreData": {},
+            "relatedCommitsScoreData": {
+                "lines_added": 0,
+                "lines_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "blanks_added": 0,
+                "blanks_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0,
+            }
         }
 
-        # WTF is with the way GitLab API is? Why is it so confusing? Why.
-        # codeDiffStats = self.__code_diff_manager.get_code_diff_statistic(mergeRequest.code_diff)
-        
-        # You will get a mergeRequest object. The mergeRequest will have a list of Commit objects.
-        # Both mergeRequest and the Commit objects will have a single code_diff id.
-        # Pass the id into a find method in codeDiffManager to get the code diff.
-        # the code diff is a List[dict].
-        # For each dict in the list, pass the dict into a new CodeDiff object (wrap dict into object)
-        # Pass the object into the get_code_diff_statistics method in codeDiffManager.
-        # the return will be what you need.
+        codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(mergeRequest.codeDiff)
+        for diff in codeDiff:
+            mergeRequestScoreData = self.__codeDiffManager.get_code_diff_statistic(CodeDiff(diff))
+            scoreData["mergeRequestScoreData"] = deepcopy(mergeRequestScoreData)
 
-        # Deprecated? {
-        commits: List[Commit] = mergeRequest.related_commits_list
-        for commit in commits:
+        for commit in mergeRequest.related_commits_list:
             commitScoreData = self.get_commit_score_data(commit)
 
             for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
                 assert key1 == key2
-                scoreData[key1] += commitScoreData[key2]
-        # }
+                scoreData["relatedCommitsScoreData"][key1] += commitScoreData[key2]
 
         return scoreData
 
