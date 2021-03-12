@@ -9,8 +9,6 @@ import StackedBarGraph from '../components/summary/StackedBar'
 
 import {useAuth} from '../context/AuthContext'
 
-/* could probably move some of this stuff into other components */
-
 const useStyles = makeStyles((theme) =>({
     root: {
         fontFamily: 'Comfortaa'
@@ -24,13 +22,6 @@ const useStyles = makeStyles((theme) =>({
     }
   }));
 
-  // 0:
-  // authorName: "Joseph Test"
-  // commitedDate: Thu Mar 11 2021 11:36:18 GMT-0800 (Pacific Standard Time) {}
-  // committerName: "Joseph Test"
-  // id: "19fa8676d5ff2c641265104b15c5a25e7581e1be"
-  // title: "Merge branch '11-implemented-paxo' into 'master'"
-  // __proto__: Object
 const Summary = () => {
     const { overview, setOverview, commitsList, setCommitsList } = useAuth();
     const [startDate, setStartDate] = useState('Jan 2021')
@@ -42,7 +33,7 @@ const Summary = () => {
     const classes = useStyles();
 
     // source: https://stackoverflow.com/a/27314677
-    // should be reusable for all graphs
+    // should be reusable for merge requests. Word counts will be slightly different
     const countDates = (commitsList) => {
       var result = {}, i, date, rarr = [];
       for(i=0; i < commitsList.length; i++) {

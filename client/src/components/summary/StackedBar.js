@@ -65,17 +65,14 @@ class StackedBarGraph extends React.Component {
             opacity: 1
           }
         },
-      
-      
       };
     }
 
     render() {
       return (
-  <div id="chart">
-<Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
-</div>
-
+        <div id="chart">
+          <Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
+        </div>
       );
     }
   }
