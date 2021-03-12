@@ -33,7 +33,7 @@ class MergeRequest(DataObject):
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
 
-    def __add_commits_list(self, commitList: [Commit]) -> None:
+    def __add_commits_list(self, commitList: List[Commit]) -> None:
         for commit in commitList:
             self.__related_commits_list.append(Commit(commit))
 

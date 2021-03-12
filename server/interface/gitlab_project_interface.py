@@ -1,3 +1,5 @@
+from model.code_diff import CodeDiff
+from typing import Optional, List, Tuple
 from copy import copy, deepcopy
 
 from interface.gitlab_interface import GitLab
@@ -10,6 +12,9 @@ from model.code_diff import CodeDiff
 from model.code_diff_manager import CodeDiffManager
 from model.commit import Commit
 from model.merge_request import MergeRequest
+from manager.code_diff_temp import codeDiffManager
+from model.merge_request import MergeRequest
+from model.commit import Commit
 
 
 class GitLabProject:
@@ -27,6 +32,8 @@ class GitLabProject:
         self.__user_list: list = []
 
         self.__update_managers(myGitlab)
+
+    # TODO: Populate Code Diff Manager
 
     def __update_managers(self, myGitlab: GitLab) -> None:
         self.__update_merge_request_manager(myGitlab)
@@ -72,7 +79,6 @@ class GitLabProject:
     def __update_issues_manager(self, myGitlab: GitLab) -> None:
         issueList: list = myGitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
-
         # Get comments
         for issue in issueList:
             issue_notes = myGitlab.get_comments_of_issue(issue.iid)
@@ -105,6 +111,63 @@ class GitLabProject:
             mr.code_diff_id = codeDiffID
             self.__update_code_diff_for_commit_list(mr.related_commits_list, myGitlab)
 
+    def get_commit_score_data(self, commit: Commit) -> dict:
+        scoreData = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+
+        codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(commit.codeDiffId)
+        for diff in codeDiff:
+            codeDiffStats: dict = self.__codeDiffManager.get_code_diff_statistic(CodeDiff(diff))
+
+            for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
+                assert key1 == key2
+                scoreData[key1] += codeDiffStats[key2]
+
+        return scoreData
+
+    def get_merge_request_score_data(self, mergeRequest: MergeRequest) -> dict:
+        scoreData = {
+            "mergeRequestScoreData": {},
+            "relatedCommitsScoreData": {
+                "lines_added": 0,
+                "lines_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "blanks_added": 0,
+                "blanks_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0,
+            }
+        }
+
+        codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(mergeRequest.codeDiff)
+        for diff in codeDiff:
+            mergeRequestScoreData = self.__codeDiffManager.get_code_diff_statistic(CodeDiff(diff))
+            scoreData["mergeRequestScoreData"] = deepcopy(mergeRequestScoreData)
+
+        for commit in mergeRequest.related_commits_list:
+            commitScoreData = self.get_commit_score_data(commit)
+
+            for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
+                assert key1 == key2
+                scoreData["relatedCommitsScoreData"][key1] += commitScoreData[key2]
+
+        return scoreData
+
+    def get_file_type_score_data(self):
+        # TODO
+        pass
+
+    # Getters
+
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
         for member in self.member_manager.get_member_list():
@@ -130,13 +193,13 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commits: [str]) -> [list, list]:
+    def __get_commit_list_and_authors(self, commits: [str]) -> Tuple[list]:
         commitList = []
         authors = set()
         for commit in commits:
             commit = commit.to_dict()
             commitList.append(commit)
-            authors.add(commit['author_name'])
+            authors.add(commit["author_name"])
         return commitList, list(authors)
 
     def __add_mr_to_associated_users(
@@ -157,7 +220,7 @@ class GitLabProject:
             )
             singleMR["commit_list"] = commitList
             # delete related_commits_list so jsonify won't throw error
-            del singleMR['related_commits_list']
+            del singleMR["related_commits_list"]
             self.__add_mr_to_associated_users(
                 mergeRequestForAllUsers, authors, singleMR
             )
