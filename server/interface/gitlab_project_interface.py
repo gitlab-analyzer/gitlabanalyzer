@@ -95,7 +95,7 @@ class GitLabProject:
 
         codeDiff: list = self.__codeDiffManager.get_code_diff_by_id(commit.codeDiffId)
         for diff in codeDiff:
-            codeDiffStats: dict = self.__code_diff_manager.get_code_diff_statistic(CodeDiff(diff))
+            codeDiffStats: dict = self.__codeDiffManager.get_code_diff_statistic(CodeDiff(diff))
 
             for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
                 assert key1 == key2
