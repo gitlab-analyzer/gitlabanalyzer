@@ -32,7 +32,7 @@ class CodeDiffAnalyzer:
         syntax = 0
         spacing = 0
 
-        oldLine = ""
+        oldLine = " "
         python = False
 
         self.check_for_code_type(codeDiffObject)
@@ -42,7 +42,7 @@ class CodeDiffAnalyzer:
             if line[0] == '+' or line[0] == '-':
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                     if self.check_middle_syntax_addition(line, oldLine, syntax, python):
-                        return
+                        continue
 
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
                     tempLine = '+' + line[1:].replace(oldLine[1:], '')
@@ -85,6 +85,7 @@ class CodeDiffAnalyzer:
                         line,
                         python,
                     )
+                oldLine = line
 
         info = {
             "lines_added": newLine,
