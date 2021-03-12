@@ -8,6 +8,9 @@ class codeDiffManager:
     def __init__(self) -> None:
         self.__codeDiffList: List[CodeDiff] = []
 
+    # TODO: a way to fill the code diff list
+    # TODO: get_code_diff_by_id()
+
     def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
 
         # TODO:
