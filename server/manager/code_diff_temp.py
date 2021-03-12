@@ -10,9 +10,9 @@ class CodeDiffAnalyzer:
         self.__listSize: int = 0
 
     # TODO: a way to fill the code diff list
-    
+
     # The ID's of the codeDiffs are their index in the list
-    def get_code_diff_by_id(self, codeDiffId: int) -> list: 
+    def get_code_diff_by_id(self, codeDiffId: int) -> list:
         return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
 
     def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
@@ -39,7 +39,7 @@ class CodeDiffAnalyzer:
 
         diffCode = CodeDiff(codeDiffObject)
         for line in diffCode.diff.splitlines():
-            if(line[0] == '+' or line[0] == '-'):
+            if line[0] == '+' or line[0] == '-':
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                     if self.check_middle_syntax_addition(line, oldLine, syntax, python):
                         return
