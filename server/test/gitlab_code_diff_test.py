@@ -12,3 +12,4 @@ if __name__ == "__main__":
         print("authenticated")
     print("Updating all managers...")
     gitlabProjectInterface = GitLabProject(myGitLab, 2)
+    print("Done!")
