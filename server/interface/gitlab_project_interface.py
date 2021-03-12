@@ -6,6 +6,7 @@ from manager.commit_manager import CommitManager
 from manager.member_manager import MemberManager
 from manager.merge_request_manager import MergeRequestManager
 from manager.issue_manager import IssueManager
+from model.code_diff import CodeDiff
 from model.code_diff_manager import CodeDiffManager
 from model.commit import Commit
 from model.merge_request import MergeRequest
@@ -27,8 +28,6 @@ class GitLabProject:
 
         self.__update_managers(myGitlab)
 
-    # Note: after this function call, commits in commit/mergeRequest manager
-    #       will be converted into dict() for fast data processing
     def __update_managers(self, myGitlab: GitLab) -> None:
         self.__update_merge_request_manager(myGitlab)
         self.__update_member_manager(myGitlab)
@@ -44,11 +43,11 @@ class GitLabProject:
             self.__mergeRequestManager.add_merge_request(
                 mergeRequests[i], commitsForMR[i]
             )
-            # # Get comments
-            # mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
-            # for item in mr_notes:
-            #     if item.system is False:
-            #         self.__commentsManager.add_comment(item)
+            # Get comments
+            mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
+            for item in mr_notes:
+                if item.system is False:
+                    self.__commentsManager.add_comment(item)
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
         members: list = myGitlab.get_all_members()
@@ -63,10 +62,10 @@ class GitLabProject:
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
 
-            # # Get comments
-            # commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
-            # for item in commit_notes:
-            #     self.__commentsManager.add_comment(item, commit.short_id)
+            # Get comments
+            commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
+            for item in commit_notes:
+                self.__commentsManager.add_comment(item, commit.short_id)
 
         self.__user_list = list(tempUserSet)
 
@@ -175,6 +174,9 @@ class GitLabProject:
             del singleMR['related_commits_list']
             mergeRequests.append(singleMR)
         return mergeRequests
+
+    def get_code_diff(self, codeDiffID: int) -> [dict]:
+        return self.__CodeDiffManager.get_code_diff(codeDiffID)
 
     @property
     def member_manager(self) -> MemberManager:

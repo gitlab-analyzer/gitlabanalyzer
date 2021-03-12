@@ -1,6 +1,7 @@
+import hashlib
 import json
 from typing import Optional
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitLabProject
@@ -23,9 +24,14 @@ projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
 @cross_origin()
 def auth():
     global myGitLab
-    myGitLab = GitLab(token=request.form['token'], url=request.form['url'])
+    myToken = request.form['token']
+    myGitLab = GitLab(token=myToken, url=request.form['url'])
     if myGitLab.authenticate():
-        return jsonify({'username': myGitLab.get_username(), 'response': True})
+        response = make_response(
+            jsonify({'username': myGitLab.get_username(), 'response': True})
+        )
+        # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
+        response.set_cookie(key="id", value=hashlib.sha256(str.encode(myToken)).hexdigest())
     else:
         return jsonify(
             {'username': '', 'response': False, 'Cause': "Invalid token or url"}
@@ -127,6 +133,16 @@ def get_all_merge_requests(projectID):
             gitlabProjectInterface.get_all_merge_request_and_commit()
         )
         return jsonify({"response": True, "merge_request_list": mergeRequestList})
+    else:
+        return jsonify(projectIDError)
+
+
+@app.route('/projects/<int:projectID>/code_diff/<int:codeDiffID>')
+def get_code_diff(projectID, codeDiffID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        codeDiff = gitlabProjectInterface.get_code_diff(codeDiffID)
+        return jsonify({"response": True, "code_diff_list": codeDiff})
     else:
         return jsonify(projectIDError)
 
