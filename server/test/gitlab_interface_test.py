@@ -1,3 +1,5 @@
+import json
+
 from interface.gitlab_interface import GitLab
 import gitlab
 
@@ -7,34 +9,20 @@ Below are only for testing purpose
 if __name__ == "__main__":
     gl = gitlab.Gitlab("https://cmpt373-1211-12.cmpt.sfu.ca/", private_token="EJf7qdRqxdKWu1ydozLe")
     project = gl.projects.get(2)
+    mr = project.mergerequests.get(6)
+    print(mr)
 
-    for commit in project.commits.list(all=True):
-        print(commit)
+    # print the latest diff for a MR
+    print(mr.diffs.get(mr.diffs.list()[0].id).diffs)
+    diffs = mr.diffs.get(mr.diffs.list()[0].id).diffs
+    print(type(diffs))
+    for c in mr.diffs.list():
+        print(c)
 
-    mr = project.mergerequests.get(3)
+    # print the diff for commit
     for p in mr.commits():
-        print(p)
-    print("----------------")
-    print(project.commits.get("17980749"))
+        print(p.diff()[0]["old_path"])
 
-    # myGitLab = GitLab(token="EJf7qdRqxdKWu1ydozLe", url="https://cmpt373-1211-12.cmpt.sfu.ca/")
-    # print("Auth:", myGitLab.authenticate())
-    # myGitLab.set_project(2)
-    # mrList = myGitLab.gl.mergerequests.list(state="all", all=True)
-    #
-    # print(len(mrList))
-    #
-    # for mr in mrList:
-    #     print(mr)
-    # print("Username:", myGitLab.get_username())
-    # projects = myGitLab.get_project_list()
-    #
-    # for project in projects:
-    #     print(project)
-    # myGitLab.set_project(19771)
-    # for item in myGitLab.get_issue_list():
-    #     print(item)
-    #
     # print("--------------------------------------")
     # for item in myGitLab.get_issue_comments_list():
     #     print(item)

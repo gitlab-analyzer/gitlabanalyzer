@@ -64,53 +64,47 @@ GET /projects/<int:projectID>/users
     "response": false
 }
 
-GET /projects/<int:projectID>/overview
-{
-    "response": true,
-    "users": [
-        {
-            "lines_of_code": 12175,
-            "number_commits": 64,
-            "number_issues": 99,
-            "username": "Henry Fang"
-        },
-        {
-            "lines_of_code": 15628,
-            "number_commits": 49,
-            "number_issues": 8,
-            "username": "springbro294"
-        },
-        {
-            "lines_of_code": 28646,
-            "number_commits": 92,
-            "number_issues": 19,
-            "username": "Joshua Li Guo"
-        }
-    ]
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
-
 GET /projects/<int:projectID>/commit
 {
     "commit_list": [
         {
-            "author_name": "Joshua Li Guo",
-            "committed_date": "2021-03-01T20:06:31.000-08:00",
-            "committer_name": "Joshua Li Guo",
-            "id": "9b993412b23c5fcf28a51578b604b44d96a9bcf9",
-            "title": "Merge branch '56-refactor-gitlab_project_interface' into 'master'"
+            "author_name": "Thomas Min",
+            "code_diff_id": 30,
+            "committed_date": "2021-03-08T19:27:24.000-08:00",
+            "committer_name": "Thomas Min",
+            "id": "a3a1afaca3cb55197d1c6db59c6b365341a56b15",
+            "line_counts": {
+                "blanks_added": 2940,
+                "blanks_deleted": 2398,
+                "comments_added": 3116,
+                "comments_deleted": 2604,
+                "lines_added": 2812,
+                "lines_deleted": 3287,
+                "spacing_changes": 3053,
+                "syntax_changes": 3536
+            },
+            "short_id": "a3a1afac",
+            "title": "Fix merge conflict with branch 51"
         },
         {
-            "author_name": "fanghaof",
-            "committed_date": "2021-03-01T20:03:42.000-08:00",
-            "committer_name": "fanghaof",
-            "id": "1bf88c3f32f1fb5d6186dc9d348e997937b6f91e",
-            "title": "Add .gitlab-ci.yml"
-        }
+            "author_name": "Thomas Min",
+            "code_diff_id": 31,
+            "committed_date": "2021-03-08T19:18:04.000-08:00",
+            "committer_name": "Thomas Min",
+            "id": "cd222643b1e9a99608f03de0c4b4c33a9b1984da",
+            "line_counts": {
+                "blanks_added": 1511,
+                "blanks_deleted": 1055,
+                "comments_added": 1391,
+                "comments_deleted": 1143,
+                "lines_added": 1080,
+                "lines_deleted": 619,
+                "spacing_changes": 1518,
+                "syntax_changes": 1122
+            },
+            "short_id": "cd222643",
+            "title": "Merge branch '68-request-routes-failing' into 'master'"
+        },
     ],
     "response": true
 }
@@ -125,18 +119,42 @@ GET /projects/<int:projectID>/commit/user/all
         {
             "commits": [
                 {
-                    "author_name": "Henry Fang",
-                    "committed_date": "2021-03-05T15:33:20.000-08:00",
-                    "committer_name": "Henry Fang",
-                    "id": "4a95e2347852ed3435750e32d5a6193bd371fb48",
-                    "title": "Fix formatting issue and add backend_format_check script"
+                    "author_name": "Thomas Min",
+                    "code_diff_id": 32,
+                    "committed_date": "2021-03-08T19:15:33.000-08:00",
+                    "committer_name": "Thomas Min",
+                    "id": "b14393f4009dab4561aa8b19e9859c78eb353940",
+                    "line_counts": {
+                        "blanks_added": 660,
+                        "blanks_deleted": 736,
+                        "comments_added": 743,
+                        "comments_deleted": 734,
+                        "lines_added": 906,
+                        "lines_deleted": 977,
+                        "spacing_changes": 1070,
+                        "syntax_changes": 552
+                    },
+                    "short_id": "b14393f4",
+                    "title": "Revert commit and add changes again due to eslintcache issues"
                 },
                 {
-                    "author_name": "Henry Fang",
-                    "committed_date": "2021-03-05T12:22:59.000-08:00",
-                    "committer_name": "Henry Fang",
-                    "id": "0fbc83d28199565971879ecdb5b0adf369316744",
-                    "title": "fixed a bug for /auth"
+                    "author_name": "Thomas Min",
+                    "code_diff_id": 33,
+                    "committed_date": "2021-03-08T19:10:43.000-08:00",
+                    "committer_name": "Thomas Min",
+                    "id": "5b8e17178bf57d5b3f255a161d80b15bb6e726ea",
+                    "line_counts": {
+                        "blanks_added": 986,
+                        "blanks_deleted": 1081,
+                        "comments_added": 944,
+                        "comments_deleted": 644,
+                        "lines_added": 1114,
+                        "lines_deleted": 1165,
+                        "spacing_changes": 948,
+                        "syntax_changes": 1050
+                    },
+                    "short_id": "5b8e1717",
+                    "title": "Quick fix to link route to summary"
                 },
             ],
             "user_name": "Henry Fang"
@@ -145,10 +163,22 @@ GET /projects/<int:projectID>/commit/user/all
             "commits": [
                 {
                     "author_name": "Joshua Li Guo",
-                    "committed_date": "2021-03-03T19:08:39.000-08:00",
+                    "code_diff_id": 372,
+                    "committed_date": "2021-02-03T20:24:07.000-08:00",
                     "committer_name": "Joshua Li Guo",
-                    "id": "6eba461e7507f6a68f1c04699ad445c2b4b04303",
-                    "title": "Merge branch '58-fix-issue-data-class' into 'master'"
+                    "id": "79ad0f63cd5db6caa91887ef3ef6d74856b1f306",
+                    "line_counts": {
+                        "blanks_added": 88,
+                        "blanks_deleted": 411,
+                        "comments_added": 280,
+                        "comments_deleted": 385,
+                        "lines_added": 208,
+                        "lines_deleted": 212,
+                        "spacing_changes": 133,
+                        "syntax_changes": 378
+                    },
+                    "short_id": "79ad0f63",
+                    "title": "added issue.py and basic docs for Issue class"
                 },
             ],
             "user_name": "Joshua Li Guo"
@@ -162,90 +192,168 @@ GET /projects/<int:projectID>/commit/user/all
     "response": false
 }
 
-GET /projects/<int:projectID>/merge_request/all
+GET /projects/<int:projectID>/merge_request/user/all
 {
-    "merge_request_list": {
+    "merge_request_users_list": {
         "Joseph Test": [
             {
-                "author": 6,
+                "author": {
+                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                    "id": 6,
+                    "name": "Joseph Test",
+                    "state": "active",
+                    "username": "makemaketest5",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                },
+                "code_diff_id": 5,
                 "comments": null,
                 "commit_list": [
                     {
                         "author_name": "Joseph Test",
-                        "committed_date": "2021-03-09T05:02:05.000Z",
+                        "code_diff_id": 12,
+                        "committed_date": "2021-03-11T19:21:13.000Z",
                         "committer_name": "Joseph Test",
-                        "id": "17980749b76491432d860d38b59789898fc2f3e7",
-                        "short_id": "17980749",
-                        "title": "Another big add"
+                        "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
+                        "line_counts": {
+                            "blanks_added": 598,
+                            "blanks_deleted": 702,
+                            "comments_added": 346,
+                            "comments_deleted": 800,
+                            "lines_added": 588,
+                            "lines_deleted": 411,
+                            "spacing_changes": 257,
+                            "syntax_changes": 420
+                        },
+                        "short_id": "2e94747c",
+                        "title": "Add query notify class and logic"
                     }
                 ],
-                "created_date": "2021-03-09T05:02:41.345Z",
-                "description": "Closes #5",
-                "id": 5,
-                "iid": 5,
-                "merged_by": null,
-                "merged_date": null,
-                "related_issue_iid": 5,
-                "state": "opened",
-                "title": "Resolve \"Make header component visible\""
-            },
-            {
-                "author": 6,
-                "comments": null,
-                "commit_list": [
-                    {
-                        "author_name": "Joseph Test",
-                        "committed_date": "2021-03-09T04:52:31.000Z",
-                        "committer_name": "Joseph Test",
-                        "id": "0f9b680b2740b1e09ade093a0ade8be0e98ee917",
-                        "short_id": "0f9b680b",
-                        "title": "Add logic to logout component"
-                    },
-                    {
-                        "author_name": "Joseph Test",
-                        "committed_date": "2021-03-09T04:51:28.000Z",
-                        "committer_name": "Joseph Test",
-                        "id": "9531c118a2e6db08f1d36db542e0b90964c2fa09",
-                        "short_id": "9531c118",
-                        "title": "Made logout stub"
-                    }
-                ],
-                "created_date": "2021-03-09T04:53:15.171Z",
-                "description": "Finished another component",
-                "id": 4,
-                "iid": 4,
+                "created_date": "2021-03-11T19:26:26.371Z",
+                "description": "New features added. This is important branch",
+                "id": 8,
+                "iid": 8,
+                "line_counts": {
+                    "blanks_added": 469,
+                    "blanks_deleted": 170,
+                    "comments_added": 339,
+                    "comments_deleted": 269,
+                    "lines_added": 421,
+                    "lines_deleted": 456,
+                    "spacing_changes": 379,
+                    "syntax_changes": 274
+                },
                 "merged_by": 6,
-                "merged_date": "2021-03-09T05:03:02.746Z",
+                "merged_date": "2021-03-11T19:26:55.527Z",
                 "related_issue_iid": null,
                 "state": "merged",
-                "title": "Resolve \"Another issue with frontend\""
+                "title": "Resolve \"Refactor database orm\""
+            },
+            {
+                "author": {
+                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                    "id": 6,
+                    "name": "Joseph Test",
+                    "state": "active",
+                    "username": "makemaketest5",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                },
+                "code_diff_id": 13,
+                "comments": null,
+                "commit_list": [
+                    {
+                        "author_name": "Joseph Test",
+                        "code_diff_id": 14,
+                        "committed_date": "2021-03-11T19:15:24.000Z",
+                        "committer_name": "Joseph Test",
+                        "id": "81de4127034ca4cdb3af74fa2a45ea4c524f8d1a",
+                        "line_counts": {
+                            "blanks_added": 864,
+                            "blanks_deleted": 602,
+                            "comments_added": 608,
+                            "comments_deleted": 670,
+                            "lines_added": 533,
+                            "lines_deleted": 449,
+                            "spacing_changes": 218,
+                            "syntax_changes": 250
+                        },
+                        "short_id": "81de4127",
+                        "title": "Refactor issues object"
+                    }
+                ],
+                "created_date": "2021-03-11T19:16:41.993Z",
+                "description": "- Made updates for redefine models",
+                "id": 7,
+                "iid": 7,
+                "line_counts": {
+                    "blanks_added": 93,
+                    "blanks_deleted": 249,
+                    "comments_added": 314,
+                    "comments_deleted": 149,
+                    "lines_added": 372,
+                    "lines_deleted": 127,
+                    "spacing_changes": 181,
+                    "syntax_changes": 359
+                },
+                "merged_by": 6,
+                "merged_date": "2021-03-11T19:17:10.469Z",
+                "related_issue_iid": null,
+                "state": "merged",
+                "title": "Resolve \"Make fetch data calls\""
             }
         ],
         "TestUser H": [
             {
-                "author": 5,
+                "author": {
+                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                    "id": 6,
+                    "name": "Joseph Test",
+                    "state": "active",
+                    "username": "makemaketest5",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                },
+                "code_diff_id": 19,
                 "comments": null,
                 "commit_list": [
                     {
                         "author_name": "TestUser H",
-                        "committed_date": "2021-03-09T04:30:47.000Z",
+                        "code_diff_id": 23,
+                        "committed_date": "2021-03-11T04:00:52.000Z",
                         "committer_name": "TestUser H",
-                        "id": "16e45c9e7ed5a71bb0ced8129f91abff0ef2672d",
-                        "short_id": "16e45c9e",
-                        "title": "Update server/model/commit.py, server/random.py files"
+                        "id": "41f8eb336843f6a55e97721c50aeec4f80b2f1b9",
+                        "line_counts": {
+                            "blanks_added": 92,
+                            "blanks_deleted": 286,
+                            "comments_added": 183,
+                            "comments_deleted": 50,
+                            "lines_added": 337,
+                            "lines_deleted": 235,
+                            "spacing_changes": 397,
+                            "syntax_changes": 421
+                        },
+                        "short_id": "41f8eb33",
+                        "title": "Update app.py"
                     }
                 ],
-                "created_date": "2021-03-09T04:32:16.109Z",
-                "description": "Closes #3",
-                "id": 2,
-                "iid": 2,
-                "merged_by": 5,
-                "merged_date": "2021-03-09T04:41:57.594Z",
-                "related_issue_iid": 3,
-                "state": "merged",
-                "title": "Update server/model/commit.py, server/random.py files"
+                "created_date": "2021-03-11T04:01:02.426Z",
+                "description": "Closes #9",
+                "id": 6,
+                "iid": 6,
+                "line_counts": {
+                    "blanks_added": 453,
+                    "blanks_deleted": 194,
+                    "comments_added": 140,
+                    "comments_deleted": 276,
+                    "lines_added": 354,
+                    "lines_deleted": 398,
+                    "spacing_changes": 440,
+                    "syntax_changes": 395
+                },
+                "merged_by": null,
+                "merged_date": null,
+                "related_issue_iid": 9,
+                "state": "opened",
+                "title": "Update app.py"
             }
-        ]
     },
     "response": true
 }
@@ -253,4 +361,148 @@ GET /projects/<int:projectID>/merge_request/all
 {
     "Cause": "Error, invalid projectID.",
     "response": false
+}
+
+GET /projects/<int:projectID>/merge_request/user/all
+
+{
+    "merge_request_list": [
+ {
+            "author": {
+                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                "id": 6,
+                "name": "Joseph Test",
+                "state": "active",
+                "username": "makemaketest5",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+            },
+            "code_diff_id": 392,
+            "comments": null,
+            "commit_list": [
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 396,
+                    "committed_date": "2021-03-11T19:30:23.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "64bf8dd279947d857616317a55f0f45a78a27d0e",
+                    "line_counts": {
+                        "blanks_added": 122,
+                        "blanks_deleted": 474,
+                        "comments_added": 89,
+                        "comments_deleted": 365,
+                        "lines_added": 86,
+                        "lines_deleted": 497,
+                        "spacing_changes": 331,
+                        "syntax_changes": 286
+                    },
+                    "short_id": "64bf8dd2",
+                    "title": "Initial commit to create stubs and getters and setters"
+                }
+            ],
+            "created_date": "2021-03-11T19:36:08.651Z",
+            "description": "Closes #11",
+            "id": 9,
+            "iid": 9,
+            "line_counts": {
+                "blanks_added": 506,
+                "blanks_deleted": 349,
+                "comments_added": 614,
+                "comments_deleted": 746,
+                "lines_added": 431,
+                "lines_deleted": 625,
+                "spacing_changes": 379,
+                "syntax_changes": 491
+            },
+            "merged_by": 6,
+            "merged_date": "2021-03-11T19:36:19.943Z",
+            "related_issue_iid": 11,
+            "state": "merged",
+            "title": "Resolve \"Implemented paxo\""
+        },
+        {
+            "author": {
+                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                "id": 6,
+                "name": "Joseph Test",
+                "state": "active",
+                "username": "makemaketest5",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+            },
+            "code_diff_id": 397,
+            "comments": null,
+            "commit_list": [
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 404,
+                    "committed_date": "2021-03-11T19:21:13.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
+                    "line_counts": {
+                        "blanks_added": 506,
+                        "blanks_deleted": 349,
+                        "comments_added": 614,
+                        "comments_deleted": 746,
+                        "lines_added": 431,
+                        "lines_deleted": 625,
+                        "spacing_changes": 379,
+                        "syntax_changes": 491
+                    },
+                    "short_id": "2e94747c",
+                    "title": "Add query notify class and logic"
+                }
+            ],
+            "created_date": "2021-03-11T19:26:26.371Z",
+            "description": "New features added. This is important branch",
+            "id": 8,
+            "iid": 8,
+            "line_counts": {
+                "blanks_added": 506,
+                "blanks_deleted": 349,
+                "comments_added": 614,
+                "comments_deleted": 746,
+                "lines_added": 431,
+                "lines_deleted": 625,
+                "spacing_changes": 379,
+                "syntax_changes": 491
+            },
+            "merged_by": 6,
+            "merged_date": "2021-03-11T19:26:55.527Z",
+            "related_issue_iid": null,
+            "state": "merged",
+            "title": "Resolve \"Refactor database orm\""
+        },
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/code_diff/<int:codeDiffID>
+{
+    "code_diff_list": [
+        {
+            "a_mode": "0",
+            "b_mode": "100644",
+            "deleted_file": false,
+            "diff": "@@ -0,0 +1,100 @@\n+import copy\n+\n+class Analyzer:\n+    def __init__(self, acceptor_ids, factor=0.05):\n+        self.weight_changed = False\n+        self.acceptor_ids = acceptor_ids\n+        self.factor=factor\n+        self.num_acceptors = len(acceptor_ids)\n+        self.nominal = 1 / self.num_acceptors\n+        #self.ceiling = (int(self.num_acceptors/3)+1) * self.nominal\n+        self.ceiling = 1/2\n+\n+        self.weights = {}\n+        self.msgs_sent = {}\n+        self.msgs_recvd = {}\n+        self.msg_ratios = {}\n+        self.thresholds = {}\n+        for pid in acceptor_ids:\n+            self.weights[pid] = self.nominal\n+            self.msgs_sent[pid] = 0\n+            self.msgs_recvd[pid] = 0\n+            self.msg_ratios[pid] = 0\n+            self.thresholds[pid] = round(1-self.factor,2)\n+\n+        # make copy of state to compare before/after run\n+        self._pre = copy.copy(self)\n+\n+    def add_send(self, pid):\n+        self.msgs_sent[pid] += 1\n+\n+    def add_recvd(self, pid):\n+        self.msgs_recvd[pid] += 1\n+        try:\n+            self.msg_ratios[pid] = round(self.msgs_recvd[pid]/self.msgs_sent[pid],2)\n+        except ZeroDivisionError:\n+            pass\n+        #self.check_threshold(pid)\n+\n+    def check(self):\n+        for pid in self.acceptor_ids:\n+            self.check_threshold(pid)\n+\n+    def check_threshold(self, pid):\n+        if self.msg_ratios[pid] <= self.thresholds[pid]:\n+            self.thresholds[pid] = round(self.thresholds[pid]-self.factor,2)\n+            self.lower_weight(pid)\n+\n+    def lower_weight(self, pid):\n+        # lower the pid's weight\n+        tmp = round(self.weights[pid]-self.factor,2)\n+        if tmp > 0.0:\n+            self.weights[pid] = tmp\n+        else:\n+            self.weights[pid] = 0.0\n+        self.raise_weight()\n+        self.weight_changed = True\n+\n+    def raise_weight(self):\n+        # increase another pid's weight\n+        if self.nominal != self.ceiling:\n+            adjusted = False\n+            while not adjusted:\n+                for i in range(self.num_acceptors):\n+                    pid = self.acceptor_ids[i]\n+                    diff = self.weights[pid] - self.nominal\n+                    if diff == 0.0:\n+                        self.weights[pid] = round(self.weights[pid]+self.factor,2)\n+                        adjusted = True\n+                        break\n+                if i is (self.num_acceptors-1):\n+                    self.nominal = round(self.nominal+self.factor,2)\n+\n+    def log(self):\n+        print(\"Acceptor weights: {}\".format(self.weights))\n+        print(\"Acceptor ratios: {}\".format(self.msg_ratios))\n+        print(\"Acceptor thresholds: {}\".format(self.thresholds))\n+\n+\n+if __name__ == '__main__':\n+    import random\n+\n+    def test(acceptors, fail_rates, num_msgs):\n+        print(\"testing pids {}: \".format(acceptors))\n+        a=Analyzer(acceptors)\n+        print(\"\\nBefore rounds...\")\n+        a.log()\n+        for n in range(num_msgs):\n+            for pid in acceptors:\n+                a.add_send(pid)\n+                if fail_rates[pid] > random.random():\n+                    pass\n+                else:\n+                    a.add_recvd(pid)\n+        print(\"\\nAfter rounds...\")\n+        a.log()\n+        print('\\n')\n+\n+    test([0,1,2,3],[0,0,0.05,0],100)\n+    test([0,1,2,3,4],[0,0,0.05,0,0],100)\n+    test([0,1,2,3,4,5,6,7,8,9],[0,0,0.05,0,0,0,0,0,0.1,0],1000)\n\\ No newline at end of file\n",
+            "new_file": true,
+            "new_path": "server/model/analyzer.py",
+            "old_path": "server/model/analyzer.py",
+            "renamed_file": false
+        },
+        {
+            "a_mode": "0",
+            "b_mode": "100644",
+            "deleted_file": false,
+            "diff": "@@ -0,0 +1,152 @@\n+from collections import defaultdict\n+\n+from paxos.messages import *\n+\n+\n+class BasicPaxosProtocol:\n+\n+    def __init__(self, agent):\n+        self.agent = agent\n+\n+    def have_acceptor_majority(self, acceptors):\n+        \"\"\"\n+        Return True or False, depending on whether or not the passed collection\n+        of acceptors make up a majority.\n+        \"\"\"\n+        config = self.agent.config\n+        majority_weight = config.total_weight / float(2)\n+        current_weight = sum([config.weights[i] for i in acceptors])\n+        return current_weight > majority_weight\n+\n+    def tally_outbound_msgs(self):\n+        if self.agent.analyzer:\n+            for pid in self.agent.config.acceptor_ids:\n+                self.agent.analyzer.add_send(pid)\n+\n+    def tally_inbound_msgs(self, pid):\n+        if self.agent.analyzer:\n+            self.agent.analyzer.add_recvd(pid)\n+\n+    def adjust_weights(self):\n+        if self.agent.analyzer:\n+            self.agent.analyzer.check()\n+            if self.agent.analyzer.weight_changed:\n+                weights = self.agent.analyzer.weights\n+                source = self.agent.pid\n+                msg = AdjustWeightsMsg(source, weights)\n+                self.agent.send_message(msg, self.agent.config.learner_ids)\n+                print(\"--RATIOS--{}\".format(self.agent.analyzer.msg_ratios))\n+                print(\"--WEIGHTS--{}\".format(weights))\n+                self.agent.analyzer.weight_changed = False\n+\n+class BasicPaxosProposerProtocol(BasicPaxosProtocol):\n+\n+    def __init__(self, agent, proposal):\n+        super(BasicPaxosProposerProtocol, self).__init__(agent)\n+        # Request from a client.\n+        self.request = None\n+        # The current proposal for the instance started by this proposer.\n+        self.proposal = proposal\n+\n+        self.prepare_responders = set()\n+        self.highest_proposal_from_promises = Proposal(-1, None)\n+        self.accept_responders = set()\n+\n+        # States.\n+        self.state = None\n+        self.PREPARE_SENT = 0\n+        self.ACCEPT_SENT = 1\n+\n+    def handle_client_request(self, proposal):\n+        next_msg = PrepareMsg(proposal.pid, proposal)\n+        self.agent.send_message(next_msg, self.agent.config.acceptor_ids)\n+        # if dynamic weights, tally messages\n+        self.tally_outbound_msgs()\n+        self.state = self.PREPARE_SENT\n+\n+    def handle_prepare_response(self, msg):\n+        \"\"\"\n+        Handle a response to a proposal.\n+        See if we've got a response from a majority of acceptors.  If so, send\n+        accept messages to acceptors.\n+        \"\"\"\n+        self.prepare_responders.add(msg.source)\n+        self.tally_inbound_msgs(msg.source)\n+        if msg.highest_proposal.number > self.highest_proposal_from_promises.number:\n+            self.highest_proposal_from_promises = msg.highest_proposal\n+        # Check that we have sent prepare but not yet sent accept.\n+        if self.state == self.PREPARE_SENT:\n+            if self.have_acceptor_majority(self.prepare_responders):\n+                # If we have received any prepare responses with a higher\n+                # proposal number, we must use the value in that proposal.\n+                # If that value is None, then we get to choose (i.e. we'll use\n+                # the client's requested value.\n+                # Also set a flag here to note whether or not we used the\n+                # client's requested value (for retrying later).\n+                if self.highest_proposal_from_promises.value is not None:\n+                    self.proposal.value = self.highest_proposal_from_promises.value\n+                    self.client_request_handled = False\n+                else:\n+                    self.proposal.value = self.request\n+                    self.client_request_handled = True\n+                next_msg = AcceptMsg(self.agent.pid, self.proposal)\n+                # Can send to all acceptors or just the ones that responded.\n+                self.agent.send_message(next_msg, self.agent.config.acceptor_ids)\n+                #self.agent.send_message(next_msg, self.prepare_responders)\n+                self.tally_outbound_msgs()\n+                self.state = self.ACCEPT_SENT\n+\n+    def handle_accept_response(self, msg):\n+        self.accept_responders.add(msg.source)\n+        self.tally_inbound_msgs(msg.source)\n+        if self.have_acceptor_majority(self.accept_responders):\n+            self.adjust_weights()\n+\n+            class BasicPaxosAcceptorProtocol(BasicPaxosProtocol):\n+\n+    def __init__(self, agent):\n+        super(BasicPaxosAcceptorProtocol, self).__init__(agent)\n+        self.highest_proposal_promised = Proposal(-1, None)\n+        self.highest_proposal_accepted = Proposal(-1, None)\n+\n+    def handle_prepare(self, msg):\n+        if msg.proposal.number > self.highest_proposal_promised.number:\n+            self.highest_proposal_promised = msg.proposal\n+            next_msg = PrepareResponseMsg(self.agent.pid, msg.proposal,\n+                                          self.highest_proposal_accepted)\n+            self.agent.send_message(next_msg, [msg.source])\n+        # Optimization: send proposer a reject message because another proposer\n+        # has already initiated a proposal with a higher number.\n+        #else:\n+        #    msg = RejectMsg()\n+\n+    def handle_accept(self, msg):\n+        # Accept proposal unless we have already promised a higher proposal number.\n+        if msg.proposal.number >= self.highest_proposal_promised.number:\n+            # Set this accepted proposal number as the highest accepted.\n+            self.highest_proposal_accepted = msg.proposal\n+            next_msg = AcceptResponseMsg(self.agent.pid, msg.proposal)\n+            # Send \"accepted\" message to sender of the accept message\n+            # (the proposer), and to all learners.\n+            self.agent.send_message(next_msg,\n+                              [msg.source] + list(self.agent.config.learner_ids))\n+\n+\n+class BasicPaxosLearnerProtocol(BasicPaxosProtocol):\n+\n+    def __init__(self, agent):\n+        super(BasicPaxosLearnerProtocol, self).__init__(agent)\n+        # Set of acceptors that have sent an accept response.\n+        self.accept_responders = defaultdict(set)\n+\n+        self.state = None\n+        self.RESULT_SENT = 1\n+\n+    def handle_accept_response(self, msg):\n+        self.accept_responders[msg.proposal.value].add(msg.source)\n+        # Don't do anything if we've already logged the result.\n+        if self.state == self.RESULT_SENT:\n+            return\n+        if self.have_acceptor_majority(self.accept_responders[msg.proposal.value]):\n+            self.agent.log_result(msg)\n+            self.state = self.RESULT_SENT\n\\ No newline at end of file\n",
+            "new_file": true,
+            "new_path": "server/model/protocol.py",
+            "old_path": "server/model/protocol.py",
+            "renamed_file": false
+        }
+    ],
+    "response": true
 }

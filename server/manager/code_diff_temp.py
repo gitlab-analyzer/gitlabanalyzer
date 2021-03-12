@@ -1,92 +1,27 @@
 import re
+from random import random, randint
 from typing import Union, Optional, List
 from model.code_diff import *
 import gitlab
 
 
-class codeDiffManager:
+class CodeDiffAnalyzer:
     def __init__(self) -> None:
         self.__codeDiffList: List[CodeDiff] = []
+        self.__listSize: int = 0
 
-    def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
+    # TODO: a way to fill the code diff list
 
-        # TODO:
-        # Case where the commit diff is a block of comment
-        # Case where there is some insertion into the middle of a line of code
-        # without any deletion (current code will mark it as one addition and one deletion)
-        # This need to be just one addition
-
-        newLine = 0
-        deleteLine = 0
-        newCommentLine = 0
-        deleteCommentLine = 0
-        newBlank = 0
-        deleteBlank = 0
-        syntax = 0
-        spacing = 0
-
-        oldLine = ""
-        python = False
-
-        self.check_for_code_type(codeDiffObject)
-
-        diffCode = CodeDiff(codeDiffObject)
-        for line in diffCode.diff.splitlines():
-            if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                if self.check_middle_syntax_addition(line, oldLine, syntax, python):
-                    return
-
-            if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                tempLine = '+' + line[1:].replace(oldLine[1:], '')
-                self.modify_to_a_new_line(
-                    newLine,
-                    deleteLine,
-                    newCommentLine,
-                    deleteCommentLine,
-                    newBlank,
-                    deleteBlank,
-                    spacing,
-                    syntax,
-                    tempLine,
-                    python,
-                )
-            if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                tempLine = '-' + oldLine[1:].replace(line[1:], '')
-                self.modify_to_a_new_line(
-                    newLine,
-                    deleteLine,
-                    newCommentLine,
-                    deleteCommentLine,
-                    newBlank,
-                    deleteBlank,
-                    spacing,
-                    syntax,
-                    tempLine,
-                    python,
-                )
-            else:
-                self.modify_to_a_new_line(
-                    newLine,
-                    deleteLine,
-                    newCommentLine,
-                    deleteCommentLine,
-                    newBlank,
-                    deleteBlank,
-                    spacing,
-                    syntax,
-                    line,
-                    python,
-                )
-
+    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> dict:
         info = {
-            "lines_added": newLine,
-            "lines_deleted": deleteLine,
-            "comments_added": newCommentLine,
-            "comments_deleted": deleteCommentLine,
-            "blanks_added": newBlank,
-            "blanks_deleted": deleteBlank,
-            "spacing_changes": spacing,
-            "syntax_changes": syntax,
+            "lines_added": randint(50, 500),
+            "lines_deleted": randint(50, 500),
+            "comments_added": randint(50, 500),
+            "comments_deleted": randint(50, 500),
+            "blanks_added": randint(50, 500),
+            "blanks_deleted": randint(50, 500),
+            "spacing_changes": randint(50, 500),
+            "syntax_changes": randint(50, 500),
         }
         return info
 
@@ -165,8 +100,8 @@ class codeDiffManager:
 
         return False
 
-    def check_for_code_type(self, codeDiffObject: gitlab) -> None:
-        diffCode = CodeDiff(codeDiffObject)
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> None:
+        diffCode = codeDiffObject
         fileName = diffCode.new_path
         found = re.search('\.(.+?)$', fileName).group(1)
         if found == 'py':
