@@ -4,14 +4,16 @@ from typing import List
 
 
 # interface for our whole GitLab Analyzer Application
-# has gitlab_project_interface objects, use gitlab_interface
 class GitLabAnalyzer:
     def __init__(self):
         self.__user_list: List[str] = []	# list of users' names (including members + non members) we want to analyze
         self.__project_list: List[GitLabProject] = []   # list of gitlab_project_interface (list of repositories)
         self.__current_user_token = None    # hashed
 
-        # not sure if needed
+        # ex. [[xtran, springbro294], [jaddiet], ...]   # total length should be the length of members list
+        self.__matched_user_list: Tuple[list] = []
+
+        # temporary variables
         self.__analyzing_repository = None  # the repository that we are currently analyzing
         self.__analyzing_user = None    # the user that we are currently analyzing
 
@@ -37,6 +39,10 @@ class GitLabAnalyzer:
         self.__current_user_token = hashed_str
 
     def match_user_with_member(self, user, member):    # this parameter is temporary
+        # This would update the matched_user_list
+        pass
+
+    def analyze_all_users_contribution(self):
         pass
 
     # return list of users that are not members, comparing by name
@@ -68,6 +74,7 @@ class GitLabAnalyzer:
     
 
 
+# TESTING 
 gl = GitLab(token="c-Z7RjtQ1qtt2vWVYbjx", url="https://csil-git1.cs.surrey.sfu.ca/")
 gl.authenticate()
 
