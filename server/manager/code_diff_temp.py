@@ -39,51 +39,52 @@ class CodeDiffAnalyzer:
 
         diffCode = CodeDiff(codeDiffObject)
         for line in diffCode.diff.splitlines():
-            if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                if self.check_middle_syntax_addition(line, oldLine, syntax, python):
-                    return
+            if(line[0] == '+' or line[0] == '-'):
+                if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
+                    if self.check_middle_syntax_addition(line, oldLine, syntax, python):
+                        return
 
-            if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                tempLine = '+' + line[1:].replace(oldLine[1:], '')
-                self.modify_to_a_new_line(
-                    newLine,
-                    deleteLine,
-                    newCommentLine,
-                    deleteCommentLine,
-                    newBlank,
-                    deleteBlank,
-                    spacing,
-                    syntax,
-                    tempLine,
-                    python,
-                )
-            if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                tempLine = '-' + oldLine[1:].replace(line[1:], '')
-                self.modify_to_a_new_line(
-                    newLine,
-                    deleteLine,
-                    newCommentLine,
-                    deleteCommentLine,
-                    newBlank,
-                    deleteBlank,
-                    spacing,
-                    syntax,
-                    tempLine,
-                    python,
-                )
-            else:
-                self.modify_to_a_new_line(
-                    newLine,
-                    deleteLine,
-                    newCommentLine,
-                    deleteCommentLine,
-                    newBlank,
-                    deleteBlank,
-                    spacing,
-                    syntax,
-                    line,
-                    python,
-                )
+                if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
+                    tempLine = '+' + line[1:].replace(oldLine[1:], '')
+                    self.modify_to_a_new_line(
+                        newLine,
+                        deleteLine,
+                        newCommentLine,
+                        deleteCommentLine,
+                        newBlank,
+                        deleteBlank,
+                        spacing,
+                        syntax,
+                        tempLine,
+                        python,
+                    )
+                if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
+                    tempLine = '-' + oldLine[1:].replace(line[1:], '')
+                    self.modify_to_a_new_line(
+                        newLine,
+                        deleteLine,
+                        newCommentLine,
+                        deleteCommentLine,
+                        newBlank,
+                        deleteBlank,
+                        spacing,
+                        syntax,
+                        tempLine,
+                        python,
+                    )
+                else:
+                    self.modify_to_a_new_line(
+                        newLine,
+                        deleteLine,
+                        newCommentLine,
+                        deleteCommentLine,
+                        newBlank,
+                        deleteBlank,
+                        spacing,
+                        syntax,
+                        line,
+                        python,
+                    )
 
         info = {
             "lines_added": newLine,
