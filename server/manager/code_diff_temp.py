@@ -186,10 +186,10 @@ class CodeDiffAnalyzer:
 
         if len(line) > len(oldLine):
             length = len(oldLine)
-            lastChar = line[len(line)]
+            lastChar = line[len(line) - 1]
         else:
             length = len(line)
-            lastChar = oldLine[len(oldLine)]
+            lastChar = oldLine[len(oldLine) - 1]
 
         for i in range(1, length):
             if oldLine[i] != line[i]:
