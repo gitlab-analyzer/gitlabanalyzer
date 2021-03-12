@@ -157,3 +157,10 @@ class GitLab:
     def get_comments_of_commit(self, commit_sha: str) -> list:
         commit = self.__project.commits.get(commit_sha)
         return commit.comments.list()
+
+    def get_merge_request_code_diff_latest_version(self, mergeRequestID: int) -> list:
+        mergeRequest = self.__project.mergerequests.get(mergeRequestID)
+        return mergeRequest.diffs.get(mergeRequest.diffs.list()[0].id).diffs
+
+    def get_commits_code_diff(self, commitShortID: str) -> list:
+        return self.__project.commits.get(commitShortID).diff()
