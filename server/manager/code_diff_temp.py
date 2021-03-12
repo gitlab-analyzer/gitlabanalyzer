@@ -15,7 +15,7 @@ class CodeDiffAnalyzer:
     def get_code_diff_by_id(self, codeDiffId: int) -> list:
         return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
 
-    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> dict:
+    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> None:
 
         # TODO:
         # Case where the commit diff is a block of comment
@@ -87,17 +87,14 @@ class CodeDiffAnalyzer:
                     )
                 oldLine = line
 
-        info = {
-            "lines_added": newLine,
-            "lines_deleted": deleteLine,
-            "comments_added": newCommentLine,
-            "comments_deleted": deleteCommentLine,
-            "blanks_added": newBlank,
-            "blanks_deleted": deleteBlank,
-            "spacing_changes": spacing,
-            "syntax_changes": syntax,
-        }
-        return info
+        print(newLine)
+        print(deleteLine)
+        print(newCommentLine)
+        print(deleteCommentLine)
+        print(newBlank)
+        print(deleteBlank)
+        print(spacing)
+        print(syntax)
 
     def modify_to_a_new_line(
         self,
