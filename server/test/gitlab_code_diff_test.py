@@ -1,6 +1,4 @@
 from interface.gitlab_interface import GitLab
-import gitlab
-
 from interface.gitlab_project_interface import GitLabProject
 
 """
