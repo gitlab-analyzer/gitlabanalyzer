@@ -152,7 +152,9 @@ class GitLabProject:
         for commit in mergeRequest.related_commits_list:
             commitScoreData = self.get_commit_score_data(commit)
 
-            for key1, key2 in zip(scoreData.keys(), commitScoreData.keys()):
+            for key1, key2 in zip(
+                scoreData["mergeRequestScoreData"].keys(), commitScoreData.keys()
+            ):
                 assert key1 == key2
                 scoreData["relatedCommitsScoreData"][key1] += commitScoreData[key2]
 

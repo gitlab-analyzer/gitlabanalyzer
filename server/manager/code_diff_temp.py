@@ -22,6 +22,7 @@ class CodeDiffAnalyzer:
         # Case where there is some insertion into the middle of a line of code
         # without any deletion (current code will mark it as one addition and one deletion)
         # This need to be just one addition
+        # Assert no new line thing that gitlab have
 
         newLine = 0
         deleteLine = 0
@@ -177,9 +178,9 @@ class CodeDiffAnalyzer:
     def check_for_code_type(self, codeDiffObject: CodeDiff) -> None:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
-        if(fileName is not False):
-            found = re.search('\.(.+?)$', fileName).group(1)
-            if found == 'py':
+        found = re.search('\.(.+?)$', fileName)
+        if found is not None:
+            if found.group(1) == 'py':
                 python = True
 
     def check_middle_syntax_addition(self, line, oldLine, syntax, python) -> bool:

@@ -1,3 +1,6 @@
+import os
+import sys
+sys.path.append(os.path.abspath("./server"))
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitLabProject
 
