@@ -121,7 +121,9 @@ class GitLabProject:
 
         codeDiff: list = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
         for diff in codeDiff:
-            codeDiffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(CodeDiff(diff))
+            codeDiffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
+                CodeDiff(diff)
+            )
 
             for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
                 assert key1 == key2
@@ -141,18 +143,22 @@ class GitLabProject:
                 "blanks_deleted": 0,
                 "spacing_changes": 0,
                 "syntax_changes": 0,
-            }
+            },
         }
 
         codeDiff: list = self.__codeDiffManager.get_code_diff(mergeRequest.code_diff_id)
         for diff in codeDiff:
-            mergeRequestScoreData = self.__codeDiffAnalyzer.get_code_diff_statistic(CodeDiff(diff))
+            mergeRequestScoreData = self.__codeDiffAnalyzer.get_code_diff_statistic(
+                CodeDiff(diff)
+            )
             scoreData["mergeRequestScoreData"] = mergeRequestScoreData
 
         for commit in mergeRequest.related_commits_list:
             commitScoreData = self.get_commit_score_data(commit)
 
-            for key1, key2 in zip(scoreData["mergeRequestScoreData"].keys(), commitScoreData.keys()):
+            for key1, key2 in zip(
+                scoreData["mergeRequestScoreData"].keys(), commitScoreData.keys()
+            ):
                 assert key1 == key2
                 scoreData["relatedCommitsScoreData"][key1] += commitScoreData[key2]
 
@@ -169,7 +175,9 @@ class GitLabProject:
     def __analyze_merge_requests_code_diff(self) -> None:
         mr: MergeRequest
         for mr in self.__mergeRequestManager.merge_request_list:
-            mr.line_counts = self.get_merge_request_score_data(mr)["mergeRequestScoreData"]
+            mr.line_counts = self.get_merge_request_score_data(mr)[
+                "mergeRequestScoreData"
+            ]
             for commit in mr.related_commits_list:
                 commit.line_counts = self.get_commit_score_data(commit)
 
