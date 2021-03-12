@@ -87,14 +87,17 @@ class CodeDiffAnalyzer:
                     )
                 oldLine = line
 
-        print(newLine)
-        print(deleteLine)
-        print(newCommentLine)
-        print(deleteCommentLine)
-        print(newBlank)
-        print(deleteBlank)
-        print(spacing)
-        print(syntax)
+        info = {
+            "lines_added": newLine,
+            "lines_deleted": deleteLine,
+            "comments_added": newCommentLine,
+            "comments_deleted": deleteCommentLine,
+            "blanks_added": newBlank,
+            "blanks_deleted": deleteBlank,
+            "spacing_changes": spacing,
+            "syntax_changes": syntax,
+        }
+        return info
 
     def modify_to_a_new_line(
         self,
