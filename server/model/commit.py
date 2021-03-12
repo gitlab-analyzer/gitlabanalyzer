@@ -15,6 +15,7 @@ class Commit(DataObject):
         self.__committed_date: str = (
             commit.committed_date
         )  # datetime in ISO 8601 format
+        self.__line_counts: dict = {}
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
@@ -48,7 +49,15 @@ class Commit(DataObject):
     def committed_date(self) -> str:
         return self.__committed_date
 
+    @property
+    def line_counts(self) -> dict:
+        return self.__line_counts
+
     # Setter
     @code_diff_id.setter
     def code_diff_id(self, codeDiffID: int) -> None:
         self.__code_diff_id = codeDiffID
+
+    @line_counts.setter
+    def line_counts(self, lineCounts) -> None:
+        self.__line_counts = lineCounts

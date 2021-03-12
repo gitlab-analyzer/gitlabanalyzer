@@ -15,7 +15,7 @@ class CodeDiffAnalyzer:
     def get_code_diff_by_id(self, codeDiffId: int) -> list: 
         return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
 
-    def get_code_diff_statistic(self, codeDiffObject: gitlab) -> dict:
+    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> dict:
 
         # TODO:
         # Case where the commit diff is a block of comment
@@ -37,7 +37,7 @@ class CodeDiffAnalyzer:
 
         self.check_for_code_type(codeDiffObject)
 
-        diffCode = CodeDiff(codeDiffObject)
+        diffCode = codeDiffObject
         for line in diffCode.diff.splitlines():
             if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                 if self.check_middle_syntax_addition(line, oldLine, syntax, python):
@@ -172,8 +172,8 @@ class CodeDiffAnalyzer:
 
         return False
 
-    def check_for_code_type(self, codeDiffObject: gitlab) -> None:
-        diffCode = CodeDiff(codeDiffObject)
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> None:
+        diffCode = codeDiffObject
         fileName = diffCode.new_path
         found = re.search('\.(.+?)$', fileName).group(1)
         if found == 'py':
