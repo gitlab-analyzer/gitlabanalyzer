@@ -10,6 +10,7 @@ class Commit(DataObject):
         self.__short_id: int = commit.short_id
         self.__title: str = commit.title
         self.__author_name: str = commit.author_name
+        self.__web_url: str = commit.web_url
         self.__committer_name: str = commit.committer_name
         self.__code_diff_id: int = codeDiffID
         self.__committed_date: str = (
@@ -24,6 +25,10 @@ class Commit(DataObject):
     @property
     def code_diff_id(self) -> int:
         return self.__code_diff_id
+
+    @property
+    def web_url(self) -> str:
+        return self.__web_url
 
     @property
     def id(self) -> Union[int, str]:

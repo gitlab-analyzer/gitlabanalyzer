@@ -31,6 +31,7 @@ def auth():
             jsonify({'username': myGitLab.get_username(), 'response': True})
         )
         # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
+        #       add unix time to the end of the token. Then hash it.
         response.set_cookie(
             key="id", value=hashlib.sha256(str.encode(myToken)).hexdigest()
         )

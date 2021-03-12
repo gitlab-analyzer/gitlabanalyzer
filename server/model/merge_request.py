@@ -14,6 +14,7 @@ class MergeRequest(DataObject):
         self.__iid: int = mr.iid
         self.__author: int = mr.author
         self.__title: str = mr.title
+        self.__web_url: str = mr.web_url
         self.__description: str = mr.description
         self.__state: str = mr.state
         self.__created_date: str = mr.created_at
@@ -53,6 +54,10 @@ class MergeRequest(DataObject):
     @property
     def id(self) -> int:
         return self.__id
+
+    @property
+    def web_url(self) -> str:
+        return self.__web_url
 
     @property
     def iid(self) -> int:
