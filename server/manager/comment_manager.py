@@ -19,7 +19,7 @@ class CommentManager:
             self.__commentList.append(Comment(commentForCommit=comment, commitSha=sha))
 
     # Get list of Comments in certain (ex. Issue iid / Merge Request iid / Commit sha)
-    def get_comments_by_noteableId(self, noteableID) -> Optional[List[Comment]]:
+    def get_comments_by_noteableId(self, noteableID) -> List[Comment]:
         listNoteableID = []
         for comment in self.__commentList:
             if comment.noteable_id == noteableID:
@@ -27,14 +27,14 @@ class CommentManager:
         return listNoteableID
 
     # Get list of Comments written by certain user
-    def get_comments_by_user_name(self, member_name) -> Optional[List[Comment]]:
+    def get_comments_by_user_name(self, member_name) -> List[Comment]:
         list_by_user_name = []
         for comment in self.__commentList:
             if comment.author == member_name:
                 list_by_user_name.append(comment)
         return list_by_user_name
 
-    def get_comments_by_range(self, startDate, endDate) -> Optional[List[Comment]]:
+    def get_comments_by_range(self, startDate, endDate) -> List[Comment]:
         listTimeRange = []
 
         start = parser.parse(startDate)
@@ -48,7 +48,7 @@ class CommentManager:
     # noteableType could be either "MergeRequest" / "Issue" / "Commit"
     def get_comments_by_noteable_types(
         self, noteableType, providedList=None
-    ) -> Optional[List[Comment]]:
+    ) -> List[Comment]:
         listComments = []
         if (
             providedList is not None
