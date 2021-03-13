@@ -24,12 +24,33 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     }
   };
 
+  // Set project ID to the users chosen ID
+  // Currently it is hard coded to 2 since no other projects exist
+  const setProjectId = async () => {
+    const projectRes = await axios.post(
+      'http://localhost:5678/projects/set',
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        params: {
+          projectID: 2,
+        },
+      }
+    );
+    if (!projectRes.data['response']) {
+      console.log('Failed to set project ID!');
+      throw new Error('Fetch request failed.');
+    }
+  };
+
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
       'http://localhost:5678/projects/2/members'
     );
-    console.log(membersRes.data['members']);
 
     fetchErrorChecker(membersRes.data['response'], 'members');
     setMembersList([...membersRes.data['members']]);
@@ -38,7 +59,6 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
   // Function for fetching users list data
   const fetchUsers = async () => {
     const usersRes = await axios.get('http://localhost:5678/projects/2/users');
-    console.log(usersRes.data['users']);
 
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
@@ -49,7 +69,6 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     const commitsRes = await axios.get(
       'http://localhost:5678/projects/2/commit/user/all'
     );
-    console.log(commitsRes.data);
     fetchErrorChecker(commitsRes.data['response'], 'commits');
 
     const tempCommits = commitsRes.data['commit_list'].map((commit) => ({
@@ -70,11 +89,10 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
         })),
       ],
     }));
-    console.log(tempCommits);
     setCommitsList([...tempCommits]);
   };
 
-  // Function for fetching merge request list data
+  // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
       'http://localhost:5678/projects/2/merge_request/user/all'
@@ -87,8 +105,26 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       const mrList = mergeRequestRes.data['merge_request_users_list'];
       const tempMR = {};
       for (let user in mrList) {
-        tempMR.user = [{}];
+        tempMR[user] = [];
         for (let author of mrList[user]) {
+          tempMR[user].push({
+            author: author.author,
+            codeDiffId: author.code_diff_id,
+            comments: author.comments,
+            commitList: [
+              author.commit_list.map((commit) => ({
+                authorName: commit.author_name,
+                codeDiffId: commit.code_diff_id,
+                comittedDate: Date.parse(commit.committed_date),
+                committerName: commit.committer_name,
+                id: commit.id,
+                lineCounts: commit.line_counts,
+                shortId: commit.short_id,
+                title: commit.title,
+                webUrl: commit.web_url,
+              })),
+            ],
+          });
         }
       }
       console.log(tempMR);
@@ -96,12 +132,12 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     generateTempMR();
   };
 
+  // Function for fetching, parsing, and storing notes list data
   const fetchNotes = async () => {
     const notesRes = await axios.get(
       'http://localhost:5678/projects/2/comments/all'
     );
 
-    console.log(notesRes.data['notes']);
     fetchErrorChecker(notesRes.data['response'], 'notes');
 
     const tempNotes = notesRes.data['notes'].map((note) => ({
@@ -114,16 +150,14 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       noteableType: note.noteable_type,
       wordCount: note.word_count,
     }));
-    console.log(tempNotes);
     setNotesList([...tempNotes]);
   };
 
+  // Function for fetching, parsing, and storing comments list data
   const fetchComments = async () => {
     const commentsRes = await axios.get(
       'http://localhost:5678/projects/2/comments/user/all'
     );
-
-    console.log(commentsRes.data['notes']);
   };
 
   /**
@@ -136,30 +170,12 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       setAnalyzing(true);
 
       /**
-       * This part is important, it is needed for iteration 3, but this process calls
-       * an API in the backend that currently takes a long time.
+       * This setProjectIs() is important, it is needed for iteration 3, but this process calls
+       * an API in the backend that currently takes a long time (2+ minutes).
        * This call is disabled for the demo on Monday.
        */
 
-      // Set project ID to the users chosen ID
-      // Currently it is hard coded to 2 since no other projects exist
-      // const projectRes = await axios.post(
-      //   'http://localhost:5678/projects/set',
-      //   {},
-      //   {
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       'Access-Control-Allow-Origin': '*',
-      //     },
-      //     params: {
-      //       projectID: 2,
-      //     },
-      //   }
-      // );
-      // if (projectRes.data['response'] !== true) {
-      //   console.log('Failed to set project ID here');
-      //   throw new Error('Fetch request failed.');
-      // }
+      // await setProjectId();
 
       await fetchMembers();
       await fetchUsers();
