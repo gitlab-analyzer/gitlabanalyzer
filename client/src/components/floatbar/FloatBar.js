@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
@@ -9,6 +9,7 @@ import Settings from './Settings.json';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { useAuth } from '../../context/AuthContext';
 
 import './FloatBar.css';
 
@@ -28,6 +29,22 @@ const copySuccessful = () => {
 
 function FloatBar() {
   const [sortType, setSortType] = React.useState('');
+  const {
+    membersList,
+    usersList,
+    commitsList,
+    notesList,
+    mergeRequestList,
+    commentsList,
+  } = useAuth();
+  useEffect(() => {
+    console.log('membersList', membersList);
+    console.log('usersList', usersList);
+    console.log('commitsList', commitsList);
+    console.log('notesList', notesList);
+    console.log('mergeRequestList', mergeRequestList);
+    console.log('commentsList', commentsList);
+  }, []);
 
   return (
     <div className="floatbar-container">
