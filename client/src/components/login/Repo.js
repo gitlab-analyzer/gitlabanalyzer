@@ -110,7 +110,7 @@ const Repo = ({
     const mergeRequestRes = await axios.get(
       'http://localhost:5678/projects/2/merge_request/user/all'
     );
-    console.log(mergeRequestRes.data['merge_request_users_list']);
+    // console.log(mergeRequestRes.data['merge_request_users_list']);
 
     fetchErrorChecker(mergeRequestRes.data['response'], 'merge request');
 
@@ -171,7 +171,7 @@ const Repo = ({
           tempMR[user]['weightedScore'] = 0;
         }
       }
-      console.log(tempMR);
+      // console.log(tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -235,7 +235,7 @@ const Repo = ({
           tempComments[user]['weightedScore'] = 0;
         }
       }
-      console.log(tempComments);
+      // console.log(tempComments);
       return tempComments;
     };
     setCommentsList(generateTempComments());
