@@ -254,6 +254,20 @@ class GitLabProject:
     def get_code_diff(self, codeDiffID: int) -> [dict]:
         return self.__codeDiffManager.get_code_diff(codeDiffID)
 
+    def get_all_comments(self) -> [dict]:
+        commentList = []
+        for comment in self.__commentsManager.get_comment_list():
+            commentList.append(comment.to_dict())
+        return commentList
+
+    def get_comments_for_all_users(self) -> dict:
+        commentList = {}
+        for comment in self.__commentsManager.get_comment_list():
+            if commentList.get(comment.author, None) is None:
+                commentList[comment.author] = []
+            commentList[comment.author].append(comment.to_dict())
+        return commentList
+
     @property
     def member_manager(self) -> MemberManager:
         return self.__membersManager

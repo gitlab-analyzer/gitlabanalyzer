@@ -31,13 +31,30 @@ POST /projects/set?projectID=id
 
 GET /projects/<int:projectID>/members
 {
-    "response": true,
     "members": [
-        "root",
-        "jlguo",
-        "TestUserHenry",
-        "makemaketest5"
-    ]
+        {
+            "access_level": 40,
+            "id": 5,
+            "name": "TestUser H",
+            "state": "active",
+            "username": "TestUserHenry"
+        },
+        {
+            "access_level": 40,
+            "id": 6,
+            "name": "Joseph Test",
+            "state": "active",
+            "username": "makemaketest5"
+        },
+        {
+            "access_level": 40,
+            "id": 7,
+            "name": "tester 88",
+            "state": "active",
+            "username": "Tester88"
+        }
+    ],
+    "response": true
 }
 
 GET /projects/<int:projectID>/users
@@ -536,4 +553,87 @@ GET /projects/<int:projectID>/code_diff/<int:codeDiffID>
         }
     ],
     "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/comments/all
+{
+    "notes": [
+        {
+            "author": "TestUser H",
+            "body": "Comments in issue",
+            "created_date": "2021-03-09T04:33:55.928Z",
+            "id": 8,
+            "noteable_id": 3,
+            "noteable_iid": 3,
+            "noteable_type": "Issue",
+            "word_count": 3
+        },
+        {
+            "author": "Administrator",
+            "body": "test comment",
+            "created_date": "2021-02-17T00:14:48.244Z",
+            "id": 2,
+            "noteable_id": 1,
+            "noteable_iid": 1,
+            "noteable_type": "Issue",
+            "word_count": 2
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+
+GET /projects/<int:projectID>/comments/user/all
+{
+    "notes": {
+        "Joseph Test": [
+            {
+                "author": "Joseph Test",
+                "body": "Good work, this looks good to merge.",
+                "created_date": "2021-03-11T19:07:36.496Z",
+                "id": 34,
+                "noteable_id": 6,
+                "noteable_iid": 6,
+                "noteable_type": "MergeRequest",
+                "word_count": 7
+            },
+            {
+                "author": "Joseph Test",
+                "body": "Maybe we should merge this with the get all route.",
+                "created_date": "2021-03-11T19:07:01.545Z",
+                "id": 33,
+                "noteable_id": 6,
+                "noteable_iid": 6,
+                "noteable_type": "MergeRequest",
+                "word_count": 10
+            }
+        ],
+        "TestUser H": [
+            {
+                "author": "TestUser H",
+                "body": "Comments in issue",
+                "created_date": "2021-03-09T04:33:55.928Z",
+                "id": 8,
+                "noteable_id": 3,
+                "noteable_iid": 3,
+                "noteable_type": "Issue",
+                "word_count": 3
+            }
+        ]
+    },
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
 }

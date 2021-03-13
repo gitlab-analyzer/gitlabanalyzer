@@ -76,11 +76,11 @@ def get_project_members(projectID):
     global gitlabProjectInterface
 
     if projectID == gitlabProjectInterface.project_id:
-        members_name: list = []
+        memberInfoList: list = []
         memberList = gitlabProjectInterface.member_manager.get_member_list()
         for member in memberList:
-            members_name.append(member.username)
-        return jsonify({"members": members_name, "response": True})
+            memberInfoList.append(member.to_dict())
+        return jsonify({"members": memberInfoList, "response": True})
     else:
         return jsonify(projectIDError)
 
@@ -147,6 +147,26 @@ def get_code_diff(projectID, codeDiffID):
     if projectID == gitlabProjectInterface.project_id:
         codeDiff = gitlabProjectInterface.get_code_diff(codeDiffID)
         return jsonify({"response": True, "code_diff_list": codeDiff})
+    else:
+        return jsonify(projectIDError)
+
+
+@app.route('/projects/<int:projectID>/comments/all')
+def get_all_notes(projectID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        commentList = gitlabProjectInterface.get_all_comments()
+        return jsonify({"response": True, "notes": commentList})
+    else:
+        return jsonify(projectIDError)
+
+
+@app.route('/projects/<int:projectID>/comments/user/all')
+def get_notes_for_all_users(projectID):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        commentList = gitlabProjectInterface.get_comments_for_all_users()
+        return jsonify({"response": True, "notes": commentList})
     else:
         return jsonify(projectIDError)
 
