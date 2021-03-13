@@ -1,6 +1,7 @@
 from model.data_object import DataObject
 from typing import Union, Optional
 import gitlab
+import re
 
 """
 For comments from Issue / Merge Request:
@@ -28,7 +29,7 @@ class Comment(DataObject):
         commitSha: str = None,
     ) -> None:
         if commentForIssueMR is not None:  # comment of MergeRequest/Issue
-            self.__author: int = commentForIssueMR.author["id"]
+            self.__author: int = commentForIssueMR.author["name"]
             self.__body: str = commentForIssueMR.body
             self.__created_date: str = commentForIssueMR.created_at
             self.__noteable_id: Union[int, str] = commentForIssueMR.noteable_id
@@ -37,8 +38,9 @@ class Comment(DataObject):
             # Ex. Issue #1
             self.__noteable_iid: Optional[int] = commentForIssueMR.noteable_iid
             self.__id: Optional[int] = commentForIssueMR.id
+            self.__word_count = len(re.findall(r'\w+', self.__body))
         else:  # comment of Commit
-            self.__author: int = commentForCommit.author["id"]
+            self.__author: int = commentForCommit.author["name"]
             self.__body: str = commentForCommit.note
             self.__created_date: str = (
                 commentForCommit.created_at
@@ -47,6 +49,7 @@ class Comment(DataObject):
             self.__noteable_type: str = "Commit"
             self.__noteable_iid: Optional[int] = None
             self.__id: Optional[int] = None
+            self.__word_count = len(re.findall(r'\w+', self.__body))
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
@@ -80,3 +83,7 @@ class Comment(DataObject):
     @property
     def id(self) -> Optional[int]:
         return self.__id
+
+    @property
+    def word_count(self):
+        return self.__word_count
