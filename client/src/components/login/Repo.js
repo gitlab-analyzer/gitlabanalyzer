@@ -279,6 +279,8 @@ const Repo = ({
     setCheckAll(e.target.checked);
   };
 
+  // This component renders the batch processing button, select all (checkmarks)
+  // and also displays the progress bar
   const batchButton = () => {
     if (loading || analyzing) {
       return null;
