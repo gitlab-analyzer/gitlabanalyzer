@@ -10,6 +10,7 @@ const AuthProvider = (props) => {
   const [commitsList, setCommitsList] = useState([]);
   const [membersList, setMembersList] = useState([]);
   const [usersList, setUsersList] = useState([]);
+  const [notesList, setNotesList] = useState([]);
 
   const authContextValue = {
     user,
@@ -26,6 +27,8 @@ const AuthProvider = (props) => {
     setMembersList,
     usersList,
     setUsersList,
+    notesList,
+    setNotesList,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

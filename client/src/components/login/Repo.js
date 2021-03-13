@@ -5,7 +5,12 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
-  const { setMembersList, setUsersList, setCommitsList } = useAuth();
+  const {
+    setMembersList,
+    setUsersList,
+    setCommitsList,
+    setNotesList,
+  } = useAuth();
   const [redirect, setRedirect] = useState(false);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
@@ -91,6 +96,36 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     generateTempMR();
   };
 
+  const fetchNotes = async () => {
+    const notesRes = await axios.get(
+      'http://localhost:5678/projects/2/comments/all'
+    );
+
+    console.log(notesRes.data['notes']);
+    fetchErrorChecker(notesRes.data['response'], 'notes');
+
+    const tempNotes = notesRes.data['notes'].map((note) => ({
+      author: note.author,
+      body: note.body,
+      createdDate: Date.parse(note.created_date),
+      id: note.id,
+      noteableId: note.noteable_id,
+      noteableIid: note.noteable_iid,
+      noteableType: note.noteable_type,
+      wordCount: note.word_count,
+    }));
+    console.log(tempNotes);
+    setNotesList([...tempNotes]);
+  };
+
+  const fetchComments = async () => {
+    const commentsRes = await axios.get(
+      'http://localhost:5678/projects/2/comments/user/all'
+    );
+
+    console.log(commentsRes.data['notes']);
+  };
+
   /**
    * Function that handles setting project ID and fetching all necessary data
    * for analysis
@@ -130,6 +165,8 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
+      await fetchNotes();
+      await fetchComments();
 
       setAnalyzing(false);
       setRedirect(true);
