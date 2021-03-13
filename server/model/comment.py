@@ -1,6 +1,7 @@
 from model.data_object import DataObject
 from typing import Union, Optional
 import gitlab
+import re
 
 """
 For comments from Issue / Merge Request:
@@ -37,7 +38,7 @@ class Comment(DataObject):
             # Ex. Issue #1
             self.__noteable_iid: Optional[int] = commentForIssueMR.noteable_iid
             self.__id: Optional[int] = commentForIssueMR.id
-            self.__word_count = len(self.__body.split())
+            self.__word_count = len(re.findall(r'\w+', self.__body))
         else:  # comment of Commit
             self.__author: int = commentForCommit.author["name"]
             self.__body: str = commentForCommit.note
@@ -48,7 +49,7 @@ class Comment(DataObject):
             self.__noteable_type: str = "Commit"
             self.__noteable_iid: Optional[int] = None
             self.__id: Optional[int] = None
-            self.__word_count = len(self.__body.split())
+            self.__word_count = len(re.findall(r'\w+', self.__body))
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
