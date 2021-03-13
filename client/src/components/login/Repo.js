@@ -124,6 +124,17 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
                 webUrl: commit.web_url,
               })),
             ],
+            createdDate: Date.parse(author.created_date),
+            description: author.description,
+            id: author.id,
+            iid: author.iid,
+            lineCounts: author.line_counts,
+            mergedBy: author.merged_by,
+            mergedDate: Date.parse(author.merged_date),
+            relatedIssueIid: author.related_issue_iid,
+            state: author.state,
+            title: author.title,
+            webUrl: author.web_url,
           });
         }
       }
