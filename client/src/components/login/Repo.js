@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
-import { Button, Checkbox, List, Avatar } from 'antd';
+import { Button, Checkbox, List, Avatar, Progress } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
-const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
+const Repo = ({
+  analyzing,
+  setAnalyzing,
+  filteredList,
+  setFilteredList,
+  loading,
+}) => {
   const {
     setMembersList,
     setUsersList,
@@ -14,7 +20,12 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     setCommentsList,
   } = useAuth();
   const [redirect, setRedirect] = useState(false);
+  const [checkAll, setCheckAll] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(true);
+  const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
+
+  const plainOptions = ['Apple', 'Pear', 'Orange'];
 
   useEffect(() => {}, [filteredList]);
 
@@ -262,11 +273,59 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     }
   };
 
+  const onCheckAllChange = (e) => {
+    setCheckedList(e.target.checked ? plainOptions : []);
+    setIndeterminate(false);
+    setCheckAll(e.target.checked);
+  };
+
+  const batchButton = () => {
+    if (loading || analyzing) {
+      return null;
+    } else {
+      return (
+        <>
+          <Progress
+            style={{ marginTop: '10px' }}
+            strokeColor={{
+              from: '#108ee9',
+              to: '#87d068',
+            }}
+            percent={20.0}
+            status="active"
+          />
+          <div
+            style={{
+              marginTop: '20px',
+              marginBottom: '20px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button type="primary" key="batchanalyze">
+              Batch Process
+            </Button>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Checkbox
+              indeterminate={indeterminate}
+              onChange={onCheckAllChange}
+              checked={checkAll}
+            >
+              Select all
+            </Checkbox>
+          </div>
+        </>
+      );
+    }
+  };
+
   if (redirect) {
     return <Redirect to="/summary" />;
   } else {
     return (
       <div>
+        {batchButton()}
         <List
           style={{ marginTop: '20px' }}
           className="demo-loadmore-list"
