@@ -7,8 +7,9 @@ const AuthProvider = (props) => {
   const [repo, setRepo] = useState(null);
   const [incorrect, setIncorrect] = useState(false);
   const [selectUser, setSelectUser] = useState('@everyone');
-  const [overview, setOverview] = useState([]);
   const [commitsList, setCommitsList] = useState([]);
+  const [membersList, setMembersList] = useState([]);
+  const [usersList, setUsersList] = useState([]);
 
   const authContextValue = {
     user,
@@ -19,10 +20,12 @@ const AuthProvider = (props) => {
     setIncorrect,
     selectUser,
     setSelectUser,
-    overview,
-    setOverview,
     commitsList,
     setCommitsList,
+    membersList,
+    setMembersList,
+    usersList,
+    setUsersList,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
