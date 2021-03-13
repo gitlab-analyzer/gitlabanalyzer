@@ -1,8 +1,14 @@
 import React from 'react';
-import { Select, Button, DatePicker, Form, Input, InputNumber  } from 'antd';
+import { Select, Button, DatePicker, Form, InputNumber  } from 'antd';
 // import { writeJsonFile } from 'write-json-file';
 import { useHistory } from "react-router-dom";
 import moment from 'moment';
+
+////// to delete
+import Data from '../components/floatbar/FloatBarData.json';
+var FloatBarData = Data.users;
+const { Option } = Select;
+///////
 
 const { RangePicker } = DatePicker;
 
@@ -32,6 +38,7 @@ const tailLayout = {
 // ];
 
 export var setting = {
+    user: "khangura",
     iteration: {}
 }
 // export const setting = {}
@@ -90,14 +97,16 @@ function InitialConfig() {
                 ]}
                 >
                     <Select 
-                        defaultValue={"khangura"} ////////////////////////////////////// TEMPORARY NEED DATA STILL
+                        // defaultValue={"khangura"} ////////////////////////////////////// TEMPORARY NEED DATA STILL
                         style={{ width: 200 }} 
                         onChange={value => setting.user = value}
                         showSearch
                     >
-                        
+                    {/* // Temp Data */}
+                    {FloatBarData.map((Detail) => {
+                        return <Option value={Detail.username}>{Detail.username}</Option>
+                    })}
                     </Select>
-
                 </Form.Item>
                 <Form.Item
                     label="Dates"
@@ -133,7 +142,6 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setJS(value)} /> */}
                     <InputNumber onChange={ value => setting.java = value} />
                 </Form.Item>
                 <Form.Item
@@ -146,7 +154,6 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setPY(value)} /> */}
                     <InputNumber onChange={value => setting.python = value} />
                 </Form.Item>
                 <Form.Item
@@ -159,7 +166,6 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setPY(value)} /> */}
                     <InputNumber onChange={value => setting.html = value} />
                 </Form.Item>
                 <Form.Item
@@ -172,7 +178,6 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setPY(value)} /> */}
                     <InputNumber onChange={value => setting.css = value} />
                 </Form.Item>
                 <Form.Item
@@ -185,17 +190,13 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setPY(value)} /> */}
                     <div className="daterange">
                         <RangePicker 
-                        // defaultValue={[null, moment()]}
                         format="YYYY/MM/DD hh:mm:ss"
                         showTime
                         onChange={value => setIter1Range(value)}
-                        // onChange={value => setting.iteraton.iter1 = value[0]}
                         />
                     </div>
-                    {/* <InputNumber onChange={value => setting.iter1 = value} /> */}
                 </Form.Item>
                 <Form.Item
                     label="Iteration 2"
@@ -207,7 +208,6 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setting.iter2 = value} /> */}
                     <div className="daterange">
                         <RangePicker 
                         // defaultValue={[null, moment()]}
@@ -227,14 +227,11 @@ function InitialConfig() {
                         },
                     ]}
                 >
-                    {/* <InputNumber onChange={value => setting.iter3 = value} /> */}
                     <div className="daterange">
                         <RangePicker 
-                        // defaultValue={[null, moment()]}
                         format="YYYY/MM/DD hh:mm:ss"
                         showTime
                         onChange={value => setIter3Range(value)}
-                        // onChange={value => setting.iteraton.iter1 = value[0]}
                         />
                     </div>
 
@@ -244,7 +241,7 @@ function InitialConfig() {
                         Save
                     </Button>
                 </Form.Item>
-            </Form>
+            </Form> 
 
         </div>
     );

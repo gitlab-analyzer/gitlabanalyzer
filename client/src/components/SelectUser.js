@@ -4,16 +4,17 @@ import Data from './floatbar/FloatBarData.json';
 import Settings from './Settings.json';
 import IndividualScore from './floatbar/IndividualScore';
 import './SelectUser.css';
+import { setting } from '../pages/InitialConfig';
 var FloatBarData = Data.users;
 
 const { Option } = Select;
 
 function SelectUser() {
-    const [user, setUser] = React.useState(Settings.user);
+    const [user, setUser] = React.useState(setting.user);
     return (
         <div className="selectUser">
         <Select 
-            defaultValue={Settings.user} 
+            defaultValue={setting.user} 
             style={{ width: 200 }} 
             onChange={value => setUser(value)}
             showSearch
