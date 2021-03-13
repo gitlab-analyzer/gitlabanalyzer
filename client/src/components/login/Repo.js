@@ -53,7 +53,21 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     fetchErrorChecker(commitsRes.data['response'], 'commits');
     const tempCommits = commitsRes.data['commit_list'].map((commit) => ({
       userName: commit.user_name,
-      commits: [...commit.commits],
+      commits: [
+        commit.commits.map((innerCommit) => ({
+          authorName: innerCommit.author_name,
+          codeDiffId: innerCommit.code_diff_id,
+          commitedDate: Date.parse(innerCommit.committed_date),
+          commiterName: innerCommit.committer_name,
+          id: innerCommit.id,
+          lineCounts: {
+            ...innerCommit.line_counts,
+          },
+          shortId: innerCommit.short_id,
+          title: innerCommit.title,
+          webUrl: innerCommit.web_url,
+        })),
+      ],
     }));
 
     // for (let value of tempCommits) {
