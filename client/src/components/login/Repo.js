@@ -5,12 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
-  const {
-    membersList,
-    setMembersList,
-    setUsersList,
-    setCommitsList,
-  } = useAuth();
+  const { setMembersList, setUsersList, setCommitsList } = useAuth();
   const [redirect, setRedirect] = useState(false);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
@@ -51,6 +46,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     );
     console.log(commitsRes.data);
     fetchErrorChecker(commitsRes.data['response'], 'commits');
+
     const tempCommits = commitsRes.data['commit_list'].map((commit) => ({
       userName: commit.user_name,
       commits: [
@@ -69,11 +65,30 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
         })),
       ],
     }));
-
-    // for (let value of tempCommits) {
-    //   value.commits
-    // }
     console.log(tempCommits);
+    setCommitsList([...tempCommits]);
+  };
+
+  // Function for fetching merge request list data
+  const fetchMergeRequests = async () => {
+    const mergeRequestRes = await axios.get(
+      'http://localhost:5678/projects/2/merge_request/user/all'
+    );
+    console.log(mergeRequestRes.data['merge_request_users_list']);
+
+    fetchErrorChecker(mergeRequestRes.data['response'], 'merge request');
+
+    const generateTempMR = () => {
+      const mrList = mergeRequestRes.data['merge_request_users_list'];
+      const tempMR = {};
+      for (let user in mrList) {
+        tempMR.user = [{}];
+        for (let author of mrList[user]) {
+        }
+      }
+      console.log(tempMR);
+    };
+    generateTempMR();
   };
 
   /**
@@ -84,6 +99,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
   const handleAnalyze = async () => {
     try {
       setAnalyzing(true);
+
       /**
        * This part is important, it is needed for iteration 3, but this process calls
        * an API in the backend that currently takes a long time.
@@ -113,6 +129,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       await fetchMembers();
       await fetchUsers();
       await fetchCommits();
+      await fetchMergeRequests();
 
       setAnalyzing(false);
       setRedirect(true);
