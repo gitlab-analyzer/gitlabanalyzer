@@ -64,7 +64,7 @@ function SearchPage() {
         <div style={{ margin: '50px' }}>
           <Spin tip="Analyzing...">
             <Alert
-              message="Analzying selected repository"
+              message="Analyzing selected repository"
               description="Please wait while we analyze your selected repository."
               type="info"
             />
@@ -104,6 +104,8 @@ function SearchPage() {
             {loadingContainer()}
             <Repo
               setAnalyzing={setAnalyzing}
+              loading={loading}
+              analyzing={analyzing}
               filteredList={filteredList}
               setFilteredList={setFilteredList}
             />
