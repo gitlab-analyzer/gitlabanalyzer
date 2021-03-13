@@ -7,7 +7,7 @@ import {DownOutlined} from '@ant-design/icons'
 import 'antd/dist/antd.css';
 import StackedBarGraph from '../components/summary/StackedBar'
 
-/* could probably move some of this stuff into other components */
+import {useAuth} from '../context/AuthContext'
 
 const useStyles = makeStyles((theme) =>({
     root: {
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) =>({
   }));
 
 const Summary = () => {
+    const { overview, setOverview, commitsList, setCommitsList } = useAuth();
     const [startDate, setStartDate] = useState('Jan 2021')
     const [endDate, setEndDate] = useState('Mar 2021')
 
@@ -31,8 +32,49 @@ const Summary = () => {
     const [textRender, setTextRender] = useState('Number')
     const classes = useStyles();
 
+    // source: https://stackoverflow.com/a/27314677
+    // should be reusable for merge requests. Word counts will be slightly different
+    const countDates = (commitsList) => {
+      var result = {}, i, date, rarr = [];
+      for(i=0; i < commitsList.length; i++) {
+        date = [commitsList[i].commitedDate.getFullYear(),commitsList[i].commitedDate.getMonth(), commitsList[i].commitedDate.getDate()].join("-");
+        result[date] = result[date] || 0;
+        result[date]++;
+      }
+      for (i in result) {
+        if (result.hasOwnProperty(i)) {
+           rarr.push({date:i,counts:result[i]});
+        }
+      }
+      console.log(rarr.slice(0,13));
+
+      return rarr.slice(0,13);
+    }
+
+    const populateDateArray = (array) => {
+      var newArray = [], i;
+      for(i in array) {
+        newArray.push(array[i].date)
+      }
+      return newArray.reverse();
+    }
+    const populateCountArray = (array) => {
+      var newArray = [], i;
+      for(i in array) {
+        newArray.push(array[i].counts)
+      }
+      return newArray.reverse();
+    }
+
+    //should probably use useState
+    const dataNew = countDates(commitsList);
+    const dateArray = populateDateArray(dataNew);
+    const countArray = populateCountArray(dataNew);
+    console.log(dateArray)
+    console.log(countArray)
+
     // will be replaced once we find out how to get data from backend
-    const data = [44, 55, 41, 67, 22, 43, 0, 30, 10, 10, 44, 55, 41, 43, 0, 30, 10, 10, 43, 0, 30, 10, 10]
+    const data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
     const data2 = [55, 41, 43, 0, 30, 10, 10, 43, 0, 30, 10, 10, 44, 44, 55, 41, 67, 22, 43, 0, 30, 10, 10]
 
@@ -43,7 +85,7 @@ const Summary = () => {
       data: data
     }, {
       name: "Commits",
-      data: data2
+      data: countArray
     }
 ])
 
@@ -124,7 +166,7 @@ const Summary = () => {
                           <b>Merge Request & Commit {textRender} from {startDate} to {endDate}</b>
               </Grid>
               <Grid item xs={10}>
-                          <StackedBarGraph series={combinedSeries} />
+                          <StackedBarGraph series={combinedSeries} xlabel={dateArray}/>
               </Grid>
               <Grid item xs={1}>
               </Grid>
