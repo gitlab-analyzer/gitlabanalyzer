@@ -9,6 +9,7 @@ import Settings from "./Settings.json"
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { esetting } from '../../pages/InitialConfig'
 
 import "./FloatBar.css";
 
@@ -25,7 +26,7 @@ const copySuccessful =() =>{
     duration: 1,
   });
 };
-
+// console.log(esetting)
 function FloatBar() {
   const [sortType, setSortType] = React.useState('');
   
@@ -44,11 +45,13 @@ function FloatBar() {
         >
           <Grid item xs={12}>
             <div className="daterange">
+            {/* {console.log(esetting)}
+            {console.log(esetting.startdate)} */}
               <RangePicker 
-                defaultValue={[null, moment()]}
+                // defaultValue={[esetting.startdate, esetting.enddate]}
                 format="YYYY/MM/DD hh:mm:ss"
                 ranges={{
-                  Today: [moment(), moment()],
+                  Today: [moment().startOf('day'), moment().endOf('day')],
                   'Iteration 1': [moment(Dates[0].startdate), moment(Dates[0].enddate)],
                   'Iteration 2': [moment(Dates[1].startdate), moment(Dates[1].enddate)],
                   'Iteration 3': [moment(Dates[2].startdate), moment(Dates[2].enddate)],
