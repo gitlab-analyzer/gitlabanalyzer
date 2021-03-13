@@ -9,7 +9,7 @@ from interface.gitlab_project_interface import GitLabProject
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
+state = False  # TODO: this is used to minimize API call time for frontend
 
 # These cannot stay as globals. Change when possible
 myGitLab: Optional[GitLab] = None
@@ -65,7 +65,10 @@ def set_project():
     projectID = request.args.get('projectID', default=None, type=int)
 
     if myGitLab.find_project(projectID) is not None:
-        gitlabProjectInterface = GitLabProject(myGitLab, projectID)
+        global state
+        if not state:
+            gitlabProjectInterface = GitLabProject(myGitLab, projectID)
+            state = True
         return jsonify({"response": True})
     else:
         return jsonify(projectIDError)
