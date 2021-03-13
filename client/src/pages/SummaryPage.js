@@ -7,6 +7,8 @@ import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import StackedBarGraph from '../components/summary/StackedBar';
 import SelectUser from '../components/SelectUser';
+import Header from '../components/Header';
+import FooterBar from '../components/FooterBar';
 
 /* could probably move some of this stuff into other components */
 
@@ -202,6 +204,7 @@ const Summary = () => {
 
   return (
     <>
+      <Header />
       <SelectUser />
       <div>
         <Grid container className={classes.grid}>
@@ -252,6 +255,7 @@ const Summary = () => {
           <Grid item xs={2}></Grid>
         </Grid>
       </div>
+      <FooterBar />
     </>
   );
 };

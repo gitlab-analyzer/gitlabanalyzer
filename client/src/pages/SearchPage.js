@@ -13,7 +13,7 @@ import LogOut from '../components/LogOut';
 function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setUser, setRepo } = useAuth();
+  const { user, setRepo } = useAuth();
   const [reList, setReList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 

@@ -4,7 +4,7 @@ import { LogoutOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
 
 const LogOut = () => {
-  const { user, setUser, setRepo } = useAuth();
+  const { setUser, setRepo } = useAuth();
 
   const handleLogOut = (e) => {
     e.preventDefault();
