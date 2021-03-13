@@ -1,6 +1,5 @@
 import React from 'react';
 import Header from './components/Header';
-import Batch from './components/Batch';
 import Config from './components/Config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
