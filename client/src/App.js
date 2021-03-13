@@ -10,6 +10,7 @@ import './Shared.css';
 import SummaryPage from './pages/SummaryPage';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
+import InitialConfig from './pages/InitialConfig';
 import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
 import FooterBar from './components/FooterBar';
@@ -22,6 +23,7 @@ function App() {
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
           <Route path="/reposearch" component={SearchPage} />
+          <Route path="/initialconfig" component={InitialConfig} />
           <Container maxWidth="lg">
             <Header />
             <Route path="/summary" exact component={SummaryPage} />
