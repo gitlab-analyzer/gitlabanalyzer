@@ -11,6 +11,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     setCommitsList,
     setNotesList,
     setMergeRequestList,
+    setCommentsList,
   } = useAuth();
   const [redirect, setRedirect] = useState(false);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
@@ -106,8 +107,10 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     const generateTempMR = () => {
       const mrList = mergeRequestRes.data['merge_request_users_list'];
       const tempMR = {};
+      // Loop through object key
       for (let user in mrList) {
         tempMR[user] = [];
+        // Loop through object item
         for (let author of mrList[user]) {
           tempMR[user].push({
             author: author.author,
@@ -195,6 +198,36 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     const commentsRes = await axios.get(
       'http://localhost:5678/projects/2/comments/user/all'
     );
+    fetchErrorChecker(commentsRes.data['response'], 'comments');
+    const generateTempComments = () => {
+      const commentList = commentsRes.data['notes'];
+      const tempComments = {};
+      for (let user in commentList) {
+        tempComments[user] = [];
+        for (let comment of commentList[user]) {
+          tempComments[user].push({
+            author: comment.author,
+            body: comment.body,
+            createdDate: Date.parse(comment.created_date),
+            id: comment.id,
+            noteableId: comment.noteable_id,
+            noteableIid: comment.noteable_iid,
+            noteableType: comment.noteable_type,
+            wordCount: comment.word_count,
+            // Frontend defined variables Start --------------------------
+            // Initial score calculation
+            score: 0,
+            // Flag to ignore this comment
+            ignore: false,
+            // Frontend defined variables End --------------------------
+          });
+          tempComments[user]['weightedScore'] = 0;
+        }
+      }
+      console.log(tempComments);
+      return tempComments;
+    };
+    setCommentsList(generateTempComments());
   };
 
   /**
