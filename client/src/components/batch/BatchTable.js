@@ -27,6 +27,8 @@ const BatchTable = () => {
       },
     ];
 
+    // Hardcoded data generation
+    // To be removed in the branch after this merge
     const data = [];
     for (let i = 0; i < 8; ++i) {
       data.push({
@@ -66,6 +68,8 @@ const BatchTable = () => {
     },
   ];
 
+  // Hardcoded data generation
+  // To be removed in the branch after this merge
   const data = [];
   for (let i = 0; i < 20; ++i) {
     data.push({
