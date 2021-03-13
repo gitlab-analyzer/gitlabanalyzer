@@ -3,19 +3,26 @@ import 'antd/dist/antd.css';
 import { Card, Table, Space, Badge, Tag, Button } from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
 import { Drawer } from '@material-ui/core';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Used boilerplate from https://ant.design/components/table/
  */
 const CommitBar = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const {
+    membersList,
+    usersList,
+    mergeRequestList,
+    setMergeRequestList,
+  } = useAuth();
 
   /**
    * Populate Merge Requests with dummy data for testing
    */
-  const data = [];
+  const mergeRequestData = [];
   for (let i = 0; i < 20; ++i) {
-    data.push({
+    mergeRequestData.push({
       key: i,
       mrid: 'a2f306a4',
       branch: '#57 Refactor get projects API',
@@ -160,7 +167,7 @@ const CommitBar = () => {
         columns={columns}
         pagination={false}
         expandable={{ expandedRowRender }}
-        dataSource={data}
+        dataSource={mergeRequestData}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
       />
       <Drawer
