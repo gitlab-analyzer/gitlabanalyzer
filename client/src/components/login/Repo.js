@@ -10,6 +10,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     setUsersList,
     setCommitsList,
     setNotesList,
+    setMergeRequestList,
   } = useAuth();
   const [redirect, setRedirect] = useState(false);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
@@ -101,6 +102,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
 
     fetchErrorChecker(mergeRequestRes.data['response'], 'merge request');
 
+    // Generate a temporary merge request list to parse and set to Global Context API
     const generateTempMR = () => {
       const mrList = mergeRequestRes.data['merge_request_users_list'];
       const tempMR = {};
@@ -122,6 +124,14 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
                 shortId: commit.short_id,
                 title: commit.title,
                 webUrl: commit.web_url,
+                // Frontend defined variables Start --------------------------
+                // Initial score calculation
+                score:
+                  commit.line_counts.lines_added +
+                  commit.line_counts.lines_deleted * 0.1,
+                // Flag to ignore this commit
+                ignore: false,
+                // Frontend defined variables End --------------------------
               })),
             ],
             createdDate: Date.parse(author.created_date),
@@ -135,12 +145,22 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
             state: author.state,
             title: author.title,
             webUrl: author.web_url,
+            // Frontend defined variables Start --------------------------
+            // Initial score calculation
+            score:
+              author.line_counts.lines_added +
+              author.line_counts.lines_deleted * 0.1,
+            // Flag to ignore this MR
+            ignore: false,
+            // Frontend defined variables End --------------------------
           });
+          tempMR[user]['weightedScore'] = 0;
         }
       }
       console.log(tempMR);
+      return tempMR;
     };
-    generateTempMR();
+    setMergeRequestList(generateTempMR());
   };
 
   // Function for fetching, parsing, and storing notes list data
@@ -160,6 +180,12 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
       noteableIid: note.noteable_iid,
       noteableType: note.noteable_type,
       wordCount: note.word_count,
+      // Frontend defined variables Start --------------------------
+      // Initial score calculation
+      score: note.word_count * 1,
+      // Flag to ignore this note
+      ignore: false,
+      // Frontend defined variables End --------------------------
     }));
     setNotesList([...tempNotes]);
   };
