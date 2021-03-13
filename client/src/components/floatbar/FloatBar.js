@@ -37,14 +37,7 @@ function FloatBar() {
     mergeRequestList,
     commentsList,
   } = useAuth();
-  useEffect(() => {
-    console.log('membersList', membersList);
-    console.log('usersList', usersList);
-    console.log('commitsList', commitsList);
-    console.log('notesList', notesList);
-    console.log('mergeRequestList', mergeRequestList);
-    console.log('commentsList', commentsList);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className="floatbar-container">
