@@ -49,12 +49,9 @@ class StackedBarGraph extends React.Component {
             }
           },
           xaxis: {
-            categories: ['Jan', 'Feb'],
-          },
-          yaxis: {
-            title: {
-              text: this.props.ylabel
-            }
+            type: 'datetime',
+            categories: this.props.xlabel,
+            hideOverlappingLabels: true
           },
           legend: {
             position: 'top',
@@ -68,18 +65,14 @@ class StackedBarGraph extends React.Component {
             opacity: 1
           }
         },
-      
-      
       };
     }
 
     render() {
-      console.log(this.props)
       return (
-  <div id="chart">
-<Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
-</div>
-
+        <div id="chart">
+          <Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
+        </div>
       );
     }
   }
