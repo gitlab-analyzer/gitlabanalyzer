@@ -27,12 +27,12 @@ class CommentManager:
         return listNoteableID
 
     # Get list of Comments written by certain user
-    def get_comments_by_userID(self, userID) -> Union[List[Comment], None]:
-        listUserID = []
+    def get_comments_by_user_name(self, member_name) -> Union[List[Comment], None]:
+        list_by_user_name = []
         for comment in self.__commentList:
-            if comment.author == userID:
-                listUserID.append(comment)
-        return listUserID
+            if comment.author == member_name:
+                list_by_user_name.append(comment)
+        return list_by_user_name
 
     def get_comments_by_range(self, startDate, endDate) -> Union[List[Comment], None]:
         listTimeRange = []
