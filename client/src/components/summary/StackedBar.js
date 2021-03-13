@@ -50,7 +50,6 @@ class StackedBarGraph extends React.Component {
           },
           xaxis: {
             type: 'datetime',
-            categories: this.props.xlabel,
             hideOverlappingLabels: true
           },
           legend: {

@@ -11,6 +11,8 @@ import Grid from '@material-ui/core/Grid';
 
 import FilterMenu from '../components/table/FilterMenu';
 import SelectUser from '../components/SelectUser';
+import Header from '../components/Header';
+import FooterBar from '../components/FooterBar';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -67,6 +69,7 @@ const TablePage = () => {
   const classes = useStyles();
   return (
     <>
+      <Header />
       <SelectUser />
       <div className="open-sans">
         <Grid container className={classes.grid}>
@@ -113,6 +116,7 @@ const TablePage = () => {
           </Grid>
         </Grid>
       </div>
+      <FooterBar />
     </>
   );
 };
