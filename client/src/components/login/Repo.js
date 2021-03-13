@@ -5,11 +5,18 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
-  const { membersList, setMembersList } = useAuth();
+  const {
+    membersList,
+    setMembersList,
+    setUsersList,
+    setCommitsList,
+  } = useAuth();
   const [redirect, setRedirect] = useState(false);
+  const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
   useEffect(() => {}, [filteredList]);
 
+  // General error handling function for fetch requests
   const fetchErrorChecker = (res, dataType) => {
     if (!res) {
       console.log(`Failed to retrieve ${dataType} list!`);
@@ -22,17 +29,37 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
     const membersRes = await axios.get(
       'http://localhost:5678/projects/2/members'
     );
-    console.log(membersRes);
+    console.log(membersRes.data['members']);
 
     fetchErrorChecker(membersRes.data['response'], 'members');
+    setMembersList([...membersRes.data['members']]);
   };
 
   // Function for fetching users list data
   const fetchUsers = async () => {
     const usersRes = await axios.get('http://localhost:5678/projects/2/users');
-    console.log(usersRes);
+    console.log(usersRes.data['users']);
 
     fetchErrorChecker(usersRes.data['response'], 'users');
+    setUsersList([...usersRes.data['users']]);
+  };
+
+  // Function for fetching commits list data
+  const fetchCommits = async () => {
+    const commitsRes = await axios.get(
+      'http://localhost:5678/projects/2/commit/user/all'
+    );
+    console.log(commitsRes.data);
+    fetchErrorChecker(commitsRes.data['response'], 'commits');
+    const tempCommits = commitsRes.data['commit_list'].map((commit) => ({
+      userName: commit.user_name,
+      commits: [...commit.commits],
+    }));
+
+    // for (let value of tempCommits) {
+    //   value.commits
+    // }
+    console.log(tempCommits);
   };
 
   /**
@@ -43,10 +70,11 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
   const handleAnalyze = async () => {
     try {
       setAnalyzing(true);
-
-      // This part is important, it is needed for iteration 3, but this process calls
-      // an API in the backend that currently takes a long time.
-      // This call is disabled for the demo on Monday.
+      /**
+       * This part is important, it is needed for iteration 3, but this process calls
+       * an API in the backend that currently takes a long time.
+       * This call is disabled for the demo on Monday.
+       */
 
       // Set project ID to the users chosen ID
       // Currently it is hard coded to 2 since no other projects exist
@@ -70,6 +98,7 @@ const Repo = ({ setAnalyzing, filteredList, setFilteredList }) => {
 
       await fetchMembers();
       await fetchUsers();
+      await fetchCommits();
 
       setAnalyzing(false);
       setRedirect(true);
