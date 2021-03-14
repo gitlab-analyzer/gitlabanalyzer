@@ -42,6 +42,9 @@ const AuthProvider = (props) => {
     overviewScore,
     setOverviewScore,
   };
+  React.useEffect(() => {
+    localStorage.setItem('myKey', JSON.stringify(membersList));
+  }, [membersList]);
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
 
