@@ -20,12 +20,55 @@ const CommitBar = () => {
 
   useEffect(() => {}, [selectUser]);
 
+  const dateFormatter = (dateObject) => {
+    let today = new Date();
+    let ampm = '';
+    let thisYear = today.getFullYear();
+    let months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    let month = dateObject.getMonth();
+    let day = dateObject.getDate();
+    let year = dateObject.getFullYear();
+    let hour = dateObject.getHours();
+    let minute = dateObject.getMinutes();
+
+    if (hour === 0) {
+      hour = 12;
+      ampm = 'am';
+    } else if (hour >= 13) {
+      hour -= 12;
+      ampm = 'pm';
+    } else {
+      ampm = 'am';
+    }
+
+    if (thisYear === year) {
+      return `${months[month]} ${day} @ ${hour}:${minute}${ampm}`;
+    } else {
+      return `${months[month]} ${year} ${day} @ ${hour}:${minute}${ampm}`;
+    }
+  };
+
+  const hey = dateFormatter(new Date('2021-03-11T19:35:26.000Z'));
+
   /**
-   * Populate Merge Requests with dummy data for testing
+   * Populate Merge Requests with real data
    */
   const mergeRequestData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
-  console.log(selectedUserMRList);
+  // console.log(selectedUserMRList);
   if (selectedUserMRList !== 0) {
     for (let mr of selectedUserMRList) {
       const commitsData = [];
@@ -40,7 +83,7 @@ const CommitBar = () => {
                 {commit['shortId']}
               </a>
             ),
-            date: commit['comittedDate'].toString(),
+            date: dateFormatter(commit['comittedDate']),
             score: commit['score'],
             message: commit['title'],
           });
@@ -56,7 +99,7 @@ const CommitBar = () => {
         branch: mr['title'],
         mrdiffscore: mr['score'],
         commitssum: 490,
-        createdAt: mr['createdDate'],
+        createdAt: dateFormatter(mr['createdDate']),
         commitsList: commitsData,
       });
     }
