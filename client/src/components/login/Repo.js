@@ -132,37 +132,39 @@ const Repo = ({
       // Loop through object key
       for (let user in mrList) {
         tempMR[user] = {
-          mr: [],
+          mr: {},
           weightedScore: 0,
         };
         // Loop through object item
         for (let author of mrList[user]) {
-          tempMR[user].mr.push({
+          let tempCommits = {};
+          for (let commit of author.commit_list) {
+            tempCommits[commit.short_id] = {
+              authorName: commit.author_name,
+              codeDiffId: commit.code_diff_id,
+              comittedDate: new Date(commit.committed_date),
+              committerName: commit.committer_name,
+              id: commit.id,
+              relatedMr: author.id,
+              lineCounts: commit.line_counts,
+              shortId: commit.short_id,
+              title: commit.title,
+              webUrl: commit.web_url,
+              // Frontend defined variables Start --------------------------
+              // Initial score calculation
+              score:
+                commit.line_counts.lines_added +
+                commit.line_counts.lines_deleted * 0.1,
+              // Flag to ignore this commit
+              ignore: false,
+              // Frontend defined variables End --------------------------
+            };
+          }
+          tempMR[user].mr[author.id] = {
             author: author.author,
             codeDiffId: author.code_diff_id,
             comments: author.comments,
-            commitList: [
-              author.commit_list.map((commit) => ({
-                authorName: commit.author_name,
-                codeDiffId: commit.code_diff_id,
-                comittedDate: new Date(commit.committed_date),
-                committerName: commit.committer_name,
-                id: commit.id,
-                relatedMr: author.id,
-                lineCounts: commit.line_counts,
-                shortId: commit.short_id,
-                title: commit.title,
-                webUrl: commit.web_url,
-                // Frontend defined variables Start --------------------------
-                // Initial score calculation
-                score:
-                  commit.line_counts.lines_added +
-                  commit.line_counts.lines_deleted * 0.1,
-                // Flag to ignore this commit
-                ignore: false,
-                // Frontend defined variables End --------------------------
-              })),
-            ],
+            commitList: tempCommits,
             createdDate: new Date(author.created_date),
             description: author.description,
             id: author.id,
@@ -182,7 +184,7 @@ const Repo = ({
             // Flag to ignore this MR
             ignore: false,
             // Frontend defined variables End --------------------------
-          });
+          };
         }
       }
       console.log(tempMR);

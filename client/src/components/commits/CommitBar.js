@@ -68,46 +68,44 @@ const CommitBar = () => {
   let mergeRequestData = [];
   let commitsOnlyData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
+
   if (selectedUserMRList !== 0) {
-    for (let mr of selectedUserMRList['mr']) {
+    for (let [key, value] of Object.entries(selectedUserMRList['mr'])) {
       const commitsData = [];
-      for (let commitArray of mr['commitList']) {
-        for (let commit of commitArray) {
-          // console.log(commit);
-          commitsData.push({
-            key: commit['shortId'],
-            // commitid: commit['shortId'],
-            commitid: (
-              <a href={commit['webUrl']} target="_blank">
-                {commit['shortId']}
-              </a>
-            ),
-            relatedMr: commit['relatedMr'],
-            date: dateFormatter(commit['comittedDate']),
-            score: commit['score'],
-            message: commit['title'],
-          });
-        }
+      for (let [k, v] of Object.entries(value['commitList'])) {
+        // console.log(commit);
+        commitsData.push({
+          key: v['shortId'],
+          // commitid: commit['shortId'],
+          commitid: (
+            <a href={v['webUrl']} target="_blank">
+              {v['shortId']}
+            </a>
+          ),
+          relatedMr: v['relatedMr'],
+          date: dateFormatter(v['comittedDate']),
+          score: v['score'],
+          message: v['title'],
+        });
         // This constructs a separate list for commits only
         commitsOnlyData = [...commitsOnlyData, ...commitsData];
       }
       mergeRequestData.push({
-        key: mr['id'],
+        key: value['id'],
         mrid: (
-          <a href={mr['webUrl']} target="_blank">
-            {mr['id']}
+          <a href={value['webUrl']} target="_blank">
+            {value['id']}
           </a>
         ),
-        branch: mr['title'],
-        mrdiffscore: mr['score'],
+        branch: value['title'],
+        mrdiffscore: value['score'],
         commitssum: 490,
-        createdAt: dateFormatter(mr['createdDate']),
+        createdAt: dateFormatter(value['createdDate']),
         commitsList: commitsData,
       });
     }
     // console.log(commitsOnlyData);
   }
-  // console.log(mergeRequestData);
 
   const columnsCommits = [
     {
@@ -215,11 +213,27 @@ const CommitBar = () => {
     const newMergeRequestState = {
       ...mergeRequestList,
       [selectUser]: {
-        mr: [...mergeRequestList[selectUser]['mr']],
+        mr: {
+          ...mergeRequestList[selectUser]['mr'],
+          [relatedMr]: {
+            ...mergeRequestList[selectUser]['mr'][relatedMr],
+            commitList: {
+              ...mergeRequestList[selectUser]['mr'][relatedMr].commitList,
+              [commitId]: {
+                ...mergeRequestList[selectUser]['mr'][relatedMr].commitList[
+                  commitId
+                ],
+                ignore: true,
+              },
+            },
+          },
+        },
         weightedScore: mergeRequestList[selectUser]['weightedScore'],
       },
     };
-    console.log(newMergeRequestState);
+    console.log('new list', newMergeRequestState);
+    console.log(mergeRequestList[selectUser]['mr'][relatedMr].commitList);
+    setMergeRequestList(newMergeRequestState);
   };
 
   const unIgnoreCommit = (commitId) => {
