@@ -185,69 +185,8 @@ const Repo = ({
           });
         }
       }
-      console.log(tempMR);
       return tempMR;
     };
-
-    // const generateTempMR = () => {
-    //   const mrList = mergeRequestRes.data['merge_request_users_list'];
-    //   const tempMR = {};
-    //   // Loop through object key
-    //   for (let user in mrList) {
-    //     tempMR[user] = [];
-    //     // Loop through object item
-    //     for (let author of mrList[user]) {
-    //       tempMR[user].push({
-    //         author: author.author,
-    //         codeDiffId: author.code_diff_id,
-    //         comments: author.comments,
-    //         commitList: [
-    //           author.commit_list.map((commit) => ({
-    //             authorName: commit.author_name,
-    //             codeDiffId: commit.code_diff_id,
-    //             comittedDate: new Date(commit.committed_date),
-    //             committerName: commit.committer_name,
-    //             id: commit.id,
-    //             lineCounts: commit.line_counts,
-    //             shortId: commit.short_id,
-    //             title: commit.title,
-    //             webUrl: commit.web_url,
-    //             // Frontend defined variables Start --------------------------
-    //             // Initial score calculation
-    //             score:
-    //               commit.line_counts.lines_added +
-    //               commit.line_counts.lines_deleted * 0.1,
-    //             // Flag to ignore this commit
-    //             ignore: false,
-    //             // Frontend defined variables End --------------------------
-    //           })),
-    //         ],
-    //         createdDate: new Date(author.created_date),
-    //         description: author.description,
-    //         id: author.id,
-    //         iid: author.iid,
-    //         lineCounts: author.line_counts,
-    //         mergedBy: author.merged_by,
-    //         mergedDate: new Date(author.merged_date),
-    //         relatedIssueIid: author.related_issue_iid,
-    //         state: author.state,
-    //         title: author.title,
-    //         webUrl: author.web_url,
-    //         // Frontend defined variables Start --------------------------
-    //         // Initial score calculation
-    //         score:
-    //           author.line_counts.lines_added +
-    //           author.line_counts.lines_deleted * 0.1,
-    //         // Flag to ignore this MR
-    //         ignore: false,
-    //         // Frontend defined variables End --------------------------
-    //       });
-    //       tempMR[user]['weightedScore'] = 0;
-    //     }
-    //   }
-    //   // console.log(tempMR);
-    //   return tempMR;
-    // };
     setMergeRequestList(generateTempMR());
   };
 
