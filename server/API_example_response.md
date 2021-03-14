@@ -1,7 +1,7 @@
 ## API Example Response
 - [GET /auth](#authentication)
 - [GET /projects](#get-a-list-of-projects)
-- [POST /projects/set?projectID=id](#set-the-current-project-to-projectID)
+- [POST /projects/set?projectID=id](#set-the-current-project-to-projectid)
 - [GET /projects/<int:<i></i>projectID>/members](#get-all-the-members-in-the-project)
 - [GET /projects/<int:<i></i>projectID>/users](#get-all-the-users-in-the-project)
 - [GET /projects/<int:<i></i>projectID>/commit](#get-all-commits-in-that-project)
