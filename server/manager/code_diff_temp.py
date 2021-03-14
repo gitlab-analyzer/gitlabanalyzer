@@ -24,14 +24,16 @@ class CodeDiffAnalyzer:
         # This need to be just one addition
         # Assert no new line thing that gitlab have
 
-        newLine = 0
-        deleteLine = 0
-        newCommentLine = 0
-        deleteCommentLine = 0
-        newBlank = 0
-        deleteBlank = 0
-        syntax = 0
-        spacing = 0
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
 
         oldLine = " "
         python = False
@@ -42,148 +44,122 @@ class CodeDiffAnalyzer:
         for line in diffCode.diff.splitlines():
             if line[0] == '+' or line[0] == '-':
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                    if self.check_middle_syntax_addition(line, oldLine, syntax, python):
+                    temp = info.copy()
+                    info = self.check_middle_syntax_addition(
+                        line, oldLine, info, python
+                    )
+                    if temp != info:
+                        if oldLine[0] == "+":
+                            info["lines_added"] = info["lines_added"] - 1
+                        if oldLine[0] == "-":
+                            info["lines_deleted"] = info["lines_deleted"] - 1
                         continue
 
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                    tempLine = '+' + line[1:].replace(oldLine[1:], '')
-                    self.modify_to_a_new_line(
-                        newLine,
-                        deleteLine,
-                        newCommentLine,
-                        deleteCommentLine,
-                        newBlank,
-                        deleteBlank,
-                        spacing,
-                        syntax,
-                        tempLine,
-                        python,
-                    )
-                if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                    tempLine = '-' + oldLine[1:].replace(line[1:], '')
-                    self.modify_to_a_new_line(
-                        newLine,
-                        deleteLine,
-                        newCommentLine,
-                        deleteCommentLine,
-                        newBlank,
-                        deleteBlank,
-                        spacing,
-                        syntax,
-                        tempLine,
-                        python,
-                    )
-                else:
-                    self.modify_to_a_new_line(
-                        newLine,
-                        deleteLine,
-                        newCommentLine,
-                        deleteCommentLine,
-                        newBlank,
-                        deleteBlank,
-                        spacing,
-                        syntax,
-                        line,
-                        python,
-                    )
-                oldLine = line
+                    if oldLine != " " and line[1:] != oldLine[1:]:
+                        if oldLine[0] == "+":
+                            info["lines_added"] = info["lines_added"] - 1
+                        if oldLine[0] == "-":
+                            info["lines_deleted"] = info["lines_deleted"] - 1
+                        tempLine = '+' + line[1:].replace(oldLine[1:], '')
+                        info = self.modify_to_a_new_line(
+                            info,
+                            tempLine,
+                            python,
+                        )
+                        continue
 
-        info = {
-            "lines_added": newLine,
-            "lines_deleted": deleteLine,
-            "comments_added": newCommentLine,
-            "comments_deleted": deleteCommentLine,
-            "blanks_added": newBlank,
-            "blanks_deleted": deleteBlank,
-            "spacing_changes": spacing,
-            "syntax_changes": syntax,
-        }
+                if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
+                    if oldLine != " " and line[1:] != oldLine[1:]:
+                        if oldLine[0] == "+":
+                            info["lines_added"] = info["lines_added"] - 1
+                        if oldLine[0] == "-":
+                            info["lines_deleted"] = info["lines_deleted"] - 1
+                        tempLine = '-' + oldLine[1:].replace(line[1:], '')
+                        info = self.modify_to_a_new_line(
+                            info,
+                            tempLine,
+                            python,
+                        )
+                        continue
+                info = self.modify_to_a_new_line(
+                    info,
+                    line,
+                    python,
+                )
+                oldLine = line
         return info
 
-    def modify_to_a_new_line(
-        self,
-        newLine,
-        deleteLine,
-        newCommentLine,
-        deleteCommentLine,
-        newBlank,
-        deleteBlank,
-        spacing,
-        syntax,
-        line,
-        python,
-    ) -> None:
+    def modify_to_a_new_line(self, info, line, python) -> dict:
 
         if line == '+':
-            newBlank = newBlank + 1
-            return
+            info["blanks_added"] = info["blanks_added"] + 1
+            return info
         if line == '-':
-            deleteBlank = deleteBlank + 1
-            return
+            info["blanks_deleted"] = info["blanks_deleted"] + 1
+            return info
 
-        if self.check_for_spacing_or_comment(
-            line[0:1], newCommentLine, deleteCommentLine, spacing, line[1:], python
-        ):
-            return
+        temp = info.copy()
+        info = self.check_for_spacing_syntax_or_comment(
+            line[0:1], info, line[1:], python
+        )
+        if info != temp:
+            return info
 
         if line[0:1] == '+':
-            newLine = newLine + 1
-            if python is False:
-                if "{" == line[1:] or "}" == line[1:]:
-                    syntax = syntax + 1
-                    newLine = newLine - 1
-            if python is True:
-                if ":" == line[1:]:
-                    syntax = syntax + 1
-                    newLine = newLine - 1
+            info["lines_added"] = info["lines_added"] + 1
 
         if line[0:1] == '-':
-            deleteLine = deleteLine + 1
-            if python is False:
-                if "{" == line[1:] or "}" == line[1:]:
-                    syntax = syntax + 1
-                    deleteLine = deleteLine - 1
-            if python is True:
-                if ":" == line[1:]:
-                    syntax = syntax + 1
-                    deleteLine = deleteLine - 1
+            info["lines_deleted"] = info["lines_deleted"] + 1
 
-    def check_for_spacing_or_comment(
-        self, signal, newCommentLine, deleteCommentLine, spacing, str, python
-    ) -> bool:
+        return info
 
-        for i in str:
-            if i == " ":
-                continue
-            elif i == "#" and python is True:
-                if signal == '+':
-                    newCommentLine = newCommentLine + 1
-                else:
-                    deleteCommentLine = deleteCommentLine + 1
-                return True
-            elif i == "//" and python is False:
-                if signal == '+':
-                    newCommentLine = newCommentLine + 1
-                else:
-                    deleteCommentLine = deleteCommentLine + 1
-                return True
-            else:
-                break
+    def check_for_spacing_syntax_or_comment(self, signal, info, str, python) -> dict:
+
+        isSyntax = False
+
         if str.isspace():
-            spacing = spacing + 1
-            return True
+            info["spacing_changes"] = info["spacing_changes"] + 1
+            return info
 
-        return False
+        for i in range(0, len(str)):
+            if str[i] == "#" and python is True:
+                if signal == '+' and isSyntax is False:
+                    info["comments_added"] = info["comments_added"] + 1
+                    return info
+                if signal == '-' and isSyntax is False:
+                    info["comments_deleted"] = info["comments_deleted"] + 1
+                    return info
+            elif str[i : i + 2] == '//' and python is False:
+                if signal == '+' and isSyntax is False:
+                    info["comments_added"] = info["comments_added"] + 1
+                    return info
+                if signal == '-' and isSyntax is False:
+                    info["comments_deleted"] = info["comments_deleted"] + 1
+                    return info
+            if str[i] == ':' and python is False:
+                isSyntax = True
+                continue
+            elif python is False:
+                if str[i] == '{' or str[i] == '}':
+                    isSyntax = True
+                    continue
+            isSyntax = False
 
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> None:
+        if isSyntax:
+            info["syntax_changes"] = info["syntax_changes"] + 1
+        return info
+
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> bool:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
         found = re.search('\.(.+?)$', fileName)
         if found is not None:
             if found.group(1) == 'py':
-                python = True
+                return True
+        return False
 
-    def check_middle_syntax_addition(self, line, oldLine, syntax, python) -> bool:
+    def check_middle_syntax_addition(self, line, oldLine, info, python) -> dict:
         temp = 0
 
         if len(line) > len(oldLine):
@@ -193,30 +169,28 @@ class CodeDiffAnalyzer:
             length = len(line)
             lastChar = oldLine[len(oldLine) - 1]
 
-        for i in range(1, length):
+        for i in range(0, length - 1):
             if oldLine[i] != line[i]:
                 temp = i
                 break
         if temp != 0:
+            if oldLine[temp] == " " or line[temp] == " ":
+                info["spacing_changes"] = info["spacing_changes"] + 1
             if python:
                 if oldLine[temp] == ":" or line[temp] == ":":
-                    syntax = syntax + 1
-                    return True
+                    info["syntax_changes"] = info["syntax_changes"] + 1
             else:
                 if oldLine[temp] == "{" or oldLine[temp] == "}":
-                    syntax = syntax + 1
-                    return True
+                    info["syntax_changes"] = info["syntax_changes"] + 1
                 if line[temp] == "{" or line[temp] == "}":
-                    syntax = syntax + 1
-                    return True
+                    info["syntax_changes"] = info["syntax_changes"] + 1
         if temp == 0:
+            if lastChar == " ":
+                info["spacing_changes"] = info["spacing_changes"] + 1
             if python:
-                if lastChar == ":" or lastChar == ":":
-                    syntax = syntax + 1
-                    return True
+                if lastChar == ":":
+                    info["syntax_changes"] = info["syntax_changes"] + 1
             else:
                 if lastChar == "{" or lastChar == "}":
-                    syntax = syntax + 1
-                    return True
-
-        return False
+                    info["syntax_changes"] = info["syntax_changes"] + 1
+        return info
