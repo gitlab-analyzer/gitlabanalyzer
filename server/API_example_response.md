@@ -1,4 +1,20 @@
-GET /auth
+## API Example Response
+- [GET /auth](#authentication)
+- [GET /projects](#get-a-list-of-projects)
+- [POST /projects/set?projectID=id](#set-the-current-project-to-projectid)
+- [GET /projects/<int:<i></i>projectID>/members](#get-all-the-members-in-the-project)
+- [GET /projects/<int:<i></i>projectID>/users](#get-all-the-users-in-the-project)
+- [GET /projects/<int:<i></i>projectID>/commit](#get-all-commits-in-that-project)
+- [GET /projects/<int:<i></i>projectID>/commit/user/all](#get-all-the-commits-sorted-in-users)
+- [GET /projects/<int:<i></i>projectID>/merge_request/all](#get-all-the-merge-request-in-that-project)
+- [GET /projects/<int:<i></i>projectID>/merge_request/user/all](#get-all-the-merge-request-sorted-in-users)
+- [GET /projects/<int:<i></i>projectID>/code_diff/<int:<i></i>codeDiffID>](#get-a-specific-code-diff)
+- [GET /projects/<int:<i></i>projectID>/comments/all](#get-all-comments-in-that-project)
+- [GET /projects/<int:<i></i>projectID>/comments/user/all](#get-all-comments-sorted-in-users)
+
+### Authentication
+#### `GET /auth`
+```json
 {
     "response": true,
     "username": "fanghaof"
@@ -9,8 +25,12 @@ GET /auth
     "response": false,
     "username": ""
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects
+### Get a list of projects
+#### `GET /projects`
+```json
 {
     "response": true,
     "projects": [
@@ -18,8 +38,12 @@ GET /projects
         "373-2021-1-Makemake / GitLabAnalyzer",
     ]
 }
+```
+[Go back to API list](#api-example-response)
 
-POST /projects/set?projectID=id
+### Set the current project to projectID
+#### `POST /projects/set?projectID=id`
+```json
 {
     "response": true
 }
@@ -28,8 +52,12 @@ POST /projects/set?projectID=id
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/members
+### Get all the members in the project
+#### `GET /projects/<int:projectID>/members`
+```json
 {
     "members": [
         {
@@ -56,8 +84,12 @@ GET /projects/<int:projectID>/members
     ],
     "response": true
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/users
+### Get all the users in the project
+#### `GET /projects/<int:projectID>/users`
+```json
 {
     "users": [
         "Joseph Test",
@@ -80,8 +112,12 @@ GET /projects/<int:projectID>/users
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/commit
+### Get all commits in that project
+#### `GET /projects/<int:projectID>/commit`
+```json
 {
     "commit_list": [
         {
@@ -127,8 +163,12 @@ GET /projects/<int:projectID>/commit
     ],
     "response": true
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/commit/user/all
+### Get all the commits sorted in users
+#### `GET /projects/<int:projectID>/commit/user/all`
+```json
 {
     "commit_list": [
         {
@@ -209,8 +249,156 @@ GET /projects/<int:projectID>/commit/user/all
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/merge_request/user/all
+### Get all the merge request in that project
+#### `GET /projects/<int:projectID>/merge_request/all`
+```json
+{
+    "merge_request_list": [
+        {
+            "author": {
+                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                "id": 6,
+                "name": "Joseph Test",
+                "state": "active",
+                "username": "makemaketest5",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+            },
+            "code_diff_id": 392,
+            "comments": null,
+            "commit_list": [
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 395,
+                    "committed_date": "2021-03-11T19:33:59.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "9e6744896c0126939dfd5b15e9a79e9112eab8d4",
+                    "line_counts": {
+                        "blanks_added": 62,
+                        "blanks_deleted": 239,
+                        "comments_added": 281,
+                        "comments_deleted": 148,
+                        "lines_added": 444,
+                        "lines_deleted": 249,
+                        "spacing_changes": 286,
+                        "syntax_changes": 219
+                    },
+                    "short_id": "9e674489",
+                    "title": "Add logic class for basic paxo procotol",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/9e6744896c0126939dfd5b15e9a79e9112eab8d4"
+                },
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 396,
+                    "committed_date": "2021-03-11T19:30:23.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "64bf8dd279947d857616317a55f0f45a78a27d0e",
+                    "line_counts": {
+                        "blanks_added": 412,
+                        "blanks_deleted": 111,
+                        "comments_added": 284,
+                        "comments_deleted": 280,
+                        "lines_added": 473,
+                        "lines_deleted": 492,
+                        "spacing_changes": 323,
+                        "syntax_changes": 449
+                    },
+                    "short_id": "64bf8dd2",
+                    "title": "Initial commit to create stubs and getters and setters",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/64bf8dd279947d857616317a55f0f45a78a27d0e"
+                }
+            ],
+            "created_date": "2021-03-11T19:36:08.651Z",
+            "description": "Closes #11",
+            "id": 9,
+            "iid": 9,
+            "line_counts": {
+                "blanks_added": 134,
+                "blanks_deleted": 159,
+                "comments_added": 261,
+                "comments_deleted": 480,
+                "lines_added": 352,
+                "lines_deleted": 146,
+                "spacing_changes": 460,
+                "syntax_changes": 445
+            },
+            "merged_by": 6,
+            "merged_date": "2021-03-11T19:36:19.943Z",
+            "related_issue_iid": 11,
+            "state": "merged",
+            "title": "Resolve \"Implemented paxo\"",
+            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/9"
+        },
+        {
+            "author": {
+                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
+                "id": 6,
+                "name": "Joseph Test",
+                "state": "active",
+                "username": "makemaketest5",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+            },
+            "code_diff_id": 397,
+            "comments": null,
+            "commit_list": [
+                {
+                    "author_name": "Joseph Test",
+                    "code_diff_id": 404,
+                    "committed_date": "2021-03-11T19:21:13.000Z",
+                    "committer_name": "Joseph Test",
+                    "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
+                    "line_counts": {
+                        "blanks_added": 575,
+                        "blanks_deleted": 355,
+                        "comments_added": 546,
+                        "comments_deleted": 577,
+                        "lines_added": 511,
+                        "lines_deleted": 589,
+                        "spacing_changes": 875,
+                        "syntax_changes": 500
+                    },
+                    "short_id": "2e94747c",
+                    "title": "Add query notify class and logic",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/2e94747c4e2cad40752e1637af756e8a684c544d"
+                }
+            ],
+            "created_date": "2021-03-11T19:26:26.371Z",
+            "description": "New features added. This is important branch",
+            "id": 8,
+            "iid": 8,
+            "line_counts": {
+                "blanks_added": 482,
+                "blanks_deleted": 167,
+                "comments_added": 281,
+                "comments_deleted": 207,
+                "lines_added": 246,
+                "lines_deleted": 65,
+                "spacing_changes": 475,
+                "syntax_changes": 243
+            },
+            "merged_by": 6,
+            "merged_date": "2021-03-11T19:26:55.527Z",
+            "related_issue_iid": null,
+            "state": "merged",
+            "title": "Resolve \"Refactor database orm\"",
+            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/8"
+        }
+    ],
+    "response": true
+}
+
+{
+    "Cause": "Error, invalid projectID.",
+    "response": false
+}
+```
+[Go back to API list](#api-example-response)
+
+### Get all the merge request sorted in users
+#### `GET /projects/<int:projectID>/merge_request/user/all`
+```json
 {
     "merge_request_users_list": {
         "Joseph Test": [
@@ -387,148 +575,12 @@ GET /projects/<int:projectID>/merge_request/user/all
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/merge_request/user/all
-{
-    "merge_request_list": [
-        {
-            "author": {
-                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
-                "id": 6,
-                "name": "Joseph Test",
-                "state": "active",
-                "username": "makemaketest5",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
-            },
-            "code_diff_id": 392,
-            "comments": null,
-            "commit_list": [
-                {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 395,
-                    "committed_date": "2021-03-11T19:33:59.000Z",
-                    "committer_name": "Joseph Test",
-                    "id": "9e6744896c0126939dfd5b15e9a79e9112eab8d4",
-                    "line_counts": {
-                        "blanks_added": 62,
-                        "blanks_deleted": 239,
-                        "comments_added": 281,
-                        "comments_deleted": 148,
-                        "lines_added": 444,
-                        "lines_deleted": 249,
-                        "spacing_changes": 286,
-                        "syntax_changes": 219
-                    },
-                    "short_id": "9e674489",
-                    "title": "Add logic class for basic paxo procotol",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/9e6744896c0126939dfd5b15e9a79e9112eab8d4"
-                },
-                {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 396,
-                    "committed_date": "2021-03-11T19:30:23.000Z",
-                    "committer_name": "Joseph Test",
-                    "id": "64bf8dd279947d857616317a55f0f45a78a27d0e",
-                    "line_counts": {
-                        "blanks_added": 412,
-                        "blanks_deleted": 111,
-                        "comments_added": 284,
-                        "comments_deleted": 280,
-                        "lines_added": 473,
-                        "lines_deleted": 492,
-                        "spacing_changes": 323,
-                        "syntax_changes": 449
-                    },
-                    "short_id": "64bf8dd2",
-                    "title": "Initial commit to create stubs and getters and setters",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/64bf8dd279947d857616317a55f0f45a78a27d0e"
-                }
-            ],
-            "created_date": "2021-03-11T19:36:08.651Z",
-            "description": "Closes #11",
-            "id": 9,
-            "iid": 9,
-            "line_counts": {
-                "blanks_added": 134,
-                "blanks_deleted": 159,
-                "comments_added": 261,
-                "comments_deleted": 480,
-                "lines_added": 352,
-                "lines_deleted": 146,
-                "spacing_changes": 460,
-                "syntax_changes": 445
-            },
-            "merged_by": 6,
-            "merged_date": "2021-03-11T19:36:19.943Z",
-            "related_issue_iid": 11,
-            "state": "merged",
-            "title": "Resolve \"Implemented paxo\"",
-            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/9"
-        },
-        {
-            "author": {
-                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
-                "id": 6,
-                "name": "Joseph Test",
-                "state": "active",
-                "username": "makemaketest5",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
-            },
-            "code_diff_id": 397,
-            "comments": null,
-            "commit_list": [
-                {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 404,
-                    "committed_date": "2021-03-11T19:21:13.000Z",
-                    "committer_name": "Joseph Test",
-                    "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
-                    "line_counts": {
-                        "blanks_added": 575,
-                        "blanks_deleted": 355,
-                        "comments_added": 546,
-                        "comments_deleted": 577,
-                        "lines_added": 511,
-                        "lines_deleted": 589,
-                        "spacing_changes": 875,
-                        "syntax_changes": 500
-                    },
-                    "short_id": "2e94747c",
-                    "title": "Add query notify class and logic",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/2e94747c4e2cad40752e1637af756e8a684c544d"
-                }
-            ],
-            "created_date": "2021-03-11T19:26:26.371Z",
-            "description": "New features added. This is important branch",
-            "id": 8,
-            "iid": 8,
-            "line_counts": {
-                "blanks_added": 482,
-                "blanks_deleted": 167,
-                "comments_added": 281,
-                "comments_deleted": 207,
-                "lines_added": 246,
-                "lines_deleted": 65,
-                "spacing_changes": 475,
-                "syntax_changes": 243
-            },
-            "merged_by": 6,
-            "merged_date": "2021-03-11T19:26:55.527Z",
-            "related_issue_iid": null,
-            "state": "merged",
-            "title": "Resolve \"Refactor database orm\"",
-            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/8"
-        }
-    ],
-    "response": true
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
-
-GET /projects/<int:projectID>/code_diff/<int:codeDiffID>
+### Get a specific code diff
+#### `GET /projects/<int:projectID>/code_diff/<int:codeDiffID>`
+```json
 {
     "code_diff_list": [
         {
@@ -559,8 +611,12 @@ GET /projects/<int:projectID>/code_diff/<int:codeDiffID>
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/comments/all
+### Get all comments in that project
+#### `GET /projects/<int:projectID>/comments/all`
+```json
 {
     "notes": [
         {
@@ -591,8 +647,12 @@ GET /projects/<int:projectID>/comments/all
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
 
-GET /projects/<int:projectID>/comments/user/all
+### Get all comments sorted in users
+#### `GET /projects/<int:projectID>/comments/user/all`
+```json
 {
     "notes": {
         "Joseph Test": [
@@ -637,3 +697,5 @@ GET /projects/<int:projectID>/comments/user/all
     "Cause": "Error, invalid projectID.",
     "response": false
 }
+```
+[Go back to API list](#api-example-response)
