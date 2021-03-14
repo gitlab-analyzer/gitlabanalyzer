@@ -101,7 +101,7 @@ const Repo = ({
         commit.commits.map((innerCommit) => ({
           authorName: innerCommit.author_name,
           codeDiffId: innerCommit.code_diff_id,
-          commitedDate: Date.parse(innerCommit.committed_date),
+          commitedDate: new Date(innerCommit.committed_date),
           commiterName: innerCommit.committer_name,
           id: innerCommit.id,
           lineCounts: {
@@ -142,7 +142,7 @@ const Repo = ({
               author.commit_list.map((commit) => ({
                 authorName: commit.author_name,
                 codeDiffId: commit.code_diff_id,
-                comittedDate: Date.parse(commit.committed_date),
+                comittedDate: new Date(commit.committed_date),
                 committerName: commit.committer_name,
                 id: commit.id,
                 lineCounts: commit.line_counts,
@@ -159,13 +159,13 @@ const Repo = ({
                 // Frontend defined variables End --------------------------
               })),
             ],
-            createdDate: Date.parse(author.created_date),
+            createdDate: new Date(author.created_date),
             description: author.description,
             id: author.id,
             iid: author.iid,
             lineCounts: author.line_counts,
             mergedBy: author.merged_by,
-            mergedDate: Date.parse(author.merged_date),
+            mergedDate: new Date(author.merged_date),
             relatedIssueIid: author.related_issue_iid,
             state: author.state,
             title: author.title,
@@ -199,7 +199,7 @@ const Repo = ({
     const tempNotes = notesRes.data['notes'].map((note) => ({
       author: note.author,
       body: note.body,
-      createdDate: Date.parse(note.created_date),
+      createdDate: new Date(note.created_date),
       id: note.id,
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
@@ -230,7 +230,7 @@ const Repo = ({
           tempComments[user].push({
             author: comment.author,
             body: comment.body,
-            createdDate: Date.parse(comment.created_date),
+            createdDate: new Date(comment.created_date),
             id: comment.id,
             noteableId: comment.noteable_id,
             noteableIid: comment.noteable_iid,
