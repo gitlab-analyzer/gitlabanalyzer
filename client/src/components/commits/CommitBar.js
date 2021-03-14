@@ -40,7 +40,7 @@ const CommitBar = () => {
                 {commit['shortId']}
               </a>
             ),
-            date: commit['comittedDate'],
+            date: commit['comittedDate'].toString(),
             score: commit['score'],
             message: commit['title'],
           });
@@ -61,20 +61,6 @@ const CommitBar = () => {
       });
     }
   }
-
-  // const commitsData = [];
-  // /**
-  //  * Populate Commits with dummy data for testing
-  //  */
-  // for (let i = 0; i < 3; ++i) {
-  //   commitsData.push({
-  //     key: i,
-  //     date: '2021-02-21 23:12:00',
-  //     message: 'Add new routes for retrieving code & code diffs',
-  //     commitid: 'e71b2010',
-  //     score: '175',
-  //   });
-  // }
 
   /**
    * Expandable Row for Commits inside a specific Merge Request
