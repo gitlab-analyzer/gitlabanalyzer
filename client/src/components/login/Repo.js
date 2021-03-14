@@ -101,7 +101,7 @@ const Repo = ({
         commit.commits.map((innerCommit) => ({
           authorName: innerCommit.author_name,
           codeDiffId: innerCommit.code_diff_id,
-          commitedDate: Date.parse(innerCommit.committed_date),
+          commitedDate: new Date(innerCommit.committed_date),
           commiterName: innerCommit.committer_name,
           id: innerCommit.id,
           lineCounts: {

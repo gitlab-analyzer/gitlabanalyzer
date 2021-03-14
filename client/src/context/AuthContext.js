@@ -15,6 +15,19 @@ const AuthProvider = (props) => {
   const [commentsList, setCommentsList] = useState({});
   const [selectMembersList, setSelectMembersList] = useState([]);
   const [overviewScore, setOverviewScore] = useState({});
+  const [dailyArray, setDailyArray] = useState([]);
+  const [dateArray, setDateArray] = useState([]);
+  const [countArray, setCountArray] = useState([]);
+  const [combinedSeries, setCombinedSeries] = useState([
+    {
+      name: 'Merge Requests',
+      data: [],
+    },
+    {
+      name: 'Commits',
+      data: [],
+    },
+  ]);
 
   const authContextValue = {
     user,
@@ -41,6 +54,12 @@ const AuthProvider = (props) => {
     setSelectMembersList,
     overviewScore,
     setOverviewScore,
+    dailyArray, 
+    setDailyArray,
+    dateArray,
+    setDateArray,
+    countArray,
+    setCountArray
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

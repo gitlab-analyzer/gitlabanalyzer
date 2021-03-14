@@ -67,6 +67,7 @@ const rows = [
 
 const TablePage = () => {
   const classes = useStyles();
+  
   return (
     <>
       <Header />

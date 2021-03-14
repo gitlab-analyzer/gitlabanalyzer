@@ -33,12 +33,8 @@ const Summary = () => {
   const [combinedDropdown, setCombinedDropdown] = useState('Number');
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
+
   const classes = useStyles();
-  console.log(selectUser)
-  console.log(commitsList)
-  console.log(selectMembersList)
-  // source: https://stackoverflow.com/a/27314677
-  // should be reusable for merge requests. Word counts will be slightly different
 
   const countDates = (commitsList) => {
     var result = {},
@@ -48,55 +44,52 @@ const Summary = () => {
       rarr = [];
       for(i = 0; i < commitsList.length; i++) {
         if(selectUser == commitsList[i].userName){
-          console.log("test passed")
+          console.log("User found")
           for(j = 0; j < commitsList[i].commits[0].length; j++){
-            console.log(commitsList[i].commits[0][j].commitedDate)
+            //console.log(commitsList[i].commits[0][j].commitedDate)
+            date = [
+              commitsList[i].commits[0][j].commitedDate.getFullYear(),
+              commitsList[i].commits[0][j].commitedDate.getMonth(),
+              commitsList[i].commits[0][j].commitedDate.getDate()
+            ].join('-');
+            //console.log(date)
+            result[date] = result[date] || 0;
+            result[date]++;
           }
         }
       }
+      for (i in result) {
+        if(result.hasOwnProperty(i)) {
+          rarr.push({ date: i, counts: result[i] });
+        }
+      }
+      return rarr;
   }
-  countDates(commitsList)
-  // const countDates = (commitsList) => {
-  //   var result = {},
-  //     i,
-  //     date,
-  //     rarr = [];
-  //   // for (i = 0; i < commitsList.length; i++) {
-  //   //   date = [
-  //   //     commitsList[i].commitedDate.getFullYear(),
-  //   //     commitsList[i].commitedDate.getMonth(),
-  //   //     commitsList[i].commitedDate.getDate(),
-  //   //   ].join('-');
-  //   //   result[date] = result[date] || 0;
-  //   //   result[date]++;
-  //   // }
-  //   for (i in result) {
-  //     if (result.hasOwnProperty(i)) {
-  //       rarr.push({ date: i, counts: result[i] });
-  //     }
-  //   }
-  //   // console.log(rarr.slice(0, 13));
 
-  //   return rarr.slice(0, 13);
-  // };
+  const populateDates = (array) => {
+    var result = [], i;
+    for(i in array) {
+      result.push(array[i].date)
+    }
+    return result.reverse();
+  }
 
-  // const populateDateArray = (array) => {
-  //   var newArray = [],
-  //     i;
-  //   for (i in array) {
-  //     newArray.push(array[i].date);
-  //   }
-  //   return newArray.reverse();
-  // };
-  // const populateCountArray = (array) => {
-  //   var newArray = [],
-  //     i;
-  //   for (i in array) {
-  //     newArray.push(array[i].counts);
-  //   }
-  //   return newArray.reverse();
-  // };
+  const populateCounts = (array) => {
+    var newArray = [], i;
+    for(i in array) {
+      newArray.push(array[i].counts)
+    }
+    return newArray.reverse();
+  }
 
+
+  const dataNew = countDates(commitsList)
+  const dateArray = populateDates(dataNew)
+  const countArray = populateCounts(dataNew);
+
+  console.log(dataNew)
+  console.log(dateArray)
+  console.log(countArray)
   //should probably use useState
   // const dataNew = countDates(commitsList);
   // const dateArray = populateDateArray(dataNew);
@@ -166,7 +159,7 @@ const Summary = () => {
     },
     {
       name: 'Commits',
-      data: data,
+      data: countArray,
     },
   ]);
 
@@ -232,50 +225,6 @@ const Summary = () => {
       ]);
     }
   };
-  // ])
-
-  // const handleMenuClick = (e) => {
-  //   console.log('Key test:', e);
-
-  //   if(e.key === "Num") {
-  //     setCombinedDropdown("Number")
-  //     setCombinedSeries([{
-  //       data: data
-  //     },{
-  //       data: data2
-  //     }
-  //     ])
-  //     setTextRender('Number')
-  //   } else if(e.key === "Score") {
-  //     setCombinedDropdown("Score")
-  //     setCombinedSeries([{
-  //       data: data2
-  //     }, {
-  //       data: data
-  //     }
-  //     ])
-  //     setTextRender('Score')
-  //   } else if (e.key ==="crAll") {
-  //     setCrDropdown("All")
-  //     setCrSeries([{
-  //       data: data
-  //     }
-  //     ])
-  //   } else if (e.key === "crOwn") {
-  //     setCrDropdown("Own")
-  //     setCrSeries([{
-  //       data: data2
-  //     }
-  //     ])
-  //   } else if (e.key === "crOthers") {
-  //     setCrDropdown("Others")
-  //     setCrSeries([{
-  //       data: data3
-  //     }
-  //     ])
-  //   }
-
-  // };
 
   const combinedMenu = (
     <Menu onClick={handleMenuClick}>
@@ -303,7 +252,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} />
+          <StackedBarGraph series={combinedSeries} xlabel={dateArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
