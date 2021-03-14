@@ -1,11 +1,15 @@
 import React from 'react';
-import { Select, Button, DatePicker, Form, InputNumber  } from 'antd';
+import { Select, Button, DatePicker, Form, InputNumber, Col, Row, Divider  } from 'antd';
 // import { writeJsonFile } from 'write-json-file';
 import { useHistory } from "react-router-dom";
 import moment from 'moment';
 
+// import './InitialConfig.css';
+
 ////// to delete
 import Data from '../components/floatbar/FloatBarData.json';
+import { red } from '@material-ui/core/colors';
+
 var FloatBarData = Data.users;
 const { Option } = Select;
 ///////
@@ -14,28 +18,12 @@ const { RangePicker } = DatePicker;
 
 const layout = {
     labelCol: {
-        span: 8,
+        span:9,
     },
     wrapperCol: {
         span: 16,
     },
 };
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-
-// export var setting = [
-//     {
-//         user: "",
-//         java: "",
-//         python: "",
-//         startdate: "",
-//         enddate: ""
-//     }
-// ];
 
 export var setting = {
     user: "khangura",
@@ -75,8 +63,6 @@ function InitialConfig() {
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-
-
     return (
         <div>
             <Form
@@ -85,6 +71,7 @@ function InitialConfig() {
                 initialValues={{ remember:true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
+                style={{ paddingTop:100 }}
             >
             <Form.Item
                 label="User"
@@ -132,112 +119,137 @@ function InitialConfig() {
                         />
                     </div>
                 </Form.Item>
-                <Form.Item
-                    label="JavaScript"
-                    name="javascript"
-                    rules={[
-                        { 
-                            required: true, 
-                            message: 'Please input a number.', 
-                        },
-                    ]}
-                >
-                    <InputNumber onChange={ value => setting.java = value} />
-                </Form.Item>
-                <Form.Item
-                    label="Python"
-                    name="python"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input a number.',
-                        },
-                    ]}
-                >
-                    <InputNumber onChange={value => setting.python = value} />
-                </Form.Item>
-                <Form.Item
-                    label="HTML"
-                    name="html"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input a number.',
-                        },
-                    ]}
-                >
-                    <InputNumber onChange={value => setting.html = value} />
-                </Form.Item>
-                <Form.Item
-                    label="CSS"
-                    name="css"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input a number.',
-                        },
-                    ]}
-                >
-                    <InputNumber onChange={value => setting.css = value} />
-                </Form.Item>
-                <Form.Item
-                    label="Iteration 1"
-                    name="iter1"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input a Date Range.',
-                        },
-                    ]}
-                >
-                    <div className="daterange">
-                        <RangePicker 
-                        format="YYYY/MM/DD hh:mm:ss"
-                        showTime
-                        onChange={value => setIter1Range(value)}
-                        />
-                    </div>
-                </Form.Item>
-                <Form.Item
-                    label="Iteration 2"
-                    name="iter2"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input a Date Range.',
-                        },
-                    ]}
-                >
-                    <div className="daterange">
-                        <RangePicker 
-                        // defaultValue={[null, moment()]}
-                        format="YYYY/MM/DD hh:mm:ss"
-                        showTime
-                        onChange={value => setIter2Range(value)}
-                        />
-                    </div>
-                </Form.Item>
-                <Form.Item
-                    label="Iteration 3"
-                    name="iter3"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input a Date Range.',
-                        },
-                    ]}
-                >
-                    <div className="daterange">
-                        <RangePicker 
-                        format="YYYY/MM/DD hh:mm:ss"
-                        showTime
-                        onChange={value => setIter3Range(value)}
-                        />
-                    </div>
+                {/* <Divider style={{width:300}} /> */}
 
-                </Form.Item>
-                <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit" onClick={handleRoute}>
+                {/* <Form.Item
+                    // label="Languages"
+                    name="languages"
+                    style={{ display:'inline-grid'}}
+                > */}
+                {/* <Row gutter={12} style={{justifyContent:'center'}}> */}
+                {/* <Row  style={{backgroundColor:'yellow'}}> */}
+                <div className="languageContainer" style={{borderColor:"black"}}>
+                <Row>
+                    <Col style={{width:'300px', marginLeft:'585px'}}>
+                    {/* <Col > */}
+                        <Form.Item
+                            label="JavaScript"
+                            name="javascript"
+                            rules={[
+                                { 
+                                    required: true, 
+                                    message: 'Please input a number.', 
+                                },
+                            ]}
+                        >
+                            <InputNumber onChange={value => setting.java = value} />
+                        </Form.Item>
+                        <Form.Item
+                            label="Python"
+                            name="python"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input a number.',
+                                },
+                            ]}
+                        >
+                            <InputNumber onChange={value => setting.python = value} />
+                        </Form.Item>
+                    </Col>    
+                    {/* <Col span={3} style={{backgroundColor:"blue"}}> */}
+                    <Col style={{width:'300px'}}>
+                        <Form.Item
+                            label="HTML"
+                            name="html"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input a number.',
+                                },
+                            ]}
+                        >
+                            <InputNumber onChange={value => setting.html = value} />
+                        </Form.Item>
+                        <Form.Item
+                            label="CSS"
+                            name="css"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input a number.',
+                                },
+                            ]}
+                        >
+                            <InputNumber onChange={value => setting.css = value} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                </div>
+                {/* </Form.Item> */}
+                <div className="iterationContainer">
+                    <Form.Item
+                        label="Iteration 1"
+                        name="iter1"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input a Date Range.',
+                            },
+                        ]}
+                    >
+                        <div className="daterange">
+                            <RangePicker 
+                            format="YYYY/MM/DD hh:mm:ss"
+                            showTime
+                            onChange={value => setIter1Range(value)}
+                            />
+                        </div>
+                    </Form.Item>
+                    <Form.Item
+                        label="Iteration 2"
+                        name="iter2"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input a Date Range.',
+                            },
+                        ]}
+                    >
+                        <div className="daterange">
+                            <RangePicker 
+                            format="YYYY/MM/DD hh:mm:ss"
+                            showTime
+                            onChange={value => setIter2Range(value)}
+                            />
+                        </div>
+                    </Form.Item>
+                    <Form.Item
+                        label="Iteration 3"
+                        name="iter3"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input a Date Range.',
+                            },
+                        ]}
+                    >
+                        <div className="daterange">
+                            <RangePicker 
+                            format="YYYY/MM/DD hh:mm:ss"
+                            showTime
+                            onChange={value => setIter3Range(value)}
+                            />
+                        </div>
+
+                    </Form.Item>
+
+                </div>
+                <Form.Item
+                    style={{marginLeft:'60%', marginTop:5}}
+                >
+                    <Button type="primary" htmlType="submit" onClick={handleRoute} >
                         Save
                     </Button>
                 </Form.Item>
