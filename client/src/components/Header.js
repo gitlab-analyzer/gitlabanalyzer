@@ -1,5 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Link } from 'react-bootstrap';
+import { BackTop } from 'antd'; 
+import { UpCircleOutlined } from '@ant-design/icons';
 import { LinkContainer } from 'react-router-bootstrap';
 import FloatBar from './floatbar/FloatBar';
 import Logo from './Logo';
@@ -9,6 +11,9 @@ const Header = () => {
   return (
     <div>
       <Logo />
+      <BackTop style={{fontSize:'40px', color:'#808080'}}>
+      <UpCircleOutlined />
+      </BackTop>
       <FloatBar />
       <Navbar bg="light" expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
