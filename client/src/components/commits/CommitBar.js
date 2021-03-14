@@ -69,7 +69,7 @@ const CommitBar = () => {
   let commitsOnlyData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
   if (selectedUserMRList !== 0) {
-    for (let mr of selectedUserMRList) {
+    for (let mr of selectedUserMRList['mr']) {
       const commitsData = [];
       for (let commitArray of mr['commitList']) {
         for (let commit of commitArray) {
@@ -213,10 +213,10 @@ const CommitBar = () => {
     // console.log('test', mergeRequestList[selectUser]);
     const newMergeRequestState = {
       ...mergeRequestList,
-      [selectUser]: [
-        ...mergeRequestList[selectUser],
-        { weightedScore: mergeRequestList[selectUser]['weightedScore'] },
-      ],
+      [selectUser]: {
+        mr: [...mergeRequestList[selectUser]['mr']],
+        weightedScore: mergeRequestList[selectUser]['weightedScore'],
+      },
     };
     console.log(newMergeRequestState);
   };

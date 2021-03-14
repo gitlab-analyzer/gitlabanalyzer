@@ -131,10 +131,13 @@ const Repo = ({
       const tempMR = {};
       // Loop through object key
       for (let user in mrList) {
-        tempMR[user] = [];
+        tempMR[user] = {
+          mr: [],
+          weightedScore: 0,
+        };
         // Loop through object item
         for (let author of mrList[user]) {
-          tempMR[user].push({
+          tempMR[user].mr.push({
             author: author.author,
             codeDiffId: author.code_diff_id,
             comments: author.comments,
@@ -180,10 +183,9 @@ const Repo = ({
             ignore: false,
             // Frontend defined variables End --------------------------
           });
-          tempMR[user]['weightedScore'] = 0;
         }
       }
-      // console.log(tempMR);
+      console.log(tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
