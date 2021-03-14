@@ -9,7 +9,6 @@ import SummaryPage from './pages/SummaryPage';
 import BatchPage from './pages/BatchPage';
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
-import InitialConfig from './pages/InitialConfig';
 import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
 import ConfigPage from './pages/ConfigPage';
@@ -22,7 +21,6 @@ function App() {
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
           <Route path="/reposearch" component={SearchPage} />
-          <Route path="/initialconfig" component={InitialConfig} />
           <Container maxWidth="lg">
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />

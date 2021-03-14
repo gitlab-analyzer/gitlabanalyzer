@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
-import { Tag, Button, Checkbox, List, Avatar, Progress } from 'antd';
+import { Tag, Button, Checkbox, List, Avatar, Progress, Drawer, notification, Form } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
+import { CloseCircleOutlined } from '@ant-design/icons';
+import IterationDates from '../config/IterationDates.js';
+import InitialUserDates from '../config/InitialUserDates.js';
+import LanguagePoints from '../config/LanguagePoints.js';
+// import InitialConfig from '../../pages/InitialConfig';
 
 const Repo = ({
   analyzing,
@@ -24,13 +30,30 @@ const Repo = ({
 
   const [redirect, setRedirect] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
+  const history = useHistory();    
+
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
   useEffect(() => {}, [filteredList]);
+
+  const handleRoute = () => {
+    if (Object.keys(setting.iteration).length > 5 && setting.enddate){
+        history.push("/summary")
+    }
+    else {
+      notification.open({
+          message: 'Error',
+          description: 'Please fill out all fields.',
+          icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+          duration: 1,
+      });
+    }           
+  }
 
   // General error handling function for fetch requests
   const fetchErrorChecker = (res, dataType) => {
@@ -260,6 +283,7 @@ const Repo = ({
   const handleAnalyze = async () => {
     try {
       setAnalyzing(true);
+      setVisible(true);
 
       /**
        * This setProjectIs() is important, it is needed for iteration 3, but this process calls
@@ -282,6 +306,10 @@ const Repo = ({
       setAnalyzing(false);
       console.log(error);
     }
+  };
+
+  const onClose = () => {
+    setVisible(false);
   };
 
   const onCheckAllChange = (e) => {
@@ -369,9 +397,41 @@ const Repo = ({
             </List.Item>
           )}
         />
+        <Drawer
+          placement="right"
+          width={500}
+          closable={false}
+          onClose={onClose}
+          visible={visible}
+          title="Initial Configuration"
+          footer={
+            <div
+              style={{
+                textAlign: 'right',
+              }}
+            >
+              <Button type="primary" htmlType="submit" onClick={handleRoute} >
+                Save
+              </Button>
+            </div>
+          }
+        >
+          <Form 
+            layout="vertical"
+          >
+            <InitialUserDates />
+            <LanguagePoints />
+            <IterationDates />
+          </Form>
+          {/* <InitialConfig /> */}
+        </Drawer>
       </div>
     );
   }
 };
 
 export default Repo;
+
+export var setting = {
+  iteration: {}
+}

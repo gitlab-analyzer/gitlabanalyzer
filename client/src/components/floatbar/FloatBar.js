@@ -9,7 +9,8 @@ import Settings from './Settings.json';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { setting } from '../../pages/InitialConfig'
+// import { setting } from '../../pages/InitialConfig'
+import { setting } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
 
 import './FloatBar.css';
