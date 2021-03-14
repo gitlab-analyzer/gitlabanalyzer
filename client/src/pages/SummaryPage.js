@@ -40,6 +40,22 @@ const Summary = () => {
   // source: https://stackoverflow.com/a/27314677
   // should be reusable for merge requests. Word counts will be slightly different
 
+  const countDates = (commitsList) => {
+    var result = {},
+      i,
+      j,
+      date,
+      rarr = [];
+      for(i = 0; i < commitsList.length; i++) {
+        if(selectUser == commitsList[i].userName){
+          console.log("test passed")
+          for(j = 0; j < commitsList[i].commits[0].length; j++){
+            console.log(commitsList[i].commits[0][j].commitedDate)
+          }
+        }
+      }
+  }
+  countDates(commitsList)
   // const countDates = (commitsList) => {
   //   var result = {},
   //     i,
