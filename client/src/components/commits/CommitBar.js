@@ -105,8 +105,9 @@ const CommitBar = () => {
         commitsList: commitsData,
       });
     }
-    console.log(commitsOnlyData);
+    // console.log(commitsOnlyData);
   }
+  // console.log(mergeRequestData);
 
   const columnsCommits = [
     {
