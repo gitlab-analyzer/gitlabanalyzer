@@ -408,6 +408,12 @@ const Repo = ({
                 textAlign: 'right',
               }}
             >
+              <Button 
+                style={{ marginRight:10 }}
+                onClick={onClose} 
+              >
+                Close
+              </Button>
               <Button type="primary" htmlType="submit" onClick={handleRoute} >
                 Save
               </Button>

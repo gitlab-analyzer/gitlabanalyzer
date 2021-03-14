@@ -1,23 +1,23 @@
 import React from 'react';
 import { Form, Divider } from 'antd';
-import LanguagePoints from '../components/config/LanguagePoints.js';
-import IterationDates from '../components/config/IterationDates.js'
-import InitialUserDates from '../components/config/InitialUserDates.js'
+import LanguagePoints from '../components/config/LanguagePoints';
+import IterationDates from '../components/config/IterationDates';
+import InitialUserDates from '../components/config/InitialUserDates';
+import AnonymousViewing from '../components/config/AnonymousViewing';
 
 function InitialConfig() {
     return (        
-        <div>
-            <Form 
-                layout="vertical"
-            >
-                    <InitialUserDates />
-                    <Divider />
-                    <LanguagePoints />
-                    <Divider />
-                    <IterationDates />
-            </Form>
-
-        </div>
+        <Form 
+            layout="vertical"
+        >
+                <InitialUserDates />
+                <Divider />
+                <LanguagePoints />
+                <Divider />
+                <IterationDates />
+                <Divider />
+                <AnonymousViewing />
+        </Form>
     );
 }
 export default InitialConfig;
