@@ -5,6 +5,7 @@ import { setting } from '../login/Repo';
 function LanguagePoints() {
     return (
         <div>
+            <h6>Language Points</h6>
             <Row gutter={24}>
                 <Col span={8}>
                     <Form.Item

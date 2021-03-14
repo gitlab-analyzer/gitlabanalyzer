@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'antd';
+import { Form, Divider } from 'antd';
 import LanguagePoints from '../components/config/LanguagePoints.js';
 import IterationDates from '../components/config/IterationDates.js'
 import InitialUserDates from '../components/config/InitialUserDates.js'
@@ -11,7 +11,9 @@ function InitialConfig() {
                 layout="vertical"
             >
                     <InitialUserDates />
+                    <Divider />
                     <LanguagePoints />
+                    <Divider />
                     <IterationDates />
             </Form>
 

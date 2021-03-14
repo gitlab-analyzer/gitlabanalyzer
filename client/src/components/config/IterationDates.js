@@ -8,6 +8,7 @@ function IterationDates() {
     const DateErrorMsg = 'Please input a Date Range.'
     return (
         <div>
+            <h6>Iteration Duration</h6>
             <Form.Item
                 label="Iteration 1"
                 name="iter1"
