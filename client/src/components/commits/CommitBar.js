@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import { Card, Table, Space, Badge, Tag, Button } from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
-import { Drawer } from '@material-ui/core';
+// import { Drawer } from '@material-ui/core';
 import { useAuth } from '../../context/AuthContext';
 
 /**
@@ -10,6 +10,7 @@ import { useAuth } from '../../context/AuthContext';
  */
 const CommitBar = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [showCommits, setShowCommits] = useState(false);
   const {
     membersList,
     usersList,
@@ -66,7 +67,8 @@ const CommitBar = () => {
   /**
    * Populate Merge Requests with real data
    */
-  const mergeRequestData = [];
+  let mergeRequestData = [];
+  let commitsOnlyData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
   // console.log(selectedUserMRList);
   if (selectedUserMRList !== 0) {
@@ -88,6 +90,8 @@ const CommitBar = () => {
             message: commit['title'],
           });
         }
+        // This constructs a separate list for commits only
+        commitsOnlyData = [...commitsOnlyData, ...commitsData];
       }
       mergeRequestData.push({
         key: mr['id'],
@@ -103,61 +107,62 @@ const CommitBar = () => {
         commitsList: commitsData,
       });
     }
+    console.log(commitsOnlyData);
   }
+
+  const columnsCommits = [
+    {
+      title: 'Commit ID',
+      dataIndex: 'commitid',
+      key: 'commitid',
+      width: 150,
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+      width: 160,
+      filterMultiple: false,
+      // TODO: Fix the sorter once API Data is available to link up
+      onFilter: (value, record) => record.date.indexOf(value) === 0,
+      sorter: (a, b) => a.data.length - b.date.length,
+      sortDirections: ['descend', 'ascend'],
+    },
+    { title: 'Message', dataIndex: 'message', key: 'message', width: 405 },
+    { title: 'Score', dataIndex: 'score', key: 'score', width: 135 },
+    {
+      title: 'Status',
+      key: 'state',
+      render: () => (
+        <span>
+          <Badge status="success" color={'blue'} />
+          <Tag color="blue">Included</Tag>
+        </span>
+      ),
+    },
+    {
+      title: 'Action',
+      dataIndex: 'operation',
+      key: 'operation',
+      render: () => (
+        <Space size="middle">
+          <Button icon={<CodeOutlined />} onClick={showDrawer}>
+            Diffs
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
   /**
    * Expandable Row for Commits inside a specific Merge Request
    */
   const expandedRowRender = (commitsList) => {
-    const columns = [
-      {
-        title: 'Commit ID',
-        dataIndex: 'commitid',
-        key: 'commitid',
-        width: 150,
-      },
-      {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
-        width: 160,
-        filterMultiple: false,
-        // TODO: Fix the sorter once API Data is available to link up
-        onFilter: (value, record) => record.date.indexOf(value) === 0,
-        sorter: (a, b) => a.data.length - b.date.length,
-        sortDirections: ['descend', 'ascend'],
-      },
-      { title: 'Message', dataIndex: 'message', key: 'message', width: 405 },
-      { title: 'Score', dataIndex: 'score', key: 'score', width: 135 },
-      {
-        title: 'Status',
-        key: 'state',
-        render: () => (
-          <span>
-            <Badge status="success" color={'blue'} />
-            <Tag color="blue">Included</Tag>
-          </span>
-        ),
-      },
-      {
-        title: 'Action',
-        dataIndex: 'operation',
-        key: 'operation',
-        render: () => (
-          <Space size="middle">
-            <Button icon={<CodeOutlined />} onClick={showDrawer}>
-              Diffs
-            </Button>
-          </Space>
-        ),
-      },
-    ];
-
     return (
       <Table
-        columns={columns}
+        columns={columnsCommits}
         dataSource={commitsList}
-        rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
+        rowSelection={{ ...commitSelection, columnTitle: 'ignore' }}
         pagination={false}
       />
     );
@@ -205,6 +210,36 @@ const CommitBar = () => {
     },
   ];
 
+  const ignoreCommit = (commitId) => {
+    console.log('Ignored', commitId);
+  };
+
+  const unIgnoreCommit = (commitId) => {
+    console.log('Unignored', commitId);
+  };
+
+  // This object defines the behavior of ignore selectors
+  const commitSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   'selectedRows: ',
+      //   selectedRows
+      // );
+    },
+    // Selection Logic to be implemented once API data is done
+    onSelect: (record, selected, selectedRows) => {
+      ignoreCommit(record['key']);
+    },
+    onSelectInvert: (record, selected, selectedRows) => {
+      unIgnoreCommit(record['key']);
+    },
+    // Selection Logic to be implemented once API data is done
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      // console.log(selected, selectedRows, changeRows);
+    },
+  };
+
   // This object defines the behavior of ignore selectors
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -216,11 +251,11 @@ const CommitBar = () => {
     },
     // Selection Logic to be implemented once API data is done
     onSelect: (record, selected, selectedRows) => {
-      console.log(record, selected, selectedRows);
+      // console.log(record, selected, selectedRows);
     },
     // Selection Logic to be implemented once API data is done
     onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
+      // console.log(selected, selectedRows, changeRows);
     },
   };
 
@@ -233,6 +268,34 @@ const CommitBar = () => {
     setDrawerVisible(false);
   };
 
+  // Event handler for merge/commit Buttons
+  const onMergeHandler = (e) => {
+    e.preventDefault();
+    setShowCommits(false);
+  };
+
+  const onCommitHandler = (e) => {
+    e.preventDefault();
+    setShowCommits(true);
+  };
+
+  const mergeCommitButtonBar = () => {
+    return (
+      <div style={{ marginBottom: '20px' }}>
+        <Button onClick={onMergeHandler} type={showCommits ? '' : 'primary'}>
+          Merge Requests
+        </Button>
+        <Button
+          onClick={onCommitHandler}
+          type={showCommits ? 'primary' : ''}
+          style={{ marginLeft: '10px' }}
+        >
+          Commits
+        </Button>
+      </div>
+    );
+  };
+
   /**
    * Render the Table component which represents the Merge Requests
    * Table represents the MR/Commits data bars
@@ -240,15 +303,25 @@ const CommitBar = () => {
    */
   return (
     <>
-      <Table
-        className="components-table-demo-nested"
-        columns={columns}
-        pagination={false}
-        // expandable={{ expandedRowRender }}
-        expandedRowRender={(record) => expandedRowRender(record.commitsList)}
-        dataSource={mergeRequestData}
-        rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
-      />
+      {mergeCommitButtonBar()}
+      {showCommits ? (
+        <Table
+          className="components-table-demo-nested"
+          columns={columnsCommits}
+          dataSource={commitsOnlyData}
+          rowSelection={{ ...commitSelection, columnTitle: 'ignore' }}
+          pagination={false}
+        />
+      ) : (
+        <Table
+          className="components-table-demo-nested"
+          columns={columns}
+          pagination={false}
+          expandedRowRender={(record) => expandedRowRender(record.commitsList)}
+          dataSource={mergeRequestData}
+          rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
+        />
+      )}
     </>
   );
 };
