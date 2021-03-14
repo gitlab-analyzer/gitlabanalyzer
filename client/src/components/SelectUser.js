@@ -3,9 +3,6 @@ import { Select } from 'antd';
 import IndividualScore from './floatbar/IndividualScore';
 import { useAuth } from '../context/AuthContext';
 import './SelectUser.css';
-// import { setting } from '../pages/InitialConfig';
-import { setting } from './login/Repo.js';
-// var FloatBarData = Data.users;
 
 const { Option } = Select;
 
@@ -14,7 +11,7 @@ function SelectUser() {
   return (
     <div className="selectUser">
       <Select
-        defaultValue={setting.user}
+        defaultValue={selectUser}
         style={{ width: 200 }}
         onChange={(value) => {
           setSelectUser(value);

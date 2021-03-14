@@ -1,7 +1,6 @@
 import React from 'react';
 import { DatePicker, Form } from 'antd';
-// import { setting } from '../../pages/InitialConfig';
-import { setting } from '../login/Repo.js';
+import { setting } from '../login/Repo';
 
 const { RangePicker } = DatePicker;
 

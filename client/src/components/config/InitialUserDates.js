@@ -1,17 +1,15 @@
 import React from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
-// import { setting } from '../../pages/InitialConfig';
-import { setting } from '../login/Repo.js';
+import { setting } from '../login/Repo';
+import { useAuth } from '../../context/AuthContext';
 
-import Data from '../floatbar/FloatBarData.json';
-var FloatBarData = Data.users;
 const { Option } = Select;
-///////
 
 const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
+    const { selectMembersList, selectUser, setSelectUser } = useAuth();
     return (
         <div>
             <Form.Item
@@ -25,13 +23,13 @@ function InitialUserDates() {
                 ]}
             >
                 <Select 
-                    // defaultValue={"khangura"} ////////////////////////////////////// TEMPORARY NEED DATA STILL
+                    defaultValue={selectMembersList[0]}
                     style={{ width: 200 }} 
-                    onChange={value => setting.user = value}
+                    onChange={value => setSelectUser(value)}
                     showSearch
                 >
-                {FloatBarData.map((Detail) => {
-                    return <Option value={Detail.username}>{Detail.username}</Option>
+                {selectMembersList.map((Detail) => {
+                    return <Option value={Detail}>{Detail}</Option>
                 })}
                 </Select>
             </Form.Item>
@@ -52,7 +50,6 @@ function InitialUserDates() {
                         Today: [moment().startOf('day'), moment().endOf('day')]
                     }}
                     showTime
-                    // onChange={value => setDateRange(value)}
                     onChange={value => 
                         {
                             setting.startdate = value[0].format()
@@ -62,7 +59,6 @@ function InitialUserDates() {
                     />
                 </div>
             </Form.Item>
-
         </div>
     );
 }

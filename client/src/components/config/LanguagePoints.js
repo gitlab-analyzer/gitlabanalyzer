@@ -1,7 +1,6 @@
 import React from 'react';
 import { Form, InputNumber, Col, Row } from 'antd';
-// import { setting } from '../../pages/InitialConfig';
-import { setting } from '../login/Repo.js';
+import { setting } from '../login/Repo';
 
 function LanguagePoints() {
     return (
@@ -74,7 +73,6 @@ function LanguagePoints() {
             </Row>
         </div>
     );
-
 }
 
 export default LanguagePoints;

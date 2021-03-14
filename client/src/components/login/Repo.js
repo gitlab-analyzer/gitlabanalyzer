@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import { Tag, Button, Checkbox, List, Avatar, Progress, Drawer, notification, Form } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { CloseCircleOutlined } from '@ant-design/icons';
-import IterationDates from '../config/IterationDates.js';
-import InitialUserDates from '../config/InitialUserDates.js';
-import LanguagePoints from '../config/LanguagePoints.js';
-// import InitialConfig from '../../pages/InitialConfig';
+import InitialConfig from '../../pages/InitialConfig';
+import axios from 'axios';
 
 const Repo = ({
   analyzing,
@@ -283,7 +280,6 @@ const Repo = ({
   const handleAnalyze = async () => {
     try {
       setAnalyzing(true);
-      setVisible(true);
 
       /**
        * This setProjectIs() is important, it is needed for iteration 3, but this process calls
@@ -291,9 +287,11 @@ const Repo = ({
        * This call is disabled for the demo on Monday.
        */
 
+      await fetchMembers();
+      setVisible(true);
+
       await setProjectId();
 
-      await fetchMembers();
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
@@ -419,11 +417,8 @@ const Repo = ({
           <Form 
             layout="vertical"
           >
-            <InitialUserDates />
-            <LanguagePoints />
-            <IterationDates />
+            <InitialConfig />
           </Form>
-          {/* <InitialConfig /> */}
         </Drawer>
       </div>
     );
