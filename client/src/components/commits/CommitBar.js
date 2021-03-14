@@ -110,19 +110,25 @@ const CommitBar = () => {
    */
   const expandedRowRender = (commitsList) => {
     const columns = [
-      { title: 'Commit ID', dataIndex: 'commitid', key: 'commitid' },
+      {
+        title: 'Commit ID',
+        dataIndex: 'commitid',
+        key: 'commitid',
+        width: 150,
+      },
       {
         title: 'Date',
         dataIndex: 'date',
         key: 'date',
+        width: 160,
         filterMultiple: false,
         // TODO: Fix the sorter once API Data is available to link up
         onFilter: (value, record) => record.date.indexOf(value) === 0,
         sorter: (a, b) => a.data.length - b.date.length,
         sortDirections: ['descend', 'ascend'],
       },
-      { title: 'Message', dataIndex: 'message', key: 'message' },
-      { title: 'Score', dataIndex: 'score', key: 'score' },
+      { title: 'Message', dataIndex: 'message', key: 'message', width: 405 },
+      { title: 'Score', dataIndex: 'score', key: 'score', width: 135 },
       {
         title: 'Status',
         key: 'state',
@@ -140,7 +146,7 @@ const CommitBar = () => {
         render: () => (
           <Space size="middle">
             <Button icon={<CodeOutlined />} onClick={showDrawer}>
-              Code Diffs
+              Diffs
             </Button>
           </Space>
         ),
@@ -161,11 +167,21 @@ const CommitBar = () => {
    * Column title for the Merge Requests
    */
   const columns = [
-    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid' },
-    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-    { title: 'Branch', dataIndex: 'branch', key: 'branch' },
-    { title: 'MR Diff', dataIndex: 'mrdiffscore', key: 'mrdiffscore' },
-    { title: 'Commits Sum', dataIndex: 'commitssum', key: 'commitssum' },
+    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 150 },
+    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', width: 160 },
+    { title: 'Title', dataIndex: 'branch', key: 'branch', width: 320 },
+    {
+      title: 'MR Diff',
+      dataIndex: 'mrdiffscore',
+      key: 'mrdiffscore',
+      width: 85,
+    },
+    {
+      title: 'Commits Sum',
+      dataIndex: 'commitssum',
+      key: 'commitssum',
+      width: 135,
+    },
     {
       title: 'Status',
       dataIndex: 'status',
