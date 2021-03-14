@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import { Card, Table, Space, Badge, Tag, Button } from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
@@ -15,19 +15,52 @@ const CommitBar = () => {
     usersList,
     mergeRequestList,
     setMergeRequestList,
+    selectUser,
   } = useAuth();
+
+  useEffect(() => {
+    // console.log(mergeRequestList);
+    // console.log(selectUser);
+    console.log(mergeRequestList[selectUser]);
+  }, [selectUser]);
 
   /**
    * Populate Merge Requests with dummy data for testing
    */
   const mergeRequestData = [];
-  for (let i = 0; i < 20; ++i) {
-    mergeRequestData.push({
+  const selectedUserMRList = mergeRequestList[selectUser] || 0;
+  const commitsData = [];
+
+  if (selectedUserMRList !== 0) {
+    for (let mr of selectedUserMRList) {
+      mergeRequestData.push({
+        key: mr['id'],
+        mrid: (
+          <a href={mr['webUrl']} target="_blank">
+            {mr['id']}
+          </a>
+        ),
+        branch: '#57 Refactor get projects API',
+        mrdiffscore: mr['score'],
+        commitssum: 490,
+        createdAt: mr['createdDate'],
+      });
+      for (let commit of mr['commitList']) {
+        console.log(commit);
+      }
+    }
+  }
+
+  /**
+   * Populate Commits with dummy data for testing
+   */
+  for (let i = 0; i < 3; ++i) {
+    commitsData.push({
       key: i,
-      mrid: 'a2f306a4',
-      branch: '#57 Refactor get projects API',
-      score: 515,
-      createdAt: '2021-02-24 23:12:00',
+      date: '2021-02-21 23:12:00',
+      message: 'Add new routes for retrieving code & code diffs',
+      commitid: 'e71b2010',
+      score: '175',
     });
   }
 
@@ -73,19 +106,6 @@ const CommitBar = () => {
       },
     ];
 
-    /**
-     * Populate Commits with dummy data for testing
-     */
-    const commitsData = [];
-    for (let i = 0; i < 3; ++i) {
-      commitsData.push({
-        key: i,
-        date: '2021-02-21 23:12:00',
-        message: 'Add new routes for retrieving code & code diffs',
-        commitid: 'e71b2010',
-        score: '175',
-      });
-    }
     return (
       <Table
         columns={columns}
@@ -100,10 +120,11 @@ const CommitBar = () => {
    * Column title for the Merge Requests
    */
   const columns = [
-    { title: 'Merge Request ID', dataIndex: 'mrid', key: 'mrid' },
+    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid' },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
     { title: 'Branch', dataIndex: 'branch', key: 'branch' },
-    { title: 'Score', dataIndex: 'score', key: 'score' },
+    { title: 'MR Diff', dataIndex: 'mrdiffscore', key: 'mrdiffscore' },
+    { title: 'Commits Sum', dataIndex: 'commitssum', key: 'commitssum' },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -170,32 +191,6 @@ const CommitBar = () => {
         dataSource={mergeRequestData}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
       />
-      <Drawer
-        variant={'persistent'}
-        styles={{ height: '90%' }}
-        anchor={'bottom'}
-        open={drawerVisible}
-        onClose={onClose}
-      >
-        <Button
-          onClick={onClose}
-          style={{
-            marginTop: '10px',
-            marginBottom: '5px',
-            marginLeft: '67.5%',
-            float: 'right',
-            width: 100,
-          }}
-        >
-          Close
-        </Button>
-        <div style={{ diplay: 'flex' }}>
-          <Card style={{ margin: 'auto', width: '80%', height: '70vh' }}>
-            <h1>Sample Code Diffs</h1>
-            <p>Sample Code</p>
-          </Card>
-        </div>
-      </Drawer>
     </>
   );
 };
