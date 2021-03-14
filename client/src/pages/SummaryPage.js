@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import BarGraph from '../components/summary/BarGraph';
@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
 
 import { useAuth } from '../context/AuthContext';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,10 @@ const Summary = () => {
   const [textRender, setTextRender] = useState('Number');
 
   const classes = useStyles();
+
+  function handleChange(value) {
+    setSelectUser(value);
+  }
 
   const countDates = (commitsList) => {
     var result = {},
@@ -82,20 +87,10 @@ const Summary = () => {
     return newArray.reverse();
   }
 
+  const dailyArray = countDates(commitsList)
+  const dateArray = populateDates(dailyArray);
+  const countArray = populateCounts(dailyArray);
 
-  const dataNew = countDates(commitsList)
-  const dateArray = populateDates(dataNew)
-  const countArray = populateCounts(dataNew);
-
-  console.log(dataNew)
-  console.log(dateArray)
-  console.log(countArray)
-  //should probably use useState
-  // const dataNew = countDates(commitsList);
-  // const dateArray = populateDateArray(dataNew);
-  // const countArray = populateCountArray(dataNew);
-  // console.log(dateArray);
-  // console.log(countArray);
 
   // will be replaced once we find out how to get data from backend
   const data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
