@@ -1,10 +1,12 @@
 import hashlib
 import json
+from copy import deepcopy
 from typing import Optional
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitLabProject
+from manager.member_manager import MemberManager
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -56,6 +58,7 @@ def get_project_list():
     return jsonify({'projects': myResponse, "response": True})
 
 
+# TODO: This can be replaced by /update so /setProject does nothing
 # Example: /projects/set?projectID=projectID_variable
 @app.route('/projects/set', methods=['post'])
 @cross_origin()
@@ -77,6 +80,22 @@ def set_project():
 @app.route('/projects/<int:projectID>/members', methods=['get'])
 def get_project_members(projectID):
     global gitlabProjectInterface
+
+    if gitlabProjectInterface is None:
+        global myGitLab
+        memberInfoList: list = []
+        tempGitLab = deepcopy(myGitLab)
+        tempGitLab.set_project(projectID)
+        members: list = tempGitLab.get_all_members()
+        memberManager = MemberManager()
+
+        for member in members:
+            memberManager.add_member(member)
+        memberList = memberManager.get_member_list()
+        for member in memberList:
+            memberInfoList.append(member.to_dict())
+
+        return jsonify({"members": memberInfoList, "response": True})
 
     if projectID == gitlabProjectInterface.project_id:
         memberInfoList: list = []
