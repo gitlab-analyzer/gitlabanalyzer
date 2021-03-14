@@ -215,22 +215,10 @@ const CommitBar = () => {
       ...mergeRequestList,
       [selectUser]: [
         ...mergeRequestList[selectUser],
-        // { weightedScore: mergeRequestList[selectUser]['weightedScore'] },
+        { weightedScore: mergeRequestList[selectUser]['weightedScore'] },
       ],
-      weightedScore: mergeRequestList[selectUser]['weightedScore'],
-      // mergeRequestList[selectUser]: "hello",
     };
     console.log(newMergeRequestState);
-    console.log(mergeRequestList[selectUser]['weightedScore']);
-    // if (selectedUserMRList !== 0) {
-    //   for (let mr of selectedUserMRList) {
-    //     for (let commitArray of mr['commitList']) {
-    //       for (let commit of commitArray) {
-    //         console.log(commit);
-    //       }
-    //     }
-    //   }
-    // }
   };
 
   const unIgnoreCommit = (commitId) => {
