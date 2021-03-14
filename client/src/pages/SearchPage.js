@@ -3,17 +3,17 @@ import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import SearchBar from '../components/login/SearchBar';
-import { Button, Alert, Spin } from 'antd';
+import { Alert, Spin } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import Repo from '../components/login/Repo';
-import { LogoutOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import LogOut from '../components/LogOut';
 
 function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setUser, setRepo } = useAuth();
+  const { user, setRepo } = useAuth();
   const [reList, setReList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
@@ -39,13 +39,6 @@ function SearchPage() {
     getRepos();
   }, []);
 
-  const handleLogOut = (e) => {
-    e.preventDefault();
-    sessionStorage.removeItem('user');
-    setRepo(null);
-    setUser(null);
-  };
-
   const loadingContainer = () => {
     if (loading) {
       return (
@@ -64,7 +57,7 @@ function SearchPage() {
         <div style={{ margin: '50px' }}>
           <Spin tip="Analyzing...">
             <Alert
-              message="Analzying selected repository"
+              message="Analyzing selected repository"
               description="Please wait while we analyze your selected repository."
               type="info"
             />
@@ -80,15 +73,7 @@ function SearchPage() {
     return (
       <div className="main_container">
         <div className="rightalign">
-          <Button
-            type="primary"
-            onClick={handleLogOut}
-            icon={<LogoutOutlined />}
-            className="logout"
-            size="large"
-          >
-            Log Out
-          </Button>
+          <LogOut />
         </div>
         <div className="App">
           <div className="center">
@@ -104,6 +89,8 @@ function SearchPage() {
             {loadingContainer()}
             <Repo
               setAnalyzing={setAnalyzing}
+              loading={loading}
+              analyzing={analyzing}
               filteredList={filteredList}
               setFilteredList={setFilteredList}
             />
