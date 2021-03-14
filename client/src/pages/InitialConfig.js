@@ -1,260 +1,136 @@
 import React from 'react';
-import { Select, Button, DatePicker, Form, InputNumber, Col, Row, Divider  } from 'antd';
-// import { writeJsonFile } from 'write-json-file';
+import { Select, Button, DatePicker, Form, Drawer, Alert, notification } from 'antd';
 import { useHistory } from "react-router-dom";
+import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import LanguagePoints from '../components/config/LanguagePoints.js';
+import IterationDates from '../components/config/IterationDates.js'
 
 // import './InitialConfig.css';
 
 ////// to delete
 import Data from '../components/floatbar/FloatBarData.json';
-import { red } from '@material-ui/core/colors';
-
 var FloatBarData = Data.users;
 const { Option } = Select;
 ///////
 
 const { RangePicker } = DatePicker;
 
-const layout = {
-    labelCol: {
-        span:9,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
-
 export var setting = {
-    user: "khangura",
     iteration: {}
 }
-// export const setting = {}
-export let sData = {}
+
 function InitialConfig() {
-
-    const [JS, setJS] = React.useState('');
-    const [PY, setPY] = React.useState('');
-    const [DateRange, setDateRange] = React.useState('');
-    const [Iter1Range, setIter1Range] = React.useState('');
-    const [Iter2Range, setIter2Range] = React.useState('');
-    const [Iter3Range, setIter3Range] = React.useState('');
     const history = useHistory();
-    const handleRoute = () => {
-            setting.java = JS
-            setting.python = PY
-            if (DateRange && Iter1Range && Iter2Range && Iter3Range){
-                // console.log(setting.enddate)
-                setting.startdate = DateRange[0].format("YYYYMMDD hhmmss")
-                setting.enddate = DateRange[1].format("YYYYMMDD hhmmss")
-                setting.iteration.iter1start = Iter1Range[0].format("YYYYMMDD hhmmss")
-                setting.iteration.iter1end = Iter1Range[1].format("YYYYMMDD hhmmss")
-                setting.iteration.iter2start = Iter2Range[0].format("YYYYMMDD hhmmss")
-                setting.iteration.iter2end = Iter2Range[1].format("YYYYMMDD hhmmss")
-                setting.iteration.iter3start = Iter3Range[0].format("YYYYMMDD hhmmss")
-                setting.iteration.iter3end = Iter3Range[1].format("YYYYMMDD hhmmss")
-                history.push("/summary")
-            }
-    }
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+    const [visible, setVisible] = React.useState(false);
+    
+    const handleRoute = () => {
+        <Alert message="Error" type="error" showIcon />
+        if (Object.keys(setting.iteration).length > 5 && setting.enddate){
+            history.push("/summary")
+        }
+        else {
+            notification.open({
+                message: 'Error',
+                description: 'Please fill out all fields.',
+                icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+                duration: 1,
+            });
+        }           
+    }
+
+    const handleDrawer = () => {
+        setVisible(true);
+    }
+    const onClose = () => {
+        setVisible(false);
     };
     return (
+        
         <div>
-            <Form
-                {...layout}
-                name = "Initial Configuration"
-                initialValues={{ remember:true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                style={{ paddingTop:100 }}
-            >
-            <Form.Item
-                label="User"
-                name="user"
-                rules={[
-                    { 
-                        required: true, 
-                        message: 'Please choose a User.', 
-                    },
-                ]}
-                >
-                    <Select 
-                        // defaultValue={"khangura"} ////////////////////////////////////// TEMPORARY NEED DATA STILL
-                        style={{ width: 200 }} 
-                        onChange={value => setting.user = value}
-                        showSearch
-                    >
-                    {/* // Temp Data */}
-                    {FloatBarData.map((Detail) => {
-                        return <Option value={Detail.username}>{Detail.username}</Option>
-                    })}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    label="Dates"
-                    name="date"
-                    rules={[
-                        { 
-                            required: true, 
-                            message: 'Please choose a Date Range.', 
-                        },
-                    ]}
-
-                >
-                    <div className="daterange">
-                        <RangePicker 
-                        // defaultValue={[null, moment()]}
-                        format="YYYY/MM/DD hh:mm:ss"
-                        ranges={{
-                            Today: [moment().startOf('day'), moment().endOf('day')]
+            <Button onClick={handleDrawer}>
+                Drawer
+            </Button>
+            <Drawer
+                placement="right"
+                width={500}
+                closable={false}
+                onClose={onClose}
+                visible={visible}
+                title="Initial Configuration"
+                footer={
+                    <div
+                        style={{
+                            textAlign: 'right',
                         }}
-                        showTime
-                        onChange={value => setDateRange(value)}
-                        // onChange={value => setting.startdate = value[0], setting.enddate = value[1]}
-                        />
+                    >
+                        <Button type="primary" htmlType="submit" onClick={handleRoute} >
+                            Save
+                        </Button>
                     </div>
-                </Form.Item>
-                {/* <Divider style={{width:300}} /> */}
-
-                {/* <Form.Item
-                    // label="Languages"
-                    name="languages"
-                    style={{ display:'inline-grid'}}
-                > */}
-                {/* <Row gutter={12} style={{justifyContent:'center'}}> */}
-                {/* <Row  style={{backgroundColor:'yellow'}}> */}
-                <div className="languageContainer" style={{borderColor:"black"}}>
-                <Row>
-                    <Col style={{width:'300px', marginLeft:'585px'}}>
-                    {/* <Col > */}
+                }
+            >
+                <Form 
+                    layout="vertical"
+                >
+                    <Form.Item
+                        label="User"
+                        name="user"
+                        rules={[
+                            { 
+                                required: true, 
+                                message: 'Please choose a User.', 
+                            },
+                        ]}
+                        >
+                            <Select 
+                                // defaultValue={"khangura"} ////////////////////////////////////// TEMPORARY NEED DATA STILL
+                                style={{ width: 200 }} 
+                                onChange={value => setting.user = value}
+                                showSearch
+                            >
+                            {FloatBarData.map((Detail) => {
+                                return <Option value={Detail.username}>{Detail.username}</Option>
+                            })}
+                            </Select>
+                        </Form.Item>
                         <Form.Item
-                            label="JavaScript"
-                            name="javascript"
+                            label="Dates"
+                            name="date"
                             rules={[
                                 { 
                                     required: true, 
-                                    message: 'Please input a number.', 
+                                    message: 'Please choose a Date Range.', 
                                 },
                             ]}
-                        >
-                            <InputNumber onChange={value => setting.java = value} />
-                        </Form.Item>
-                        <Form.Item
-                            label="Python"
-                            name="python"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input a number.',
-                                },
-                            ]}
-                        >
-                            <InputNumber onChange={value => setting.python = value} />
-                        </Form.Item>
-                    </Col>    
-                    {/* <Col span={3} style={{backgroundColor:"blue"}}> */}
-                    <Col style={{width:'300px'}}>
-                        <Form.Item
-                            label="HTML"
-                            name="html"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input a number.',
-                                },
-                            ]}
-                        >
-                            <InputNumber onChange={value => setting.html = value} />
-                        </Form.Item>
-                        <Form.Item
-                            label="CSS"
-                            name="css"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input a number.',
-                                },
-                            ]}
-                        >
-                            <InputNumber onChange={value => setting.css = value} />
-                        </Form.Item>
-                    </Col>
-                </Row>
 
-                </div>
-                {/* </Form.Item> */}
-                <div className="iterationContainer">
-                    <Form.Item
-                        label="Iteration 1"
-                        name="iter1"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input a Date Range.',
-                            },
-                        ]}
-                    >
-                        <div className="daterange">
-                            <RangePicker 
-                            format="YYYY/MM/DD hh:mm:ss"
-                            showTime
-                            onChange={value => setIter1Range(value)}
-                            />
+                        >
+                            <div className="daterange">
+                                <RangePicker 
+                                format="YYYY/MM/DD hh:mm:ss"
+                                ranges={{
+                                    Today: [moment().startOf('day'), moment().endOf('day')]
+                                }}
+                                showTime
+                                // onChange={value => setDateRange(value)}
+                                onChange={value => 
+                                    {
+                                        setting.startdate = value[0].format()
+                                        setting.enddate = value[1].format()                        
+                                    }
+                                }
+                                />
+                            </div>
+                        </Form.Item>
+                        <div className="languageContainer" style={{borderColor:"black"}}>
+                            <LanguagePoints />
                         </div>
-                    </Form.Item>
-                    <Form.Item
-                        label="Iteration 2"
-                        name="iter2"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input a Date Range.',
-                            },
-                        ]}
-                    >
-                        <div className="daterange">
-                            <RangePicker 
-                            format="YYYY/MM/DD hh:mm:ss"
-                            showTime
-                            onChange={value => setIter2Range(value)}
-                            />
+                        <div className="iterationContainer">
+                            <IterationDates />
                         </div>
-                    </Form.Item>
-                    <Form.Item
-                        label="Iteration 3"
-                        name="iter3"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input a Date Range.',
-                            },
-                        ]}
-                    >
-                        <div className="daterange">
-                            <RangePicker 
-                            format="YYYY/MM/DD hh:mm:ss"
-                            showTime
-                            onChange={value => setIter3Range(value)}
-                            />
-                        </div>
-
-                    </Form.Item>
-
-                </div>
-                <Form.Item
-                    style={{marginLeft:'60%', marginTop:5}}
-                >
-                    <Button type="primary" htmlType="submit" onClick={handleRoute} >
-                        Save
-                    </Button>
-                </Form.Item>
-            </Form> 
-
+                </Form>
+            </Drawer>
         </div>
     );
 }
