@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
-import Settings from "./Settings.json"
+import Settings from './Settings.json';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { useAuth } from '../../context/AuthContext';
 
-import "./FloatBar.css";
+import './FloatBar.css';
 
 var FloatBarData = Data.users;
 var Dates = Settings.dates;
@@ -18,17 +19,26 @@ var Dates = Settings.dates;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const copySuccessful =() =>{
+const copySuccessful = () => {
   notification.open({
     message: 'Copy Successful!',
-    icon: <CheckCircleOutlined style={{ color: '#00D100' }}/>,
+    icon: <CheckCircleOutlined style={{ color: '#00D100' }} />,
     duration: 1,
   });
 };
 
 function FloatBar() {
   const [sortType, setSortType] = React.useState('');
-  
+  const {
+    membersList,
+    usersList,
+    commitsList,
+    notesList,
+    mergeRequestList,
+    commentsList,
+  } = useAuth();
+  useEffect(() => {}, []);
+
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
@@ -44,14 +54,23 @@ function FloatBar() {
         >
           <Grid item xs={12}>
             <div className="daterange">
-              <RangePicker 
+              <RangePicker
                 defaultValue={[null, moment()]}
                 format="YYYY/MM/DD hh:mm:ss"
                 ranges={{
                   Today: [moment(), moment()],
-                  'Iteration 1': [moment(Dates[0].startdate), moment(Dates[0].enddate)],
-                  'Iteration 2': [moment(Dates[1].startdate), moment(Dates[1].enddate)],
-                  'Iteration 3': [moment(Dates[2].startdate), moment(Dates[2].enddate)],
+                  'Iteration 1': [
+                    moment(Dates[0].startdate),
+                    moment(Dates[0].enddate),
+                  ],
+                  'Iteration 2': [
+                    moment(Dates[1].startdate),
+                    moment(Dates[1].enddate),
+                  ],
+                  'Iteration 3': [
+                    moment(Dates[2].startdate),
+                    moment(Dates[2].enddate),
+                  ],
                 }}
                 showTime
               />
@@ -59,10 +78,10 @@ function FloatBar() {
           </Grid>
           <Grid item xs={12}>
             <div className="selectSort">
-              <Select 
-                placeholder = "Sort" 
-                style={{ width: 150 }} 
-                onChange={value => setSortType(value)}
+              <Select
+                placeholder="Sort"
+                style={{ width: 150 }}
+                onChange={(value) => setSortType(value)}
               >
                 <Option value="Alphabetical">Alphabetical</Option>
                 <Option value="Low to High">Low to High</Option>
@@ -72,19 +91,20 @@ function FloatBar() {
           </Grid>
           <Grid item xs={12}>
             <CopyToClipboard
-              format = {"text/plain"}
-              text = {                
-                "\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n"+
-                JSON.stringify(FloatBarData).replaceAll('},{', '\r\n')
-                  .replace(/[,]/g,'\t')
-                  .replace(/[[{}"\]]/g, "")
-                  .replace(/[^\n\t]+(?=):/g, "")                
-              }              
+              format={'text/plain'}
+              text={
+                '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +
+                JSON.stringify(FloatBarData)
+                  .replaceAll('},{', '\r\n')
+                  .replace(/[,]/g, '\t')
+                  .replace(/[[{}"\]]/g, '')
+                  .replace(/[^\n\t]+(?=):/g, '')
+              }
             >
               <Button style={{ width: 150 }} onClick={copySuccessful}>
                 Copy
                 <CopyOutlined className="copyicon" />
-              </Button>              
+              </Button>
             </CopyToClipboard>
           </Grid>
         </Grid>
