@@ -18,11 +18,7 @@ const CommitBar = () => {
     selectUser,
   } = useAuth();
 
-  useEffect(() => {
-    // console.log(mergeRequestList);
-    // console.log(selectUser);
-    // console.log(mergeRequestList[selectUser]);
-  }, [selectUser]);
+  useEffect(() => {}, [selectUser]);
 
   /**
    * Populate Merge Requests with dummy data for testing
@@ -38,7 +34,12 @@ const CommitBar = () => {
           // console.log(commit);
           commitsData.push({
             key: commit['shortId'],
-            commitid: commit['shortId'],
+            // commitid: commit['shortId'],
+            commitid: (
+              <a href={commit['webUrl']} target="_blank">
+                {commit['shortId']}
+              </a>
+            ),
             date: commit['comittedDate'],
             score: commit['score'],
             message: commit['title'],
@@ -52,7 +53,7 @@ const CommitBar = () => {
             {mr['id']}
           </a>
         ),
-        branch: '#57 Refactor get projects API',
+        branch: mr['title'],
         mrdiffscore: mr['score'],
         commitssum: 490,
         createdAt: mr['createdDate'],
@@ -60,26 +61,25 @@ const CommitBar = () => {
       });
     }
   }
-  console.log(mergeRequestData);
 
-  const commitsData = [];
-  /**
-   * Populate Commits with dummy data for testing
-   */
-  for (let i = 0; i < 3; ++i) {
-    commitsData.push({
-      key: i,
-      date: '2021-02-21 23:12:00',
-      message: 'Add new routes for retrieving code & code diffs',
-      commitid: 'e71b2010',
-      score: '175',
-    });
-  }
+  // const commitsData = [];
+  // /**
+  //  * Populate Commits with dummy data for testing
+  //  */
+  // for (let i = 0; i < 3; ++i) {
+  //   commitsData.push({
+  //     key: i,
+  //     date: '2021-02-21 23:12:00',
+  //     message: 'Add new routes for retrieving code & code diffs',
+  //     commitid: 'e71b2010',
+  //     score: '175',
+  //   });
+  // }
 
   /**
    * Expandable Row for Commits inside a specific Merge Request
    */
-  const expandedRowRender = () => {
+  const expandedRowRender = (commitsList) => {
     const columns = [
       { title: 'Commit ID', dataIndex: 'commitid', key: 'commitid' },
       {
@@ -121,7 +121,7 @@ const CommitBar = () => {
     return (
       <Table
         columns={columns}
-        dataSource={commitsData}
+        dataSource={commitsList}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
         pagination={false}
       />
@@ -199,7 +199,8 @@ const CommitBar = () => {
         className="components-table-demo-nested"
         columns={columns}
         pagination={false}
-        expandable={{ expandedRowRender }}
+        // expandable={{ expandedRowRender }}
+        expandedRowRender={(record) => expandedRowRender(record.commitsList)}
         dataSource={mergeRequestData}
         rowSelection={{ ...rowSelection, columnTitle: 'ignore' }}
       />
