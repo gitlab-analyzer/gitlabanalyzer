@@ -20,7 +20,6 @@ const CommitBar = () => {
   } = useAuth();
 
   useEffect(() => {}, [selectUser]);
-
   const dateFormatter = (dateObject) => {
     let today = new Date();
     let ampm = '';
@@ -62,15 +61,13 @@ const CommitBar = () => {
     }
   };
 
-  const hey = dateFormatter(new Date('2021-03-11T19:35:26.000Z'));
-
   /**
    * Populate Merge Requests with real data
    */
+  console.log('original', mergeRequestList);
   let mergeRequestData = [];
   let commitsOnlyData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
-  // console.log(selectedUserMRList);
   if (selectedUserMRList !== 0) {
     for (let mr of selectedUserMRList) {
       const commitsData = [];
@@ -85,6 +82,7 @@ const CommitBar = () => {
                 {commit['shortId']}
               </a>
             ),
+            relatedMr: commit['relatedMr'],
             date: dateFormatter(commit['comittedDate']),
             score: commit['score'],
             message: commit['title'],
@@ -210,8 +208,29 @@ const CommitBar = () => {
     },
   ];
 
-  const ignoreCommit = (commitId) => {
-    console.log('Ignored', commitId);
+  const ignoreCommit = (commitId, relatedMr) => {
+    // console.log('Ignored', commitId, relatedMr);
+    // console.log('test', mergeRequestList[selectUser]);
+    const newMergeRequestState = {
+      ...mergeRequestList,
+      [selectUser]: [
+        ...mergeRequestList[selectUser],
+        // { weightedScore: mergeRequestList[selectUser]['weightedScore'] },
+      ],
+      weightedScore: mergeRequestList[selectUser]['weightedScore'],
+      // mergeRequestList[selectUser]: "hello",
+    };
+    console.log(newMergeRequestState);
+    console.log(mergeRequestList[selectUser]['weightedScore']);
+    // if (selectedUserMRList !== 0) {
+    //   for (let mr of selectedUserMRList) {
+    //     for (let commitArray of mr['commitList']) {
+    //       for (let commit of commitArray) {
+    //         console.log(commit);
+    //       }
+    //     }
+    //   }
+    // }
   };
 
   const unIgnoreCommit = (commitId) => {
@@ -229,7 +248,8 @@ const CommitBar = () => {
     },
     // Selection Logic to be implemented once API data is done
     onSelect: (record, selected, selectedRows) => {
-      ignoreCommit(record['key']);
+      console.log(record);
+      ignoreCommit(record['key'], record['relatedMr']);
     },
     onSelectInvert: (record, selected, selectedRows) => {
       unIgnoreCommit(record['key']);

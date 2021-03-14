@@ -145,6 +145,7 @@ const Repo = ({
                 comittedDate: new Date(commit.committed_date),
                 committerName: commit.committer_name,
                 id: commit.id,
+                relatedMr: author.id,
                 lineCounts: commit.line_counts,
                 shortId: commit.short_id,
                 title: commit.title,
