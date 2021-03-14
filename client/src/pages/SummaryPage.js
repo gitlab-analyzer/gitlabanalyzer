@@ -35,10 +35,53 @@ const Summary = () => {
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
 
+  const [dailyArray, setDailyArray] = useState([]);
+  const [dateArray, setDateArray] = useState([]);
+  const [countArray, setCountArray] = useState([]);
   const classes = useStyles();
 
-  function handleChange(value) {
-    setSelectUser(value);
+  console.log(commitsList)
+  // useEffect(() => {
+  //   console.log("use effect test")
+  //   console.log(selectUser)
+  //   // var dailyArray = countDates(commitsList)
+  //   setDailyArray(countDates(commitsList))
+  //   let daily = countDates(commitsList)
+  //   setDateArray(populateDates(daily))
+  //   setCountArray(populateCounts(daily))
+  //   console.log(daily)
+  //   setCombinedSeries([
+  //     {
+  //       name: 'Merge Requests',
+  //       data: data,
+  //     },
+  //     {
+  //       name: 'Commits',
+  //       data: countArray,
+  //     },
+  //   ])
+  //   // var dateArray = populateDates(dailyArray)
+  //   // var countArray = populateCounts(dailyArray)
+  // }, [])
+
+  const handleChange = (e) => {
+    let daily = countDates(commitsList)
+    let dailyDates = populateDates(daily)
+    setDailyArray(countDates(commitsList))
+    setDateArray(populateDates(daily))
+    setCountArray(populateCounts(daily))
+    console.log(daily)
+    setCombinedSeries([
+      {
+        name: 'Merge Requests',
+        data: data,
+      },
+      {
+        name: 'Commits',
+        data: countArray,
+      },
+    ])
+    setDateArray(dailyDates)
   }
 
   const countDates = (commitsList) => {
@@ -48,8 +91,7 @@ const Summary = () => {
       date,
       rarr = [];
       for(i = 0; i < commitsList.length; i++) {
-        if(selectUser == commitsList[i].userName){
-          console.log("User found")
+        if(selectUser === commitsList[i].userName){
           for(j = 0; j < commitsList[i].commits[0].length; j++){
             //console.log(commitsList[i].commits[0][j].commitedDate)
             date = [
@@ -86,10 +128,6 @@ const Summary = () => {
     }
     return newArray.reverse();
   }
-
-  const dailyArray = countDates(commitsList)
-  const dateArray = populateDates(dailyArray);
-  const countArray = populateCounts(dailyArray);
 
 
   // will be replaced once we find out how to get data from backend
@@ -240,6 +278,7 @@ const Summary = () => {
     <div>
       <Header />
       <SelectUser />
+      <Button onClick={handleChange}>Update</Button>
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <b>
