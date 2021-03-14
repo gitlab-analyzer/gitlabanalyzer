@@ -21,7 +21,7 @@ const CommitBar = () => {
   useEffect(() => {
     // console.log(mergeRequestList);
     // console.log(selectUser);
-    console.log(mergeRequestList[selectUser]);
+    // console.log(mergeRequestList[selectUser]);
   }, [selectUser]);
 
   /**
@@ -29,10 +29,22 @@ const CommitBar = () => {
    */
   const mergeRequestData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
-  const commitsData = [];
-
+  console.log(selectedUserMRList);
   if (selectedUserMRList !== 0) {
     for (let mr of selectedUserMRList) {
+      const commitsData = [];
+      for (let commitArray of mr['commitList']) {
+        for (let commit of commitArray) {
+          // console.log(commit);
+          commitsData.push({
+            key: commit['shortId'],
+            commitid: commit['shortId'],
+            date: commit['comittedDate'],
+            score: commit['score'],
+            message: commit['title'],
+          });
+        }
+      }
       mergeRequestData.push({
         key: mr['id'],
         mrid: (
@@ -44,13 +56,13 @@ const CommitBar = () => {
         mrdiffscore: mr['score'],
         commitssum: 490,
         createdAt: mr['createdDate'],
+        commitsList: commitsData,
       });
-      for (let commit of mr['commitList']) {
-        console.log(commit);
-      }
     }
   }
+  console.log(mergeRequestData);
 
+  const commitsData = [];
   /**
    * Populate Commits with dummy data for testing
    */
