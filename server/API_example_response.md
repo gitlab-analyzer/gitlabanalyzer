@@ -255,7 +255,6 @@
 ### Get all the merge request in that project
 #### `GET /projects/<int:projectID>/merge_request/all`
 ```json
-GET /projects/<int:projectID>/merge_request/user/all
 {
     "merge_request_list": [
         {
@@ -400,7 +399,6 @@ GET /projects/<int:projectID>/merge_request/user/all
 ### Get all the merge request sorted in users
 #### `GET /projects/<int:projectID>/merge_request/user/all`
 ```json
-GET /projects/<int:projectID>/merge_request/user/all
 {
     "merge_request_users_list": {
         "Joseph Test": [
@@ -619,7 +617,6 @@ GET /projects/<int:projectID>/merge_request/user/all
 ### Get all comments in that project
 #### `GET /projects/<int:projectID>/comments/all`
 ```json
-GET /projects/<int:projectID>/comments/all
 {
     "notes": [
         {
@@ -656,7 +653,6 @@ GET /projects/<int:projectID>/comments/all
 ### Get all comments sorted in users
 #### `GET /projects/<int:projectID>/comments/user/all`
 ```json
-GET /projects/<int:projectID>/comments/user/all
 {
     "notes": {
         "Joseph Test": [
