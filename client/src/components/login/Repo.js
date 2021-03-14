@@ -18,7 +18,10 @@ const Repo = ({
     setNotesList,
     setMergeRequestList,
     setCommentsList,
+    setSelectMembersList,
+    setSelectUser,
   } = useAuth();
+
   const [redirect, setRedirect] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const [indeterminate, setIndeterminate] = useState(true);
@@ -67,6 +70,14 @@ const Repo = ({
 
     fetchErrorChecker(membersRes.data['response'], 'members');
     setMembersList([...membersRes.data['members']]);
+
+    // A separate members list for controlling personal bar
+    const tempMemList = [];
+    for (let member of membersRes.data['members']) {
+      tempMemList.push(member.name);
+    }
+    setSelectMembersList(tempMemList);
+    setSelectUser(tempMemList[0]);
   };
 
   // Function for fetching users list data
