@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
-import { Button, Checkbox, List, Avatar, Progress } from 'antd';
+import { Tag, Button, Checkbox, List, Avatar, Progress } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
@@ -18,7 +18,10 @@ const Repo = ({
     setNotesList,
     setMergeRequestList,
     setCommentsList,
+    setSelectMembersList,
+    setSelectUser,
   } = useAuth();
+
   const [redirect, setRedirect] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const [indeterminate, setIndeterminate] = useState(true);
@@ -67,6 +70,14 @@ const Repo = ({
 
     fetchErrorChecker(membersRes.data['response'], 'members');
     setMembersList([...membersRes.data['members']]);
+
+    // A separate members list for controlling personal bar
+    const tempMemList = [];
+    for (let member of membersRes.data['members']) {
+      tempMemList.push(member.name);
+    }
+    setSelectMembersList(tempMemList);
+    setSelectUser(tempMemList[0]);
   };
 
   // Function for fetching users list data
@@ -336,7 +347,9 @@ const Repo = ({
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button key="details">Details</Button>,
+                <Tag color={'green'} key={'cached'}>
+                  Cached
+                </Tag>,
                 <Button onClick={handleAnalyze} key="analyze">
                   Analyze
                 </Button>,
