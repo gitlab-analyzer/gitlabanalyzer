@@ -1,22 +1,19 @@
 import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker, notification } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CopyOutlined } from '@ant-design/icons';
+import Settings from './Settings.json';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { configSettings } from '../login/Repo.js';
+import { useAuth } from '../../context/AuthContext';
 import EveryoneScore from './EveryoneScore.js';
 import Data from './FloatBarData.json';
 import moment from 'moment';
-import Settings from './Settings.json';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ScoreCalculator from './ScoreCalculator';
-import { CheckCircleOutlined } from '@ant-design/icons';
-import { configSettings } from '../login/Repo.js';
-import { useAuth } from '../../context/AuthContext';
 
 import './FloatBar.css';
 
 var FloatBarData = Data.users;
 var IterationDates = configSettings.iteration;
-var Dates = Settings.dates;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -28,7 +25,7 @@ const copySuccessful = () => {
     duration: 1,
   });
 };
-console.log(configSettings)
+
 function FloatBar() {
   const [sortType, setSortType] = React.useState('');
   const {
@@ -40,9 +37,7 @@ function FloatBar() {
     commentsList,
   } = useAuth();
   useEffect(() => {}, []);
-  
-  console.log(mergeRequestList)
-  
+    
   return (
     <>
       <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />

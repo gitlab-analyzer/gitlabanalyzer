@@ -1,15 +1,32 @@
 import React from 'react';
-import './IndividualScore.css';
+import { ScoreCalculator, barData } from './EveryoneScore'
 import { Card } from 'antd';
+import './IndividualScore.css';
 
 function IndividualScore({ user }) {
   return (
     <div>
       <div className="cardContainer">
-        <Card title={3200}>Weighted Score</Card>
-        <Card title={52}>Number of Commits</Card>
-        <Card title={1752}>Lines of Code</Card>
-        <Card title={42}>Issues & Reviews</Card>
+        {barData.map((Detail) => {
+          console.log(Detail)
+          if (Detail.name === user) {
+           return (
+              <div style={{display:'flex', width:'100%'}}>
+                <Card title={ScoreCalculator(user).toFixed(0)}>Weighted Score</Card>
+                <Card title = {Detail.commits}>                
+                    Number of Commits
+                </Card>
+                <Card title = {Detail.code}>                
+                    Lines of Code
+                </Card>
+                <Card title = {Detail.issue}>                
+                    Issues & Reviews
+                </Card>
+              </div>
+            );
+          }
+        })}
+
       </div>
     </div>
   );
