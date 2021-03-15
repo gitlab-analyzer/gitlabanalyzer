@@ -87,6 +87,7 @@ const CommitBar = () => {
   if (selectedUserMRList !== 0) {
     for (let [key, value] of Object.entries(selectedUserMRList['mr'])) {
       const commitsData = [];
+      let commitTotalScore = 0;
       for (let [k, v] of Object.entries(value['commitList'])) {
         commitsData.push({
           key: v['shortId'],
@@ -97,11 +98,12 @@ const CommitBar = () => {
           ),
           relatedMr: v['relatedMr'],
           date: dateFormatter(v['comittedDate']),
-          score: v['score'],
+          score: v['score'].toFixed(1),
           message: v['title'],
           ignore: v['ignore'],
         });
         // This constructs a separate list for commits only
+        commitTotalScore += v['score'];
       }
       commitsOnlyData.push(...commitsData);
       mergeRequestData.push({
@@ -112,8 +114,8 @@ const CommitBar = () => {
           </a>
         ),
         branch: value['title'],
-        mrdiffscore: value['score'],
-        commitssum: 490,
+        mrdiffscore: value['score'].toFixed(1),
+        commitssum: commitTotalScore.toFixed(1),
         createdAt: dateFormatter(value['createdDate']),
         commitsList: commitsData,
       });
@@ -125,7 +127,7 @@ const CommitBar = () => {
       title: 'Commit ID',
       dataIndex: 'commitid',
       key: 'commitid',
-      width: 150,
+      width: 110,
     },
     {
       title: 'Date',
@@ -135,11 +137,19 @@ const CommitBar = () => {
       filterMultiple: false,
       // TODO: Fix the sorter once API Data is available to link up
       onFilter: (value, record) => record.date.indexOf(value) === 0,
-      sorter: (a, b) => a.data.length - b.date.length,
+      sorter: (a, b) => Date.parse(a.date) - Date.parse(b.date),
       sortDirections: ['descend', 'ascend'],
     },
-    { title: 'Message', dataIndex: 'message', key: 'message', width: 405 },
-    { title: 'Score', dataIndex: 'score', key: 'score', width: 135 },
+    { title: 'Message', dataIndex: 'message', key: 'message', width: 420 },
+    {
+      title: 'Score',
+      dataIndex: 'score',
+      key: 'score',
+      width: 155,
+      // onFilter: (value, record) => record.date.indexOf(value) === 0,
+      sorter: (a, b) => a.score - b.score,
+      // sortDirections: ['descend', 'ascend'],
+    },
     {
       title: 'Status',
       key: 'state',
@@ -182,20 +192,22 @@ const CommitBar = () => {
    * Column title for the Merge Requests
    */
   const columns = [
-    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 150 },
+    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 110 },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', width: 160 },
-    { title: 'Title', dataIndex: 'branch', key: 'branch', width: 320 },
+    { title: 'Title', dataIndex: 'branch', key: 'branch', width: 315 },
     {
       title: 'MR Diff',
       dataIndex: 'mrdiffscore',
       key: 'mrdiffscore',
-      width: 85,
+      width: 105,
+      sorter: (a, b) => a.mrdiffscore - b.mrdiffscore,
     },
     {
       title: 'Commits Sum',
       dataIndex: 'commitssum',
       key: 'commitssum',
-      width: 135,
+      width: 155,
+      sorter: (a, b) => a.commitssum - b.commitssum,
     },
     {
       title: 'Status',
