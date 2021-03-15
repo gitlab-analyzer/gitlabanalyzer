@@ -11,7 +11,7 @@ function SelectUser() {
   return (
     <div className="selectUser">
       <Select
-        defaultValue={selectMembersList[0]}
+        defaultValue={selectUser}
         style={{ width: 200 }}
         onChange={(value) => {
           setSelectUser(value);
