@@ -39,7 +39,7 @@ const Repo = ({
   useEffect(() => {}, [filteredList]);
 
   const handleRoute = () => {
-    if (Object.keys(setting.iteration).length > 5 && setting.enddate){
+    if (Object.keys(configSettings.iteration).length > 5 && configSettings.enddate){
         history.push("/summary")
     }
     else {
@@ -437,6 +437,6 @@ const Repo = ({
 
 export default Repo;
 
-export var setting = {
+export var configSettings = {
   iteration: {}
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
-import { setting } from '../login/Repo';
+import { configSettings } from '../login/Repo';
 import { useAuth } from '../../context/AuthContext';
 
 const { Option } = Select;
@@ -68,11 +68,16 @@ function InitialUserDates() {
                         }}
                         showTime
                         allowClear={false}
-                        defaultValue={(setting.enddate && [moment(setting.startdate), moment(setting.enddate)])}
+                        defaultValue={
+                            (
+                                configSettings.enddate && 
+                                [moment(configSettings.startdate), moment(configSettings.enddate)]
+                            )
+                        }
                         onChange={value => 
                             {
-                                setting.startdate = value[0].format()
-                                setting.enddate = value[1].format()                        
+                                configSettings.startdate = value[0].format()
+                                configSettings.enddate = value[1].format()                        
                             }
                         }
                         renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}

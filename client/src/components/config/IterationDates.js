@@ -1,6 +1,6 @@
 import React from 'react';
 import { DatePicker, Form } from 'antd';
-import { setting } from '../login/Repo';
+import { configSettings } from '../login/Repo';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
@@ -24,11 +24,16 @@ function IterationDates() {
                     format="YYYY/MM/DD hh:mm:ss"
                     showTime
                     allowClear={false}
-                    defaultValue={(setting.iteration.iter1end && [moment(setting.iteration.iter1start), moment(setting.iteration.iter1end)])}
+                    defaultValue={
+                        (
+                            configSettings.iteration.iter1end && 
+                            [moment(configSettings.iteration.iter1start), moment(configSettings.iteration.iter1end)]
+                        )
+                    }
                     onChange={value => 
                         {
-                            setting.iteration.iter1start = value[0].format();
-                            setting.iteration.iter1end = value[1].format();
+                            configSettings.iteration.iter1start = value[0].format();
+                            configSettings.iteration.iter1end = value[1].format();
                         }
                     }
                 />
@@ -47,11 +52,16 @@ function IterationDates() {
                 format="YYYY/MM/DD hh:mm:ss"
                 showTime
                 allowClear={false}
-                defaultValue={(setting.iteration.iter2end && [moment(setting.iteration.iter2start), moment(setting.iteration.iter2end)])}
+                defaultValue={
+                    (
+                        configSettings.iteration.iter2end && 
+                        [moment(configSettings.iteration.iter2start), moment(configSettings.iteration.iter2end)]
+                    )
+                }
                 onChange={value => 
                     {
-                        setting.iteration.iter2start = value[0].format();
-                        setting.iteration.iter2end = value[1].format();
+                        configSettings.iteration.iter2start = value[0].format();
+                        configSettings.iteration.iter2end = value[1].format();
                     }
                 }
                 />
@@ -70,11 +80,16 @@ function IterationDates() {
                 format="YYYY/MM/DD hh:mm:ss"
                 showTime
                 allowClear={false}
-                defaultValue={(setting.iteration.iter3end && [moment(setting.iteration.iter3start), moment(setting.iteration.iter3end)])}
+                defaultValue={
+                    (
+                        configSettings.iteration.iter3end && 
+                        [moment(configSettings.iteration.iter3start), moment(configSettings.iteration.iter3end)]
+                    )
+                }
                 onChange={value => 
                     {
-                        setting.iteration.iter3start = value[0].format();
-                        setting.iteration.iter3end = value[1].format();
+                        configSettings.iteration.iter3start = value[0].format();
+                        configSettings.iteration.iter3end = value[1].format();
                     }
                 }
                 />
