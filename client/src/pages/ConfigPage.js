@@ -12,7 +12,7 @@ const ConfigPage = () => {
     <>
       <Header />
       <Form 
-        style={{ padding:'3% 0 0 5%', paddingBottom:0}}
+        style={{ padding:'3% 0 0 5%'}}
       >
         <h6>User Details</h6>
         <InitialUserDates />
