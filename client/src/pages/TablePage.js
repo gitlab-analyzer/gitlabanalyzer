@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useState} from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -43,36 +43,39 @@ const useStyles = makeStyles({
   },
 });
 
+
 function createData(date, wordcount, comment, ownership, type) {
   return { date, wordcount, comment, ownership, type };
 }
 
 const rows = [
-  createData("2021-3-1", 4, "Admin comment on code", "Own", "Issue"),
-  createData("2021-3-1", 3, "Admin comment 3", "Own", "Issue"),
-  createData("2021-3-1", 2, "Good datastructure", "Other", "CR"),
-  createData("2021-3-1", 7, "Good work, this looks good to merge.", "Other", "CR")
-];
+  createData("2021-03-13", "4", "Admin comment on code", "Own", "Code Review"),
+  createData("2021-03-13", "3", "Admin comment 3", "Other", "Issue"),
+  createData("2021-03-13", "3", "another admin comment", "Own", "Issue"),
+  createData("2021-03-08", "6", "There is a merge conflict, interesting.", "Other", "Issue")
+]
 
 const TablePage = () => {
   const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
+  const [tableNotesList, setTableNotesList] = useState(notesList)
   const classes = useStyles();
-  console.log(notesList)
 
-  const handleChange = (e) => {
-    var i;
-    for(i = 0; i < notesList.length; i++) {
-      if(notesList[i].author == selectUser){
-        rows.push(createData(notesList[i].createdDate, notesList[i].wordCount, notesList[i].body, "N/A", "N/A"))
-      }
-    }
-    console.log(rows)
-  }
+  console.log(tableNotesList)
+
+  // TODO: display data
+  // const dataRows = [];
+  // tableNotesList.forEach((item, i) => {
+  //   console.log(item[i])
+  //   console.log()
+  //   if(item[i].author == selectUser){
+  //    dataRows.push(createData(item[i].createdDate, item[i].wordCount, item[i].body, "N/A", "N/A"));
+  //   }
+  // });
+
   return (
     <>
       <Header />
       <SelectUser />
-      {/* <Button onClick={handleChange}>Update</Button> */}
       <div className="open-sans">
         <Grid container className={classes.grid}>
           <Grid item xs={9}>

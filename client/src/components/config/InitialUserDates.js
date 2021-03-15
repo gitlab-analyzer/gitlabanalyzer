@@ -1,7 +1,7 @@
 import React from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
-import { setting } from '../login/Repo';
+import { configSettings } from '../login/Repo';
 import { useAuth } from '../../context/AuthContext';
 
 const { Option } = Select;
@@ -9,7 +9,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
-    const { selectMembersList, setSelectUser, anon } = useAuth();
+    const { selectMembersList, selectUser, setSelectUser, anon } = useAuth();
 
     let anonList = Array.from((selectMembersList), x => `user${selectMembersList.indexOf(x)}`)
     return (
@@ -27,21 +27,21 @@ function InitialUserDates() {
             >
                 <Select 
                     style={{ width: 200 }} 
-                    onChange={value => setSelectUser(value)}
+                    onChange={value => setSelectUser(selectMembersList[value])}
                     showSearch
                 >
                     {
                         ( anon && 
                           <>
-                            {anonList.map((Detail) => {
-                                return <Option value={Detail}>{Detail}</Option>
+                            {anonList.map((Detail, index) => {
+                                return <Option value={index}>{Detail}</Option>
                             })}
                           </>  
                         )
                         || (
                             <>
-                                {selectMembersList.map((Detail) => {
-                                    return <Option value={Detail}>{Detail}</Option>
+                                {selectMembersList.map((Detail, index) => {
+                                    return <Option value={index}>{Detail}</Option>
                                 })}
 
                             </>
@@ -61,17 +61,25 @@ function InitialUserDates() {
             >
                 <div className="daterange">
                     <RangePicker 
-                    format="YYYY/MM/DD hh:mm:ss"
-                    ranges={{
-                        Today: [moment().startOf('day'), moment().endOf('day')]
-                    }}
-                    showTime
-                    onChange={value => 
-                        {
-                            setting.startdate = value[0].format()
-                            setting.enddate = value[1].format()                        
+                        format="YYYY/MM/DD hh:mm:ss"
+                        ranges={{
+                            Today: [moment().startOf('day'), moment().endOf('day')]
+                        }}
+                        showTime
+                        allowClear={false}
+                        defaultValue={
+                            (
+                                configSettings.enddate && 
+                                [moment(configSettings.startdate), moment(configSettings.enddate)]
+                            )
                         }
-                    }
+                        onChange={value => 
+                            {
+                                configSettings.startdate = value[0].format()
+                                configSettings.enddate = value[1].format()                        
+                            }
+                        }
+                        renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}
                     />
                 </div>
             </Form.Item>

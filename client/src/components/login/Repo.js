@@ -12,8 +12,8 @@ import {
   Form,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { useHistory } from "react-router-dom";
+import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
@@ -49,9 +49,10 @@ const Repo = ({
   useEffect(() => {}, [filteredList]);
 
   const handleRoute = () => {
-    if (setting.enddate) {
-      history.push('/summary');
-    } else {
+    if (Object.keys(configSettings.iteration).length > 5 && configSettings.enddate){
+        history.push("/summary")
+    }
+    else {
       notification.open({
         message: 'Error',
         description: 'Please fill out ( * ) all fields.',
@@ -216,7 +217,7 @@ const Repo = ({
           };
         }
       }
-      // console.log(tempMR);
+      console.log(tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -233,7 +234,7 @@ const Repo = ({
     const tempNotes = notesRes.data['notes'].map((note) => ({
       author: note.author,
       body: note.body,
-      createdDate: Date.parse(note.created_date),
+      createdDate: new Date(note.created_date),
       id: note.id,
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
@@ -264,7 +265,7 @@ const Repo = ({
           tempComments[user].push({
             author: comment.author,
             body: comment.body,
-            createdDate: Date.parse(comment.created_date),
+            createdDate: new Date(comment.created_date),
             id: comment.id,
             noteableId: comment.noteable_id,
             noteableIid: comment.noteable_iid,
@@ -302,7 +303,6 @@ const Repo = ({
        */
 
       await fetchMembers();
-      setVisible(true);
 
       await setProjectId();
 
@@ -320,6 +320,10 @@ const Repo = ({
     }
   };
 
+  const handleDrawer = async () => {
+    await fetchMembers();
+    setVisible(true);
+  }
   const onClose = () => {
     setVisible(false);
   };
@@ -394,6 +398,7 @@ const Repo = ({
                   Analyze
                 </Button>,
                 <Checkbox>Batch</Checkbox>,
+                <SettingOutlined  onClick={handleDrawer}/>,
               ]}
             >
               <List.Item.Meta
@@ -442,6 +447,6 @@ const Repo = ({
 
 export default Repo;
 
-export var setting = {
-  iteration: {},
-};
+export var configSettings = {
+  iteration: {}
+}

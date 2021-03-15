@@ -24,15 +24,23 @@ function SearchPage() {
       setRepo(repoList.data.projects);
       setReList([
         ...repoList.data.projects,
-        'Administrator / Earth GitLab 373',
-        'Administrator / Mars GitLab 373',
-        'Administrator / Jupiter GitLab 373',
+        'Admin / Polaris GitLab 373',
+        'Admin / Alpha C GitLab 373',
+        'Admin / Sirius GitLab 373',
+        'Admin / Rigel GitLab 373',
+        'Admin / Vega GitLab 373',
+        'Admin / Antares Github 276',
+        'Admin / Pleiades Github 276',
       ]);
       setFilteredList([
         ...repoList.data.projects,
-        'Administrator / Earth GitLab 373',
-        'Administrator / Mars GitLab 373',
-        'Administrator / Jupiter GitLab 373',
+        'Admin / Polaris GitLab 373',
+        'Admin / Alpha C GitLab 373',
+        'Admin / Sirius GitLab 373',
+        'Admin / Rigel GitLab 373',
+        'Admin / Vega GitLab 373',
+        'Admin / Antares Github 276',
+        'Admin / Pleiades Github 276',
       ]);
       setLoading(false);
     };
