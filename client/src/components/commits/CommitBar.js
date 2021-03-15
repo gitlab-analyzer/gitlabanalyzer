@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import { Card, Table, Space, Badge, Tag, Button } from 'antd';
+import { Table, Space, Badge, Tag, Button } from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
-// import { Drawer } from '@material-ui/core';
+import { heatMapDataMR, heatMapDataCommit } from './HeatMapData';
 import { useAuth } from '../../context/AuthContext';
+import { ResponsiveCalendar } from '@nivo/calendar';
 
 /**
  * Used boilerplate from https://ant.design/components/table/
@@ -13,13 +14,15 @@ const CommitBar = () => {
   const [showCommits, setShowCommits] = useState(false);
   const {
     membersList,
-    usersList,
     mergeRequestList,
     setMergeRequestList,
     selectUser,
   } = useAuth();
 
   useEffect(() => {}, [selectUser]);
+
+  // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
+  // if not, Mar 14 2020 @ 8:30pm
   const dateFormatter = (dateObject) => {
     let today = new Date();
     let ampm = '';
@@ -54,6 +57,10 @@ const CommitBar = () => {
       ampm = 'am';
     }
 
+    if (minute < 10) {
+      minute = '0' + minute;
+    }
+
     if (thisYear === year) {
       return `${months[month]} ${day} @ ${hour}:${minute}${ampm}`;
     } else {
@@ -61,10 +68,18 @@ const CommitBar = () => {
     }
   };
 
+  let tempoHeatLog = {};
+  // Initialize Heatbar Graph
+  const initHeatMap = () => {
+    for (let member of membersList) {
+      tempoHeatLog[member.name] = [];
+    }
+  };
+  initHeatMap();
+
   /**
    * Populate Merge Requests with real data
    */
-  console.log('original', mergeRequestList);
   let mergeRequestData = [];
   let commitsOnlyData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
@@ -206,8 +221,6 @@ const CommitBar = () => {
   ];
 
   const ignoreCommit = (commitId, relatedMr, value) => {
-    // console.log('Ignored', commitId, relatedMr);
-    // console.log('test', mergeRequestList[selectUser]);
     const newMergeRequestState = {
       ...mergeRequestList,
       [selectUser]: {
@@ -229,14 +242,10 @@ const CommitBar = () => {
         weightedScore: mergeRequestList[selectUser]['weightedScore'],
       },
     };
-    console.log('new list', newMergeRequestState);
-    console.log(mergeRequestList[selectUser]['mr'][relatedMr].commitList);
     setMergeRequestList(newMergeRequestState);
   };
 
   const ignoreMR = (commitId, relatedMr, value) => {
-    // console.log('Ignored', commitId, relatedMr);
-    // console.log('test', mergeRequestList[selectUser]);
     const newMergeRequestState = {
       ...mergeRequestList,
       [selectUser]: {
@@ -250,49 +259,30 @@ const CommitBar = () => {
         weightedScore: mergeRequestList[selectUser]['weightedScore'],
       },
     };
-    ///
     for (let [k, v] of Object.entries(
       newMergeRequestState[selectUser]['mr'][relatedMr]['commitList']
     )) {
       v.ignore = value;
     }
-    ///
-
-    // console.log('new list', newMergeRequestState);
-    // console.log(mergeRequestList[selectUser]['mr'][relatedMr].commitList);
     setMergeRequestList(newMergeRequestState);
   };
 
   // This object defines the behavior of ignore selectors
   const commitSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(
-      //   `selectedRowKeys: ${selectedRowKeys}`,
-      //   'selectedRows: ',
-      //   selectedRows
-      // );
-    },
-    // Selection Logic to be implemented once API data is done
+    onChange: (selectedRowKeys, selectedRows) => {},
     onSelect: (record, selected, selectedRows) => {
       ignoreCommit(record['key'], record['relatedMr'], selected);
     },
-    // Selection Logic to be implemented once API data is done
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      // console.log(selected, selectedRows, changeRows);
-    },
+    onSelectAll: (selected, selectedRows, changeRows) => {},
   };
 
   // This object defines the behavior of ignore selectors
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {},
-    // Selection Logic to be implemented once API data is done
     onSelect: (record, selected, selectedRows) => {
       ignoreMR(record['key'], record['key'], selected);
     },
-    // Selection Logic to be implemented once API data is done
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      // console.log(selected, selectedRows, changeRows);
-    },
+    onSelectAll: (selected, selectedRows, changeRows) => {},
   };
 
   // Controllers for the Code Diff Drawer
@@ -331,6 +321,11 @@ const CommitBar = () => {
       </div>
     );
   };
+  const heatDataToShow = () => {
+    return showCommits
+      ? heatMapDataCommit[selectUser]
+      : heatMapDataMR[selectUser];
+  };
 
   /**
    * Render the Table component which represents the Merge Requests
@@ -339,6 +334,35 @@ const CommitBar = () => {
    */
   return (
     <>
+      <div style={{ height: '300px' }}>
+        <ResponsiveCalendar
+          data={heatDataToShow()}
+          from="2021-03-01"
+          to="2021-07-12"
+          emptyColor="#eeeeee"
+          colors={['#c2f0e7', '#97e3d5', '#61cdbb', '#22bfa5']}
+          minValue={0}
+          maxValue={20}
+          margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+          yearSpacing={40}
+          monthSpacing={5}
+          monthBorderColor="#ffffff"
+          dayBorderWidth={2}
+          dayBorderColor="#ffffff"
+          legends={[
+            {
+              anchor: 'bottom-right',
+              direction: 'row',
+              translateY: 36,
+              itemCount: 4,
+              itemWidth: 42,
+              itemHeight: 36,
+              itemsSpacing: 14,
+              itemDirection: 'right-to-left',
+            },
+          ]}
+        />
+      </div>
       {mergeCommitButtonBar()}
       {showCommits ? (
         <Table

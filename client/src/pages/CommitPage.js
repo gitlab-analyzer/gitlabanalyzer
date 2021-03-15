@@ -12,7 +12,6 @@ const CommitPage = () => {
       <Header />
       <SelectUser />
       <div>
-        <div style={{ height: '200px' }}></div>
         <CommitBar />
       </div>
       <FooterBar />
