@@ -41,6 +41,8 @@ function FloatBar() {
   } = useAuth();
   useEffect(() => {}, []);
   
+  console.log(mergeRequestList)
+  
   return (
     <>
       <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />

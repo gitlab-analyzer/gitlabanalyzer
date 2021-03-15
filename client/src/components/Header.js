@@ -12,8 +12,11 @@ const Header = () => {
   return (
     <div>
       <Logo />
-      <BackTop style={{fontSize:'40px', color:'#808080'}}>
-      <UpCircleOutlined />
+      <BackTop 
+        style={{fontSize:'40px', color:'#808080'}}
+        visibilityHeight={200}
+      >
+        <UpCircleOutlined />
       </BackTop>
       <Affix offsetTop={top}>
         <FloatBar />
