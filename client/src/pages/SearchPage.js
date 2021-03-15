@@ -24,15 +24,23 @@ function SearchPage() {
       setRepo(repoList.data.projects);
       setReList([
         ...repoList.data.projects,
+        'Administrator / Venus GitLab 373',
         'Administrator / Earth GitLab 373',
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',
+        'Administrator / Saturn GitLab 373',
+        'Administrator / Milky Way GitHub 276',
+        'Administrator / Virgo A GitHub 276',
       ]);
       setFilteredList([
         ...repoList.data.projects,
+        'Administrator / Venus GitLab 373',
         'Administrator / Earth GitLab 373',
         'Administrator / Mars GitLab 373',
         'Administrator / Jupiter GitLab 373',
+        'Administrator / Saturn GitLab 373',
+        'Administrator / Milky Way GitHub 276',
+        'Administrator / Virgo A GitHub 276',
       ]);
       setLoading(false);
     };

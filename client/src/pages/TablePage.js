@@ -8,11 +8,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import { Button } from 'antd'
 
 import FilterMenu from '../components/table/FilterMenu';
 import SelectUser from '../components/SelectUser';
 import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
+
+import { useAuth } from '../context/AuthContext';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -45,32 +48,31 @@ function createData(date, wordcount, comment, ownership, type) {
 }
 
 const rows = [
-  createData('01/01/2021', 15, 'asdf', 'Own', 'Code Review'),
-  createData('01/01/2021', 2, 'asdf', 'Own', 'Issue'),
-  createData('01/01/2021', 55, 'asdf', 'Other', 'Code Review'),
-  createData('01/01/2021', 65, 'asdf', 'Own', 'Issue'),
-  createData(
-    '01/01/2021',
-    44,
-    'asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf ',
-    'Other',
-    'Code Review'
-  ),
-  createData('01/01/2021', 111, 'asdf', 'Own', 'Code Review'),
-  createData('01/01/2021', 15, 'asdf', 'Own', 'Code Review'),
-  createData('01/01/2021', 2, 'asdf', 'Own', 'Issue'),
-  createData('01/01/2021', 55, 'asdf', 'Other', 'Code Review'),
-  createData('01/01/2021', 65, 'asdf', 'Own', 'Issue'),
-  createData('01/01/2021', 44, 'asdf', 'Other', 'Code Review'),
-  createData('01/01/2021', 111, 'asdf', 'Own', 'Code Review'),
+  createData("2021-3-1", 4, "Admin comment on code", "Own", "Issue"),
+  createData("2021-3-1", 3, "Admin comment 3", "Own", "Issue"),
+  createData("2021-3-1", 2, "Good datastructure", "Other", "CR"),
+  createData("2021-3-1", 7, "Good work, this looks good to merge.", "Other", "CR")
 ];
 
 const TablePage = () => {
+  const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
   const classes = useStyles();
+  console.log(notesList)
+
+  const handleChange = (e) => {
+    var i;
+    for(i = 0; i < notesList.length; i++) {
+      if(notesList[i].author == selectUser){
+        rows.push(createData(notesList[i].createdDate, notesList[i].wordCount, notesList[i].body, "N/A", "N/A"))
+      }
+    }
+    console.log(rows)
+  }
   return (
     <>
       <Header />
       <SelectUser />
+      {/* <Button onClick={handleChange}>Update</Button> */}
       <div className="open-sans">
         <Grid container className={classes.grid}>
           <Grid item xs={9}>
