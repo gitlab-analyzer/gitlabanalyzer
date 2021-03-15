@@ -18,16 +18,6 @@ const AuthProvider = (props) => {
   const [dailyArray, setDailyArray] = useState([]);
   const [dateArray, setDateArray] = useState([]);
   const [countArray, setCountArray] = useState([]);
-  const [combinedSeries, setCombinedSeries] = useState([
-    {
-      name: 'Merge Requests',
-      data: [],
-    },
-    {
-      name: 'Commits',
-      data: [],
-    },
-  ]);
 
   const authContextValue = {
     user,

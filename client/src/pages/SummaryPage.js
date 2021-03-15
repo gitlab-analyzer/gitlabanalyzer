@@ -27,9 +27,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Summary = () => {
-  const { selectUser, setSelectUser, selectMembersList, setSelectMembersList, commitsList, setCommitsList } = useAuth();
-  const [startDate, setStartDate] = useState('Jan 2021');
-  const [endDate, setEndDate] = useState('Mar 2021');
+  const { selectUser, setSelectUser, 
+    selectMembersList, setSelectMembersList, 
+    commitsList, setCommitsList,
+    mergeRequestList, setMergeRequestList } = useAuth();
+  const [startDate, setStartDate] = useState('March 1, 2021');
+  const [endDate, setEndDate] = useState('March 12, 2021');
 
   const [combinedDropdown, setCombinedDropdown] = useState('Number');
   const [crDropdown, setCrDropdown] = useState('All');
@@ -41,29 +44,10 @@ const Summary = () => {
   const classes = useStyles();
 
   console.log(commitsList)
-  // useEffect(() => {
-  //   console.log("use effect test")
-  //   console.log(selectUser)
-  //   // var dailyArray = countDates(commitsList)
-  //   setDailyArray(countDates(commitsList))
-  //   let daily = countDates(commitsList)
-  //   setDateArray(populateDates(daily))
-  //   setCountArray(populateCounts(daily))
-  //   console.log(daily)
-  //   setCombinedSeries([
-  //     {
-  //       name: 'Merge Requests',
-  //       data: data,
-  //     },
-  //     {
-  //       name: 'Commits',
-  //       data: countArray,
-  //     },
-  //   ])
-  //   // var dateArray = populateDates(dailyArray)
-  //   // var countArray = populateCounts(dailyArray)
-  // }, [])
+  console.log(mergeRequestList)
 
+  // Current function for handling graph updates
+  // BUG: have to click Update button twice for it to update
   const handleChange = (e) => {
     let daily = countDates(commitsList)
     let dailyDates = populateDates(daily)
@@ -93,13 +77,11 @@ const Summary = () => {
       for(i = 0; i < commitsList.length; i++) {
         if(selectUser === commitsList[i].userName){
           for(j = 0; j < commitsList[i].commits[0].length; j++){
-            //console.log(commitsList[i].commits[0][j].commitedDate)
             date = [
               commitsList[i].commits[0][j].commitedDate.getFullYear(),
               commitsList[i].commits[0][j].commitedDate.getMonth(),
               commitsList[i].commits[0][j].commitedDate.getDate()
             ].join('-');
-            //console.log(date)
             result[date] = result[date] || 0;
             result[date]++;
           }
@@ -131,7 +113,7 @@ const Summary = () => {
 
 
   // will be replaced once we find out how to get data from backend
-  const data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const data = [5, 3, 2, 3, 4, 2, 2, 0, 1, 4, 2, 2, 2, 1];
 
   const data2 = [
     55,
@@ -282,7 +264,7 @@ const Summary = () => {
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <b>
-            Merge Request & Commit {textRender} from {startDate} to {endDate}
+            Merge Request & Commit {textRender} from {startDate} - {endDate}
           </b>
         </Grid>
         <Grid item xs={10}>
