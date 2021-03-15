@@ -14,5 +14,5 @@ RUN pip3 install python-gitlab
 WORKDIR /app
 COPY ./server .
 
-EXPOSE 80
+EXPOSE 8080
 CMD python3 app.py
