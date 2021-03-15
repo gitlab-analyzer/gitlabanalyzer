@@ -29,6 +29,7 @@ function InitialUserDates() {
       >
         <Select
           style={{ width: 200 }}
+          defaultValue={(selectUser && selectUser)}
           onChange={(value) => setSelectUser(selectMembersList[value])}
           showSearch
         >

@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CheckCircleOutlined, CopyOutlined } from '@ant-design/icons';
-import Settings from './Settings.json';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
-import EveryoneScore from './EveryoneScore.js';
-import Data from './FloatBarData.json';
+import EveryoneScore, { ScoreCalculator, barData } from './EveryoneScore.js';
+import { renderToStaticMarkup } from 'react-dom/server'
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
+
 
 import './FloatBar.css';
 
-var FloatBarData = Data.users;
 var IterationDates = configSettings.iteration;
 
 const { Option } = Select;
@@ -91,15 +90,31 @@ function FloatBar() {
               </div>
             </Grid>
             <Grid item xs={12}>
+              {console.log(barData)}
               <CopyToClipboard
                 format={'text/plain'}
                 text={
-                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +
-                  JSON.stringify(FloatBarData)
-                    .replaceAll('},{', '\r\n')
-                    .replace(/[,]/g, '\t')
-                    .replace(/[[{}"\]]/g, '')
-                    .replace(/[^\n\t]+(?=):/g, '')
+                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
+                  renderToStaticMarkup(
+                    <div>
+                      {console.log(barData)}
+                      {barData.map((Detail) => {
+                        return (
+                          <div>
+                            <div>{Detail.name}</div>
+                            <div>{ScoreCalculator(Detail.name).toFixed(0)}</div>
+                            <div>{Detail.commits}</div>
+                            <div>{Detail.code}</div>
+                            <div>{Detail.issue}</div>
+                            {/* <br/> */}
+                          </div>
+                        ); 
+                      })}                  
+                    </div>
+                    ).replaceAll('</div><div><div>', '\n')
+                    .replaceAll('</div><div>', '\t')
+                    .replaceAll('</div>', '')
+                    .replaceAll('<div>', '') 
                 }
               >
                 <Button style={{ width: 150 }} onClick={copySuccessful}>

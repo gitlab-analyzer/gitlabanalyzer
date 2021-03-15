@@ -10,7 +10,12 @@ function IndividualScore({ user }) {
         {barData.map((Detail) => {
           if (Detail.name === user) {
             return (
-              <div style={{ display: 'flex', width: '100%' }}>
+              <div style={{ 
+                  display:'flex', 
+                  justifyContent:'space-between', 
+                  flex:'auto'
+                }}
+              >
                 <Card title={ScoreCalculator(user).toFixed(0)}>
                   Weighted Score
                 </Card>
@@ -22,6 +27,7 @@ function IndividualScore({ user }) {
           }
         })}
       </div>
+
     </div>
   );
 }
