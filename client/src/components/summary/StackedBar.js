@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Chart from 'react-apexcharts'
+import Chart from 'react-apexcharts';
 
 // adapted from: https://apexcharts.com/react-chart-demos/column-charts/stacked/
 
@@ -50,8 +50,9 @@ class StackedBarGraph extends React.Component {
           },
           xaxis: {
             type: 'datetime',
-            categories: this.props.xlabel,
-            hideOverlappingLabels: true
+            categories: ["2021-3-1", "2021-3-2", 
+            "2021-3-3", "2021-3-4","2021-3-5","2021-3-6", "2021-3-7",
+            "2021-3-8", "2021-3-9","2021-3-10","2021-3-11", "2021-3-12"],
           },
           legend: {
             position: 'top',
@@ -69,6 +70,7 @@ class StackedBarGraph extends React.Component {
     }
 
     render() {
+      console.log(this.props)
       return (
         <div id="chart">
           <Chart options={this.state.options} series={this.props.series} type="bar" height={350} />

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
-import { Tag, Button, Checkbox, List, Avatar, Progress, Drawer, notification, Form } from 'antd';
+import {
+  Tag,
+  Button,
+  Checkbox,
+  List,
+  Avatar,
+  Progress,
+  Drawer,
+  notification,
+  Form,
+} from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory } from "react-router-dom";
 import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
@@ -32,7 +42,7 @@ const Repo = ({
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
-  const history = useHistory();    
+  const history = useHistory();
 
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
@@ -44,13 +54,13 @@ const Repo = ({
     }
     else {
       notification.open({
-          message: 'Error',
-          description: 'Please fill out ( * ) all fields.',
-          icon: <CloseCircleOutlined style={{ color: 'red' }} />,
-          duration: 1,
+        message: 'Error',
+        description: 'Please fill out ( * ) all fields.',
+        icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+        duration: 1,
       });
-    }           
-  }
+    }
+  };
 
   // General error handling function for fetch requests
   const fetchErrorChecker = (res, dataType) => {
@@ -151,34 +161,40 @@ const Repo = ({
       const tempMR = {};
       // Loop through object key
       for (let user in mrList) {
-        tempMR[user] = [];
+        tempMR[user] = {
+          mr: {},
+          weightedScore: 0,
+        };
         // Loop through object item
         for (let author of mrList[user]) {
-          tempMR[user].push({
+          let tempCommits = {};
+          for (let commit of author.commit_list) {
+            tempCommits[commit.short_id] = {
+              authorName: commit.author_name,
+              codeDiffId: commit.code_diff_id,
+              comittedDate: new Date(commit.committed_date),
+              committerName: commit.committer_name,
+              id: commit.id,
+              relatedMr: author.id,
+              lineCounts: commit.line_counts,
+              shortId: commit.short_id,
+              title: commit.title,
+              webUrl: commit.web_url,
+              // Frontend defined variables Start --------------------------
+              // Initial score calculation
+              score:
+                commit.line_counts.lines_added +
+                commit.line_counts.lines_deleted * 0.1,
+              // Flag to ignore this commit
+              ignore: false,
+              // Frontend defined variables End --------------------------
+            };
+          }
+          tempMR[user].mr[author.id] = {
             author: author.author,
             codeDiffId: author.code_diff_id,
             comments: author.comments,
-            commitList: [
-              author.commit_list.map((commit) => ({
-                authorName: commit.author_name,
-                codeDiffId: commit.code_diff_id,
-                comittedDate: new Date(commit.committed_date),
-                committerName: commit.committer_name,
-                id: commit.id,
-                lineCounts: commit.line_counts,
-                shortId: commit.short_id,
-                title: commit.title,
-                webUrl: commit.web_url,
-                // Frontend defined variables Start --------------------------
-                // Initial score calculation
-                score:
-                  commit.line_counts.lines_added +
-                  commit.line_counts.lines_deleted * 0.1,
-                // Flag to ignore this commit
-                ignore: false,
-                // Frontend defined variables End --------------------------
-              })),
-            ],
+            commitList: tempCommits,
             createdDate: new Date(author.created_date),
             description: author.description,
             id: author.id,
@@ -198,11 +214,10 @@ const Repo = ({
             // Flag to ignore this MR
             ignore: false,
             // Frontend defined variables End --------------------------
-          });
-          tempMR[user]['weightedScore'] = 0;
+          };
         }
       }
-      // console.log(tempMR);
+      console.log(tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -412,21 +427,16 @@ const Repo = ({
                 textAlign: 'right',
               }}
             >
-              <Button 
-                style={{ marginRight:10 }}
-                onClick={onClose} 
-              >
+              <Button style={{ marginRight: 10 }} onClick={onClose}>
                 Close
               </Button>
-              <Button type="primary" htmlType="submit" onClick={handleRoute} >
+              <Button type="primary" htmlType="submit" onClick={handleRoute}>
                 Save
               </Button>
             </div>
           }
         >
-          <Form 
-            layout="vertical"
-          >
+          <Form layout="vertical">
             <InitialConfig />
           </Form>
         </Drawer>
