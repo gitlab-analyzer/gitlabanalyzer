@@ -16,6 +16,7 @@ const AuthProvider = (props) => {
   const [selectMembersList, setSelectMembersList] = useState([]);
   const [overviewScore, setOverviewScore] = useState({});
   const [anon, setAnon] = useState('');
+  const [floatScores, setFloatScores] = useState('');
 
   const authContextValue = {
     user,
@@ -44,6 +45,8 @@ const AuthProvider = (props) => {
     setOverviewScore,
     anon,
     setAnon,
+    floatScores,
+    setFloatScores,
   };
   React.useEffect(() => {
     localStorage.setItem('myKey', JSON.stringify(membersList));

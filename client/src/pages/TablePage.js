@@ -1,4 +1,4 @@
-import {React, useState} from 'react';
+import { React, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Button } from 'antd'
+import { Button } from 'antd';
 
 import FilterMenu from '../components/table/FilterMenu';
 import SelectUser from '../components/SelectUser';
@@ -43,24 +43,29 @@ const useStyles = makeStyles({
   },
 });
 
-
 function createData(date, wordcount, comment, ownership, type) {
   return { date, wordcount, comment, ownership, type };
 }
 
 const rows = [
-  createData("2021-03-13", "4", "Admin comment on code", "Own", "Code Review"),
-  createData("2021-03-13", "3", "Admin comment 3", "Other", "Issue"),
-  createData("2021-03-13", "3", "another admin comment", "Own", "Issue"),
-  createData("2021-03-08", "6", "There is a merge conflict, interesting.", "Other", "Issue")
-]
+  createData('2021-03-13', '4', 'Admin comment on code', 'Own', 'Code Review'),
+  createData('2021-03-13', '3', 'Admin comment 3', 'Other', 'Issue'),
+  createData('2021-03-13', '3', 'another admin comment', 'Own', 'Issue'),
+  createData(
+    '2021-03-08',
+    '6',
+    'There is a merge conflict, interesting.',
+    'Other',
+    'Issue'
+  ),
+];
 
 const TablePage = () => {
-  const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
-  const [tableNotesList, setTableNotesList] = useState(notesList)
+  const { selectUser, setSelectUser, notesList, setNotesList } = useAuth();
+  const [tableNotesList, setTableNotesList] = useState(notesList);
   const classes = useStyles();
 
-  console.log(tableNotesList)
+  console.log(tableNotesList);
 
   // TODO: display data
   // const dataRows = [];
@@ -75,7 +80,6 @@ const TablePage = () => {
   return (
     <>
       <Header />
-      <SelectUser />
       <div className="open-sans">
         <Grid container className={classes.grid}>
           <Grid item xs={9}>

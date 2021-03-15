@@ -1,8 +1,9 @@
 import React from 'react';
 import { Navbar, Nav, Link } from 'react-bootstrap';
-import { BackTop, Affix } from 'antd'; 
+import { BackTop, Affix } from 'antd';
 import { UpCircleOutlined } from '@ant-design/icons';
 import { LinkContainer } from 'react-router-bootstrap';
+import SelectUser from '../components/SelectUser';
 import FloatBar from './floatbar/FloatBar';
 import Logo from './Logo';
 import './Header.css';
@@ -12,8 +13,8 @@ const Header = () => {
   return (
     <div>
       <Logo />
-      <BackTop 
-        style={{fontSize:'40px', color:'#808080'}}
+      <BackTop
+        style={{ fontSize: '40px', color: '#808080' }}
         visibilityHeight={200}
       >
         <UpCircleOutlined />
@@ -42,6 +43,7 @@ const Header = () => {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
+        <SelectUser />
       </Affix>
     </div>
   );
