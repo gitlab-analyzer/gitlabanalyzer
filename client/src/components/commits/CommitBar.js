@@ -84,6 +84,7 @@ const CommitBar = () => {
           date: dateFormatter(v['comittedDate']),
           score: v['score'],
           message: v['title'],
+          ignore: v['ignore'],
         });
         // This constructs a separate list for commits only
       }
@@ -233,7 +234,7 @@ const CommitBar = () => {
     setMergeRequestList(newMergeRequestState);
   };
 
-  const ignoreMR = (relatedMr, value) => {
+  const ignoreMR = (commitId, relatedMr, value) => {
     // console.log('Ignored', commitId, relatedMr);
     // console.log('test', mergeRequestList[selectUser]);
     const newMergeRequestState = {
@@ -250,14 +251,10 @@ const CommitBar = () => {
       },
     };
     ///
-    for (let [key, value] of Object.entries(
-      newMergeRequestState[selectUser]['mr'][relatedMr]
+    for (let [k, v] of Object.entries(
+      newMergeRequestState[selectUser]['mr'][relatedMr]['commitList']
     )) {
-      // for (let [k, v] of Object.entries(value['mr'])) {
-      // }
-      console.log(key, value);
-      // for (let [k, v] of Object.entries(value[relatedMr])) {
-      // }
+      v.ignore = value;
     }
     ///
 
@@ -290,8 +287,7 @@ const CommitBar = () => {
     onChange: (selectedRowKeys, selectedRows) => {},
     // Selection Logic to be implemented once API data is done
     onSelect: (record, selected, selectedRows) => {
-      ignoreMR(record['key'], record['relatedMr'], selected);
-      // console.log(record, selected, selectedRows);
+      ignoreMR(record['key'], record['key'], selected);
     },
     // Selection Logic to be implemented once API data is done
     onSelectAll: (selected, selectedRows, changeRows) => {
