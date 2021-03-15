@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
+<<<<<<< HEAD
 import {
   Tag,
   Button,
@@ -15,6 +16,10 @@ import { useAuth } from '../../context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
+=======
+import { Tag, Button, Checkbox, List, Avatar, Progress } from 'antd';
+import { useAuth } from '../../context/AuthContext';
+>>>>>>> 86-finish-counting-logic-and-display-data
 import axios from 'axios';
 
 const Repo = ({
@@ -37,17 +42,24 @@ const Repo = ({
 
   const [redirect, setRedirect] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
+<<<<<<< HEAD
   const [visible, setVisible] = useState(false);
+=======
+>>>>>>> 86-finish-counting-logic-and-display-data
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
+<<<<<<< HEAD
   const history = useHistory();
 
+=======
+>>>>>>> 86-finish-counting-logic-and-display-data
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
   useEffect(() => {}, [filteredList]);
 
+<<<<<<< HEAD
   const handleRoute = () => {
     if (setting.enddate) {
       history.push('/summary');
@@ -61,6 +73,8 @@ const Repo = ({
     }
   };
 
+=======
+>>>>>>> 86-finish-counting-logic-and-display-data
   // General error handling function for fetch requests
   const fetchErrorChecker = (res, dataType) => {
     if (!res) {
@@ -160,6 +174,7 @@ const Repo = ({
       const tempMR = {};
       // Loop through object key
       for (let user in mrList) {
+<<<<<<< HEAD
         tempMR[user] = {
           mr: {},
           weightedScore: 0,
@@ -195,12 +210,47 @@ const Repo = ({
             comments: author.comments,
             commitList: tempCommits,
             createdDate: new Date(author.created_date),
+=======
+        tempMR[user] = [];
+        // Loop through object item
+        for (let author of mrList[user]) {
+          tempMR[user].push({
+            author: author.author,
+            codeDiffId: author.code_diff_id,
+            comments: author.comments,
+            commitList: [
+              author.commit_list.map((commit) => ({
+                authorName: commit.author_name,
+                codeDiffId: commit.code_diff_id,
+                comittedDate: Date.parse(commit.committed_date),
+                committerName: commit.committer_name,
+                id: commit.id,
+                lineCounts: commit.line_counts,
+                shortId: commit.short_id,
+                title: commit.title,
+                webUrl: commit.web_url,
+                // Frontend defined variables Start --------------------------
+                // Initial score calculation
+                score:
+                  commit.line_counts.lines_added +
+                  commit.line_counts.lines_deleted * 0.1,
+                // Flag to ignore this commit
+                ignore: false,
+                // Frontend defined variables End --------------------------
+              })),
+            ],
+            createdDate: Date.parse(author.created_date),
+>>>>>>> 86-finish-counting-logic-and-display-data
             description: author.description,
             id: author.id,
             iid: author.iid,
             lineCounts: author.line_counts,
             mergedBy: author.merged_by,
+<<<<<<< HEAD
             mergedDate: new Date(author.merged_date),
+=======
+            mergedDate: Date.parse(author.merged_date),
+>>>>>>> 86-finish-counting-logic-and-display-data
             relatedIssueIid: author.related_issue_iid,
             state: author.state,
             title: author.title,
@@ -213,7 +263,12 @@ const Repo = ({
             // Flag to ignore this MR
             ignore: false,
             // Frontend defined variables End --------------------------
+<<<<<<< HEAD
           };
+=======
+          });
+          tempMR[user]['weightedScore'] = 0;
+>>>>>>> 86-finish-counting-logic-and-display-data
         }
       }
       // console.log(tempMR);
@@ -233,7 +288,11 @@ const Repo = ({
     const tempNotes = notesRes.data['notes'].map((note) => ({
       author: note.author,
       body: note.body,
+<<<<<<< HEAD
       createdDate: new Date(note.created_date),
+=======
+      createdDate: Date.parse(note.created_date),
+>>>>>>> 86-finish-counting-logic-and-display-data
       id: note.id,
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
@@ -264,7 +323,11 @@ const Repo = ({
           tempComments[user].push({
             author: comment.author,
             body: comment.body,
+<<<<<<< HEAD
             createdDate: new Date(comment.created_date),
+=======
+            createdDate: Date.parse(comment.created_date),
+>>>>>>> 86-finish-counting-logic-and-display-data
             id: comment.id,
             noteableId: comment.noteable_id,
             noteableIid: comment.noteable_iid,
@@ -280,6 +343,10 @@ const Repo = ({
           tempComments[user]['weightedScore'] = 0;
         }
       }
+<<<<<<< HEAD
+=======
+      // console.log(tempComments);
+>>>>>>> 86-finish-counting-logic-and-display-data
       return tempComments;
     };
     setCommentsList(generateTempComments());
@@ -300,11 +367,17 @@ const Repo = ({
        * This call is disabled for the demo on Monday.
        */
 
+<<<<<<< HEAD
       await fetchMembers();
       setVisible(true);
 
       await setProjectId();
 
+=======
+      // await setProjectId();
+
+      await fetchMembers();
+>>>>>>> 86-finish-counting-logic-and-display-data
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
@@ -319,10 +392,13 @@ const Repo = ({
     }
   };
 
+<<<<<<< HEAD
   const onClose = () => {
     setVisible(false);
   };
 
+=======
+>>>>>>> 86-finish-counting-logic-and-display-data
   const onCheckAllChange = (e) => {
     setCheckedList(e.target.checked ? plainOptions : []);
     setIndeterminate(false);
@@ -336,6 +412,10 @@ const Repo = ({
       return null;
     } else {
       return (
+<<<<<<< HEAD
+=======
+
+>>>>>>> 86-finish-counting-logic-and-display-data
         <>
           <Progress
             style={{ marginTop: '10px' }}
