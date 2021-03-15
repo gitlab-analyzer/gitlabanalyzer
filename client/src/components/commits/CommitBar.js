@@ -135,7 +135,6 @@ const CommitBar = () => {
       key: 'date',
       width: 160,
       filterMultiple: false,
-      // TODO: Fix the sorter once API Data is available to link up
       onFilter: (value, record) => record.date.indexOf(value) === 0,
       sorter: (a, b) => Date.parse(a.date) - Date.parse(b.date),
       sortDirections: ['descend', 'ascend'],
@@ -146,9 +145,8 @@ const CommitBar = () => {
       dataIndex: 'score',
       key: 'score',
       width: 155,
-      // onFilter: (value, record) => record.date.indexOf(value) === 0,
       sorter: (a, b) => a.score - b.score,
-      // sortDirections: ['descend', 'ascend'],
+      sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Status',
