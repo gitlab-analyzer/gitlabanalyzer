@@ -18,7 +18,9 @@ const BatchPage = () => {
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/projects');
+      const repoList = await axios.get(
+        'https://gitlabanalyzer.herokuapp.com/projects'
+      );
       setRepo(repoList.data.projects);
       setReList([
         ...repoList.data.projects,

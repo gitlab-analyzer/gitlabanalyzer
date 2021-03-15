@@ -76,7 +76,7 @@ const Repo = ({
   // Currently it is hard coded to 2 since no other projects exist
   const setProjectId = async () => {
     const projectRes = await axios.post(
-      'http://localhost:5678/projects/set',
+      'https://gitlabanalyzer.herokuapp.com/projects/set',
       {},
       {
         headers: {
@@ -97,7 +97,7 @@ const Repo = ({
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
-      'http://localhost:5678/projects/2/members'
+      'https://gitlabanalyzer.herokuapp.com/projects/2/members'
     );
 
     fetchErrorChecker(membersRes.data['response'], 'members');
@@ -114,7 +114,9 @@ const Repo = ({
 
   // Function for fetching users list data
   const fetchUsers = async () => {
-    const usersRes = await axios.get('http://localhost:5678/projects/2/users');
+    const usersRes = await axios.get(
+      'https://gitlabanalyzer.herokuapp.com/projects/2/users'
+    );
 
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
@@ -123,7 +125,7 @@ const Repo = ({
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
-      'http://localhost:5678/projects/2/commit/user/all'
+      'https://gitlabanalyzer.herokuapp.com/projects/2/commit/user/all'
     );
     fetchErrorChecker(commitsRes.data['response'], 'commits');
 
@@ -151,7 +153,7 @@ const Repo = ({
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
-      'http://localhost:5678/projects/2/merge_request/user/all'
+      'https://gitlabanalyzer.herokuapp.com/projects/2/merge_request/user/all'
     );
     // console.log(mergeRequestRes.data['merge_request_users_list']);
 
@@ -228,7 +230,7 @@ const Repo = ({
   // Function for fetching, parsing, and storing notes list data
   const fetchNotes = async () => {
     const notesRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/all'
+      'https://gitlabanalyzer.herokuapp.com/projects/2/comments/all'
     );
 
     fetchErrorChecker(notesRes.data['response'], 'notes');
@@ -255,7 +257,7 @@ const Repo = ({
   // Function for fetching, parsing, and storing comments list data
   const fetchComments = async () => {
     const commentsRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/user/all'
+      'https://gitlabanalyzer.herokuapp.com/projects/2/comments/user/all'
     );
     fetchErrorChecker(commentsRes.data['response'], 'comments');
     const generateTempComments = () => {

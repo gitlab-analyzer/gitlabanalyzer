@@ -67,7 +67,7 @@ const LoginBar = ({ setRedirect }) => {
     bodyFormData.append('url', fullUrl);
     const response = await axios({
       method: 'post',
-      url: 'http://localhost:5678/auth',
+      url: 'https://gitlabanalyzer.herokuapp.com/auth',
       data: bodyFormData,
       headers: { 'Content-Type': 'multipart/form-data' },
     });
