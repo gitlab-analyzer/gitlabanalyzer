@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Summary = () => {
   const { selectUser, setSelectUser, 
-    selectMembersList, setSelectMembersList, 
     commitsList, setCommitsList,
     mergeRequestList, setMergeRequestList } = useAuth();
   const [startDate, setStartDate] = useState('March 1, 2021');
@@ -43,7 +42,6 @@ const Summary = () => {
   console.log(userCommitsList)
 
   const classes = useStyles();
-
 
   const countDates = (commitsList) => {
     var result = {},
@@ -87,11 +85,12 @@ const Summary = () => {
     }
     return newArray.reverse();
   }
-
+  
   // const [dailyArray, setDailyArray] = useState(countDates(userCommitsList))
   // const [datesArray, setDatesArray] = useState(populateDates(dailyArray))
   // const [countsArray, setCountsArray] = useState(populateCounts(dailyArray))
 
+  // TODO: display data correctly
   // useEffect(() => {
   //   console.log("test" + selectUser)
   //   setDailyArray(countDates(userCommitsList))
@@ -111,8 +110,6 @@ const Summary = () => {
   //   console.log(datesArray)
   //   console.log(countsArray)
   // }, [selectUser])
-
-
 
   // will be replaced once we find out how to get data from backend
   const data = [10, 20, 45, 33, 11, 2, 55, 3, 11, 43, 11, 66, 32, 21];

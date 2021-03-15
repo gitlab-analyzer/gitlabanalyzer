@@ -1,4 +1,4 @@
-import {React, useState } from 'react';
+import {React, useState} from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -43,26 +43,34 @@ const useStyles = makeStyles({
   },
 });
 
+
 function createData(date, wordcount, comment, ownership, type) {
   return { date, wordcount, comment, ownership, type };
 }
 
+const rows = [
+  createData("2021-03-13", "4", "Admin comment on code", "Own", "Code Review"),
+  createData("2021-03-13", "3", "Admin comment 3", "Other", "Issue"),
+  createData("2021-03-13", "3", "another admin comment", "Own", "Issue"),
+  createData("2021-03-08", "6", "There is a merge conflict, interesting.", "Other", "Issue")
+]
 
 const TablePage = () => {
   const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
   const [tableNotesList, setTableNotesList] = useState(notesList)
   const classes = useStyles();
 
-  const dataRows = [];
   console.log(tableNotesList)
-  tableNotesList.forEach((item, i) => {
-    console.log(item[i])
-    console.log()
-    // if(item[i].author == selectUser){
-    //  dataRows.push(createData(item[i].createdDate, item[i].wordCount, item[i].body, "N/A", "N/A"));
-    // }
-    // console.log(dataRows)
-  });
+
+  // TODO: display data
+  // const dataRows = [];
+  // tableNotesList.forEach((item, i) => {
+  //   console.log(item[i])
+  //   console.log()
+  //   if(item[i].author == selectUser){
+  //    dataRows.push(createData(item[i].createdDate, item[i].wordCount, item[i].body, "N/A", "N/A"));
+  //   }
+  // });
 
   return (
     <>
@@ -85,22 +93,22 @@ const TablePage = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {dataRows.map((row) => (
+                  {rows.map((row) => (
                     <TableRow key={row.name}>
                       <StyledTableCell component="th" scope="row">
-                        {dataRows.date}
+                        {row.date}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {dataRows.wordcount}
+                        {row.wordcount}
                       </StyledTableCell>
                       <StyledTableCell size="medium" align="left">
-                        {dataRows.comment}
+                        {row.comment}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {dataRows.ownership}
+                        {row.ownership}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {dataRows.type}
+                        {row.type}
                       </StyledTableCell>
                     </TableRow>
                   ))}
