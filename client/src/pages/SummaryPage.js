@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import BarGraph from '../components/summary/BarGraph';
@@ -37,35 +37,13 @@ const Summary = () => {
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
 
-  const [dailyArray, setDailyArray] = useState([]);
-  const [dateArray, setDateArray] = useState([]);
-  const [countArray, setCountArray] = useState([]);
+  const [userCommitsList, setUserCommitsList] = useState(commitsList)
+
+  console.log(selectUser)
+  console.log(userCommitsList)
+
   const classes = useStyles();
 
-  console.log(commitsList)
-  console.log(mergeRequestList)
-
-  // Current function for handling graph updates
-  // BUG: have to click Update button twice for it to update
-  const handleChange = (e) => {
-    let daily = countDates(commitsList)
-    let dailyDates = populateDates(daily)
-    setDailyArray(countDates(commitsList))
-    setDateArray(populateDates(daily))
-    setCountArray(populateCounts(daily))
-    console.log(daily)
-    setCombinedSeries([
-      {
-        name: 'Merge Requests',
-        data: data,
-      },
-      {
-        name: 'Commits',
-        data: countArray,
-      },
-    ])
-    setDateArray(dailyDates)
-  }
 
   const countDates = (commitsList) => {
     var result = {},
@@ -110,34 +88,50 @@ const Summary = () => {
     return newArray.reverse();
   }
 
+  // const [dailyArray, setDailyArray] = useState(countDates(userCommitsList))
+  // const [datesArray, setDatesArray] = useState(populateDates(dailyArray))
+  // const [countsArray, setCountsArray] = useState(populateCounts(dailyArray))
+
+  // useEffect(() => {
+  //   console.log("test" + selectUser)
+  //   setDailyArray(countDates(userCommitsList))
+  //   setDatesArray(populateDates(dailyArray))
+  //   setCountsArray(populateCounts(dailyArray))
+  //   setCombinedSeries([
+  //     {
+  //       name: 'Merge Requests',
+  //       data: data2,
+  //     },
+  //     {
+  //       name: 'Commits',
+  //       data: countsArray,
+  //     },
+  //   ])
+  //   console.log(dailyArray)
+  //   console.log(datesArray)
+  //   console.log(countsArray)
+  // }, [selectUser])
+
+
 
   // will be replaced once we find out how to get data from backend
-  const data = [5, 3, 2, 3, 4, 2, 2, 0, 1, 4, 2, 2, 2, 1];
+  const data = [10, 20, 45, 33, 11, 2, 55, 3, 11, 43, 11, 66, 32, 21];
 
   const data2 = [
-    55,
-    41,
-    43,
-    0,
-    30,
+    5,
+    5,
+    4,
+    2,
+    7,
+    10,
+    5,
+    11,
+    1,
+    15,
     10,
     10,
-    43,
-    0,
-    30,
-    10,
-    10,
-    44,
-    44,
-    55,
-    41,
-    67,
-    22,
-    43,
-    0,
-    30,
-    10,
-    10,
+    5,
+    2,
   ];
 
   const data3 = [
@@ -169,11 +163,11 @@ const Summary = () => {
   const [combinedSeries, setCombinedSeries] = useState([
     {
       name: 'Merge Requests',
-      data: data,
+      data: data2,
     },
     {
       name: 'Commits',
-      data: countArray,
+      data: data,
     },
   ]);
 
@@ -209,7 +203,7 @@ const Summary = () => {
       setCombinedDropdown('Score');
       setCombinedSeries([
         {
-          data: data2,
+          data: data3,
         },
         {
           data: data,
@@ -259,7 +253,6 @@ const Summary = () => {
     <div>
       <Header />
       <SelectUser />
-      <Button onClick={handleChange}>Update</Button>
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <b>
@@ -267,7 +260,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} xlabel={dateArray}/>
+          <StackedBarGraph series={combinedSeries} />
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

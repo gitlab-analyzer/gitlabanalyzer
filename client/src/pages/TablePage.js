@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -47,32 +47,27 @@ function createData(date, wordcount, comment, ownership, type) {
   return { date, wordcount, comment, ownership, type };
 }
 
-const rows = [
-  createData("2021-3-1", 4, "Admin comment on code", "Own", "Issue"),
-  createData("2021-3-1", 3, "Admin comment 3", "Own", "Issue"),
-  createData("2021-3-1", 2, "Good datastructure", "Other", "CR"),
-  createData("2021-3-1", 7, "Good work, this looks good to merge.", "Other", "CR")
-];
 
 const TablePage = () => {
   const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
+  const [tableNotesList, setTableNotesList] = useState(notesList)
   const classes = useStyles();
-  console.log(notesList)
 
-  const handleChange = (e) => {
-    var i;
-    for(i = 0; i < notesList.length; i++) {
-      if(notesList[i].author == selectUser){
-        rows.push(createData(notesList[i].createdDate, notesList[i].wordCount, notesList[i].body, "N/A", "N/A"))
-      }
-    }
-    console.log(rows)
-  }
+  const dataRows = [];
+  console.log(tableNotesList)
+  tableNotesList.forEach((item, i) => {
+    console.log(item[i])
+    console.log()
+    // if(item[i].author == selectUser){
+    //  dataRows.push(createData(item[i].createdDate, item[i].wordCount, item[i].body, "N/A", "N/A"));
+    // }
+    // console.log(dataRows)
+  });
+
   return (
     <>
       <Header />
       <SelectUser />
-      {/* <Button onClick={handleChange}>Update</Button> */}
       <div className="open-sans">
         <Grid container className={classes.grid}>
           <Grid item xs={9}>
@@ -90,22 +85,22 @@ const TablePage = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                  {dataRows.map((row) => (
                     <TableRow key={row.name}>
                       <StyledTableCell component="th" scope="row">
-                        {row.date}
+                        {dataRows.date}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {row.wordcount}
+                        {dataRows.wordcount}
                       </StyledTableCell>
                       <StyledTableCell size="medium" align="left">
-                        {row.comment}
+                        {dataRows.comment}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {row.ownership}
+                        {dataRows.ownership}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {row.type}
+                        {dataRows.type}
                       </StyledTableCell>
                     </TableRow>
                   ))}
