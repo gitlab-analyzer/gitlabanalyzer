@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, InputNumber, Col, Row } from 'antd';
 import { setting } from '../login/Repo';
+// import { ContactsFilled } from '@ant-design/icons';
 
 function LanguagePoints() {
     return (
@@ -19,7 +20,7 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
+                            defaultValue={(setting.java && setting.java) || 1}
                             onChange={value => setting.java = value} 
                         />
                     </Form.Item>
@@ -34,7 +35,7 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
+                            defaultValue={(setting.python && setting.python) || 1}
                             onChange={value => setting.python = value} 
                         />
                     </Form.Item>
@@ -51,7 +52,7 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
+                            defaultValue={(setting.html && setting.html) || 1}
                             onChange={value => setting.html = value} 
                         />
                     </Form.Item>
@@ -66,7 +67,7 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
+                            defaultValue={(setting.css && setting.css) || 1}
                             onChange={value => setting.css = value} 
                         />
                     </Form.Item>

@@ -9,7 +9,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
-    const { selectMembersList, setSelectUser, anon } = useAuth();
+    const { selectMembersList, selectUser, setSelectUser, anon } = useAuth();
 
     let anonList = Array.from((selectMembersList), x => `user${selectMembersList.indexOf(x)}`)
     return (
@@ -27,6 +27,7 @@ function InitialUserDates() {
             >
                 <Select 
                     style={{ width: 200 }} 
+                    defaultValue={selectUser}
                     onChange={value => setSelectUser(value)}
                     showSearch
                 >
@@ -61,17 +62,20 @@ function InitialUserDates() {
             >
                 <div className="daterange">
                     <RangePicker 
-                    format="YYYY/MM/DD hh:mm:ss"
-                    ranges={{
-                        Today: [moment().startOf('day'), moment().endOf('day')]
-                    }}
-                    showTime
-                    onChange={value => 
-                        {
-                            setting.startdate = value[0].format()
-                            setting.enddate = value[1].format()                        
+                        format="YYYY/MM/DD hh:mm:ss"
+                        ranges={{
+                            Today: [moment().startOf('day'), moment().endOf('day')]
+                        }}
+                        showTime
+                        allowClear={false}
+                        defaultValue={(setting.enddate && [moment(setting.startdate), moment(setting.enddate)])}
+                        onChange={value => 
+                            {
+                                setting.startdate = value[0].format()
+                                setting.enddate = value[1].format()                        
+                            }
                         }
-                    }
+                        renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}
                     />
                 </div>
             </Form.Item>

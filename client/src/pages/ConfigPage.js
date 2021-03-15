@@ -5,7 +5,7 @@ import IterationDates from '../components/config/IterationDates';
 import InitialUserDates from '../components/config/InitialUserDates';
 import AnonymousViewing from '../components/config/AnonymousViewing';
 import FooterBar from '../components/FooterBar';
-import { Form, Divider, Button, Row, Col } from 'antd';
+import { Form, Divider, Row, Col } from 'antd';
 
 const ConfigPage = () => {
   return (
@@ -15,7 +15,6 @@ const ConfigPage = () => {
         style={{ padding:'3% 0 0 5%', paddingBottom:0}}
       >
         <h6>User Details</h6>
-        {/* <Divider /> */}
         <InitialUserDates />
         <Divider />
         <Row gutter={100}>
@@ -28,13 +27,7 @@ const ConfigPage = () => {
         </Row>
         <Divider />
         <AnonymousViewing />
-        <Button 
-          type="primary"
-          style={{marginTop:20, marginBottom:0}}  
-        >
-          Save
-        </Button>
-      </Form>      
+      </Form>         
       <FooterBar />
     </>
   );

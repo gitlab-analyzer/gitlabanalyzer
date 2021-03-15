@@ -40,7 +40,7 @@ function FloatBar() {
     commentsList,
   } = useAuth();
   useEffect(() => {}, []);
-
+  
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
