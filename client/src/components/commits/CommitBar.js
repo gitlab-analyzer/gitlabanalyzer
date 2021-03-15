@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Badge, Tag, Button } from 'antd';
+import {
+  Table,
+  Space,
+  Badge,
+  Tag,
+  Button,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Form,
+  Typography,
+} from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
 import { heatMapDataMR, heatMapDataCommit } from './HeatMapData';
 import { useAuth } from '../../context/AuthContext';
@@ -12,6 +23,9 @@ import { ResponsiveCalendar } from '@nivo/calendar';
 const CommitBar = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [showCommits, setShowCommits] = useState(false);
+  const [editingKey, setEditingKey] = useState('');
+  const isEditing = (record) => record.key === editingKey;
+  const [form] = Form.useForm();
   const {
     membersList,
     mergeRequestList,
@@ -77,6 +91,61 @@ const CommitBar = () => {
   };
   initHeatMap();
 
+  const edit = (record) => {
+    form.setFieldsValue({
+      score: '',
+      ...record,
+    });
+    setEditingKey(record.key);
+  };
+
+  const cancel = () => {
+    setEditingKey('');
+  };
+
+  const save = async (key) => {
+    try {
+      console.log('saved');
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
+
+  const EditableCell = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{
+              margin: 0,
+            }}
+            rules={[
+              {
+                required: true,
+                message: `Please Input ${title}!`,
+              },
+            ]}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
+
   /**
    * Populate Merge Requests with real data
    */
@@ -139,14 +208,46 @@ const CommitBar = () => {
       sorter: (a, b) => Date.parse(a.date) - Date.parse(b.date),
       sortDirections: ['descend', 'ascend'],
     },
-    { title: 'Message', dataIndex: 'message', key: 'message', width: 420 },
+    { title: 'Message', dataIndex: 'message', key: 'message', width: 300 },
+    {
+      title: 'Manual',
+      width: 100,
+      dataIndex: 'operation',
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <a
+              href="javascript:;"
+              onClick={() => save(record.key)}
+              style={{
+                marginRight: 8,
+              }}
+            >
+              Save
+            </a>
+            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <a>Cancel</a>
+            </Popconfirm>
+          </span>
+        ) : (
+          <Typography.Link
+            disabled={editingKey !== ''}
+            onClick={() => edit(record)}
+          >
+            Edit
+          </Typography.Link>
+        );
+      },
+    },
     {
       title: 'Score',
       dataIndex: 'score',
       key: 'score',
-      width: 155,
+      width: 120,
       sorter: (a, b) => a.score - b.score,
       sortDirections: ['descend', 'ascend'],
+      editable: true,
     },
     {
       title: 'Status',
@@ -171,18 +272,42 @@ const CommitBar = () => {
       ),
     },
   ];
+  const mergedColumns = columnsCommits.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        inputType: col.dataIndex === 'score' ? 'number' : 'text',
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
 
   /**
    * Expandable Row for Commits inside a specific Merge Request
    */
   const expandedRowRender = (commitsList) => {
     return (
-      <Table
-        columns={columnsCommits}
-        dataSource={commitsList}
-        rowSelection={{ ...commitSelection, columnTitle: 'ignore' }}
-        pagination={false}
-      />
+      <Form form={form} component={false}>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          // columns={columnsCommits}
+          columns={mergedColumns}
+          dataSource={commitsList}
+          rowSelection={{ ...commitSelection, columnTitle: 'ignore' }}
+          pagination={false}
+        />
+      </Form>
     );
   };
 
@@ -192,7 +317,7 @@ const CommitBar = () => {
   const columns = [
     { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 110 },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', width: 160 },
-    { title: 'Title', dataIndex: 'branch', key: 'branch', width: 315 },
+    { title: 'Title', dataIndex: 'branch', key: 'branch', width: 300 },
     {
       title: 'MR Diff',
       dataIndex: 'mrdiffscore',
@@ -201,10 +326,10 @@ const CommitBar = () => {
       sorter: (a, b) => a.mrdiffscore - b.mrdiffscore,
     },
     {
-      title: 'Commits Sum',
+      title: 'Sum',
       dataIndex: 'commitssum',
       key: 'commitssum',
-      width: 155,
+      width: 120,
       sorter: (a, b) => a.commitssum - b.commitssum,
     },
     {

@@ -12,7 +12,7 @@ import {
   Form,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
@@ -49,10 +49,12 @@ const Repo = ({
   useEffect(() => {}, [filteredList]);
 
   const handleRoute = () => {
-    if (Object.keys(configSettings.iteration).length > 5 && configSettings.enddate){
-        history.push("/summary")
-    }
-    else {
+    if (
+      Object.keys(configSettings.iteration).length > 5 &&
+      configSettings.enddate
+    ) {
+      history.push('/summary');
+    } else {
       notification.open({
         message: 'Error',
         description: 'Please fill out ( * ) all fields.',
@@ -217,7 +219,7 @@ const Repo = ({
           };
         }
       }
-      console.log(tempMR);
+      // console.log(tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -323,7 +325,7 @@ const Repo = ({
   const handleDrawer = async () => {
     await fetchMembers();
     setVisible(true);
-  }
+  };
   const onClose = () => {
     setVisible(false);
   };
@@ -398,7 +400,7 @@ const Repo = ({
                   Analyze
                 </Button>,
                 <Checkbox>Batch</Checkbox>,
-                <SettingOutlined  onClick={handleDrawer}/>,
+                <SettingOutlined onClick={handleDrawer} />,
               ]}
             >
               <List.Item.Meta
@@ -448,5 +450,5 @@ const Repo = ({
 export default Repo;
 
 export var configSettings = {
-  iteration: {}
-}
+  iteration: {},
+};
