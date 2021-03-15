@@ -6,8 +6,8 @@ function LanguagePoints() {
     return (
         <div>
             <h6>Language Points</h6>
-            <Row gutter={24}>
-                <Col span={8}>
+            <Row gutter={48} >
+                <Col >
                     <Form.Item
                         label="JavaScript"
                         name="javascript"
@@ -39,7 +39,7 @@ function LanguagePoints() {
                         />
                     </Form.Item>
                 </Col>    
-                <Col span={8}>
+                <Col >
                     <Form.Item
                         label="HTML"
                         name="html"
