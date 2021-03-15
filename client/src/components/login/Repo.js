@@ -216,7 +216,7 @@ const Repo = ({
           };
         }
       }
-      // console.log(tempMR);
+      console.log(tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -233,7 +233,7 @@ const Repo = ({
     const tempNotes = notesRes.data['notes'].map((note) => ({
       author: note.author,
       body: note.body,
-      createdDate: Date.parse(note.created_date),
+      createdDate: new Date(note.created_date),
       id: note.id,
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
@@ -264,7 +264,7 @@ const Repo = ({
           tempComments[user].push({
             author: comment.author,
             body: comment.body,
-            createdDate: Date.parse(comment.created_date),
+            createdDate: new Date(comment.created_date),
             id: comment.id,
             noteableId: comment.noteable_id,
             noteableIid: comment.noteable_iid,
