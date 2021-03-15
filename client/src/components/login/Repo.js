@@ -233,7 +233,7 @@ const Repo = ({
     const tempNotes = notesRes.data['notes'].map((note) => ({
       author: note.author,
       body: note.body,
-      createdDate: Date.parse(note.created_date),
+      createdDate: new Date(note.created_date),
       id: note.id,
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
