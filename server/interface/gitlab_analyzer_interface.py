@@ -3,19 +3,19 @@ from interface.gitlab_interface import GitLab
 from typing import List
 
 
-# interface for our whole GitLab Analyzer Application
 class GitLabAnalyzer:
     def __init__(self):
         self.__user_list: List[str] = []	# list of users' names (including members + non members) we want to analyze
-        self.__project_list: List[GitLabProject] = []   # list of gitlab_project_interface (list of repositories)
+        self.__project_list: List[GitLabProject] = []   # list of repositories (Gitlab Project Interface)
         self.__current_user_token = None    # hashed
 
-        # ex. [[xtran, springbro294], [jaddiet], ...]   # total length should be the length of members list
+        # ex. [[xtran, springbro294], [jaddiet], ...]   
+        # total length should be the length of members list
         self.__matched_user_list: Tuple[list] = []
 
         # temporary variables
-        self.__analyzing_repository = None  # the repository that we are currently analyzing
-        self.__analyzing_user = None    # the user that we are currently analyzing
+        self.__analyzing_repository = None  
+        self.__analyzing_user = None   
 
     def add_project(self, project: GitLabProject):
         self.__project_list.append(project)
@@ -23,7 +23,8 @@ class GitLabAnalyzer:
     def add_user(self, user):   
     	self.__user_list.append(user)
 
-    def update_users(self, gitlabProject: GitLabProject):  # fill user_list with users of the selected GitLab project
+    # fill user_list with users of the selected GitLab project
+    def update_users(self, gitlabProject: GitLabProject): 
         userList = gitlabProject.user_list
         for user in userList:
             self.__user_list.append(user)
@@ -38,7 +39,7 @@ class GitLabAnalyzer:
     def set_current_user_token(self, hashed_str):
         self.__current_user_token = hashed_str
 
-    def match_user_with_member(self, user, member):    # this parameter is temporary
+    def map_user_with_member(self, mapped_users, member):
         # This would update the matched_user_list
         pass
 
@@ -70,51 +71,3 @@ class GitLabAnalyzer:
     @property
     def project_list(self):
     	return self.__project_list
-
-    
-
-
-# TESTING 
-gl = GitLab(token="c-Z7RjtQ1qtt2vWVYbjx", url="https://csil-git1.cs.surrey.sfu.ca/")
-gl.authenticate()
-
-
-print("\nSTART")
-# test = GitLabProject(gl, 25515)
-
-analyzer = GitLabAnalyzer()
-
-"""
-analyzer.update_project_list(gl)
-
-for item in analyzer.project_list:
-    print(item.project_id)
-"""
-
-
-firstRepo = GitLabProject(gl, 25515)
-"""
-for item in firstRepo.user_list:
-    print(item)
-"""
-
-
-print("\nXXXXxXXXXXXXXXXXXXXXXXXXXX\n")
-print("User list (Member + Non-member")
-analyzer.update_users(firstRepo)
-for item in analyzer.user_list:
-    print(item)
-
-print("\nXXXXxXXXXXXXXXXXXXXXXXXXXX\n")
-print("Non-member list")
-testlist = analyzer.get_only_non_members(firstRepo)
-for item in testlist:
-    print(item)
-
-print("\nXXXXxXXXXXXXXXXXXXXXXXXXXX\n")
-print("Member list")
-testlist2 = analyzer.get_members_only(firstRepo)
-for item in testlist2:
-    print(item.name)
-
-
