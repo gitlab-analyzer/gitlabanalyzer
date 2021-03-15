@@ -9,10 +9,7 @@ import Settings from './Settings.json';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
 import { CheckCircleOutlined } from '@ant-design/icons';
-<<<<<<< HEAD
 import { setting } from '../login/Repo.js';
-=======
->>>>>>> 86-finish-counting-logic-and-display-data
 import { useAuth } from '../../context/AuthContext';
 
 import './FloatBar.css';
@@ -59,7 +56,6 @@ function FloatBar() {
         >
           <Grid item xs={12}>
             <div className="daterange">
-<<<<<<< HEAD
               <RangePicker 
                 defaultValue={[moment(setting.startdate), moment(setting.enddate)]}
                 format="YYYY/MM/DD hh:mm:ss"
@@ -76,24 +72,6 @@ function FloatBar() {
                   'Iteration 3': [
                     moment(IterationDates.iter2start), 
                     moment(IterationDates.iter3end)
-=======
-              <RangePicker
-                defaultValue={[null, moment()]}
-                format="YYYY/MM/DD hh:mm:ss"
-                ranges={{
-                  Today: [moment(), moment()],
-                  'Iteration 1': [
-                    moment(Dates[0].startdate),
-                    moment(Dates[0].enddate),
-                  ],
-                  'Iteration 2': [
-                    moment(Dates[1].startdate),
-                    moment(Dates[1].enddate),
-                  ],
-                  'Iteration 3': [
-                    moment(Dates[2].startdate),
-                    moment(Dates[2].enddate),
->>>>>>> 86-finish-counting-logic-and-display-data
                   ],
                 }}
                 showTime

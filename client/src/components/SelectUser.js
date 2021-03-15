@@ -11,11 +11,7 @@ function SelectUser() {
   return (
     <div className="selectUser">
       <Select
-<<<<<<< HEAD
         defaultValue={selectUser}
-=======
-        defaultValue={selectMembersList[0]}
->>>>>>> 86-finish-counting-logic-and-display-data
         style={{ width: 200 }}
         onChange={(value) => {
           setSelectUser(value);

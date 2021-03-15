@@ -15,13 +15,7 @@ const AuthProvider = (props) => {
   const [commentsList, setCommentsList] = useState({});
   const [selectMembersList, setSelectMembersList] = useState([]);
   const [overviewScore, setOverviewScore] = useState({});
-<<<<<<< HEAD
   const [anon, setAnon] = useState('');
-=======
-  const [dailyArray, setDailyArray] = useState([]);
-  const [dateArray, setDateArray] = useState([]);
-  const [countArray, setCountArray] = useState([]);
->>>>>>> 86-finish-counting-logic-and-display-data
 
   const authContextValue = {
     user,
@@ -48,17 +42,8 @@ const AuthProvider = (props) => {
     setSelectMembersList,
     overviewScore,
     setOverviewScore,
-<<<<<<< HEAD
     anon,
     setAnon,
-=======
-    dailyArray, 
-    setDailyArray,
-    dateArray,
-    setDateArray,
-    countArray,
-    setCountArray
->>>>>>> 86-finish-counting-logic-and-display-data
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
