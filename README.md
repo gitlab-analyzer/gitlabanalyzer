@@ -13,7 +13,7 @@
 <br>
 
 <h1 align="center">
-  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/demogitlab.png" width="900">
+  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/iteration2ss.png" width="900">
 </h1>
 
 
@@ -36,7 +36,17 @@ Iteration 1:
 - [ ] Issues & Reviews
 - [ ] Config
 
-Iteration 2:
+**Iteration 2:**
+- [x] Score Calculation 💯
+- [x] Merge Requests & Commit Ignoring
+- [x] Refactored Overview graphs
+- [x] Issues & Reviews
+- [x] Initial Config & App Config
+- [x] Search Repo
+- [x] REST API v2 Finished! 🚀
+- [x] Batch Processing (UI Only)
+- [ ] Code Diff Page
+- [ ] Export Reports
 
 Iteration 3:
 
