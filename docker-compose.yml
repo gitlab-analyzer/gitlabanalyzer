@@ -5,34 +5,34 @@ services:
       context: .
       dockerfile: flask.Dockerfile
     ports:
-     - "5678:5678"
+     - "5678:80"
     depends_on:
      - "mangodb"
      
-  frontend:
-    build:
-     context: .
-     dockerfile: reactjs.Dockerfile
-    ports:
-     - "6789:6789"
-    depends_on:
-     - "mangodb"
+#   frontend:
+#     build:
+#      context: .
+#      dockerfile: reactjs.Dockerfile
+#     ports:
+#      - "6789:6789"
+#     depends_on:
+#      - "mangodb"
 
-  mangodb:
-    image: mongo
-    ports:
-      - '27017-27019:27017-27019'
-    volumes:
-      - 'mongo:/data/db'
-    # volumes: # uncomment these to use volumes
-       # - mongodb_data_volume:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=gitlab_data
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=pass
+#   mangodb:
+#     image: mongo
+#     ports:
+#       - '27017-27019:27017-27019'
+#     volumes:
+#       - 'mongo:/data/db'
+#     # volumes: # uncomment these to use volumes
+#        # - mongodb_data_volume:/data/db
+#     environment:
+#       - MONGO_INITDB_DATABASE=gitlab_data
+#       - MONGO_INITDB_ROOT_USERNAME=root
+#       - MONGO_INITDB_ROOT_PASSWORD=pass
 
-volumes:
-  mongo:
-  # mongodb_data_volume: # uncomment these to use volumes
-    # driver: local
+# volumes:
+#   mongo:
+#   # mongodb_data_volume: # uncomment these to use volumes
+#     # driver: local
 
