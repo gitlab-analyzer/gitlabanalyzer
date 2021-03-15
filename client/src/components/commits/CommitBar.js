@@ -73,10 +73,8 @@ const CommitBar = () => {
     for (let [key, value] of Object.entries(selectedUserMRList['mr'])) {
       const commitsData = [];
       for (let [k, v] of Object.entries(value['commitList'])) {
-        // console.log(commit);
         commitsData.push({
           key: v['shortId'],
-          // commitid: commit['shortId'],
           commitid: (
             <a href={v['webUrl']} target="_blank">
               {v['shortId']}
@@ -88,8 +86,8 @@ const CommitBar = () => {
           message: v['title'],
         });
         // This constructs a separate list for commits only
-        commitsOnlyData = [...commitsOnlyData, ...commitsData];
       }
+      commitsOnlyData.push(...commitsData);
       mergeRequestData.push({
         key: value['id'],
         mrid: (
@@ -104,7 +102,6 @@ const CommitBar = () => {
         commitsList: commitsData,
       });
     }
-    // console.log(commitsOnlyData);
   }
 
   const columnsCommits = [
@@ -207,7 +204,7 @@ const CommitBar = () => {
     },
   ];
 
-  const ignoreCommit = (commitId, relatedMr) => {
+  const ignoreCommit = (commitId, relatedMr, value) => {
     // console.log('Ignored', commitId, relatedMr);
     // console.log('test', mergeRequestList[selectUser]);
     const newMergeRequestState = {
@@ -223,7 +220,7 @@ const CommitBar = () => {
                 ...mergeRequestList[selectUser]['mr'][relatedMr].commitList[
                   commitId
                 ],
-                ignore: true,
+                ignore: value,
               },
             },
           },
@@ -236,8 +233,37 @@ const CommitBar = () => {
     setMergeRequestList(newMergeRequestState);
   };
 
-  const unIgnoreCommit = (commitId) => {
-    console.log('Unignored', commitId);
+  const ignoreMR = (relatedMr, value) => {
+    // console.log('Ignored', commitId, relatedMr);
+    // console.log('test', mergeRequestList[selectUser]);
+    const newMergeRequestState = {
+      ...mergeRequestList,
+      [selectUser]: {
+        mr: {
+          ...mergeRequestList[selectUser]['mr'],
+          [relatedMr]: {
+            ...mergeRequestList[selectUser]['mr'][relatedMr],
+            ignore: value,
+          },
+        },
+        weightedScore: mergeRequestList[selectUser]['weightedScore'],
+      },
+    };
+    ///
+    for (let [key, value] of Object.entries(
+      newMergeRequestState[selectUser]['mr'][relatedMr]
+    )) {
+      // for (let [k, v] of Object.entries(value['mr'])) {
+      // }
+      console.log(key, value);
+      // for (let [k, v] of Object.entries(value[relatedMr])) {
+      // }
+    }
+    ///
+
+    // console.log('new list', newMergeRequestState);
+    // console.log(mergeRequestList[selectUser]['mr'][relatedMr].commitList);
+    setMergeRequestList(newMergeRequestState);
   };
 
   // This object defines the behavior of ignore selectors
@@ -251,11 +277,7 @@ const CommitBar = () => {
     },
     // Selection Logic to be implemented once API data is done
     onSelect: (record, selected, selectedRows) => {
-      console.log(record);
-      ignoreCommit(record['key'], record['relatedMr']);
-    },
-    onSelectInvert: (record, selected, selectedRows) => {
-      unIgnoreCommit(record['key']);
+      ignoreCommit(record['key'], record['relatedMr'], selected);
     },
     // Selection Logic to be implemented once API data is done
     onSelectAll: (selected, selectedRows, changeRows) => {
@@ -265,15 +287,10 @@ const CommitBar = () => {
 
   // This object defines the behavior of ignore selectors
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      );
-    },
+    onChange: (selectedRowKeys, selectedRows) => {},
     // Selection Logic to be implemented once API data is done
     onSelect: (record, selected, selectedRows) => {
+      ignoreMR(record['key'], record['relatedMr'], selected);
       // console.log(record, selected, selectedRows);
     },
     // Selection Logic to be implemented once API data is done
