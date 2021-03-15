@@ -1,20 +1,20 @@
 version: "3"
 services:
-  flask:
-    build:
-      context: .
-      dockerfile: flask.Dockerfile
-    ports:
-     - "8080:8080"
+#  flask:
+#    build:
+#      context: .
+#      dockerfile: flask.Dockerfile
+#    ports:
+#     - "8080:8080"
     # depends_on:
     #  - "mangodb"
      
-#   frontend:
-#     build:
-#      context: .
-#      dockerfile: reactjs.Dockerfile
-#     ports:
-#      - "6789:6789"
+   frontend:
+     build:
+      context: .
+      dockerfile: reactjs.Dockerfile
+     ports:
+      - "6789:6789"
 #     depends_on:
 #      - "mangodb"
 
