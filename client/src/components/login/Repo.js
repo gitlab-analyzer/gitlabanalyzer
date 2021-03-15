@@ -3,7 +3,7 @@ import { Redirect } from 'react-router';
 import { Tag, Button, Checkbox, List, Avatar, Progress, Drawer, notification, Form } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory } from "react-router-dom";
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
@@ -39,7 +39,7 @@ const Repo = ({
   useEffect(() => {}, [filteredList]);
 
   const handleRoute = () => {
-    if (setting.enddate){
+    if (Object.keys(configSettings.iteration).length > 5 && configSettings.enddate){
         history.push("/summary")
     }
     else {
@@ -288,7 +288,6 @@ const Repo = ({
        */
 
       await fetchMembers();
-      setVisible(true);
 
       await setProjectId();
 
@@ -306,6 +305,10 @@ const Repo = ({
     }
   };
 
+  const handleDrawer = async () => {
+    await fetchMembers();
+    setVisible(true);
+  }
   const onClose = () => {
     setVisible(false);
   };
@@ -380,6 +383,7 @@ const Repo = ({
                   Analyze
                 </Button>,
                 <Checkbox>Batch</Checkbox>,
+                <SettingOutlined  onClick={handleDrawer}/>,
               ]}
             >
               <List.Item.Meta
@@ -433,6 +437,6 @@ const Repo = ({
 
 export default Repo;
 
-export var setting = {
+export var configSettings = {
   iteration: {}
 }

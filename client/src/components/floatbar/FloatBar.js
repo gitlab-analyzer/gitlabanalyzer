@@ -9,13 +9,13 @@ import Settings from './Settings.json';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ScoreCalculator from './ScoreCalculator';
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { setting } from '../login/Repo.js';
+import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
 
 import './FloatBar.css';
 
 var FloatBarData = Data.users;
-var IterationDates = setting.iteration;
+var IterationDates = configSettings.iteration;
 var Dates = Settings.dates;
 
 const { Option } = Select;
@@ -28,7 +28,7 @@ const copySuccessful = () => {
     duration: 1,
   });
 };
-console.log(setting)
+console.log(configSettings)
 function FloatBar() {
   const [sortType, setSortType] = React.useState('');
   const {
@@ -40,7 +40,7 @@ function FloatBar() {
     commentsList,
   } = useAuth();
   useEffect(() => {}, []);
-
+  
   return (
     <div className="floatbar-container">
       <div className="floatbaralign">
@@ -57,7 +57,7 @@ function FloatBar() {
           <Grid item xs={12}>
             <div className="daterange">
               <RangePicker 
-                defaultValue={[moment(setting.startdate), moment(setting.enddate)]}
+                defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
                 format="YYYY/MM/DD hh:mm:ss"
                 ranges={{
                   Today: [moment().startOf('day'), moment().endOf('day')],

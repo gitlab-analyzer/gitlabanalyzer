@@ -1,13 +1,13 @@
 import React from 'react';
 import { Form, InputNumber, Col, Row } from 'antd';
-import { setting } from '../login/Repo';
+import { configSettings } from '../login/Repo';
 
 function LanguagePoints() {
     return (
         <div>
             <h6>Language Points</h6>
-            <Row gutter={24}>
-                <Col span={8}>
+            <Row gutter={48} >
+                <Col >
                     <Form.Item
                         label="JavaScript"
                         name="javascript"
@@ -19,8 +19,8 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
-                            onChange={value => setting.java = value} 
+                            defaultValue={(configSettings.javascript && configSettings.javascript) || 1}
+                            onChange={value => configSettings.javascript = value} 
                         />
                     </Form.Item>
                     <Form.Item
@@ -34,12 +34,12 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
-                            onChange={value => setting.python = value} 
+                            defaultValue={(configSettings.python && configSettings.python) || 1}
+                            onChange={value => configSettings.python = value} 
                         />
                     </Form.Item>
                 </Col>    
-                <Col span={8}>
+                <Col >
                     <Form.Item
                         label="HTML"
                         name="html"
@@ -51,8 +51,8 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
-                            onChange={value => setting.html = value} 
+                            defaultValue={(configSettings.html && configSettings.html) || 1}
+                            onChange={value => configSettings.html = value} 
                         />
                     </Form.Item>
                     <Form.Item
@@ -66,8 +66,8 @@ function LanguagePoints() {
                         ]}
                     >
                         <InputNumber 
-                            defaultValue={1}
-                            onChange={value => setting.css = value} 
+                            defaultValue={(configSettings.css && configSettings.css) || 1}
+                            onChange={value => configSettings.css = value} 
                         />
                     </Form.Item>
                 </Col>
