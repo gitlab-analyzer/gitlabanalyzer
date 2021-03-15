@@ -5,9 +5,9 @@ services:
       context: .
       dockerfile: flask.Dockerfile
     ports:
-     - "5678:80"
-    depends_on:
-     - "mangodb"
+     - "80:80"
+    # depends_on:
+    #  - "mangodb"
      
 #   frontend:
 #     build:
