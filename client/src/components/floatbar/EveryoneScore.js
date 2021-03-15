@@ -17,7 +17,7 @@ function EveryoneScore() {
         mergeRequestList,
         commentsList,
       } = useAuth();
-    console.log(membersList)
+    // console.log(membersList)
     // console.log(usersList)
     // console.log(commitsList)
     // console.log(notesList)
@@ -41,10 +41,15 @@ function EveryoneScore() {
     //     }
     // }, []);
     const scrollRef = HorizontalScroll();
-    const localMember = localStorage.getItem('myKey');
-    const [memberData, setMemberData] = React.useState(JSON.parse(localMember))
-    console.log(memberData)
-
+    // const localMember = localStorage.getItem('myKey');
+    // const [memberData, setMemberData] = React.useState(JSON.parse(localMember))
+    // console.log(memberData)
+    console.log(`memberslist:`, membersList)
+    console.log('usersList:', usersList)
+    console.log('commitsList:', commitsList)
+    console.log('notesList:', notesList)
+    console.log('mergeRequestList:', mergeRequestList)
+    console.log('commentsList:', commentsList)
     return (
         <div className="floatbarContainer">
             <div className="floatbarLabels">

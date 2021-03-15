@@ -8,7 +8,7 @@ import Logo from './Logo';
 import './Header.css';
 
 const Header = () => {
-  const [top, setTop] = React.useState(10);
+  const [top, setTop] = React.useState();
   return (
     <div>
       <Logo />
@@ -39,7 +39,6 @@ const Header = () => {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-
       </Affix>
     </div>
   );
