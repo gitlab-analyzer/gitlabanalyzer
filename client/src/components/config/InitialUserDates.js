@@ -27,22 +27,21 @@ function InitialUserDates() {
             >
                 <Select 
                     style={{ width: 200 }} 
-                    defaultValue={selectUser}
-                    onChange={value => setSelectUser(value)}
+                    onChange={value => setSelectUser(selectMembersList[value])}
                     showSearch
                 >
                     {
                         ( anon && 
                           <>
-                            {anonList.map((Detail) => {
-                                return <Option value={Detail}>{Detail}</Option>
+                            {anonList.map((Detail, index) => {
+                                return <Option value={index}>{Detail}</Option>
                             })}
                           </>  
                         )
                         || (
                             <>
-                                {selectMembersList.map((Detail) => {
-                                    return <Option value={Detail}>{Detail}</Option>
+                                {selectMembersList.map((Detail, index) => {
+                                    return <Option value={index}>{Detail}</Option>
                                 })}
 
                             </>
