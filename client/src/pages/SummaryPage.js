@@ -43,9 +43,6 @@ const Summary = () => {
 
   const [userCommitsList, setUserCommitsList] = useState(commitsList);
 
-  console.log(selectUser);
-  console.log(userCommitsList);
-
   const classes = useStyles();
 
   const countDates = (commitsList) => {
@@ -175,8 +172,6 @@ const Summary = () => {
   ]);
 
   const handleMenuClick = (e) => {
-    console.log('Key test:', e);
-
     if (e.key === 'Num') {
       setCombinedDropdown('Number');
       setCombinedSeries([

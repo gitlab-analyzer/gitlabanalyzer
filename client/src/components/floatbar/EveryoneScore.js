@@ -90,7 +90,6 @@ const EveryoneScore = () => {
       }
     }
     setFloatScores([...barData]);
-    console.log('mr changed!');
   }, [mergeRequestList]);
 
   const scrollRef = HorizontalScroll();

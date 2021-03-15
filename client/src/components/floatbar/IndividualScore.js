@@ -8,7 +8,6 @@ function IndividualScore({ user }) {
     <div>
       <div className="cardContainer">
         {barData.map((Detail) => {
-          console.log('Detail', Detail);
           if (Detail.name === user) {
             return (
               <div style={{ display: 'flex', width: '100%' }}>
