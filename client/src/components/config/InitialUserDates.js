@@ -9,9 +9,12 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
-    const { selectMembersList, selectUser, setSelectUser } = useAuth();
+    const { selectMembersList, setSelectUser, anon } = useAuth();
+
+    let anonList = Array.from((selectMembersList), x => `user${selectMembersList.indexOf(x)}`)
     return (
         <div>
+
             <Form.Item
                 label="User"
                 name="user"
@@ -23,14 +26,27 @@ function InitialUserDates() {
                 ]}
             >
                 <Select 
-                    defaultValue={selectMembersList[0]}
                     style={{ width: 200 }} 
                     onChange={value => setSelectUser(value)}
                     showSearch
                 >
-                {selectMembersList.map((Detail) => {
-                    return <Option value={Detail}>{Detail}</Option>
-                })}
+                    {
+                        ( anon && 
+                          <>
+                            {anonList.map((Detail) => {
+                                return <Option value={Detail}>{Detail}</Option>
+                            })}
+                          </>  
+                        )
+                        || (
+                            <>
+                                {selectMembersList.map((Detail) => {
+                                    return <Option value={Detail}>{Detail}</Option>
+                                })}
+
+                            </>
+                        )
+                    }
                 </Select>
             </Form.Item>
             <Form.Item
