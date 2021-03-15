@@ -12,6 +12,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 state = False  # TODO: this is used to minimize API call time for frontend
+port = int(os.environ.get("PORT", 5000))
 
 # These cannot stay as globals. Change when possible
 myGitLab: Optional[GitLab] = None
@@ -194,4 +195,4 @@ def get_notes_for_all_users(projectID):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=port)
