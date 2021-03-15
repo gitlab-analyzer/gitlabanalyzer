@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
-import { Tag, Button, Checkbox, List, Avatar, Progress } from 'antd';
+import { Tag, Button, Checkbox, List, Avatar, Progress, Drawer, notification, Form } from 'antd';
 import { useAuth } from '../../context/AuthContext';
+import { useHistory } from "react-router-dom";
+import { CloseCircleOutlined } from '@ant-design/icons';
+import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
 const Repo = ({
@@ -24,13 +27,30 @@ const Repo = ({
 
   const [redirect, setRedirect] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
 
+  const history = useHistory();    
+
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
   useEffect(() => {}, [filteredList]);
+
+  const handleRoute = () => {
+    if (setting.enddate){
+        history.push("/summary")
+    }
+    else {
+      notification.open({
+          message: 'Error',
+          description: 'Please fill out ( * ) all fields.',
+          icon: <CloseCircleOutlined style={{ color: 'red' }} />,
+          duration: 1,
+      });
+    }           
+  }
 
   // General error handling function for fetch requests
   const fetchErrorChecker = (res, dataType) => {
@@ -267,9 +287,11 @@ const Repo = ({
        * This call is disabled for the demo on Monday.
        */
 
+      await fetchMembers();
+      setVisible(true);
+
       await setProjectId();
 
-      await fetchMembers();
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
@@ -282,6 +304,10 @@ const Repo = ({
       setAnalyzing(false);
       console.log(error);
     }
+  };
+
+  const onClose = () => {
+    setVisible(false);
   };
 
   const onCheckAllChange = (e) => {
@@ -369,9 +395,44 @@ const Repo = ({
             </List.Item>
           )}
         />
+        <Drawer
+          placement="right"
+          width={500}
+          closable={false}
+          onClose={onClose}
+          visible={visible}
+          title="Initial Configuration"
+          footer={
+            <div
+              style={{
+                textAlign: 'right',
+              }}
+            >
+              <Button 
+                style={{ marginRight:10 }}
+                onClick={onClose} 
+              >
+                Close
+              </Button>
+              <Button type="primary" htmlType="submit" onClick={handleRoute} >
+                Save
+              </Button>
+            </div>
+          }
+        >
+          <Form 
+            layout="vertical"
+          >
+            <InitialConfig />
+          </Form>
+        </Drawer>
       </div>
     );
   }
 };
 
 export default Repo;
+
+export var setting = {
+  iteration: {}
+}
