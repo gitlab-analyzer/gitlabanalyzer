@@ -39,13 +39,13 @@ const Repo = ({
   useEffect(() => {}, [filteredList]);
 
   const handleRoute = () => {
-    if (Object.keys(setting.iteration).length > 5 && setting.enddate){
+    if (setting.enddate){
         history.push("/summary")
     }
     else {
       notification.open({
           message: 'Error',
-          description: 'Please fill out all fields.',
+          description: 'Please fill out ( * ) all fields.',
           icon: <CloseCircleOutlined style={{ color: 'red' }} />,
           duration: 1,
       });

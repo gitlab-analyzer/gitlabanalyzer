@@ -12,12 +12,6 @@ function IterationDates() {
             <Form.Item
                 label="Iteration 1"
                 name="iter1"
-                rules={[
-                    {
-                        required: true,
-                        message: DateErrorMsg,
-                    },
-                ]}
             >
                 <RangePicker 
                 format="YYYY/MM/DD hh:mm:ss"
@@ -33,12 +27,6 @@ function IterationDates() {
             <Form.Item
                 label="Iteration 2"
                 name="iter2"
-                rules={[
-                    {
-                        required: true,
-                        message: DateErrorMsg,
-                    },
-                ]}
             >
                 <RangePicker 
                 format="YYYY/MM/DD hh:mm:ss"
@@ -54,12 +42,6 @@ function IterationDates() {
             <Form.Item
                 label="Iteration 3"
                 name="iter3"
-                rules={[
-                    {
-                        required: true,
-                        message: DateErrorMsg,
-                    },
-                ]}
             >
                 <RangePicker 
                 format="YYYY/MM/DD hh:mm:ss"
