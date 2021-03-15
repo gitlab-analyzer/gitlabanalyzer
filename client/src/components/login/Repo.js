@@ -13,7 +13,7 @@ import {
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory } from 'react-router-dom';
-import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, CheckCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
@@ -53,7 +53,13 @@ const Repo = ({
       Object.keys(configSettings.iteration).length > 5 &&
       configSettings.enddate
     ) {
-      history.push('/summary');
+      notification.open({
+        message: 'Save Successful',
+        description: 'Please close the Drawer.',
+        icon: <CheckCircleOutlined style={{ color: 'green' }} />,
+        duration: 1,
+      });
+      // history.push('/summary');
     } else {
       notification.open({
         message: 'Error',
