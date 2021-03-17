@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import HorizontalScroll from './Scroll';
 import { useAuth } from '../../context/AuthContext';
+import { configSettings } from '../login/Repo'
 import './EveryoneScore.css';
 
 const usercolours = [
@@ -14,10 +15,8 @@ const usercolours = [
   '#ab3ca6',
 ];
 export var barData = [];
-var scoreData = [];
 
 export function ScoreCalculator(username) {
-  // <GatherData />
   let TotalScore;
   for (let i = 0; i < barData.length; i++) {
     let data = barData[i];
@@ -39,9 +38,16 @@ const EveryoneScore = () => {
   useEffect(() => {
     barData = [];
     var subscore = {};
+    let ignore = false;
     if (notesList !== 0) {
+      console.log(notesList)
       for (let [nkey, nvalue] of Object.entries(notesList)) {
-        if (nvalue['ignore']) {
+        console.log('created date', nvalue['createdDate'])
+        console.log('new date', new Date(configSettings.startdate))
+        if (nvalue['ignore'] || 
+          ((nvalue['createdDate'] < new Date(configSettings.startdate)) || 
+          (nvalue['createdDate'] > new Date(configSettings.enddate)))) 
+        {
           continue;
         }
         if (nvalue['author'] in subscore) {
@@ -51,7 +57,6 @@ const EveryoneScore = () => {
         }
       }
     }
-
     if (mergeRequestList !== 0) {
       for (let [user, uservalue] of Object.entries(mergeRequestList)) {
         let commitScore = 0;
@@ -64,6 +69,16 @@ const EveryoneScore = () => {
           }
           for (let [k, v] of Object.entries(value['commitList'])) {
             if (v['ignore']) {
+              ignore = true
+              continue;
+            }
+            // console.log(v['authorName'],v['comittedDate'])
+            if (
+              (v['comittedDate'] < new Date(configSettings.startdate)) || 
+              (v['comittedDate'] > new Date(configSettings.enddate))
+            ) {
+              // console.log('out of bounds')
+              ignore = true
               continue;
             }
             commitScore += v['score'];
@@ -71,10 +86,13 @@ const EveryoneScore = () => {
           for (let [keylines, valuelines] of Object.entries(
             value['lineCounts']
           )) {
-            linesAdded += value['lineCounts']['lines_added'];
-            linesDeleted += value['lineCounts']['lines_deleted'];
-            syntaxChanged += value['lineCounts']['syntax_changes'];
+            if (!ignore) {
+              linesAdded += value['lineCounts']['lines_added'];
+              linesDeleted += value['lineCounts']['lines_deleted'];
+              syntaxChanged += value['lineCounts']['syntax_changes'];
+            }
           }
+          ignore = false
         }
         if (!subscore[user]) {
           subscore[user] = 0;
@@ -95,7 +113,6 @@ const EveryoneScore = () => {
   const scrollRef = HorizontalScroll();
   return (
     <div className="floatbarContainer">
-      {/* <GatherData /> */}
       <div className="floatbarLabels">
         <div className="scoreLabel">weighted score</div>
         <div className="remainingLabels">

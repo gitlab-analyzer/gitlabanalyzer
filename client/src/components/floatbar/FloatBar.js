@@ -57,6 +57,11 @@ function FloatBar() {
                 <RangePicker 
                   defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
                   format="YYYY/MM/DD hh:mm:ss"
+                  allowClear={false}
+                  onChange={(value) => {
+                    configSettings.startdate = value[0]
+                    configSettings.enddate = value[1]
+                  }}
                   ranges={{
                     Today: [moment().startOf('day'), moment().endOf('day')],
                     'Iteration 1': [

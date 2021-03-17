@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScoreCalculator, barData } from './EveryoneScore';
-import { Button, Card, Popover } from 'antd';
-// import './IndividualScore.css';
+import { Button, Popover } from 'antd';
 
 function IndividualScore({ user }) {
   return (
