@@ -39,6 +39,7 @@ const EveryoneScore = () => {
     barData = [];
     var subscore = {};
     let ignore = false;
+    let num = 0;
     if (notesList !== 0) {
       for (let [nkey, nvalue] of Object.entries(notesList)) {
         if (nvalue['ignore'] || 
@@ -54,6 +55,7 @@ const EveryoneScore = () => {
         }
       }
     }
+    console.log(mergeRequestList)
     if (mergeRequestList !== 0) {
       for (let [user, uservalue] of Object.entries(mergeRequestList)) {
         let commitScore = 0;
@@ -94,6 +96,7 @@ const EveryoneScore = () => {
         }
         barData.push({
           name: user,
+          id: num++,
           commits: commitScore.toFixed(0),
           code: linesAdded,
           deleted: linesDeleted,
@@ -102,6 +105,7 @@ const EveryoneScore = () => {
         });
       }
     }
+    console.log(barData)
     setFloatScores([...barData]);
   }, [mergeRequestList]);
   useEffect(() => {}, [barData]);
@@ -121,7 +125,7 @@ const EveryoneScore = () => {
           {barData.map((Detail, index) => {
             return (
               <div className="scoreArray">
-                <div className="user" style={{ color: usercolours[index] }}>
+                <div className="user" style={{ color: usercolours[Detail.id] }}>
                   @{Detail.name}
                 </div>
                 <div className="userScore">
