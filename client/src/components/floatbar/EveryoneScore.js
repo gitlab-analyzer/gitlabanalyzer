@@ -40,10 +40,7 @@ const EveryoneScore = () => {
     var subscore = {};
     let ignore = false;
     if (notesList !== 0) {
-      console.log(notesList)
       for (let [nkey, nvalue] of Object.entries(notesList)) {
-        console.log('created date', nvalue['createdDate'])
-        console.log('new date', new Date(configSettings.startdate))
         if (nvalue['ignore'] || 
           ((nvalue['createdDate'] < new Date(configSettings.startdate)) || 
           (nvalue['createdDate'] > new Date(configSettings.enddate)))) 
@@ -72,12 +69,10 @@ const EveryoneScore = () => {
               ignore = true
               continue;
             }
-            // console.log(v['authorName'],v['comittedDate'])
             if (
               (v['comittedDate'] < new Date(configSettings.startdate)) || 
               (v['comittedDate'] > new Date(configSettings.enddate))
             ) {
-              // console.log('out of bounds')
               ignore = true
               continue;
             }
@@ -109,7 +104,7 @@ const EveryoneScore = () => {
     }
     setFloatScores([...barData]);
   }, [mergeRequestList]);
-
+  useEffect(() => {}, [barData]);
   const scrollRef = HorizontalScroll();
   return (
     <div className="floatbarContainer">

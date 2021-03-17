@@ -26,7 +26,9 @@ const copySuccessful = () => {
 };
 
 function FloatBar() {
-  const [sortType, setSortType] = React.useState('');
+  const [sortType, setSortType] = React.useState('alpha');
+  // const [dateRange, setDateRange] = React.useState([configSettings.startdate, configSettings.enddate]);
+  const [dateRange, setDateRange] = React.useState([]);
   const {
     membersList,
     usersList,
@@ -36,7 +38,26 @@ function FloatBar() {
     commentsList,
   } = useAuth();
   useEffect(() => {}, []);
-    
+  const handleSort = (value) => {
+    setSortType(value)
+    if (value === "alpha"){
+      barData.sort((a,b) => (a.name > b.name) ? 1 : -1)
+    }
+    else if (value === "low"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) > ScoreCalculator(b.name)) ? 1 : -1)
+    }
+    else if (value === "high"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) < ScoreCalculator(b.name)) ? 1 : -1)     
+    }
+  }
+
+  const handleDate = (value) => {
+    configSettings.startdate = value[0]
+    configSettings.enddate = value[1]
+    console.log(value)
+    setDateRange(value)
+  }
+
   return (
     <>
       <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
@@ -58,10 +79,12 @@ function FloatBar() {
                   defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
                   format="YYYY/MM/DD hh:mm:ss"
                   allowClear={false}
-                  onChange={(value) => {
-                    configSettings.startdate = value[0]
-                    configSettings.enddate = value[1]
-                  }}
+                  // onChange={(value) => {
+                  //   configSettings.startdate = value[0]
+                  //   configSettings.enddate = value[1]
+                  //   setDateRange(value)
+                  // }}
+                  onChange={handleDate}
                   ranges={{
                     Today: [moment().startOf('day'), moment().endOf('day')],
                     'Iteration 1': [
@@ -86,23 +109,22 @@ function FloatBar() {
                 <Select
                   placeholder="Sort"
                   style={{ width: 150 }}
-                  onChange={(value) => setSortType(value)}
+                  onChange={handleSort}
+                  defaultValue="alpha"
                 >
-                  <Option value="Alphabetical">Alphabetical</Option>
-                  <Option value="Low to High">Low to High</Option>
-                  <Option value="High to Low">High to Low</Option>
+                  <Option value="alpha">Alphabetical</Option>
+                  <Option value="low">Low to High</Option>
+                  <Option value="high">High to Low</Option>
                 </Select>
               </div>
             </Grid>
             <Grid item xs={12}>
-              {console.log(barData)}
               <CopyToClipboard
                 format={'text/plain'}
                 text={
                   '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
                   renderToStaticMarkup(
                     <div>
-                      {console.log(barData)}
                       {barData.map((Detail) => {
                         return (
                           <div>
@@ -122,7 +144,10 @@ function FloatBar() {
                     .replaceAll('<div>', '') 
                 }
               >
-                <Button style={{ width: 150 }} onClick={copySuccessful}>
+                <Button 
+                  style={{ width: 150 }} 
+                  onClick={copySuccessful}
+                >
                   Copy
                   <CopyOutlined className="copyicon" />
                 </Button>
