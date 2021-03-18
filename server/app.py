@@ -1,5 +1,7 @@
 import hashlib
 import json
+import threading
+import time
 from copy import deepcopy
 from typing import Optional
 from flask import Flask, request, jsonify, make_response
@@ -35,7 +37,7 @@ def auth():
         # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
         #       add unix time to the end of the token. Then hash it.
         response.set_cookie(
-            key="id", value=hashlib.sha256(str.encode(myToken)).hexdigest()
+            key="id", value=hashlib.sha256(str.encode(myToken + str(time.time()))).hexdigest()
         )
         return response
     else:
@@ -58,21 +60,36 @@ def get_project_list():
     return jsonify({'projects': myResponse, "response": True})
 
 
+def sync_project(projectID: int):
+    global myGitLab
+    global gitlabProjectInterface
+    gitlabProjectInterface = GitLabProject(projectID)
+    gitlabProjectInterface.update(myGitLab)
+
+
 # TODO: This can be replaced by /update so /setProject does nothing
 # Example: /projects/set?projectID=projectID_variable
-@app.route('/projects/set', methods=['post'])
+@app.route('/projects/sync', methods=['post'])
 @cross_origin()
 def set_project():
-    global gitlabProjectInterface
     global myGitLab
     projectID = request.args.get('projectID', default=None, type=int)
 
     if myGitLab.find_project(projectID) is not None:
         global state
         if not state:
-            gitlabProjectInterface = GitLabProject(myGitLab, projectID)
+            threading.Thread(target=sync_project, args=(projectID,)).start()
             state = True
         return jsonify({"response": True})
+    else:
+        return jsonify(projectIDError)
+
+
+@app.route('/projects/<int:projectID>/sync/state', methods=['get'])
+def get_state(projectID: int):
+    global gitlabProjectInterface
+    if projectID == gitlabProjectInterface.project_id:
+        return jsonify({"response": True, "status": gitlabProjectInterface.get_project_sync_state()})
     else:
         return jsonify(projectIDError)
 

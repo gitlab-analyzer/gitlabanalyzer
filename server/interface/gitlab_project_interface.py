@@ -1,3 +1,4 @@
+import datetime
 from copy import deepcopy
 from interface.gitlab_interface import GitLab
 from manager.code_diff_temp import CodeDiffAnalyzer
@@ -11,10 +12,11 @@ from manager.code_diff_manager import CodeDiffManager
 from model.commit import Commit
 from model.merge_request import MergeRequest
 
+TOTAL_SYNC_STAGES: int = 7
+
 
 class GitLabProject:
-    def __init__(self, myGitlab: GitLab, projectID: int):
-        myGitlab.set_project(projectID=projectID)
+    def __init__(self, projectID: int):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -23,20 +25,50 @@ class GitLabProject:
         self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
         self.__projectID: int = projectID
-
+        self.__is_syncing: bool = False
+        self.__last_synced: datetime = None
+        self.__syncing_state: str = "Not Synced"
+        self.__syncing_progress: int = 0
         # This will be filled after the call to self.__update_commits_manager(myGitlab)
         self.__user_list: list = []
 
-        self.__update_managers(myGitlab)
+    def get_project_sync_state(self) -> dict:
+        return {
+            "projectID": self.__projectID,
+            "is_syncing": self.__is_syncing,
+            "last_synced": self.__last_synced,
+            "syncing_state": self.__syncing_state,
+            "syncing_progress": int(self.__syncing_progress / TOTAL_SYNC_STAGES * 100)
+        }
 
-    def __update_managers(self, myGitlab: GitLab) -> None:
+    def update(self, myGitlab: GitLab) -> None:
+        self.__syncing_progress = 0
+        self.__is_syncing = True
+        myGitlab.set_project(projectID=self.__projectID)
+        self.__syncing_state = "Syncing merge requests"
         self.__update_merge_request_manager(myGitlab)
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Syncing repo members"
         self.__update_member_manager(myGitlab)
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Syncing master branch commits"
         self.__update_commits_manager(myGitlab)
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Syncing issues"
         self.__update_issues_manager(myGitlab)
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Syncing code diffs"
         self.__update_code_diff_manager(myGitlab)
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Analyzing commits"
         self.__analyze_master_commits_code_diff()
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Analyzing merge requests"
         self.__analyze_merge_requests_code_diff()
+        self.__syncing_progress = self.__syncing_progress + 1
+        self.__syncing_state = "Synced"
+        self.__last_synced = datetime.datetime.now()
+        self.__is_syncing = False
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
         mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
