@@ -83,11 +83,14 @@
     }
 }
 ```
-**syncing_state** possible values
+**syncing_state** possible values:
 - `[Syncing merge requests, Syncing repo members, Syncing master branch commits, Syncing issues, Syncing code diffs, Analyzing commits, Analyzing merge requests, Synced]`
 
-**syncing_progress**
-- A percetange value shows the progress of syncing
+**syncing_progress**:
+- A percentage value shows the progress of syncing
+
+**last_synced** date format:
+- "Wed, 17 Mar 2021 22:38:05 GMT"
 
 [Go back to API list](#api-example-response)
 
