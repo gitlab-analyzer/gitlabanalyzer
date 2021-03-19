@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
-import { CheckCircleOutlined, CopyOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
 import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
 import EveryoneScore, { ScoreCalculator, barData } from './EveryoneScore.js';
-import { renderToStaticMarkup } from 'react-dom/server'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
@@ -36,8 +35,10 @@ function FloatBar() {
     notesList,
     mergeRequestList,
     commentsList,
+    selectUser,
   } = useAuth();
   useEffect(() => {}, []);
+
   const handleSort = (value) => {
     setSortType(value)
     if (value === "alpha"){
@@ -57,6 +58,15 @@ function FloatBar() {
     console.log(value)
     setDateRange(value)
   }
+  // console.log(barData.find(x=>x.name==="Administrator"))
+  // useEffect(() => {
+  //   configSettings.startdate = dateRange[0]
+  //   configSettings.enddate = dateRange[1]
+  //   console.log(dateRange)
+  //   // setDateRange(value)   
+  // },[dateRange])
+  let userData = barData.find(x=>x.name===selectUser)
+  console.log(barData)
 
   return (
     <>
@@ -85,6 +95,7 @@ function FloatBar() {
                   //   setDateRange(value)
                   // }}
                   onChange={handleDate}
+                  // onChange={value => setDateRange(value)}
                   ranges={{
                     Today: [moment().startOf('day'), moment().endOf('day')],
                     'Iteration 1': [
@@ -122,26 +133,10 @@ function FloatBar() {
               <CopyToClipboard
                 format={'text/plain'}
                 text={
-                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
-                  renderToStaticMarkup(
-                    <div>
-                      {barData.map((Detail) => {
-                        return (
-                          <div>
-                            <div>{Detail.name}</div>
-                            <div>{ScoreCalculator(Detail.name).toFixed(0)}</div>
-                            <div>{Detail.commits}</div>
-                            <div>{Detail.code}</div>
-                            <div>{Detail.issue}</div>
-                            {/* <br/> */}
-                          </div>
-                        ); 
-                      })}                  
-                    </div>
-                    ).replaceAll('</div><div><div>', '\n')
-                    .replaceAll('</div><div>', '\t')
-                    .replaceAll('</div>', '')
-                    .replaceAll('<div>', '') 
+                  String(ScoreCalculator(userData.name)) + '\t' +
+                  userData.commits + '\t' +
+                  userData.code + '\t' +
+                  userData.issue
                 }
               >
                 <Button 
