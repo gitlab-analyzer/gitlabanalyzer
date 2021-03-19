@@ -26,9 +26,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Summary = () => {
-  const { selectUser, setSelectUser, 
-    commitsList, setCommitsList,
-    mergeRequestList, setMergeRequestList } = useAuth();
+  const {
+    selectUser,
+    setSelectUser,
+    commitsList,
+    setCommitsList,
+    mergeRequestList,
+    setMergeRequestList,
+  } = useAuth();
   const [startDate, setStartDate] = useState('March 1, 2021');
   const [endDate, setEndDate] = useState('March 12, 2021');
 
@@ -36,10 +41,7 @@ const Summary = () => {
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
 
-  const [userCommitsList, setUserCommitsList] = useState(commitsList)
-
-  console.log(selectUser)
-  console.log(userCommitsList)
+  const [userCommitsList, setUserCommitsList] = useState(commitsList);
 
   const classes = useStyles();
 
@@ -49,43 +51,45 @@ const Summary = () => {
       j,
       date,
       rarr = [];
-      for(i = 0; i < commitsList.length; i++) {
-        if(selectUser === commitsList[i].userName){
-          for(j = 0; j < commitsList[i].commits[0].length; j++){
-            date = [
-              commitsList[i].commits[0][j].commitedDate.getFullYear(),
-              commitsList[i].commits[0][j].commitedDate.getMonth(),
-              commitsList[i].commits[0][j].commitedDate.getDate()
-            ].join('-');
-            result[date] = result[date] || 0;
-            result[date]++;
-          }
+    for (i = 0; i < commitsList.length; i++) {
+      if (selectUser === commitsList[i].userName) {
+        for (j = 0; j < commitsList[i].commits[0].length; j++) {
+          date = [
+            commitsList[i].commits[0][j].commitedDate.getFullYear(),
+            commitsList[i].commits[0][j].commitedDate.getMonth(),
+            commitsList[i].commits[0][j].commitedDate.getDate(),
+          ].join('-');
+          result[date] = result[date] || 0;
+          result[date]++;
         }
       }
-      for (i in result) {
-        if(result.hasOwnProperty(i)) {
-          rarr.push({ date: i, counts: result[i] });
-        }
+    }
+    for (i in result) {
+      if (result.hasOwnProperty(i)) {
+        rarr.push({ date: i, counts: result[i] });
       }
-      return rarr;
-  }
+    }
+    return rarr;
+  };
 
   const populateDates = (array) => {
-    var result = [], i;
-    for(i in array) {
-      result.push(array[i].date)
+    var result = [],
+      i;
+    for (i in array) {
+      result.push(array[i].date);
     }
     return result.reverse();
-  }
+  };
 
   const populateCounts = (array) => {
-    var newArray = [], i;
-    for(i in array) {
-      newArray.push(array[i].counts)
+    var newArray = [],
+      i;
+    for (i in array) {
+      newArray.push(array[i].counts);
     }
     return newArray.reverse();
-  }
-  
+  };
+
   // const [dailyArray, setDailyArray] = useState(countDates(userCommitsList))
   // const [datesArray, setDatesArray] = useState(populateDates(dailyArray))
   // const [countsArray, setCountsArray] = useState(populateCounts(dailyArray))
@@ -114,22 +118,7 @@ const Summary = () => {
   // will be replaced once we find out how to get data from backend
   const data = [10, 20, 45, 33, 11, 2, 55, 3, 11, 43, 11, 66, 32, 21];
 
-  const data2 = [
-    5,
-    5,
-    4,
-    2,
-    7,
-    10,
-    5,
-    11,
-    1,
-    15,
-    10,
-    10,
-    5,
-    2,
-  ];
+  const data2 = [5, 5, 4, 2, 7, 10, 5, 11, 1, 15, 10, 10, 5, 2];
 
   const data3 = [
     10,
@@ -183,8 +172,6 @@ const Summary = () => {
   ]);
 
   const handleMenuClick = (e) => {
-    console.log('Key test:', e);
-
     if (e.key === 'Num') {
       setCombinedDropdown('Number');
       setCombinedSeries([
@@ -249,7 +236,6 @@ const Summary = () => {
   return (
     <div>
       <Header />
-      <SelectUser />
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <b>

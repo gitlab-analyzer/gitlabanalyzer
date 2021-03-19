@@ -9,7 +9,7 @@ const { Option } = Select;
 function SelectUser() {
   const { selectMembersList, selectUser, setSelectUser } = useAuth();
   return (
-    <div className="selectUser">
+    <div className="selectUser bgwhite">
       <Select
         defaultValue={selectUser}
         style={{ width: 200 }}
