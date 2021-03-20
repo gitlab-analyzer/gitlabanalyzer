@@ -67,8 +67,6 @@ def sync_project(projectID: int):
     gitlabProjectInterface.update(myGitLab)
 
 
-# TODO: This can be replaced by /update so /setProject does nothing
-# Example: /projects/set?projectID=projectID_variable
 @app.route('/projects/sync', methods=['post'])
 @cross_origin()
 def set_project():

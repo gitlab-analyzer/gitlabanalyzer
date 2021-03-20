@@ -57,6 +57,7 @@ class GitLabProject:
                 target=self.__update_issues_manager, args=(myGitlab,)
             )
         ]
+        self.__syncing_state = "Syncing data from remote..."
         self.__start_and_join_all_thread(myThreadList)
         self.__update_code_diff_manager(myGitlab)
         myThreadList: list = [
@@ -66,6 +67,7 @@ class GitLabProject:
                 target=self.__analyze_merge_requests_code_diff, args=()
             )
         ]
+        self.__syncing_state = "Analyzing..."
         self.__start_and_join_all_thread(myThreadList)
         self.__syncing_state = "Synced"
         self.__last_synced = datetime.datetime.now()
@@ -80,7 +82,6 @@ class GitLabProject:
             jobs.join()
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
-        self.__syncing_state = "Syncing merge requests"
         mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
             state="all"
         )
@@ -96,14 +97,12 @@ class GitLabProject:
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
-        self.__syncing_state = "Syncing repo members"
         members: list = myGitlab.get_all_members()
         for member in members:
             self.__membersManager.add_member(member)
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_commits_manager(self, myGitlab: GitLab) -> None:
-        self.__syncing_state = "Syncing master branch commits"
         commitList: list = myGitlab.get_commit_list_for_project()
         tempUserSet: set = set()
         for commit in commitList:
@@ -118,7 +117,6 @@ class GitLabProject:
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_issues_manager(self, myGitlab: GitLab) -> None:
-        self.__syncing_state = "Syncing issues"
         issueList: list = myGitlab.get_issue_list()
         self.__issuesManager.populate_issue_list(issueList)
         # Get comments
@@ -130,7 +128,6 @@ class GitLabProject:
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
-        self.__syncing_state = "Syncing code diffs"
         # update codeDiff ID for commits in master branch
         self.__update_code_diff_for_commit_list(
             self.__commitsManager.get_commit_list(), myGitlab

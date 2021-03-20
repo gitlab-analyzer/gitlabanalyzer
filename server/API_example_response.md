@@ -83,11 +83,11 @@
     }
 }
 ```
-**syncing_state** possible values:
-- `[Syncing merge requests, Syncing repo members, Syncing master branch commits, Syncing issues, Syncing code diffs, Analyzing commits, Analyzing merge requests, Synced]`
+**syncing_state (string)** possible values:
+- `[Syncing data from remote..., Analyzing..., Synced]`
 
-**syncing_progress**:
-- A percentage value shows the progress of syncing
+**syncing_progress (int)**:
+- A percentage value shows the progress of syncing (0 - 100)
 
 **last_synced** date format:
 - "Wed, 17 Mar 2021 22:38:05 GMT"
