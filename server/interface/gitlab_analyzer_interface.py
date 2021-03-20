@@ -5,22 +5,28 @@ from typing import List
 
 class GitLabAnalyzer:
     def __init__(self):
-        self.__user_list: List[str] = []	# list of users
-        self.__project_list: List[GitLabProject] = []   # list of repositories (Gitlab Project Interface)
-        self.__current_user_token = None    # hashed
+        self.__user_list: List[str] = []
 
-        # temporary variables
-        self.__analyzing_repository = None  
-        self.__analyzing_user = None   
+        # list of repositories that user has access
+        self.__project_list: List[GitLabProject] = []
+
+        # hashed tokens
+        self.__user_token_list: List[str] = []
+        self.__current_user_token: str = None
+
+        self.__url: str = None  # not sure if needed
+
+        self.__analyzing_repository: GitLabProject = None
+        self.__analyzing_user: str = None  # username
 
     def add_project(self, project: GitLabProject):
         self.__project_list.append(project)
 
-    def add_user(self, user):   
-    	self.__user_list.append(user)
+    def add_user(self, user):
+        self.__user_list.append(user)
 
-    def update_users(self):
-        pass
+    def add_token(self, token):
+        self.__user_token_list.append(token)
 
     def update_project_list(self, gitlab: GitLab):
         projectList = gitlab.get_project_list()
@@ -34,8 +40,12 @@ class GitLabAnalyzer:
 
     @property
     def user_list(self):
-    	return self.__user_list
-    
+        return self.__user_list
+
     @property
     def project_list(self):
-    	return self.__project_list
+        return self.__project_list
+
+    @property
+    def current_user_token(self):
+        return self.__current_user_token
