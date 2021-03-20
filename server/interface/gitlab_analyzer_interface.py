@@ -19,7 +19,7 @@ class GitLabAnalyzer:
             gitlabProjectInterface = GitLabProject(gitlab, project.id)
             self.__project_list.append(gitlabProjectInterface)
 
-    def get_gitlab_proejct_by_id(self, projectID: int) -> Optional[GitLabProject]:
+    def get_gitlab_project_by_id(self, projectID: int) -> Optional[GitLabProject]:
         for project in self.__project_list:
             if project.project_id == projectID:
                 return project
