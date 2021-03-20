@@ -19,13 +19,7 @@ class GitLabAnalyzer:
             gitlabProjectInterface = GitLabProject(gitlab, project.id)
             self.__project_list.append(gitlabProjectInterface)
 
-    def set_user_token(self, hashed_token) -> None:
-        self.__user_token = hashed_token
-
-    def set_username(self, user_name) -> None:
-        self.__username = user_name
-
-    def get_gitlab_proejct_by_id(self, projectID) -> Optional[GitLabProject]:
+    def get_gitlab_proejct_by_id(self, projectID: int) -> Optional[GitLabProject]:
         for project in self.__project_list:
             if project.project_id == projectID:
                 return project
@@ -38,3 +32,11 @@ class GitLabAnalyzer:
     @property
     def username(self):
         return self.__username
+
+    @user_token.setter
+    def user_token(self, hashed_token: str) -> None:
+        self.__user_token = hashed_token
+
+    @username.setter
+    def username(self, user_name: str) -> None:
+        self.__username = user_name
