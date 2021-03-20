@@ -45,6 +45,8 @@ const Summary = () => {
 
   const classes = useStyles();
 
+  console.log(userCommitsList)
+
   const countDates = (commitsList) => {
     var result = {},
       i,
@@ -93,27 +95,23 @@ const Summary = () => {
   // const [dailyArray, setDailyArray] = useState(countDates(userCommitsList))
   // const [datesArray, setDatesArray] = useState(populateDates(dailyArray))
   // const [countsArray, setCountsArray] = useState(populateCounts(dailyArray))
+  var dailyArray = countDates(userCommitsList)
+  var datesArray = populateDates(dailyArray)
+  var countsArray = populateCounts(dailyArray)
 
   // TODO: display data correctly
-  // useEffect(() => {
-  //   console.log("test" + selectUser)
-  //   setDailyArray(countDates(userCommitsList))
-  //   setDatesArray(populateDates(dailyArray))
-  //   setCountsArray(populateCounts(dailyArray))
-  //   setCombinedSeries([
-  //     {
-  //       name: 'Merge Requests',
-  //       data: data2,
-  //     },
-  //     {
-  //       name: 'Commits',
-  //       data: countsArray,
-  //     },
-  //   ])
-  //   console.log(dailyArray)
-  //   console.log(datesArray)
-  //   console.log(countsArray)
-  // }, [selectUser])
+  useEffect(() => {
+    setCombinedSeries([
+      {
+        name: 'Merge Requests',
+        data: data2,
+      },
+      {
+        name: 'Commits',
+        data: countsArray,
+      },
+    ])
+  }, [selectUser])
 
   // will be replaced once we find out how to get data from backend
   const data = [10, 20, 45, 33, 11, 2, 55, 3, 11, 43, 11, 66, 32, 21];
@@ -156,6 +154,19 @@ const Summary = () => {
       data: data,
     },
   ]);
+
+  const handleChange = () => {
+    setCombinedSeries([
+      {
+        name: 'Merge Requests',
+        data: data2,
+      },
+      {
+        name: 'Commits',
+        data: countsArray,
+      },
+    ])
+  }
 
   const [crSeries, setCrSeries] = useState([
     {
