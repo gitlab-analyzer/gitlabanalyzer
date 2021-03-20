@@ -92,25 +92,27 @@ const Summary = () => {
     return newArray.reverse();
   };
 
-  // const [dailyArray, setDailyArray] = useState(countDates(userCommitsList))
-  // const [datesArray, setDatesArray] = useState(populateDates(dailyArray))
-  // const [countsArray, setCountsArray] = useState(populateCounts(dailyArray))
+  // Computations for graph data - fine to leave this here since it will be updated on selectUser
   var dailyArray = countDates(userCommitsList)
   var datesArray = populateDates(dailyArray)
   var countsArray = populateCounts(dailyArray)
+
+  const [dateArray, setDateArray] = useState(datesArray);
 
   // TODO: display data correctly
   useEffect(() => {
     setCombinedSeries([
       {
         name: 'Merge Requests',
-        data: data2,
+        data: [],
       },
       {
         name: 'Commits',
         data: countsArray,
       },
     ])
+    setDateArray(datesArray)
+    console.log(dateArray)
   }, [selectUser])
 
   // will be replaced once we find out how to get data from backend
@@ -147,11 +149,11 @@ const Summary = () => {
   const [combinedSeries, setCombinedSeries] = useState([
     {
       name: 'Merge Requests',
-      data: data2,
+      data: [],
     },
     {
       name: 'Commits',
-      data: data,
+      data: [],
     },
   ]);
 
@@ -254,7 +256,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} />
+          <StackedBarGraph series={combinedSeries} xlabel={dateArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

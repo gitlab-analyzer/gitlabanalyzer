@@ -47,12 +47,10 @@ class BarGraph extends React.Component {
               endingShape: 'flat'
             }
           },
-          xaxis: {
-            type: 'datetime',
-            categories: ["2021-3-1", "2021-3-2", 
-            "2021-3-3", "2021-3-4","2021-3-5","2021-3-6", "2021-3-7",
-            "2021-3-8", "2021-3-9","2021-3-10","2021-3-11", "2021-3-12"],
-          },
+          // xaxis: {
+          //   type: 'datetime',
+          //   categories: this.props.xlabel
+          // },
           fill: {
             type: 'solid',
             opacity: 1
