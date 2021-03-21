@@ -1,32 +1,78 @@
-const Diff2html = require('diff2html');
+import React, { Component } from 'react';
+import { ReactGhLikeDiff } from 'react-gh-like-diff';
+import fetch from 'unfetch';
+import { TITLE, PAST, CURRENT } from './constants';
+import 'react-gh-like-diff/dist/css/diff2html.min.css';
 
-const diff = `diff --git a/about.html b/about.html
-index d09ab79..0c20c33 100644
---- a/about.html
-+++ b/about.html
-@@ -19,7 +19,7 @@
-   </div>
+class App extends Component {
+  state = {
+    past: '',
+    current: '',
+    diffString: '',
+  };
 
-   <div id="headerContainer">
--    <h1>About</h1>
-+    <h1>About This Project</h1>
-   </div>
+  componentDidMount() {
+    fetch(PAST)
+      .then((response) => response.text())
+      .then((past) => this.setState({ past }));
 
-   <div id="contentContainer">
-diff --git a/imprint.html b/imprint.html
-index 1932d95..d34d56a 100644
---- a/imprint.html
-+++ b/imprint.html
-@@ -19,7 +19,7 @@
-   </div>
+    fetch(CURRENT)
+      .then((response) => response.text())
+      .then((current) => this.setState({ current }));
 
-   <div id="headerContainer">
--    <h1>Imprint</h1>
-+    <h1>Imprint / Disclaimer</h1>
-   </div>
+    // const diffString =
+    //   '@@ -1,32 +1,3 @@\n import json\n \n import urllib.parse\n-from interface.gitlab_interface import GitLab\n-from interface.gitlab_project_interface import GitLabProject\n-\n-\n-from random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongo\n';
+    // this.setState({ diffString });
+  }
 
-   <div id="contentContainer">`;
+  render() {
+    const diffString = `diff --git a/sample.js b/sample.js
+    index 0000001..0ddf2ba
+    --- a/sample.js
+    +++ b/sample.js
+    @@ -1 +1 @@
+    -console.log("Hello World!")
+    -console.log("Hello 1World!")
+    -console.log("Hello 22World!")
+    +console.log("Hello from Diff2Html!")`;
+    return (
+      <div>
+        <ReactGhLikeDiff
+          options={{
+            originalFileName: TITLE,
+            updatedFileName: TITLE,
+            inputFormat: 'diff',
+            outputFormat: 'line-by-line',
+            showFiles: true,
+            matching: 'none',
+            matchWordsThreshold: 0.25,
+            matchingMaxComparisons: 2500,
+            maxLineSizeInBlockForComparison: 200,
+            maxLineLengthHighlight: 10000,
+            renderNothingWhenEmpty: false,
+          }}
+          past={this.state.past}
+          current={this.state.current}
+        />
+        <ReactGhLikeDiff
+          options={{
+            originalFileName: TITLE,
+            updatedFileName: TITLE,
+            inputFormat: 'diff',
+            outputFormat: 'line-by-line',
+            showFiles: true,
+            matching: 'none',
+            matchWordsThreshold: 0.25,
+            matchingMaxComparisons: 2500,
+            maxLineSizeInBlockForComparison: 200,
+            maxLineLengthHighlight: 10000,
+            renderNothingWhenEmpty: false,
+          }}
+          diffString={diffString}
+        />
+      </div>
+    );
+  }
+}
 
-const diffJson = Diff2html.parse(diff);
-const diffHtml = Diff2html.html(diffJson, { drawFileList: true });
-document.getElementById('destination-elem-id').innerHTML = diffHtml;
+export default App;
