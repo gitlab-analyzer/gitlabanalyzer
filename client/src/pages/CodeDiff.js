@@ -1,78 +1,73 @@
 import React, { Component } from 'react';
-import { ReactGhLikeDiff } from 'react-gh-like-diff';
-import fetch from 'unfetch';
-import { TITLE, PAST, CURRENT } from './constants';
-import 'react-gh-like-diff/dist/css/diff2html.min.css';
+import { parseDiff, Diff, Hunk, Decoration } from 'react-diff-view';
+import 'react-diff-view/style/index.css';
+import './styles.css';
 
-class App extends Component {
-  state = {
-    past: '',
-    current: '',
-    diffString: '',
-  };
+const Appdiff = ({ diffText }) => {
+  const files = parseDiff(diffText);
 
-  componentDidMount() {
-    fetch(PAST)
-      .then((response) => response.text())
-      .then((past) => this.setState({ past }));
+  const renderFile = ({
+    oldPath,
+    newPath,
+    oldRevision,
+    newRevision,
+    type,
+    hunks,
+  }) => (
+    <div key={oldRevision + '-' + newRevision} className="file-diff">
+      <header className="diff-header">
+        {oldPath === newPath ? oldPath : `${oldPath} -> ${newPath}`}
+      </header>
+      <Diff viewType="unified" diffType={type} hunks={hunks}>
+        {(hunks) =>
+          hunks.map((hunk) => [
+            <Decoration key={'deco-' + hunk.content}>
+              <div className="hunk-header">{hunk.content}</div>
+            </Decoration>,
+            <Hunk key={hunk.content} hunk={hunk} />,
+          ])
+        }
+      </Diff>
+    </div>
+  );
+  return <div className="ubuntu">{files.map(renderFile)}</div>;
+};
 
-    fetch(CURRENT)
-      .then((response) => response.text())
-      .then((current) => this.setState({ current }));
-
-    // const diffString =
-    //   '@@ -1,32 +1,3 @@\n import json\n \n import urllib.parse\n-from interface.gitlab_interface import GitLab\n-from interface.gitlab_project_interface import GitLabProject\n-\n-\n-from random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongofrom random import randint\n-from typing import Optional\n-from flask import Flask, request, jsonify\n-from flask_cors import CORS, cross_origin\n-import pymongo\n';
-    // this.setState({ diffString });
-  }
-
+class CodeDiff extends Component {
   render() {
-    const diffString = `diff --git a/sample.js b/sample.js
-    index 0000001..0ddf2ba
-    --- a/sample.js
-    +++ b/sample.js
-    @@ -1 +1 @@
-    -console.log("Hello World!")
-    -console.log("Hello 1World!")
-    -console.log("Hello 22World!")
-    +console.log("Hello from Diff2Html!")`;
+    const data = String.raw`diff --git a/requirements.txt b/requirements.txt
+index c3f75dc..2cda10e 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -5,5 +5,5 @@ m3u8
+    hello
+    def helloWorld
+      not much
+        byenow
+ uvloop
+ aiohttp
+ cchardet
+-aiodns
++aiodnstest
+ graphitesender==0.11.1
+diff --git a/run.sh b/run.sh
+index afc32ae..9e430e1 100755
+--- a/run.sh
++++ b/run.sh
+@@ -1,6 +1,5 @@
+ #!/usr/bin/env bash
+
+-BASEDIR=$(dirname "$0")
+ VENV=$BASEDIR/.venv
+
+ test -d "$VENV" || virtualenv -q "$VENV"
+`;
     return (
-      <div>
-        <ReactGhLikeDiff
-          options={{
-            originalFileName: TITLE,
-            updatedFileName: TITLE,
-            inputFormat: 'diff',
-            outputFormat: 'line-by-line',
-            showFiles: true,
-            matching: 'none',
-            matchWordsThreshold: 0.25,
-            matchingMaxComparisons: 2500,
-            maxLineSizeInBlockForComparison: 200,
-            maxLineLengthHighlight: 10000,
-            renderNothingWhenEmpty: false,
-          }}
-          past={this.state.past}
-          current={this.state.current}
-        />
-        <ReactGhLikeDiff
-          options={{
-            originalFileName: TITLE,
-            updatedFileName: TITLE,
-            inputFormat: 'diff',
-            outputFormat: 'line-by-line',
-            showFiles: true,
-            matching: 'none',
-            matchWordsThreshold: 0.25,
-            matchingMaxComparisons: 2500,
-            maxLineSizeInBlockForComparison: 200,
-            maxLineLengthHighlight: 10000,
-            renderNothingWhenEmpty: false,
-          }}
-          diffString={diffString}
-        />
+      <div style={{ marginTop: '10px', fontFamily: 'Ubuntu Mono' }}>
+        <Appdiff diffText={data} />
       </div>
     );
   }
 }
 
-export default App;
+export default CodeDiff;

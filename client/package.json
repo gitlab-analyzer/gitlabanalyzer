@@ -26,6 +26,7 @@
     "react-bootstrap": "^1.4.3",
     "react-copy-to-clipboard": "^5.0.3",
     "react-datepicker": "^3.4.1",
+    "react-diff-view": "^2.4.7",
     "react-diff-viewer": "^3.1.1",
     "react-dom": "^17.0.1",
     "react-gh-like-diff": "^2.0.2",
