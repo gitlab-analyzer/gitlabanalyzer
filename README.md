@@ -62,5 +62,5 @@ This software uses the following open source packages:
 
 ## License
 
-MIT
+AGPL v3.0
 
