@@ -26,8 +26,6 @@ const copySuccessful = () => {
 
 function FloatBar() {
   const [ sortType, setSortType ] = React.useState('alpha');
-  // const [dateRange, setDateRange] = React.useState([configSettings.startdate, configSettings.enddate]);
-  // const [ dateRange, setDateRange ] = React.useState([]);
   
   const {
     membersList,
@@ -60,22 +58,6 @@ function FloatBar() {
     configSettings.enddate = value[1]
     setDataList(value)
   }
-  // console.log(barData.find(x=>x.name==="Administrator"))
-  // useEffect(() => {
-  //   configSettings.startdate = dateRange[0]
-  //   configSettings.enddate = dateRange[1]
-  //   console.log(dateRange)
-  //   // setDateRange(value)   
-  // },[dateRange])
-  // console.log(barData)
-  // useEffect(() => {
-  //   console.log('in use effect')
-  //   // FillBarData()
-  //   EveryoneScore()
-  //   .then(data =>
-  //     setDataList(data)
-  //   );
-  // },[])
   let userData = barData.find(x=>x.name===selectUser)
 
 
@@ -100,13 +82,7 @@ function FloatBar() {
                   defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
                   format="YYYY/MM/DD hh:mm:ss"
                   allowClear={false}
-                  // onChange={(value) => {
-                  //   configSettings.startdate = value[0]
-                  //   configSettings.enddate = value[1]
-                  //   setDateRange(value)
-                  // }}
                   onChange={handleDate}
-                  // onChange={value => setDateRange(value)}
                   ranges={{
                     Today: [moment().startOf('day'), moment().endOf('day')],
                     'Iteration 1': [

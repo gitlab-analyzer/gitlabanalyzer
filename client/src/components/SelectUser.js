@@ -12,12 +12,8 @@ function SelectUser() {
     selectMembersList, 
     selectUser, 
     setSelectUser,
-    anon
   } = useAuth();
-  let currUser;
-  React.useEffect(()=>{
-    // currUser= barData.find(x=>x.name===selectUser)
-  },[selectUser])
+  React.useEffect(()=>{},[])
 
   return (
     <div 
@@ -30,7 +26,6 @@ function SelectUser() {
     >
       <Select
         defaultValue={selectUser}
-        // defaultValue={(anon && "User"+currUser.id) || selectUser}
         style={{ 
           width: 200, 
           marginRight:'10px'
@@ -40,12 +35,8 @@ function SelectUser() {
         }}
         showSearch
       >
-        {/* {barData.map((Detail) => { */}
         {selectMembersList.map((Detail) => {
           return (
-            // <Option value={Detail.name}>
-            //   {(anon && "User"+(Detail.id)) || Detail.name}
-            // </Option>
           <Option value={Detail}>{Detail}</Option>
           );
         })}

@@ -10,15 +10,6 @@ const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
   const { selectMembersList, selectUser, setSelectUser, anon } = useAuth();
-  // useEffect (() => {
-  //   const userChange = (value) => {
-  //     setSelectUser(selectMembersList[value])
-  //   };
-  //   const dateChange = (value) => {
-  //     configSettings.startdate = value[0].format();
-  //     configSettings.enddate = value[1].format();
-  //   };
-  // }, [configSettings])
   useEffect(() => {}, [setSelectUser]);
   let anonList = Array.from(
     selectMembersList,
@@ -41,11 +32,9 @@ function InitialUserDates() {
           defaultValue={
             (selectUser || (setSelectUser(selectMembersList[0])))
           }
-          // onChange={userChange}
           onChange={(value) => 
             {
               setSelectUser(selectMembersList[value])
-              // configSettings.name = value;
             }
           }
           showSearch
@@ -89,7 +78,6 @@ function InitialUserDates() {
                 moment(configSettings.enddate),
               ]
             }
-            // onChange={dateChange}
             onChange={(value) => {
               configSettings.startdate = value[0].format();
               configSettings.enddate = value[1].format();

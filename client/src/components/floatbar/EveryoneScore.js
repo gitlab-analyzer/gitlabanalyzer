@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import HorizontalScroll from './Scroll';
 import { useAuth } from '../../context/AuthContext';
-import { configSettings } from '../login/Repo'
 import './EveryoneScore.css';
 
 const usercolours = [
