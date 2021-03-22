@@ -62,5 +62,5 @@ This software uses the following open source packages:
 
 ## License
 
-AGPL v3.0
+<a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">AGPL v3.0</a>
 
