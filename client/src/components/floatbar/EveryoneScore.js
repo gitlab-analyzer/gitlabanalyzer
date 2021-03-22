@@ -33,81 +33,83 @@ export function ScoreCalculator(username) {
 }
 
 const EveryoneScore = () => {
-  const { notesList, mergeRequestList, setFloatScores } = useAuth();
+  const { notesList, mergeRequestList, setFloatScores, dataList, selectUser, anon } = useAuth();
 
   useEffect(() => {
-    barData = [];
-    var subscore = {};
-    let ignore = false;
-    let num = 0;
-    if (notesList !== 0) {
-      for (let [nkey, nvalue] of Object.entries(notesList)) {
-        if (nvalue['ignore'] || 
-          ((nvalue['createdDate'] < new Date(configSettings.startdate)) || 
-          (nvalue['createdDate'] > new Date(configSettings.enddate)))) 
-        {
-          continue;
-        }
-        if (nvalue['author'] in subscore) {
-          subscore[nvalue['author']] += nvalue['score'];
-        } else {
-          subscore[nvalue['author']] = nvalue['score'];
-        }
-      }
-    }
-    console.log(mergeRequestList)
-    if (mergeRequestList !== 0) {
-      for (let [user, uservalue] of Object.entries(mergeRequestList)) {
-        let commitScore = 0;
-        let linesAdded = 0;
-        let linesDeleted = 0;
-        let syntaxChanged = 0;
-        for (let [key, value] of Object.entries(uservalue['mr'])) {
-          if (value['ignore']) {
+    async function updateData() {
+      barData = [];
+      var subscore = {};
+      let ignore = false;
+      let num = 0;
+      if (notesList !== 0) {
+        for (let [nkey, nvalue] of Object.entries(notesList)) {
+          if (nvalue['ignore'] || 
+            ((nvalue['createdDate'] < new Date(dataList[0])) || 
+            (nvalue['createdDate'] > new Date(dataList[1])))) 
+          {
             continue;
           }
-          for (let [k, v] of Object.entries(value['commitList'])) {
-            if (v['ignore']) {
-              ignore = true
-              continue;
-            }
-            if (
-              (v['comittedDate'] < new Date(configSettings.startdate)) || 
-              (v['comittedDate'] > new Date(configSettings.enddate))
-            ) {
-              ignore = true
-              continue;
-            }
-            commitScore += v['score'];
+          if (nvalue['author'] in subscore) {
+            subscore[nvalue['author']] += nvalue['score'];
+          } else {
+            subscore[nvalue['author']] = nvalue['score'];
           }
-          for (let [keylines, valuelines] of Object.entries(
-            value['lineCounts']
-          )) {
-            if (!ignore) {
-              linesAdded += value['lineCounts']['lines_added'];
-              linesDeleted += value['lineCounts']['lines_deleted'];
-              syntaxChanged += value['lineCounts']['syntax_changes'];
-            }
-          }
-          ignore = false
         }
-        if (!subscore[user]) {
-          subscore[user] = 0;
-        }
-        barData.push({
-          name: user,
-          id: num++,
-          commits: commitScore.toFixed(0),
-          code: linesAdded,
-          deleted: linesDeleted,
-          syntax: syntaxChanged,
-          issue: subscore[user],
-        });
       }
+      if (mergeRequestList !== 0) {
+        for (let [user, uservalue] of Object.entries(mergeRequestList)) {
+          let commitScore = 0;
+          let linesAdded = 0;
+          let linesDeleted = 0;
+          let syntaxChanged = 0;
+          for (let [key, value] of Object.entries(uservalue['mr'])) {
+            if (value['ignore']) {
+              continue;
+            }
+            for (let [k, v] of Object.entries(value['commitList'])) {
+              if (v['ignore']) {
+                ignore = true
+                continue;
+              }
+              if (
+                (v['comittedDate'] < new Date(dataList[0])) || 
+                (v['comittedDate'] > new Date(dataList[1]))
+              ) {
+                ignore = true
+                continue;
+              }
+              commitScore += v['score'];
+            }
+            for (let [keylines, valuelines] of Object.entries(
+              value['lineCounts']
+            )) {
+              if (!ignore) {
+                linesAdded += value['lineCounts']['lines_added'];
+                linesDeleted += value['lineCounts']['lines_deleted'];
+                syntaxChanged += value['lineCounts']['syntax_changes'];
+              }
+            }
+            ignore = false
+          }
+          if (!subscore[user]) {
+            subscore[user] = 0;
+          }
+          barData.push({
+            name: user,
+            id: num++,
+            commits: commitScore.toFixed(0),
+            code: linesAdded,
+            deleted: linesDeleted,
+            syntax: syntaxChanged,
+            issue: subscore[user],
+          });
+        }
+      }
+      await setFloatScores([...barData]);  
     }
-    console.log(barData)
-    setFloatScores([...barData]);
-  }, [mergeRequestList]);
+    updateData();
+  }, [mergeRequestList, dataList, selectUser]);
+
   useEffect(() => {}, [barData]);
   const scrollRef = HorizontalScroll();
   return (
@@ -125,8 +127,13 @@ const EveryoneScore = () => {
           {barData.map((Detail, index) => {
             return (
               <div className="scoreArray">
-                <div className="user" style={{ color: usercolours[Detail.id] }}>
-                  @{Detail.name}
+                <div style={{ color: usercolours[Detail.id] }}>
+                  {
+                    (anon && "User"+(Detail.id)) || 
+                    (
+                      (Detail.name)
+                    )
+                  }
                 </div>
                 <div className="userScore">
                   {ScoreCalculator(Detail.name).toFixed(0)}

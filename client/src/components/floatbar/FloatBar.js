@@ -3,7 +3,7 @@ import { Select, Button, DatePicker, notification } from 'antd';
 import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
 import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
-import EveryoneScore, { ScoreCalculator, barData } from './EveryoneScore.js';
+import EveryoneScore, { ScoreCalculator, barData, FillBarData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
@@ -25,9 +25,10 @@ const copySuccessful = () => {
 };
 
 function FloatBar() {
-  const [sortType, setSortType] = React.useState('alpha');
+  const [ sortType, setSortType ] = React.useState('alpha');
   // const [dateRange, setDateRange] = React.useState([configSettings.startdate, configSettings.enddate]);
-  const [dateRange, setDateRange] = React.useState([]);
+  // const [ dateRange, setDateRange ] = React.useState([]);
+  
   const {
     membersList,
     usersList,
@@ -36,6 +37,8 @@ function FloatBar() {
     mergeRequestList,
     commentsList,
     selectUser,
+    dataList,
+    setDataList,
   } = useAuth();
   useEffect(() => {}, []);
 
@@ -55,8 +58,7 @@ function FloatBar() {
   const handleDate = (value) => {
     configSettings.startdate = value[0]
     configSettings.enddate = value[1]
-    console.log(value)
-    setDateRange(value)
+    setDataList(value)
   }
   // console.log(barData.find(x=>x.name==="Administrator"))
   // useEffect(() => {
@@ -65,8 +67,17 @@ function FloatBar() {
   //   console.log(dateRange)
   //   // setDateRange(value)   
   // },[dateRange])
+  // console.log(barData)
+  // useEffect(() => {
+  //   console.log('in use effect')
+  //   // FillBarData()
+  //   EveryoneScore()
+  //   .then(data =>
+  //     setDataList(data)
+  //   );
+  // },[])
   let userData = barData.find(x=>x.name===selectUser)
-  console.log(barData)
+
 
   return (
     <>
@@ -130,23 +141,25 @@ function FloatBar() {
               </div>
             </Grid>
             <Grid item xs={12}>
-              <CopyToClipboard
-                format={'text/plain'}
-                text={
-                  String(ScoreCalculator(userData.name)) + '\t' +
-                  userData.commits + '\t' +
-                  userData.code + '\t' +
-                  userData.issue
-                }
-              >
-                <Button 
-                  style={{ width: 150 }} 
-                  onClick={copySuccessful}
+              {userData && (
+                <CopyToClipboard
+                  format={'text/plain'}
+                  text={          
+                    String(ScoreCalculator(userData.name)) + '\t' +
+                    userData.commits + '\t' +
+                    userData.code + '\t' +
+                    userData.issue
+                  }
                 >
-                  Copy
-                  <CopyOutlined className="copyicon" />
-                </Button>
-              </CopyToClipboard>
+                  <Button 
+                    style={{ width: 150 }} 
+                    onClick={copySuccessful}
+                  >
+                    Copy
+                    <CopyOutlined className="copyicon" />
+                  </Button>
+                </CopyToClipboard>
+              )}
             </Grid>
           </Grid>
         </div>

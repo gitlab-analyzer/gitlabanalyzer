@@ -20,7 +20,6 @@ function InitialUserDates() {
   //   };
   // }, [configSettings])
   useEffect(() => {}, [setSelectUser]);
-  console.log(configSettings.name)
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
@@ -37,17 +36,16 @@ function InitialUserDates() {
           },
         ]}
       >
-            {console.log('in initial', selectUser)}
         <Select
           style={{ width: 200 }}
           defaultValue={
-            (selectUser || ((configSettings.name = selectMembersList[0])))
+            (selectUser || (setSelectUser(selectMembersList[0])))
           }
           // onChange={userChange}
           onChange={(value) => 
             {
               setSelectUser(selectMembersList[value])
-              configSettings.name = value;
+              // configSettings.name = value;
             }
           }
           showSearch
