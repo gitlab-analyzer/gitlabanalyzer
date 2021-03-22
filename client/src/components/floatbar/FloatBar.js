@@ -145,7 +145,7 @@ function FloatBar() {
                 <CopyToClipboard
                   format={'text/plain'}
                   text={          
-                    String(ScoreCalculator(userData.name)) + '\t' +
+                    String(ScoreCalculator(userData.name).toFixed(0)) + '\t' +
                     userData.commits + '\t' +
                     userData.code + '\t' +
                     userData.issue
