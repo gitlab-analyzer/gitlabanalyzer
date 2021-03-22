@@ -8,6 +8,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitLabProject
+from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
 from manager.member_manager import MemberManager
 
 app = Flask(__name__)
@@ -21,6 +22,12 @@ gitlabProjectInterface: Optional[GitLabProject] = None
 
 # Error respond body list:
 projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
+
+
+def hash_token(myToken: str):
+    # TODO: We might not want to add the current time
+    #       we can basically treat the token as login credentials
+    return hashlib.sha256(str.encode(myToken + str(time.time()))).hexdigest()
 
 
 # Note: Should pass both the gitlab url and the access token when making post call to /auth
@@ -37,7 +44,7 @@ def auth():
         # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
         #       add unix time to the end of the token. Then hash it.
         response.set_cookie(
-            key="id", value=hashlib.sha256(str.encode(myToken + str(time.time()))).hexdigest()
+            key="id", value=hash_token(myToken)
         )
         return response
     else:
@@ -97,6 +104,7 @@ def get_project_members(projectID):
     global gitlabProjectInterface
 
     if gitlabProjectInterface is None:
+        # TODO: does frontend need the members before sync the project?
         global myGitLab
         memberInfoList: list = []
         tempGitLab = deepcopy(myGitLab)
@@ -209,4 +217,5 @@ def get_notes_for_all_users(projectID):
 
 
 if __name__ == '__main__':
+    gitlab_manager = GitLabAnalyzerManager()
     app.run(host='0.0.0.0', port=5678)

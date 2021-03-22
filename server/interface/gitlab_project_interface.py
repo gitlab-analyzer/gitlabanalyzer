@@ -16,7 +16,7 @@ TOTAL_SYNC_STAGES: int = 7
 
 
 class GitLabProject:
-    def __init__(self, projectID: int):
+    def __init__(self, projectID: int, projectName: str):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -25,6 +25,7 @@ class GitLabProject:
         self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
         self.__projectID: int = projectID
+        self.__projectName: str = projectName
         self.__is_syncing: bool = False
         self.__last_synced: datetime = None
         self.__syncing_state: str = "Not Synced"
@@ -337,6 +338,10 @@ class GitLabProject:
     @property
     def project_id(self) -> int:
         return self.__projectID
+
+    @property
+    def project_name(self) -> str:
+        return self.__projectName
 
     @property
     def user_list(self) -> list:
