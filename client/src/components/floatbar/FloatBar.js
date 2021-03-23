@@ -8,7 +8,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
 
-
 import './FloatBar.css';
 
 var IterationDates = configSettings.iteration;
@@ -117,14 +116,17 @@ function FloatBar() {
               </div>
             </Grid>
             <Grid item xs={12}>
-              {userData && (
                 <CopyToClipboard
                   format={'text/plain'}
-                  text={          
-                    String(ScoreCalculator(userData.name).toFixed(0)) + '\t' +
-                    userData.commits + '\t' +
-                    userData.code + '\t' +
-                    userData.issue
+                  text={ (userData &&
+                    (
+                      String(ScoreCalculator(userData.name).toFixed(0)) + '\t' +
+                      userData.commits + '\t' +
+                      userData.code + '\t' +
+                      userData.issue
+                    )) || (
+                      '0\t0\t0\t0'
+                    )
                   }
                 >
                   <Button 
@@ -135,7 +137,7 @@ function FloatBar() {
                     <CopyOutlined className="copyicon" />
                   </Button>
                 </CopyToClipboard>
-              )}
+              {/* )} */}
             </Grid>
           </Grid>
         </div>
