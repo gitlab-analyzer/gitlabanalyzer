@@ -32,4 +32,4 @@ if __name__ == '__main__':
 
     userObj = {"name": "John", "repoInfo": "this is a test"}
 
-    print(testDB.get_collection_names())
+    print(testDB.collections)
