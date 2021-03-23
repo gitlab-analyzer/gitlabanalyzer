@@ -247,6 +247,9 @@ class GitLabProject:
             commitListsForAllUsers.append({"user_name": user, "commits": []})
         return commitListsForAllUsers
 
+    def get_commit_list_on_master(self) -> list:
+        return self.__commitsManager.get_commit_list_json()
+
     def get_commits_for_all_users(self) -> list:
         commitListsForAllUsers: list = self.__initialize_member_and_user_list()
 
@@ -319,21 +322,12 @@ class GitLabProject:
             commentList[comment.author].append(comment.to_dict())
         return commentList
 
-    @property
-    def member_manager(self) -> MemberManager:
-        return self.__membersManager
-
-    @property
-    def merge_request_manager(self) -> MergeRequestManager:
-        return self.__mergeRequestManager
-
-    @property
-    def commits_manager(self) -> CommitManager:
-        return self.__commitsManager
-
-    @property
-    def issue_manager(self) -> IssueManager:
-        return self.__issuesManager
+    def get_members(self) -> list:
+        memberInfoList: list = []
+        memberList = self.__membersManager.get_member_list()
+        for member in memberList:
+            memberInfoList.append(member.to_dict())
+        return memberInfoList
 
     @property
     def project_id(self) -> int:

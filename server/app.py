@@ -25,9 +25,7 @@ projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
 
 
 def hash_token(myToken: str):
-    # TODO: We might not want to add the current time
-    #       we can basically treat the token as login credentials
-    return hashlib.sha256(str.encode(myToken + str(time.time()))).hexdigest()
+    return hashlib.sha256(str.encode(myToken)).hexdigest()
 
 
 # Note: Should pass both the gitlab url and the access token when making post call to /auth
@@ -41,8 +39,6 @@ def auth():
         response = make_response(
             jsonify({'username': myGitLab.get_username(), 'response': True})
         )
-        # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
-        #       add unix time to the end of the token. Then hash it.
         response.set_cookie(
             key="id", value=hash_token(myToken)
         )
