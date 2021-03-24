@@ -70,13 +70,13 @@ class StackedBarGraph extends React.Component {
 
     // IDEA: re-render the graph if dates not working
     componentDidUpdate() {
-      const xlabel = this.props.xlabel;
-      apexchart.exec(1, 'updateOptions', {
+      apexchart.exec("1", "updateOptions", {
+        series: this.props.series,
+        
         xaxis: {
-          type: 'datetime',
-          categories: xlabel,
+          categories: this.props.xlabel
         }
-      })
+      });
     }
 
     render() {
