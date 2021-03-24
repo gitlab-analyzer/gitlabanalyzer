@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { parseDiff, Diff, Hunk, Decoration } from 'react-diff-view';
-import { Button } from 'antd';
+import { Checkbox } from 'antd';
 import axios from 'axios';
 import 'react-diff-view/style/index.css';
 import './styles.css';
 
 const Appdiff = ({ diffText }) => {
+  const [collapse, setCollapse] = useState(false);
   const files = parseDiff(diffText);
+
+  const handleCollapse = (e) => {
+    setCollapse(!collapse);
+  };
+
+  useEffect(() => {}, [collapse]);
 
   const renderFile = ({
     oldPath,
@@ -22,20 +29,20 @@ const Appdiff = ({ diffText }) => {
         className="diff-header"
       >
         {oldPath === newPath ? oldPath : `${oldPath} -> ${newPath}`}
-        <Button size="small" type="primary">
-          Minimize
-        </Button>
+        <Checkbox onChange={handleCollapse}>Collapse</Checkbox>
       </header>
-      <Diff viewType="unified" diffType={type} hunks={hunks}>
-        {(hunks) =>
-          hunks.map((hunk) => [
-            <Decoration key={'deco-' + hunk.content}>
-              <div className="hunk-header">{hunk.content}</div>
-            </Decoration>,
-            <Hunk key={hunk.content} hunk={hunk} />,
-          ])
-        }
-      </Diff>
+      {collapse ? null : (
+        <Diff viewType="unified" diffType={type} hunks={hunks}>
+          {(hunks) =>
+            hunks.map((hunk) => [
+              <Decoration key={'deco-' + hunk.content}>
+                <div className="hunk-header">{hunk.content}</div>
+              </Decoration>,
+              <Hunk key={hunk.content} hunk={hunk} />,
+            ])
+          }
+        </Diff>
+      )}
     </div>
   );
   return <div className="ubuntu">{files.map(renderFile)}</div>;
@@ -87,7 +94,6 @@ index afc32ae..9e430e1 100755
   const hey =
     'diff --git a/requirements.txt b/requirements.txt\nindex c3f75dc..2cda10e 100644\n--- a/requirements.txt\n+++ b/requirements.txt\n';
   const wow = hey + codeDiff;
-  // console.log('WOW', wow);
 
   return (
     <div style={{ marginTop: '10px', fontFamily: 'Ubuntu Mono' }}>
