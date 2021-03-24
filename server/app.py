@@ -62,7 +62,7 @@ def get_project_list():
     return jsonify({'projects': myResponse, "response": True})
 
 
-def sync_project(projectID: int):
+def sync_project_helper(projectID: int):
     global myGitLab
     global gitlabProjectInterface
     gitlabProjectInterface = GitLabProject(projectID)
@@ -79,7 +79,7 @@ def sync_project():
     if myGitLab.find_project(projectID) is not None:
         global state
         if not state:
-            threading.Thread(target=sync_project, args=(projectID,)).start()
+            threading.Thread(target=sync_project_helper, args=(projectID,)).start()
             state = True
         return jsonify({"response": True})
     else:
@@ -89,7 +89,7 @@ def sync_project():
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
 def get_state(projectID: int):
     global gitlabProjectInterface
-    if projectID == gitlabProjectInterface.project_id:
+    if gitlabProjectInterface is not None and projectID == gitlabProjectInterface.project_id:
         return jsonify(
             {
                 "response": True,
