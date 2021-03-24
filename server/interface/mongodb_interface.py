@@ -10,6 +10,7 @@ class MongoDB:
 
         self.__gitLabAnalyzerDB = self.__client["GitLabAnalyzer"]
         self.__userColl = self.__gitLabAnalyzerDB["users"]
+        self.__userIdCount = 1
 
     def find_users(self, num: int, obj: dict) -> Cursor:
         return self.__userColl.find(obj)
@@ -44,3 +45,16 @@ if __name__ == '__main__':
     userObj = {"name": "John", "repoInfo": "this is a test"}
 
     print(testDB.collections)
+
+"""
+Users Collection: [
+	{
+		_id: 1,
+		name: John,
+		hashed_token: IKNF23141ASFINO,
+		config: {
+			
+		}
+	}
+]
+"""
