@@ -4,11 +4,10 @@ import { CheckCircleOutlined, CopyOutlined } from '@ant-design/icons';
 import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
 import EveryoneScore, { ScoreCalculator, barData } from './EveryoneScore.js';
-import { renderToStaticMarkup } from 'react-dom/server'
+import { renderToStaticMarkup } from 'react-dom/server';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-
 
 import './FloatBar.css';
 
@@ -36,10 +35,13 @@ function FloatBar() {
     commentsList,
   } = useAuth();
   useEffect(() => {}, []);
-    
+
   return (
     <>
-      <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
+      <div
+        className="floatbar-header"
+        style={{ height: 10, backgroundColor: 'white' }}
+      />
       <div className="floatbar-container">
         <div className="floatbaralign">
           <EveryoneScore />
@@ -54,22 +56,25 @@ function FloatBar() {
           >
             <Grid item xs={12}>
               <div className="daterange">
-                <RangePicker 
-                  defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
+                <RangePicker
+                  defaultValue={[
+                    moment(configSettings.startdate),
+                    moment(configSettings.enddate),
+                  ]}
                   format="YYYY/MM/DD hh:mm:ss"
                   ranges={{
                     Today: [moment().startOf('day'), moment().endOf('day')],
                     'Iteration 1': [
-                      moment(IterationDates.iter1start), 
-                      moment(IterationDates.iter1end)
+                      moment(IterationDates.iter1start),
+                      moment(IterationDates.iter1end),
                     ],
                     'Iteration 2': [
-                      moment(IterationDates.iter2start), 
-                      moment(IterationDates.iter2end)
+                      moment(IterationDates.iter2start),
+                      moment(IterationDates.iter2end),
                     ],
                     'Iteration 3': [
-                      moment(IterationDates.iter2start), 
-                      moment(IterationDates.iter3end)
+                      moment(IterationDates.iter2start),
+                      moment(IterationDates.iter3end),
                     ],
                   }}
                   showTime
@@ -90,14 +95,14 @@ function FloatBar() {
               </div>
             </Grid>
             <Grid item xs={12}>
-              {console.log(barData)}
+              {/* {console.log(barData)} */}
               <CopyToClipboard
                 format={'text/plain'}
                 text={
-                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
+                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +
                   renderToStaticMarkup(
                     <div>
-                      {console.log(barData)}
+                      {/* {console.log(barData)} */}
                       {barData.map((Detail) => {
                         return (
                           <div>
@@ -108,13 +113,14 @@ function FloatBar() {
                             <div>{Detail.issue}</div>
                             {/* <br/> */}
                           </div>
-                        ); 
-                      })}                  
+                        );
+                      })}
                     </div>
-                    ).replaceAll('</div><div><div>', '\n')
+                  )
+                    .replaceAll('</div><div><div>', '\n')
                     .replaceAll('</div><div>', '\t')
                     .replaceAll('</div>', '')
-                    .replaceAll('<div>', '') 
+                    .replaceAll('<div>', '')
                 }
               >
                 <Button style={{ width: 150 }} onClick={copySuccessful}>
