@@ -1,4 +1,5 @@
-from copy import deepcopy
+import datetime
+import threading
 from interface.gitlab_interface import GitLab
 from manager.code_diff_temp import CodeDiffAnalyzer
 from manager.comment_manager import CommentManager
@@ -11,10 +12,11 @@ from manager.code_diff_manager import CodeDiffManager
 from model.commit import Commit
 from model.merge_request import MergeRequest
 
+TOTAL_SYNC_STAGES: int = 7
+
 
 class GitLabProject:
-    def __init__(self, myGitlab: GitLab, projectID: int):
-        myGitlab.set_project(projectID=projectID)
+    def __init__(self, projectID: int, projectName: str = ""):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -23,20 +25,56 @@ class GitLabProject:
         self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
         self.__projectID: int = projectID
-
+        self.__projectName: str = projectName
+        self.__is_syncing: bool = False
+        self.__last_synced: datetime = None
+        self.__syncing_state: str = "Not Synced"
+        self.__syncing_progress: int = 0
         # This will be filled after the call to self.__update_commits_manager(myGitlab)
         self.__user_list: list = []
 
-        self.__update_managers(myGitlab)
+    def get_project_sync_state(self) -> dict:
+        return {
+            "projectID": self.__projectID,
+            "is_syncing": self.__is_syncing,
+            "last_synced": self.__last_synced,
+            "syncing_state": self.__syncing_state,
+            "syncing_progress": int(self.__syncing_progress / TOTAL_SYNC_STAGES * 100),
+        }
 
-    def __update_managers(self, myGitlab: GitLab) -> None:
-        self.__update_merge_request_manager(myGitlab)
-        self.__update_member_manager(myGitlab)
-        self.__update_commits_manager(myGitlab)
-        self.__update_issues_manager(myGitlab)
+    def update(self, myGitlab: GitLab) -> None:
+        self.__syncing_progress = 0
+        self.__is_syncing = True
+        myGitlab.set_project(projectID=self.__projectID)
+        # construct a thread list that each thread responsible to update a different manager
+        myThreadList: list = [
+            threading.Thread(
+                target=self.__update_merge_request_manager, args=(myGitlab,)
+            ),
+            threading.Thread(target=self.__update_member_manager, args=(myGitlab,)),
+            threading.Thread(target=self.__update_commits_manager, args=(myGitlab,)),
+            threading.Thread(target=self.__update_issues_manager, args=(myGitlab,)),
+        ]
+        self.__syncing_state = "Syncing data from remote..."
+        self.__start_and_join_all_thread(myThreadList)
         self.__update_code_diff_manager(myGitlab)
-        self.__analyze_master_commits_code_diff()
-        self.__analyze_merge_requests_code_diff()
+        myThreadList: list = [
+            threading.Thread(target=self.__analyze_master_commits_code_diff, args=()),
+            threading.Thread(target=self.__analyze_merge_requests_code_diff, args=()),
+        ]
+        self.__syncing_state = "Analyzing..."
+        self.__start_and_join_all_thread(myThreadList)
+        self.__syncing_state = "Synced"
+        self.__last_synced = datetime.datetime.now()
+        self.__is_syncing = False
+
+    def __start_and_join_all_thread(self, myThreadList: list) -> None:
+        # start all threads
+        for jobs in myThreadList:
+            jobs.start()
+        # wait until all of them to finish
+        for jobs in myThreadList:
+            jobs.join()
 
     def __update_merge_request_manager(self, myGitlab: GitLab) -> None:
         mergeRequests, commitsForMR = myGitlab.get_merge_requests_and_commits(
@@ -51,11 +89,13 @@ class GitLabProject:
             for item in mr_notes:
                 if item.system is False:
                     self.__commentsManager.add_comment(item)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
         members: list = myGitlab.get_all_members()
         for member in members:
             self.__membersManager.add_member(member)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_commits_manager(self, myGitlab: GitLab) -> None:
         commitList: list = myGitlab.get_commit_list_for_project()
@@ -64,13 +104,12 @@ class GitLabProject:
             # Get all git users, set will only store unique values
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
-
             # Get comments
             commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
             for item in commit_notes:
                 self.__commentsManager.add_comment(item, commit.short_id)
-
         self.__user_list = list(tempUserSet)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_issues_manager(self, myGitlab: GitLab) -> None:
         issueList: list = myGitlab.get_issue_list()
@@ -81,6 +120,7 @@ class GitLabProject:
             for item in issue_notes:
                 if item.system is False:
                     self.__commentsManager.add_comment(item)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
         # update codeDiff ID for commits in master branch
@@ -88,6 +128,7 @@ class GitLabProject:
             self.__commitsManager.get_commit_list(), myGitlab
         )
         self.__update_code_diff_for_merge_request_and_commits(myGitlab)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_for_commit_list(
         self, commitList: [Commit], myGitLab: GitLab
@@ -169,10 +210,13 @@ class GitLabProject:
         pass
 
     def __analyze_master_commits_code_diff(self) -> None:
+        self.__syncing_state = "Analyzing commits"
         for commit in self.commits_manager.get_commit_list():
             commit.line_counts = self.get_commit_score_data(commit)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __analyze_merge_requests_code_diff(self) -> None:
+        self.__syncing_state = "Analyzing merge requests"
         mr: MergeRequest
         for mr in self.__mergeRequestManager.merge_request_list:
             mr.line_counts = self.get_merge_request_score_data(mr)[
@@ -180,6 +224,7 @@ class GitLabProject:
             ]
             for commit in mr.related_commits_list:
                 commit.line_counts = self.get_commit_score_data(commit)
+        self.__syncing_progress = self.__syncing_progress + 1
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
@@ -195,6 +240,9 @@ class GitLabProject:
         for user in self.__user_list:
             commitListsForAllUsers.append({"user_name": user, "commits": []})
         return commitListsForAllUsers
+
+    def get_commit_list_on_master(self) -> list:
+        return self.__commitsManager.get_commit_list_json()
 
     def get_commits_for_all_users(self) -> list:
         commitListsForAllUsers: list = self.__initialize_member_and_user_list()
@@ -268,26 +316,36 @@ class GitLabProject:
             commentList[comment.author].append(comment.to_dict())
         return commentList
 
-    @property
-    def member_manager(self) -> MemberManager:
-        return self.__membersManager
-
-    @property
-    def merge_request_manager(self) -> MergeRequestManager:
-        return self.__mergeRequestManager
-
-    @property
-    def commits_manager(self) -> CommitManager:
-        return self.__commitsManager
-
-    @property
-    def issue_manager(self) -> IssueManager:
-        return self.__issuesManager
+    def get_members(self) -> list:
+        memberInfoList: list = []
+        memberList = self.__membersManager.get_member_list()
+        for member in memberList:
+            memberInfoList.append(member.to_dict())
+        return memberInfoList
 
     @property
     def project_id(self) -> int:
         return self.__projectID
 
     @property
+    def project_name(self) -> str:
+        return self.__projectName
+
+    @property
     def user_list(self) -> list:
         return self.__user_list
+
+    # TODO: Need to be removed in the future
+    @property
+    def merge_request_manager(self) -> MergeRequestManager:
+        return self.__mergeRequestManager
+
+    # TODO: Need to be removed in the future
+    @property
+    def commits_manager(self) -> CommitManager:
+        return self.__commitsManager
+
+    # TODO: Need to be removed in the future
+    @property
+    def member_manager(self) -> MemberManager:
+        return self.__membersManager
