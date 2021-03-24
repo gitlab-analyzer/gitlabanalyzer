@@ -16,7 +16,7 @@ TOTAL_SYNC_STAGES: int = 7
 
 
 class GitLabProject:
-    def __init__(self, projectID: int, projectName: str):
+    def __init__(self, projectID: int, projectName: str = ""):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -340,3 +340,18 @@ class GitLabProject:
     @property
     def user_list(self) -> list:
         return self.__user_list
+
+    # TODO: Need to be removed in the future
+    @property
+    def merge_request_manager(self) -> MergeRequestManager:
+        return self.__mergeRequestManager
+
+    # TODO: Need to be removed in the future
+    @property
+    def commits_manager(self) -> CommitManager:
+        return self.__commitsManager
+
+    # TODO: Need to be removed in the future
+    @property
+    def member_manager(self) -> MemberManager:
+        return self.__membersManager

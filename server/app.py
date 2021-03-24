@@ -1,11 +1,12 @@
 import hashlib
 import json
 import threading
-import time
 from copy import deepcopy
 from typing import Optional
+
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
+
 from interface.gitlab_interface import GitLab
 from interface.gitlab_project_interface import GitLabProject
 from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
