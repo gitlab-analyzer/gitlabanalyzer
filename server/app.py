@@ -40,9 +40,7 @@ def auth():
         response = make_response(
             jsonify({'username': myGitLab.get_username(), 'response': True})
         )
-        response.set_cookie(
-            key="id", value=hash_token(myToken)
-        )
+        response.set_cookie(key="id", value=hash_token(myToken))
         return response
     else:
         return jsonify(
@@ -71,9 +69,10 @@ def sync_project(projectID: int):
     gitlabProjectInterface.update(myGitLab)
 
 
+# TODO: Need to add check to see if its in the map (token map)
 @app.route('/projects/sync', methods=['post'])
 @cross_origin()
-def set_project():
+def sync_project():
     global myGitLab
     projectID = request.args.get('projectID', default=None, type=int)
 
@@ -91,7 +90,12 @@ def set_project():
 def get_state(projectID: int):
     global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
-        return jsonify({"response": True, "status": gitlabProjectInterface.get_project_sync_state()})
+        return jsonify(
+            {
+                "response": True,
+                "status": gitlabProjectInterface.get_project_sync_state(),
+            }
+        )
     else:
         return jsonify(projectIDError)
 

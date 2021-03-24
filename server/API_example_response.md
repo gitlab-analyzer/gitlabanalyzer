@@ -79,7 +79,7 @@
         "last_synced": null,
         "projectID": 2,
         "syncing_progress": 28,
-        "syncing_state": "Syncing master branch commits"
+        "syncing_state": "Syncing data from remote..."
     }
 }
 ```

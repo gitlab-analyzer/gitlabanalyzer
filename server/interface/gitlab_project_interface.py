@@ -39,7 +39,7 @@ class GitLabProject:
             "is_syncing": self.__is_syncing,
             "last_synced": self.__last_synced,
             "syncing_state": self.__syncing_state,
-            "syncing_progress": int(self.__syncing_progress / TOTAL_SYNC_STAGES * 100)
+            "syncing_progress": int(self.__syncing_progress / TOTAL_SYNC_STAGES * 100),
         }
 
     def update(self, myGitlab: GitLab) -> None:
@@ -50,23 +50,17 @@ class GitLabProject:
         myThreadList: list = [
             threading.Thread(
                 target=self.__update_merge_request_manager, args=(myGitlab,)
-            ), threading.Thread(
-                target=self.__update_member_manager, args=(myGitlab,)
-            ), threading.Thread(
-                target=self.__update_commits_manager, args=(myGitlab,)
-            ), threading.Thread(
-                target=self.__update_issues_manager, args=(myGitlab,)
-            )
+            ),
+            threading.Thread(target=self.__update_member_manager, args=(myGitlab,)),
+            threading.Thread(target=self.__update_commits_manager, args=(myGitlab,)),
+            threading.Thread(target=self.__update_issues_manager, args=(myGitlab,)),
         ]
         self.__syncing_state = "Syncing data from remote..."
         self.__start_and_join_all_thread(myThreadList)
         self.__update_code_diff_manager(myGitlab)
         myThreadList: list = [
-            threading.Thread(
-                target=self.__analyze_master_commits_code_diff, args=()
-            ), threading.Thread(
-                target=self.__analyze_merge_requests_code_diff, args=()
-            )
+            threading.Thread(target=self.__analyze_master_commits_code_diff, args=()),
+            threading.Thread(target=self.__analyze_merge_requests_code_diff, args=()),
         ]
         self.__syncing_state = "Analyzing..."
         self.__start_and_join_all_thread(myThreadList)
