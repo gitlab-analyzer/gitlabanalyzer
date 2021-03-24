@@ -11,14 +11,22 @@ class MongoDB:
         self.__gitLabAnalyzerDB = self.__client["GitLabAnalyzer"]
         self.__userColl = self.__gitLabAnalyzerDB["users"]
 
-    def find_many_in_users(self, num: int, obj: dict) -> Cursor:
+    def find_users(self, num: int, obj: dict) -> Cursor:
         return self.__userColl.find(obj)
 
-    def insert_into_users(self, obj: dict) -> None:
+    # insert a single user
+    def insert_user(self, obj: dict) -> None:
         self.__userColl.insert_one(obj)
     
+    # insert multiple users at once
     def insert_many_users(self, objList: List[dict]) -> None:
         self.__userColl.insert_many(objList)
+    
+    def update_user(self, obj: dict, update: dict) -> None:
+        self.__userColl.update_one(obj, update)
+
+    def remove_user(self, obj: dict) -> None:
+        self.__userColl.remove(obj)
 
     # This will delete ALL entries in the users collection. IRREVERSIBLE OPERATION
     def clear_users(self) -> None:
