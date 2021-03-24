@@ -89,7 +89,10 @@ def sync_project():
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
 def get_state(projectID: int):
     global gitlabProjectInterface
-    if gitlabProjectInterface is not None and projectID == gitlabProjectInterface.project_id:
+    if (
+        gitlabProjectInterface is not None
+        and projectID == gitlabProjectInterface.project_id
+    ):
         return jsonify(
             {
                 "response": True,
