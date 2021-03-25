@@ -54,13 +54,14 @@ const Appdiff = ({ diffText }) => {
 
 const CodeDiff = () => {
   const [codeDiff, setCodeDiff] = useState([]);
+  const [showFiles, setShowFiles] = useState(false);
+
   useEffect(() => {
     const getData = async () => {
       const codeRes = await axios.get(
         'http://localhost:5678/projects/2/code_diff/8'
       );
-      // console.log(codeRes);
-      // console.log('data', codeRes.data.code_diff_list[0]);
+      console.log('data', codeRes.data.code_diff_list);
       await setCodeDiff(codeRes.data.code_diff_list);
     };
     getData();
@@ -80,8 +81,21 @@ const CodeDiff = () => {
       <div style={{ marginTop: '20px', marginBottom: '20px' }}>
         <div style={{ display: 'flex' }}>
           <h2 style={{ marginRight: '10px' }}>File changed</h2>
-          <Button>Show</Button>
+          <Button
+            onClick={() => {
+              setShowFiles(!showFiles);
+            }}
+          >
+            Show
+          </Button>
         </div>
+      </div>
+    );
+  };
+
+  const fileList = () => {
+    return (
+      <div style={{ marginBottom: '20px' }}>
         <List
           size="small"
           dataSource={data}
@@ -97,11 +111,11 @@ const CodeDiff = () => {
 
   // console.log(codeDiff[0].diff);
 
-  const hey =
+  const header =
     'diff --git a/requirements.txt b/requirements.txt\nindex c3f75dc..2cda10e 100644\n--- a/requirements.txt\n+++ b/requirements.txt\n';
 
   const mapDiff = codeDiff.map((code) => (
-    <Appdiff diffText={hey + code.diff} />
+    <Appdiff diffText={header + code.diff} />
   ));
 
   // const wow = hey + codeDiff[0].diff;
@@ -110,6 +124,7 @@ const CodeDiff = () => {
     <div style={{ marginTop: '10px', fontFamily: 'Ubuntu Mono' }}>
       {/* <Appdiff diffText={wow} /> */}
       {fileChanges()}
+      {showFiles ? fileList() : null}
       {codeDiff ? mapDiff : null}
     </div>
   );
