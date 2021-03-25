@@ -41,6 +41,7 @@ const Repo = ({
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
+  const [syncDone, setSyncDone] = useState(false);
 
   const history = useHistory();
 
@@ -76,7 +77,7 @@ const Repo = ({
   // Currently it is hard coded to 2 since no other projects exist
   const setProjectId = async () => {
     const projectRes = await axios.post(
-      'http://localhost:5678/projects/set',
+      'http://localhost:5678/projects/sync',
       {},
       {
         headers: {
@@ -92,6 +93,30 @@ const Repo = ({
       console.log('Failed to set project ID!');
       throw new Error('Fetch request failed.');
     }
+  };
+
+  const syncProject = async () => {
+    const syncStatus = await axios.get(
+      'http://localhost:5678/projects/2/sync/state'
+    );
+    fetchErrorChecker(syncStatus.data['response'], 'sync');
+    console.log(syncStatus.data['status'].is_syncing);
+    console.log(syncStatus.data['status'].syncing_progress);
+    setTimeout(async () => {
+      const sync = await axios.get(
+        'http://localhost:5678/projects/2/sync/state'
+      );
+      console.log(sync.data['status'].is_syncing);
+      console.log(sync.data['status'].syncing_progress);
+    }, 10000);
+    // while (syncStatus.data['status'].is_syncing) {
+    //   setTimeout(async () => {
+    //     syncStatus = await axios.get(
+    //       'http://localhost:5678/projects/2/sync/state'
+    //     );
+    //     console.log(syncStatus.data['status']);
+    //   }, 5000);
+    // }
   };
 
   // Function for fetching members list data
@@ -307,15 +332,16 @@ const Repo = ({
       await fetchMembers();
 
       await setProjectId();
+      await syncProject();
 
-      await fetchUsers();
-      await fetchCommits();
-      await fetchMergeRequests();
-      await fetchNotes();
-      await fetchComments();
+      // await fetchUsers();
+      // await fetchCommits();
+      // await fetchMergeRequests();
+      // await fetchNotes();
+      // await fetchComments();
 
       setAnalyzing(false);
-      setRedirect(true);
+      // setRedirect(true);
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
