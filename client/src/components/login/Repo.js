@@ -96,27 +96,23 @@ const Repo = ({
   };
 
   const syncProject = async () => {
-    const syncStatus = await axios.get(
-      'http://localhost:5678/projects/2/sync/state'
-    );
-    fetchErrorChecker(syncStatus.data['response'], 'sync');
-    console.log(syncStatus.data['status'].is_syncing);
-    console.log(syncStatus.data['status'].syncing_progress);
+    const result = checkSync();
+    console.log(result);
     setTimeout(async () => {
-      const sync = await axios.get(
+      const syncStatus = await axios.get(
         'http://localhost:5678/projects/2/sync/state'
       );
-      console.log(sync.data['status'].is_syncing);
-      console.log(sync.data['status'].syncing_progress);
-    }, 10000);
-    // while (syncStatus.data['status'].is_syncing) {
-    //   setTimeout(async () => {
-    //     syncStatus = await axios.get(
-    //       'http://localhost:5678/projects/2/sync/state'
-    //     );
-    //     console.log(syncStatus.data['status']);
-    //   }, 5000);
-    // }
+      fetchErrorChecker(syncStatus.data['response'], 'sync');
+      console.log(syncStatus.data['status'].is_syncing);
+      console.log(syncStatus.data['status'].syncing_progress);
+    }, 5000);
+  };
+
+  const checkSync = async () => {
+    const result = await axios.get(
+      'http://localhost:5678/projects/2/sync/state'
+    );
+    return result.data['status'].syncing_progress;
   };
 
   // Function for fetching members list data
