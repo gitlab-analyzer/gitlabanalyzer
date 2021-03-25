@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import BarGraph from '../components/summary/BarGraph';
 import { Menu, Dropdown, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DashOutlined, DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import StackedBarGraph from '../components/summary/StackedBar';
 import SelectUser from '../components/SelectUser';
@@ -42,8 +42,11 @@ const Summary = () => {
   const [textRender, setTextRender] = useState('Number');
 
   const [userCommitsList, setUserCommitsList] = useState(commitsList);
+  const [userMRList, setUserMRList] = useState(mergeRequestList)
 
   const classes = useStyles();
+
+  console.log(mergeRequestList)
 
   console.log(userCommitsList)
 
@@ -58,7 +61,7 @@ const Summary = () => {
         for (j = 0; j < commitsList[i].commits[0].length; j++) {
           date = [
             commitsList[i].commits[0][j].commitedDate.getFullYear(),
-            commitsList[i].commits[0][j].commitedDate.getMonth(),
+            commitsList[i].commits[0][j].commitedDate.getMonth() +1,
             commitsList[i].commits[0][j].commitedDate.getDate(),
           ].join('-');
           result[date] = result[date] || 0;
@@ -93,25 +96,29 @@ const Summary = () => {
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser
-  var dailyArray = countDates(userCommitsList)
-  var datesArray = populateDates(dailyArray)
-  var countsArray = populateCounts(dailyArray)
+  var dailyCommitsArray = countDates(userCommitsList)
+  var commitDatesArray = populateDates(dailyCommitsArray)
+  var commitCountsArray = populateCounts(dailyCommitsArray)
 
-  const [dateArray, setDateArray] = useState(datesArray);
+  var dailyMRsArray = countDates(userCommitsList)
+  var mrDatesArray = populateDates(dailyMRsArray)
+  var mrCountsArray = populateCounts(dailyMRsArray)
+
+  const [dateArray, setDateArray] = useState(commitDatesArray);
 
   // TODO: display data correctly
   useEffect(() => {
     setCombinedSeries([
       {
         name: 'Merge Requests',
-        data: [],
+        data: mrCountsArray,
       },
       {
         name: 'Commits',
-        data: countsArray,
+        data: commitCountsArray,
       },
     ])
-    setDateArray(datesArray)
+    setDateArray(commitDatesArray)
     console.log(dateArray)
   }, [selectUser])
 
@@ -156,19 +163,6 @@ const Summary = () => {
       data: [],
     },
   ]);
-
-  const handleChange = () => {
-    setCombinedSeries([
-      {
-        name: 'Merge Requests',
-        data: data2,
-      },
-      {
-        name: 'Commits',
-        data: countsArray,
-      },
-    ])
-  }
 
   const [crSeries, setCrSeries] = useState([
     {
@@ -256,7 +250,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} xlabel={dateArray}/>
+          <StackedBarGraph series={combinedSeries} xlabel={commitDatesArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

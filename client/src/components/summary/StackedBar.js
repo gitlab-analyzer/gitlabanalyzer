@@ -68,11 +68,10 @@ class StackedBarGraph extends React.Component {
       };
     }
 
-    // IDEA: re-render the graph if dates not working
     componentDidUpdate() {
+      // Update the series and xaxis
       apexchart.exec("1", "updateOptions", {
         series: this.props.series,
-        
         xaxis: {
           categories: this.props.xlabel
         }
