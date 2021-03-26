@@ -17,10 +17,6 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 state = False  # TODO: this is used to minimize API call time for frontend
 
-# These cannot stay as globals. Change when possible
-myGitLab: Optional[GitLab] = None
-gitlabProjectInterface: Optional[GitLabProject] = None
-
 # Error respond body list:
 projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
 
@@ -33,47 +29,32 @@ def hash_token(myToken: str):
 @app.route('/auth', methods=['post'])
 @cross_origin()
 def auth():
-    global myGitLab
     myToken = request.form['token']
-    myGitLab = GitLab(token=myToken, url=request.form['url'])
-    if myGitLab.authenticate():
-        response = make_response(
-            jsonify({'username': myGitLab.get_username(), 'response': True})
-        )
+    hashedToken = hash_token(myToken)
+
+    isSuccess, errorCode, username = \
+        gitlab_manager.add_gitlab(myToken, hashedToken, request.form['url'])
+    response = make_response(
+        jsonify({'username': username, 'response': isSuccess, 'Cause': errorCode})
+    )
+    if isSuccess:
         response.set_cookie(key="id", value=hash_token(myToken))
-        return response
-    else:
-        return jsonify(
-            {'username': '', 'response': False, 'Cause': "Invalid token or url"}
-        )
+
+    return response
 
 
 @app.route('/projects', methods=['get'])
 def get_project_list():
-    global myGitLab
-    projectList = myGitLab.get_project_list()
-    myResponse = []
-    """
-    This is for testing only, need to be changed later
-    """
-    myGitLab.get_project_list()
-    for project in projectList:
-        myResponse.append(project.name_with_namespace)
-    return jsonify({'projects': myResponse, "response": True})
+    isSuccess, errorCode, value =\
+        gitlab_manager.get_project_list(request.cookies.get("id", ""))
 
-
-def sync_project_helper(projectID: int):
-    global myGitLab
-    global gitlabProjectInterface
-    gitlabProjectInterface = GitLabProject(projectID)
-    gitlabProjectInterface.update(myGitLab)
-
+    return jsonify({'projects': value, "response": isSuccess, 'Cause': errorCode})
 
 # TODO: Need to add check to see if its in the map (token map)
 @app.route('/projects/sync', methods=['post'])
 @cross_origin()
 def sync_project():
-    global myGitLab
+    # global myGitLab
     projectID = request.args.get('projectID', default=None, type=int)
 
     if myGitLab.find_project(projectID) is not None:
@@ -88,7 +69,7 @@ def sync_project():
 
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
 def get_state(projectID: int):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if (
         gitlabProjectInterface is not None
         and projectID == gitlabProjectInterface.project_id
@@ -105,11 +86,11 @@ def get_state(projectID: int):
 
 @app.route('/projects/<int:projectID>/members', methods=['get'])
 def get_project_members(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
 
     if gitlabProjectInterface is None:
         # TODO: does frontend need the members before sync the project?
-        global myGitLab
+        # global myGitLab
         memberInfoList: list = []
         tempGitLab = deepcopy(myGitLab)
         tempGitLab.set_project(projectID)
@@ -136,7 +117,7 @@ def get_project_members(projectID):
 
 @app.route('/projects/<int:projectID>/users', methods=['get'])
 def get_project_users(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
 
     if projectID == gitlabProjectInterface.project_id:
         return jsonify({"users": gitlabProjectInterface.user_list, "response": True})
@@ -146,7 +127,7 @@ def get_project_users(projectID):
 
 @app.route('/projects/<int:projectID>/commit', methods=['get'])
 def get_commits(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         commitList: list = gitlabProjectInterface.commits_manager.get_commit_list_json()
         return jsonify(
@@ -158,7 +139,7 @@ def get_commits(projectID):
 
 @app.route('/projects/<int:projectID>/commit/user/all')
 def get_commits_for_users(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         mergeRequestList: list = gitlabProjectInterface.get_commits_for_all_users()
         return jsonify({"response": True, "commit_list": mergeRequestList})
@@ -168,7 +149,7 @@ def get_commits_for_users(projectID):
 
 @app.route('/projects/<int:projectID>/merge_request/user/all')
 def get_merge_requests_for_users(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         mergeRequestList: dict = (
             gitlabProjectInterface.get_merge_request_and_commit_list_for_users()
@@ -180,7 +161,7 @@ def get_merge_requests_for_users(projectID):
 
 @app.route('/projects/<int:projectID>/merge_request/all')
 def get_all_merge_requests(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         mergeRequestList: list = (
             gitlabProjectInterface.get_all_merge_request_and_commit()
@@ -192,7 +173,7 @@ def get_all_merge_requests(projectID):
 
 @app.route('/projects/<int:projectID>/code_diff/<int:codeDiffID>')
 def get_code_diff(projectID, codeDiffID):
-    global gitlabProjectInterface
+    # # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         codeDiff = gitlabProjectInterface.get_code_diff(codeDiffID)
         return jsonify({"response": True, "code_diff_list": codeDiff})
@@ -202,7 +183,7 @@ def get_code_diff(projectID, codeDiffID):
 
 @app.route('/projects/<int:projectID>/comments/all')
 def get_all_notes(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         commentList = gitlabProjectInterface.get_all_comments()
         return jsonify({"response": True, "notes": commentList})
@@ -212,7 +193,7 @@ def get_all_notes(projectID):
 
 @app.route('/projects/<int:projectID>/comments/user/all')
 def get_notes_for_all_users(projectID):
-    global gitlabProjectInterface
+    # global gitlabProjectInterface
     if projectID == gitlabProjectInterface.project_id:
         commentList = gitlabProjectInterface.get_comments_for_all_users()
         return jsonify({"response": True, "notes": commentList})

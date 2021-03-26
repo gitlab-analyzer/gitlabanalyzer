@@ -16,14 +16,14 @@ class GitLabAnalyzerManager:
     def __init__(self):
         self.__gitlab_list: dict = {}
 
-    # authenticate and add the gitlab instance on success
-    def add_gitlab(self, token: str, hashedToken: str, url: str) -> Tuple[bool, str]:
+    # authenticate and add the gitlab instance on success. If success, it will also return username
+    def add_gitlab(self, token: str, hashedToken: str, url: str) -> Tuple[bool, str, str]:
         try:
             myGitLabAnalyzer = GitLabAnalyzer(token, hashedToken, url)
             self.__gitlab_list[hashedToken] = myGitLabAnalyzer
-            return True, ""
+            return True, "", myGitLabAnalyzer.username
         except gitlab.exceptions.GitlabAuthenticationError:
-            return False, ERROR_CODES["invalidToken"]
+            return False, ERROR_CODES["invalidToken"], ""
 
     def __find_gitlab(self, hashedToken: str) -> Union[GitLabAnalyzer]:
         return self.__gitlab_list.get(hashedToken, None)
