@@ -10,17 +10,22 @@ class MongoDB:
 
         self.__gitLabAnalyzerDB = self.__client["GitLabAnalyzer"]
         self.__userColl = self.__gitLabAnalyzerDB["users"]
-        self.__userIdCount = 1
+        self.__userNextId = 1
 
     def find_users(self, num: int, obj: dict) -> Cursor:
         return self.__userColl.find(obj)
 
     # insert a single user
     def insert_user(self, obj: dict) -> None:
+        obj['_id'] = self.__userNextId
+        self.__userNextId += 1
         self.__userColl.insert_one(obj)
     
     # insert multiple users at once
     def insert_many_users(self, objList: List[dict]) -> None:
+        for obj in objList:
+            obj['_id'] = self.__userNextId
+            self.__userNextId += 1
         self.__userColl.insert_many(objList)
     
     def update_user(self, obj: dict, update: dict) -> None:
@@ -47,14 +52,73 @@ if __name__ == '__main__':
     print(testDB.collections)
 
 """
+DRAFT SCHEMA
+
+// PRIMARY KEY: (_id)
 Users Collection: [
 	{
 		_id: 1,
-		name: John,
+		username: John123,
+        name: John Lee,
 		hashed_token: IKNF23141ASFINO,
-		config: {
-			
-		}
+		config: <user's global config>
 	}
+]
+
+// PRIMARY KEY: (_id)
+Project Collection: [
+    {
+        _id: <project id>,
+        name: <project name>,
+        path: <project path>,
+        namespace: {
+            name: <name namespace>
+            path: <path namespace>
+        },
+        last_cached_date: <date project was last updated in mongodb>,
+        config: {
+            <project config. Starts empty, and gets user's config when project is analyzed for the first time.
+             this config will include the mapping of user names and members>
+        }
+        members: [
+            <will contain all contributors of the project (members and users)>
+        ]
+        score_data: {
+            merge_requests: [
+                <ids of MRs>
+            ],
+            commits: [
+                <ids of MASTER commits; {mr_id: NULL} commits>
+            ],
+        }
+    }
+]
+
+// PRIMARY KEY: (_id, project_id)
+MergeRequest Collection: [
+    {
+        _id: <merge request id (project scoped id)>,
+        project_id: <id of project this MR belongs to>,
+        merged_date: <date when MR was merged>,
+        contributors: [
+            <people who worked on this MR>
+        ],
+        related_commit_ids: [
+            <ids of commits in the merge request>
+        ]
+    }
+]
+
+// PRIMARY KEY: (_id, project_id)
+Commit Collection: [
+    {
+        _id: <id of commit>,
+        project_id: <id of project this commit belongs to>,
+        mr_id: <id of MR this commit is related to OR NULL if master commit>,
+        commiter: <person who made this commit>,
+        code_diff_ids: [
+            <ids of code diffs for this commit>
+        ]
+    }
 ]
 """
