@@ -141,7 +141,6 @@ class GitLabProject:
             codeDiffID = self.__codeDiffManager.append_code_diff(codeDiff)
             commit.code_diff_id = codeDiffID
 
-
     def __update_code_diff_for_merge_request_and_commits(
         self, myGitlab: GitLab
     ) -> None:
@@ -155,7 +154,9 @@ class GitLabProject:
 
     def __update_code_diff(self, codeDiffList: List[dict]) -> None:
         for diff in codeDiffList:
-            diffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(CodeDiff(diff))
+            diffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
+                CodeDiff(diff)
+            )
             diff.update(diffStats)
 
     def get_commit_score_data(self, commit: Commit) -> dict:
@@ -194,7 +195,9 @@ class GitLabProject:
             "relatedCommitsScoreData": {},
         }
 
-        codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(mergeRequest.code_diff_id)
+        codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(
+            mergeRequest.code_diff_id
+        )
         for diff in codeDiff:
             for key in scoreData["mergeRequestScoreData"].keys():
                 scoreData["mergeRequestScoreData"][key] += diff[key]
@@ -290,9 +293,9 @@ class GitLabProject:
         for mr in self.__mergeRequestManager.merge_request_list:
             singleMR = mr.to_dict()
             singleMR["commit_list"] = []
-            for commits in singleMR['related_commits_list']:
+            for commits in singleMR["related_commits_list"]:
                 singleMR["commit_list"].append(commits.to_dict())
-            del singleMR['related_commits_list']
+            del singleMR["related_commits_list"]
             mergeRequests.append(singleMR)
         return mergeRequests
 
