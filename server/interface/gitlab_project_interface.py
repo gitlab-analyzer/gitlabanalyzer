@@ -149,6 +149,7 @@ class GitLabProject:
             self.__update_code_diff_for_commit_list(mr.related_commits_list, myGitlab)
 
     def get_commit_score_data(self, commit: Commit) -> dict:
+        # TODO: CHANGE
         scoreData = {
             "lines_added": 0,
             "lines_deleted": 0,
@@ -173,6 +174,7 @@ class GitLabProject:
         return scoreData
 
     def get_merge_request_score_data(self, mergeRequest: MergeRequest) -> dict:
+        # TODO: CHANGE
         scoreData = {
             "mergeRequestScoreData": {},
             "relatedCommitsScoreData": {
