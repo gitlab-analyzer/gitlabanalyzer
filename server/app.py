@@ -1,13 +1,7 @@
 import hashlib
-import json
-import threading
-from copy import deepcopy
-
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
-
 from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
-from manager.member_manager import MemberManager
 
 app = Flask(__name__)
 cors = CORS(app)
