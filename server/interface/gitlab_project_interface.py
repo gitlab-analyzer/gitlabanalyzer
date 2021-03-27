@@ -12,6 +12,8 @@ from manager.code_diff_manager import CodeDiffManager
 from model.commit import Commit
 from model.merge_request import MergeRequest
 
+from typing import List, Tuple
+
 TOTAL_SYNC_STAGES: int = 7
 
 
@@ -131,10 +133,11 @@ class GitLabProject:
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_for_commit_list(
-        self, commitList: [Commit], myGitLab: GitLab
+        self, commitList: List[Commit], myGitLab: GitLab
     ) -> None:
         for commit in commitList:
-            codeDiff = myGitLab.get_commits_code_diff(commit.short_id)
+            codeDiff: List[dict] = myGitLab.get_commits_code_diff(commit.short_id)
+            self.__update_code_diff(codeDiff)
             codeDiffID = self.__codeDiffManager.append_code_diff(codeDiff)
             commit.code_diff_id = codeDiffID
 
@@ -144,11 +147,20 @@ class GitLabProject:
         mr: MergeRequest
         for mr in self.__mergeRequestManager.merge_request_list:
             codeDiff = myGitlab.get_merge_request_code_diff_latest_version(mr.id)
+            self.__update_code_diff(codeDiff)
             codeDiffID = self.__codeDiffManager.append_code_diff(codeDiff)
             mr.code_diff_id = codeDiffID
             self.__update_code_diff_for_commit_list(mr.related_commits_list, myGitlab)
 
+    def __update_code_diff(self, codeDiffList: List[dict]) -> None:
+        for diff in codeDiffList:
+            diffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
+                CodeDiff(diff)
+            )
+            diff.update(diffStats)
+
     def get_commit_score_data(self, commit: Commit) -> dict:
+        # TODO: CHANGE
         scoreData = {
             "lines_added": 0,
             "lines_deleted": 0,
@@ -160,22 +172,17 @@ class GitLabProject:
             "syntax_changes": 0,
         }
 
-        codeDiff: list = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
+        codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
         for diff in codeDiff:
-            codeDiffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
-                CodeDiff(diff)
-            )
-
-            for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
-                assert key1 == key2
-                scoreData[key1] += codeDiffStats[key2]
+            for key in scoreData.keys():
+                scoreData[key] += diff[key]
 
         return scoreData
 
     def get_merge_request_score_data(self, mergeRequest: MergeRequest) -> dict:
+        # TODO: CHANGE
         scoreData = {
-            "mergeRequestScoreData": {},
-            "relatedCommitsScoreData": {
+            "mergeRequestScoreData": {
                 "lines_added": 0,
                 "lines_deleted": 0,
                 "comments_added": 0,
@@ -185,29 +192,22 @@ class GitLabProject:
                 "spacing_changes": 0,
                 "syntax_changes": 0,
             },
+            "relatedCommitsScoreData": {},
         }
 
-        codeDiff: list = self.__codeDiffManager.get_code_diff(mergeRequest.code_diff_id)
+        codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(
+            mergeRequest.code_diff_id
+        )
         for diff in codeDiff:
-            mergeRequestScoreData = self.__codeDiffAnalyzer.get_code_diff_statistic(
-                CodeDiff(diff)
-            )
-            scoreData["mergeRequestScoreData"] = mergeRequestScoreData
+            for key in scoreData["mergeRequestScoreData"].keys():
+                scoreData["mergeRequestScoreData"][key] += diff[key]
 
         for commit in mergeRequest.related_commits_list:
             commitScoreData = self.get_commit_score_data(commit)
-
-            for key1, key2 in zip(
-                scoreData["mergeRequestScoreData"].keys(), commitScoreData.keys()
-            ):
-                assert key1 == key2
-                scoreData["relatedCommitsScoreData"][key1] += commitScoreData[key2]
+            for key in commitScoreData.keys():
+                scoreData["relatedCommitsScoreData"][key] += commitScoreData[key]
 
         return scoreData
-
-    def get_file_type_score_data(self):
-        # TODO
-        pass
 
     def __analyze_master_commits_code_diff(self) -> None:
         self.__syncing_state = "Analyzing commits"
@@ -254,7 +254,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commits: [str]) -> (list, list):
+    def __get_commit_list_and_authors(self, commits: List[str]) -> Tuple[list]:
         commitList = []
         authors = set()
         for commit in commits:
@@ -293,16 +293,16 @@ class GitLabProject:
         for mr in self.__mergeRequestManager.merge_request_list:
             singleMR = mr.to_dict()
             singleMR["commit_list"] = []
-            for commits in singleMR['related_commits_list']:
+            for commits in singleMR["related_commits_list"]:
                 singleMR["commit_list"].append(commits.to_dict())
-            del singleMR['related_commits_list']
+            del singleMR["related_commits_list"]
             mergeRequests.append(singleMR)
         return mergeRequests
 
-    def get_code_diff(self, codeDiffID: int) -> [dict]:
+    def get_code_diff(self, codeDiffID: int) -> List[dict]:
         return self.__codeDiffManager.get_code_diff(codeDiffID)
 
-    def get_all_comments(self) -> [dict]:
+    def get_all_comments(self) -> List[dict]:
         commentList = []
         for comment in self.__commentsManager.get_comment_list():
             commentList.append(comment.to_dict())
