@@ -62,6 +62,10 @@ Users Collection: [
         name: John Lee,
 		hashed_token: IKNF23141ASFINO,
 		config: <user's global config>
+
+        NOTE: config will probably contain info relating to modifications
+                relating to what the user can see on screen PER PROJECT.
+                Ex. Ignored commits, score multipliers, etc.
 	}
 ]
 
