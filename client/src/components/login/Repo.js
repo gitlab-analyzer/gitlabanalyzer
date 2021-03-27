@@ -42,6 +42,7 @@ const Repo = ({
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
   const [syncDone, setSyncDone] = useState(false);
+  const [syncPercent, setSyncPercent] = useState(0);
 
   const history = useHistory();
 
@@ -95,17 +96,28 @@ const Repo = ({
     }
   };
 
+  /**
+   * Fetch sync status with an interval of 5,000 milliseconds until it is 100% synced.
+   * Upon syncing, it will update syncDone state to reveal redirect button.
+   */
   const syncProject = async () => {
-    const result = checkSync();
-    console.log(result);
-    setTimeout(async () => {
-      const syncStatus = await axios.get(
-        'http://localhost:5678/projects/2/sync/state'
-      );
-      fetchErrorChecker(syncStatus.data['response'], 'sync');
-      console.log(syncStatus.data['status'].is_syncing);
-      console.log(syncStatus.data['status'].syncing_progress);
-    }, 5000);
+    if (!syncDone) {
+      setTimeout(async () => {
+        const syncStatus = await axios.get(
+          'http://localhost:5678/projects/2/sync/state'
+        );
+        fetchErrorChecker(syncStatus.data['response'], 'sync');
+        console.log(syncStatus.data['status'].is_syncing);
+        const numberStat = syncStatus.data['status'].syncing_progress;
+        console.log(numberStat);
+        setSyncPercent(parseInt(numberStat));
+        if (!syncStatus.data['status'].is_syncing) {
+          setSyncDone(true);
+          setAnalyzing(false);
+        }
+        syncProject();
+      }, 5000);
+    }
   };
 
   const checkSync = async () => {
@@ -327,7 +339,15 @@ const Repo = ({
 
       await fetchMembers();
 
-      await setProjectId();
+      const syncStatus = await axios.get(
+        'http://localhost:5678/projects/2/sync/state'
+      );
+
+      if (parseInt(syncStatus.data['status'].syncing_progress) !== 100) {
+        await setProjectId();
+      }
+
+      // await setProjectId();
       await syncProject();
 
       // await fetchUsers();
@@ -336,7 +356,7 @@ const Repo = ({
       // await fetchNotes();
       // await fetchComments();
 
-      setAnalyzing(false);
+      // setAnalyzing(false);
       // setRedirect(true);
     } catch (error) {
       setAnalyzing(false);
@@ -361,43 +381,65 @@ const Repo = ({
   // This component renders the batch processing button, select all (checkmarks)
   // and also displays the progress bar
   const batchButton = () => {
-    if (loading || analyzing) {
-      return null;
-    } else {
-      return (
-        <>
-          <Progress
-            style={{ marginTop: '10px' }}
-            strokeColor={{
-              from: '#108ee9',
-              to: '#87d068',
-            }}
-            percent={20.0}
-            status="active"
-          />
-          <div
-            style={{
-              marginTop: '20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
+    // if (loading || analyzing) {
+    //   return null;
+    // } else {
+    return (
+      <>
+        <Progress
+          style={{ marginTop: '10px' }}
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={syncPercent}
+          status="active"
+        />
+        <div
+          style={{
+            marginTop: '20px',
+            marginBottom: '20px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Button type="primary" key="batchanalyze">
+            Batch Process
+          </Button>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Checkbox
+            indeterminate={indeterminate}
+            onChange={onCheckAllChange}
+            checked={checkAll}
           >
-            <Button type="primary" key="batchanalyze">
-              Batch Process
-            </Button>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Checkbox
-              indeterminate={indeterminate}
-              onChange={onCheckAllChange}
-              checked={checkAll}
-            >
-              Select all
-            </Checkbox>
-          </div>
-        </>
-      );
+            Select all
+          </Checkbox>
+        </div>
+      </>
+    );
+    // }
+  };
+
+  const fetchAndRedirect = async () => {
+    try {
+      await fetchUsers();
+      await fetchCommits();
+      await fetchMergeRequests();
+      await fetchNotes();
+      await fetchComments();
+      return <Redirect to="/summary" />;
+    } catch (error) {
+      setAnalyzing(false);
+      console.log(error);
+    }
+  };
+
+  const redirectButton = () => {
+    if (syncDone) {
+      return <Button onClick={fetchAndRedirect}>Redirect</Button>;
+    } else {
+      return null;
     }
   };
 
@@ -406,6 +448,7 @@ const Repo = ({
   } else {
     return (
       <div>
+        {redirectButton()}
         {batchButton()}
         <List
           style={{ marginTop: '20px' }}
