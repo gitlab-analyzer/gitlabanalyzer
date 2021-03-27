@@ -35,12 +35,15 @@ def auth():
     )
     if isSuccess:
         response.set_cookie(key="id", value=hash_token(myToken))
+        print("Cookie created:", str(hashedToken))
 
     return response
 
 
 @app.route('/projects', methods=['get'])
 def get_project_list():
+    print("Cookie read from frontend:", str(request.cookies.get("id", "Empty?")))
+
     isSuccess, errorCode, value = \
         gitlab_manager.get_project_list(request.cookies.get("id", ""))
 
