@@ -12,7 +12,7 @@ import {
   Form,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
@@ -339,11 +339,14 @@ const Repo = ({
 
       await fetchMembers();
 
-      const syncStatus = await axios.get(
-        'http://localhost:5678/projects/2/sync/state'
-      );
+      // const syncStatus = await axios.get(
+      //   'http://localhost:5678/projects/2/sync/state'
+      // );
 
-      if (parseInt(syncStatus.data['status'].syncing_progress) !== 100) {
+      // if (parseInt(syncStatus.data['status'].syncing_progress) !== 100) {
+      //   await setProjectId();
+      // }
+      if (!syncDone) {
         await setProjectId();
       }
 
@@ -428,7 +431,7 @@ const Repo = ({
       await fetchMergeRequests();
       await fetchNotes();
       await fetchComments();
-      return <Redirect to="/summary" />;
+      setRedirect(true);
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
@@ -437,7 +440,12 @@ const Repo = ({
 
   const redirectButton = () => {
     if (syncDone) {
-      return <Button onClick={fetchAndRedirect}>Redirect</Button>;
+      return (
+        // <Link to="/summary" className="btn btn-primary">
+        //   Redirect
+        // </Link>
+        <Button onClick={fetchAndRedirect}>Redirect</Button>
+      );
     } else {
       return null;
     }
