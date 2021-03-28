@@ -9,7 +9,7 @@ from interface.gitlab_project_interface import GitLabProject
 ERROR_CODES = {
     "invalidToken": "Invalid token",
     "invalidProjectID": "Invalid project ID",
-    "projectIsSyncing": "Project is syncing"
+    "projectIsSyncing": "Project is syncing",
 }
 
 
@@ -42,7 +42,7 @@ class GitLabAnalyzerManager:
         myAnalyzer.update_project(projectID)
 
     def __get_project_analyzer_and_project(
-            self, hashedToken: str, projectID: int
+        self, hashedToken: str, projectID: int
     ) -> Tuple[Union[GitLabAnalyzer, None], Union[GitLabProject, None]]:
         myProject = None
         myGitLabAnalyzer = self.__find_gitlab(hashedToken)
@@ -50,10 +50,12 @@ class GitLabAnalyzerManager:
             myProject = myGitLabAnalyzer.get_gitlab_project_by_id(projectID)
         return myGitLabAnalyzer, myProject
 
-    def __validate_token_and_check_project_not_syncing(
+    def __validate_token_and_project_state(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, Union[GitLabAnalyzer, None], Union[GitLabProject, None]]:
-        myGitLab, myProject = self.__get_project_analyzer_and_project(hashedToken, projectID)
+        myGitLab, myProject = self.__get_project_analyzer_and_project(
+            hashedToken, projectID
+        )
 
         if myGitLab is None:
             return False, ERROR_CODES["invalidToken"], myGitLab, None
@@ -64,7 +66,7 @@ class GitLabAnalyzerManager:
         return True, "", myGitLab, myProject
 
     def sync_project(self, hashedToken: str, projectID: int) -> Tuple[bool, str]:
-        isValid, errorCode, myGitLab, _ = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, myGitLab, _ = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         if isValid:
@@ -76,7 +78,9 @@ class GitLabAnalyzerManager:
     def check_sync_state(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
-        myGitLab, myProject = self.__get_project_analyzer_and_project(hashedToken, projectID)
+        myGitLab, myProject = self.__get_project_analyzer_and_project(
+            hashedToken, projectID
+        )
 
         if myGitLab is None:
             return False, ERROR_CODES["invalidToken"], {}
@@ -88,7 +92,7 @@ class GitLabAnalyzerManager:
     def get_project_members(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         projectMembers: list = []
@@ -99,7 +103,7 @@ class GitLabAnalyzerManager:
     def get_project_users(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         userList: list = []
@@ -110,7 +114,7 @@ class GitLabAnalyzerManager:
     def get_project_master_commits(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         commitList: list = []
@@ -121,7 +125,7 @@ class GitLabAnalyzerManager:
     def get_project_all_commits_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         commitList: list = []
@@ -132,7 +136,7 @@ class GitLabAnalyzerManager:
     def get_project_all_merge_request(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         mergeRequestList: dict = {}
@@ -143,7 +147,7 @@ class GitLabAnalyzerManager:
     def get_project_merge_request_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         mergeRequestList: list = []
@@ -154,7 +158,7 @@ class GitLabAnalyzerManager:
     def get_code_diff(
         self, hashedToken: str, projectID: int, codeDiffID
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         codeDiff: dict = {}
@@ -165,7 +169,7 @@ class GitLabAnalyzerManager:
     def get_all_project_notes(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         commentList: list = []
@@ -176,7 +180,7 @@ class GitLabAnalyzerManager:
     def get_project_notes_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
         commentList: dict = {}
