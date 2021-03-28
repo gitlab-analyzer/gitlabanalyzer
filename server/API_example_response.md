@@ -283,8 +283,6 @@ Required body:
     ],
     "response": true
 }
-
-
 ```
 [Go back to API list](#api-example-response)
 

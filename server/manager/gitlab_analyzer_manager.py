@@ -17,7 +17,9 @@ class GitLabAnalyzerManager:
         self.__gitlab_list: dict = {}
 
     # authenticate and add the gitlab instance on success. If success, it will also return username
-    def add_gitlab(self, token: str, hashedToken: str, url: str) -> Tuple[bool, str, str]:
+    def add_gitlab(
+        self, token: str, hashedToken: str, url: str
+    ) -> Tuple[bool, str, str]:
         try:
             myGitLabAnalyzer = GitLabAnalyzer(token, hashedToken, url)
             self.__gitlab_list[hashedToken] = myGitLabAnalyzer
