@@ -4,7 +4,7 @@
 - [Get all accessible projects](#get-a-list-of-projects)
     - `GET /projects`
 - [Start syncing the project](#set-the-current-project-to-projectid)
-    - `POST /projects/sync?projectID=id`
+    - `POST /projects/<int:projectID>/sync`
 - [Get project syncing state](#get-project-syncing-state)
     - `GET /projects/<int:projectID>/sync/state`
 - [Get all the members in the repo](#get-all-the-members-in-the-project)
@@ -65,7 +65,7 @@ Required body:
 [Go back to API list](#api-example-response)
 
 ### Set the current project to projectID
-#### `POST /projects/sync?projectID=id`
+#### `POST /projects/<int:projectID>/sync`
 ```json
 {
     "Cause": "",
