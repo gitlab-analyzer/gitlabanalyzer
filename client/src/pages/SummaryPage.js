@@ -106,7 +106,6 @@ const Summary = () => {
 
   const [dateArray, setDateArray] = useState(commitDatesArray);
 
-  // TODO: display data correctly
   useEffect(() => {
     setCombinedSeries([
       {

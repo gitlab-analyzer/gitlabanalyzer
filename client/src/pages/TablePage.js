@@ -44,32 +44,28 @@ const useStyles = makeStyles({
 });
 
 
+
 function createData(date, wordcount, comment, ownership, type) {
   return { date, wordcount, comment, ownership, type };
 }
 
+
 const TablePage = () => {
   const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
-  const [tableNotesList, setTableNotesList] = useState(notesList)
   const classes = useStyles();
 
-  console.log(tableNotesList)
+  const populateTable = (notes) => {
+    var i,j, result = [];
+    for (i = 0; i < notes.length; i++) {
+      if (selectUser === notes[i].author) {
+        result.push(createData(notes[i].createdDate.toString(), notes[i].wordCount, notes[i].body, "N/A", notes[i].noteableType))
+        }
+      }
+      return result;
+    }
 
-  // const populateTable = (notes) => {
-  //   var i,j, result = [];
-  //   for (i = 0; i < notes.length; i++) {
-  //     if (selectUser === notes[i].author) {
-  //       result.push(createData(notes[i].createdDate, notes[i].body, "N/A", "N/A", "N/A"))
-  //       console.log("test" + result)
-  //       }
-  //     }
-  //     return result;
-  //   }
-  // var rows = populateTable(tableNotesList)
-  var rows =[];
-  useEffect(() => {
-    setTableNotesList(rows);
-  }, [selectUser])
+  // Table updates based on state of this
+  var rows = populateTable(notesList)
 
   return (
     <>
