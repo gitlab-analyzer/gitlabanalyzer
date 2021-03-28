@@ -148,7 +148,7 @@ class GitLabAnalyzerManager:
             codeDiff = myProject.get_code_diff(codeDiffID)
         return isValid, errorCode, codeDiff
 
-    def get_project_comments(
+    def get_all_project_notes(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
         isValid, errorCode, _, myProject = self.__check_if_valid_token(
@@ -159,7 +159,7 @@ class GitLabAnalyzerManager:
             commentList = myProject.get_all_comments()
         return isValid, errorCode, commentList
 
-    def get_project_comments_by_user(
+    def get_project_notes_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
         isValid, errorCode, _, myProject = self.__check_if_valid_token(

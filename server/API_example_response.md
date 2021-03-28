@@ -1,12 +1,12 @@
 ## API Example Response
 - [Authentication](#authentication)
-    - `GET /auth`
+    - `POST /auth`
 - [Get all accessible projects](#get-a-list-of-projects)
     - `GET /projects`
 - [Start syncing the project](#set-the-current-project-to-projectid)
     - `POST /projects/sync?projectID=id`
 - [Get project syncing state](#get-project-syncing-state)
-    - `/projects/<int:projectID>/sync/state`
+    - `GET /projects/<int:projectID>/sync/state`
 - [Get all the members in the repo](#get-all-the-members-in-the-project)
     - `GET /projects/<int:projectID>/members`
 - [Get all the committers' name](#get-all-the-users-in-the-project)
@@ -26,31 +26,40 @@
 - [Get all the comments sorted in users](#get-all-comments-sorted-in-users)
     - `GET /projects/<int:projectID>/comments/user/all`
 
+#### Note
+All the API calls will contain two variables, `response` and `Cause`
+- `response` will indicate if the request runs successfully
+  - `True` means the request runs successfully
+  - `False` means an error has occurred
+- `Cause` will indicate the error when response is `false`
+
+
 ### Authentication
-#### `GET /auth`
+#### `POST /auth`
 ```json
 {
+    "Cause": "",
     "response": true,
-    "username": "fanghaof"
-}
-
-{
-    "Cause": "Invalid token or url",
-    "response": false,
-    "username": ""
+    "username": "Administrator"
 }
 ```
+
+Required body:
+- Token (String)
+- GitLab URL (String)
+
 [Go back to API list](#api-example-response)
 
 ### Get a list of projects
 #### `GET /projects`
 ```json
 {
-    "response": true,
+    "Cause": "",
     "projects": [
-        "fanghaof / 373_c",
-        "373-2021-1-Makemake / GitLabAnalyzer",
-    ]
+        "TestUser H / CMPT373_TestRepoFromProf",
+        "Administrator / Makemake_Mirrored"
+    ],
+    "response": true
 }
 ```
 [Go back to API list](#api-example-response)
@@ -59,12 +68,8 @@
 #### `POST /projects/sync?projectID=id`
 ```json
 {
+    "Cause": "",
     "response": true
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
 }
 ```
 [Go back to API list](#api-example-response)
@@ -73,14 +78,15 @@
 #### `GET /projects/<int:projectID>/sync/state`
 ```json
 {
-    "response": true,
+    "Cause": "",
     "status": {
-        "is_syncing": true,
-        "last_synced": null,
+        "is_syncing": false,
+        "last_synced": "Sat, 27 Mar 2021 17:57:38 GMT",
         "projectID": 2,
-        "syncing_progress": 28,
-        "syncing_state": "Syncing data from remote..."
-    }
+        "syncing_progress": 100,
+        "syncing_state": "Synced"
+    },
+    "response": true
 }
 ```
 **syncing_state (string)** possible values:
@@ -98,6 +104,7 @@
 #### `GET /projects/<int:projectID>/members`
 ```json
 {
+    "Cause": "",
     "members": [
         {
             "access_level": 40,
@@ -112,13 +119,6 @@
             "name": "Joseph Test",
             "state": "active",
             "username": "makemaketest5"
-        },
-        {
-            "access_level": 40,
-            "id": 7,
-            "name": "tester 88",
-            "state": "active",
-            "username": "Tester88"
         }
     ],
     "response": true
@@ -130,26 +130,24 @@
 #### `GET /projects/<int:projectID>/users`
 ```json
 {
+    "Cause": "",
     "users": [
-        "Joseph Test",
+        "Thomas Min",
+        "jaddiet",
         "TestUser H",
         "HenryPC",
-        "Andrew",
         "Henry Fang",
-        "fanghaof",
-        "Joshua Li Guo",
-        "jaddiet",
-        "springbro294",
         "xtran",
-        "Thomas Min",
-        "jiwonj"
+        "Administrator",
+        "Joshua Li Guo",
+        "fanghaof",
+        "Andrew",
+        "tester 88",
+        "jiwonj",
+        "Joseph Test",
+        "springbro294"
     ],
     "response": true
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
 }
 ```
 [Go back to API list](#api-example-response)
@@ -158,6 +156,7 @@
 #### `GET /projects/<int:projectID>/commit`
 ```json
 {
+    "Cause": "",
     "commit_list": [
         {
             "author_name": "Joseph Test",
@@ -209,6 +208,7 @@
 #### `GET /projects/<int:projectID>/commit/user/all`
 ```json
 {
+    "Cause": "",
     "commit_list": [
         {
             "commits": [
@@ -284,10 +284,7 @@
     "response": true
 }
 
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
+
 ```
 [Go back to API list](#api-example-response)
 
@@ -295,6 +292,7 @@
 #### `GET /projects/<int:projectID>/merge_request/all`
 ```json
 {
+    "Cause": "",
     "merge_request_list": [
         {
             "author": {
@@ -427,11 +425,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -439,6 +432,7 @@
 #### `GET /projects/<int:projectID>/merge_request/user/all`
 ```json
 {
+    "Cause": "",
     "merge_request_users_list": {
         "Joseph Test": [
             {
@@ -609,11 +603,6 @@
     },
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -621,6 +610,7 @@
 #### `GET /projects/<int:projectID>/code_diff/<int:codeDiffID>`
 ```json
 {
+    "Cause": "",
     "code_diff_list": [
         {
             "a_mode": "0",
@@ -645,11 +635,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -657,6 +642,7 @@
 #### `GET /projects/<int:projectID>/comments/all`
 ```json
 {
+    "Cause": "",
     "notes": [
         {
             "author": "TestUser H",
@@ -681,11 +667,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -693,6 +674,7 @@
 #### `GET /projects/<int:projectID>/comments/user/all`
 ```json
 {
+    "Cause": "",
     "notes": {
         "Joseph Test": [
             {
@@ -730,11 +712,6 @@
         ]
     },
     "response": true
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
 }
 ```
 [Go back to API list](#api-example-response)
