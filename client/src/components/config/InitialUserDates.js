@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import { configSettings } from '../login/Repo';
@@ -10,7 +10,7 @@ const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
   const { selectMembersList, selectUser, setSelectUser, anon } = useAuth();
-
+  useEffect(() => {}, [setSelectUser]);
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
@@ -29,8 +29,14 @@ function InitialUserDates() {
       >
         <Select
           style={{ width: 200 }}
-          defaultValue={(selectUser && selectUser)}
-          onChange={(value) => setSelectUser(selectMembersList[value])}
+          defaultValue={
+            (selectUser || (setSelectUser(selectMembersList[0])))
+          }
+          onChange={(value) => 
+            {
+              setSelectUser(selectMembersList[value])
+            }
+          }
           showSearch
         >
           {(anon && (

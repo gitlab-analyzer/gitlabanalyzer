@@ -15,6 +15,7 @@ const AuthProvider = (props) => {
   const [commentsList, setCommentsList] = useState({});
   const [selectMembersList, setSelectMembersList] = useState([]);
   const [overviewScore, setOverviewScore] = useState({});
+  const [dataList, setDataList] = useState([]);
   const [anon, setAnon] = useState('');
   const [floatScores, setFloatScores] = useState('');
 
@@ -47,6 +48,8 @@ const AuthProvider = (props) => {
     setAnon,
     floatScores,
     setFloatScores,
+    dataList,
+    setDataList,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

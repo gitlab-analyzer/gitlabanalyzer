@@ -8,7 +8,6 @@ function AnonymousViewing() {
     <div>
       <h6>Turn on Anonymous Viewing: </h6>
       <Switch defaultChecked={anon} onChange={(checked) => setAnon(checked)} />
-      {/* {console.log(anon)} */}
     </div>
   );
 }

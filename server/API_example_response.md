@@ -1,16 +1,30 @@
 ## API Example Response
-- [GET /auth](#authentication)
-- [GET /projects](#get-a-list-of-projects)
-- [POST /projects/set?projectID=id](#set-the-current-project-to-projectid)
-- [GET /projects/<int:<i></i>projectID>/members](#get-all-the-members-in-the-project)
-- [GET /projects/<int:<i></i>projectID>/users](#get-all-the-users-in-the-project)
-- [GET /projects/<int:<i></i>projectID>/commit](#get-all-commits-in-that-project)
-- [GET /projects/<int:<i></i>projectID>/commit/user/all](#get-all-the-commits-sorted-in-users)
-- [GET /projects/<int:<i></i>projectID>/merge_request/all](#get-all-the-merge-request-in-that-project)
-- [GET /projects/<int:<i></i>projectID>/merge_request/user/all](#get-all-the-merge-request-sorted-in-users)
-- [GET /projects/<int:<i></i>projectID>/code_diff/<int:<i></i>codeDiffID>](#get-a-specific-code-diff)
-- [GET /projects/<int:<i></i>projectID>/comments/all](#get-all-comments-in-that-project)
-- [GET /projects/<int:<i></i>projectID>/comments/user/all](#get-all-comments-sorted-in-users)
+- [Authentication](#authentication)
+    - `GET /auth`
+- [Get all accessible projects](#get-a-list-of-projects)
+    - `GET /projects`
+- [Start syncing the project](#set-the-current-project-to-projectid)
+    - `POST /projects/sync?projectID=id`
+- [Get project syncing state](#get-project-syncing-state)
+    - `/projects/<int:projectID>/sync/state`
+- [Get all the members in the repo](#get-all-the-members-in-the-project)
+    - `GET /projects/<int:projectID>/members`
+- [Get all the committers' name](#get-all-the-users-in-the-project)
+    - `GET /projects/<int:projectID>/users`
+- [Get all the commit in that project](#get-all-commits-in-that-project)
+    - `GET /projects/<int:projectID>/commit`
+- [Get all the commits sorted in users](#get-all-the-commits-sorted-in-users)
+    - `GET /projects/<int:projectID>/commit/user/all`
+- [Get all the merge requests in the project](#get-all-the-merge-request-in-that-project)
+    - `GET /projects/<int:projectID>/merge_request/all`
+- [Get all the merge Request sorted in users](#get-all-the-merge-request-sorted-in-users)
+    - `GET /projects/<int:projectID>/merge_request/user/all`
+- [Get code diff based on codeDiffID](#get-a-specific-code-diff)
+    - `GET /projects/<int:projectID>/code_diff/<int:codeDiffID>`
+- [Get all the comments in the project](#get-all-comments-in-that-project)
+    - `GET /projects/<int:projectID>/comments/all`
+- [Get all the comments sorted in users](#get-all-comments-sorted-in-users)
+    - `GET /projects/<int:projectID>/comments/user/all`
 
 ### Authentication
 #### `GET /auth`
@@ -42,7 +56,7 @@
 [Go back to API list](#api-example-response)
 
 ### Set the current project to projectID
-#### `POST /projects/set?projectID=id`
+#### `POST /projects/sync?projectID=id`
 ```json
 {
     "response": true
@@ -53,6 +67,31 @@
     "response": false
 }
 ```
+[Go back to API list](#api-example-response)
+
+### Get project syncing state
+#### `GET /projects/<int:projectID>/sync/state`
+```json
+{
+    "response": true,
+    "status": {
+        "is_syncing": true,
+        "last_synced": null,
+        "projectID": 2,
+        "syncing_progress": 28,
+        "syncing_state": "Syncing data from remote..."
+    }
+}
+```
+**syncing_state (string)** possible values:
+- `[Syncing data from remote..., Analyzing..., Synced]`
+
+**syncing_progress (int)**:
+- A percentage value shows the progress of syncing (0 - 100)
+
+**last_synced** date format:
+- "Wed, 17 Mar 2021 22:38:05 GMT"
+
 [Go back to API list](#api-example-response)
 
 ### Get all the members in the project
