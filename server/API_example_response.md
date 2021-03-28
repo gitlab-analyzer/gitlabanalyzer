@@ -27,18 +27,18 @@
     - `GET /projects/<int:projectID>/comments/user/all`
 
 #### Note
-All the API calls will contain two variables, `response` and `Cause`
+All the API calls will contain two variables, `response` and `cause`
 - `response` will indicate if the request runs successfully
   - `True` means the request runs successfully
   - `False` means an error has occurred
-- `Cause` will indicate the error when response is `false`
+- `cause` will indicate the error when response is `false`
 
 
 ### Authentication
 #### `POST /auth`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "response": true,
     "username": "Administrator"
 }
@@ -54,7 +54,7 @@ Required body:
 #### `GET /projects`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "projects": [
         "TestUser H / CMPT373_TestRepoFromProf",
         "Administrator / Makemake_Mirrored"
@@ -68,7 +68,7 @@ Required body:
 #### `POST /projects/<int:projectID>/sync`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "response": true
 }
 ```
@@ -78,7 +78,7 @@ Required body:
 #### `GET /projects/<int:projectID>/sync/state`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "status": {
         "is_syncing": false,
         "last_synced": "Sat, 27 Mar 2021 17:57:38 GMT",
@@ -104,7 +104,7 @@ Required body:
 #### `GET /projects/<int:projectID>/members`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "members": [
         {
             "access_level": 40,
@@ -130,7 +130,7 @@ Required body:
 #### `GET /projects/<int:projectID>/users`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "users": [
         "Thomas Min",
         "jaddiet",
@@ -156,7 +156,7 @@ Required body:
 #### `GET /projects/<int:projectID>/commit`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "commit_list": [
         {
             "author_name": "Joseph Test",
@@ -208,7 +208,7 @@ Required body:
 #### `GET /projects/<int:projectID>/commit/user/all`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "commit_list": [
         {
             "commits": [
@@ -290,7 +290,7 @@ Required body:
 #### `GET /projects/<int:projectID>/merge_request/all`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "merge_request_list": [
         {
             "author": {
@@ -430,7 +430,7 @@ Required body:
 #### `GET /projects/<int:projectID>/merge_request/user/all`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "merge_request_users_list": {
         "Joseph Test": [
             {
@@ -608,7 +608,7 @@ Required body:
 #### `GET /projects/<int:projectID>/code_diff/<int:codeDiffID>`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "code_diff_list": [
         {
             "a_mode": "0",
@@ -640,7 +640,7 @@ Required body:
 #### `GET /projects/<int:projectID>/comments/all`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "notes": [
         {
             "author": "TestUser H",
@@ -672,7 +672,7 @@ Required body:
 #### `GET /projects/<int:projectID>/comments/user/all`
 ```json
 {
-    "Cause": "",
+    "cause": "",
     "notes": {
         "Joseph Test": [
             {

@@ -9,6 +9,7 @@ from interface.gitlab_project_interface import GitLabProject
 ERROR_CODES = {
     "invalidToken": "Invalid token",
     "invalidProjectID": "Invalid project ID",
+    "projectIsSyncing": "Project is syncing"
 }
 
 
@@ -40,20 +41,30 @@ class GitLabAnalyzerManager:
     def __sync_project_helper(self, projectID: int, myAnalyzer: GitLabAnalyzer) -> None:
         myAnalyzer.update_project(projectID)
 
-    def __check_if_valid_token(
+    def __get_project_analyzer_and_project(
+            self, hashedToken: str, projectID: int
+    ) -> Tuple[Union[GitLabAnalyzer, None], Union[GitLabProject, None]]:
+        myProject = None
+        myGitLabAnalyzer = self.__find_gitlab(hashedToken)
+        if myGitLabAnalyzer is not None:
+            myProject = myGitLabAnalyzer.get_gitlab_project_by_id(projectID)
+        return myGitLabAnalyzer, myProject
+
+    def __validate_token_and_check_project_not_syncing(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, Union[GitLabAnalyzer, None], Union[GitLabProject, None]]:
-        myGitLab = self.__find_gitlab(hashedToken)
+        myGitLab, myProject = self.__get_project_analyzer_and_project(hashedToken, projectID)
+
         if myGitLab is None:
             return False, ERROR_CODES["invalidToken"], myGitLab, None
-
-        myProject = myGitLab.get_gitlab_project_by_id(projectID)
         if myProject is None:
             return False, ERROR_CODES["invalidProjectID"], myGitLab, myProject
+        elif myProject.is_syncing:
+            return False, ERROR_CODES["projectIsSyncing"], myGitLab, myProject
         return True, "", myGitLab, myProject
 
     def sync_project(self, hashedToken: str, projectID: int) -> Tuple[bool, str]:
-        isValid, errorCode, myGitLab, _ = self.__check_if_valid_token(
+        isValid, errorCode, myGitLab, _ = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         if isValid:
@@ -65,18 +76,19 @@ class GitLabAnalyzerManager:
     def check_sync_state(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
-            hashedToken, projectID
-        )
-        syncState: dict = {}
-        if isValid:
-            syncState = myProject.get_project_sync_state()
-        return isValid, errorCode, syncState
+        myGitLab, myProject = self.__get_project_analyzer_and_project(hashedToken, projectID)
+
+        if myGitLab is None:
+            return False, ERROR_CODES["invalidToken"], {}
+        if myProject is None:
+            return False, ERROR_CODES["invalidProjectID"], {}
+
+        return True, "", myProject.get_project_sync_state()
 
     def get_project_members(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         projectMembers: list = []
@@ -87,7 +99,7 @@ class GitLabAnalyzerManager:
     def get_project_users(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         userList: list = []
@@ -98,7 +110,7 @@ class GitLabAnalyzerManager:
     def get_project_master_commits(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         commitList: list = []
@@ -109,7 +121,7 @@ class GitLabAnalyzerManager:
     def get_project_all_commits_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         commitList: list = []
@@ -120,7 +132,7 @@ class GitLabAnalyzerManager:
     def get_project_all_merge_request(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         mergeRequestList: dict = {}
@@ -131,7 +143,7 @@ class GitLabAnalyzerManager:
     def get_project_merge_request_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         mergeRequestList: list = []
@@ -142,7 +154,7 @@ class GitLabAnalyzerManager:
     def get_code_diff(
         self, hashedToken: str, projectID: int, codeDiffID
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         codeDiff: dict = {}
@@ -153,7 +165,7 @@ class GitLabAnalyzerManager:
     def get_all_project_notes(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         commentList: list = []
@@ -164,7 +176,7 @@ class GitLabAnalyzerManager:
     def get_project_notes_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
-        isValid, errorCode, _, myProject = self.__check_if_valid_token(
+        isValid, errorCode, _, myProject = self.__validate_token_and_check_project_not_syncing(
             hashedToken, projectID
         )
         commentList: dict = {}

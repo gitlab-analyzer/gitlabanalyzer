@@ -334,3 +334,7 @@ class GitLabProject:
     @property
     def user_list(self) -> list:
         return self.__user_list
+
+    @property
+    def is_syncing(self):
+        return self.__is_syncing

@@ -8,16 +8,16 @@ cors = CORS(app, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Error respond body list:
-projectIDError = {"response": False, "Cause": "Error, invalid projectID."}
+projectIDError = {"response": False, "cause": "Error, invalid projectID."}
 
 
 def hash_token(myToken: str):
     return hashlib.sha256(str.encode(myToken)).hexdigest()
 
 
-# TODO: - Add sync check, so throw error when projects are syncing
-#       - Add a background task to delete key value pairs if it has
-#       stayed in the map for a long time (so it wont blow up the memory)
+# TODO:
+#  1. Add a background task to delete key value pairs if it has
+#  stayed in the map for a long time (so it wont blow up the memory)
 
 
 @app.route('/auth', methods=['post'])
