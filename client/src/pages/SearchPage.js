@@ -20,7 +20,10 @@ function SearchPage() {
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/projects');
+      const repoList = await axios.get('http://localhost:5678/projects', {
+        withCredentials: true,
+        // credentials: 'include',
+      });
       setRepo(repoList.data.projects);
       setReList([
         ...repoList.data.projects,

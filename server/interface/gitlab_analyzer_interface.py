@@ -14,13 +14,14 @@ class GitLabAnalyzer:
         self.__user_token_hashed: str = user_token_hashed  # hashed
         if self.__gitlab.authenticate():
             self.__username: str = self.__gitlab.get_username()  # related to user_token
+            self.__update_project_list()
         else:
             raise gitlab.exceptions.GitlabAuthenticationError
 
     def add_project(self, project: GitLabProject) -> None:
         self.__project_list.append(project)
 
-    def update_project_list(self) -> None:
+    def __update_project_list(self) -> None:
         projectList = self.__gitlab.get_project_list()
 
         for project in projectList:

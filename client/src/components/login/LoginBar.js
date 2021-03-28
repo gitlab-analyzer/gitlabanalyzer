@@ -65,10 +65,12 @@ const LoginBar = ({ setRedirect }) => {
     const fullUrl = urlPre + url + urlPost;
     bodyFormData.append('token', token);
     bodyFormData.append('url', fullUrl);
+    axios.defaults.withCredentials = true;
     const response = await axios({
       method: 'post',
       url: 'http://localhost:5678/auth',
       data: bodyFormData,
+      withCredentials: true,
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response;
