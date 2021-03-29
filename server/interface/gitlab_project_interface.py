@@ -349,3 +349,101 @@ class GitLabProject:
     @property
     def member_manager(self) -> MemberManager:
         return self.__membersManager
+
+    # Iterate through the Commits Manager and Merge Request Manager
+    # Change the author's names.
+    # Find Commits written by the users in userList
+    #       replace the author name of them -> member name
+    def map_users_to_member_temp(self, member, userList):
+        # overwrite commits
+        all_commits_list = self.commits_manager.get_commit_list()
+        changed_commits_list = []
+
+        for commit in all_commits_list:
+            # committer_name
+            for mapping_user in userList:
+                if commit.author_name == mapping_user:
+                    commit.author_name = "Changed"
+                    changed_commits_list.append(commit)
+
+        #overwrite merge requests
+        all_mrs_list = self.merge_request_manager.merge_request_list
+        # for mr in all_mrs_list:
+
+
+        return all_commits_list
+        # return all_commits_list # temp
+
+        # iterate thorugh commits manager.
+        #       if commit.author_name == mapping user's author name
+        #           then change that commit name's to the member's name
+
+        # iterate through the merge request manager
+        # since commit manager changed, merge request manager also must be changed
+        # iterate through all merge request and that merge request's commit list
+        #
+
+    def map_users_to_member(self, member, userList):
+        all_mrs_list = self.merge_request_manager.merge_request_list
+        for mr in all_mrs_list:
+            commits_list = mr.related_commits_list
+            for commit in commits_list:
+                for mapping_user in userList:
+                    if commit.author_name == mapping_user:
+                        commit.author_name = "c_hanged!"
+        return all_mrs_list
+
+
+gl = GitLab(token="c-Z7RjtQ1qtt2vWVYbjx", url="https://csil-git1.cs.surrey.sfu.ca/")
+gl.authenticate()
+
+print("\nSTART")
+interface = GitLabProject(19439)
+interface.update(gl)
+
+
+print("MEMBER LIST \n")
+for member in interface.member_manager.get_member_list():
+    print(member)
+
+"""
+print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+print("USER LIST \n")
+for user in interface.user_list:
+    print(user)
+
+print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+mrList = interface.get_merge_request_and_commit_list_for_users()
+for mr in mrList:
+    print(mr)
+
+
+print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+print("COMMIT LIST \n")
+commitList = interface.get_commits_for_all_users()
+for commit in commitList:
+    print(commit)
+    print(commit["user_name"], "\n")
+    print(commit["commits"], "\n")
+
+print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+print("ALL MR LIST \n")
+mrs = interface.get_all_merge_request_and_commit()
+for mr in mrs:
+    print(mr, "\n")
+
+"""
+
+
+mapping_user = []
+mapping_user.append("lanyil")
+mapping_user.append("jiwonj")
+lanyil = interface.map_users_to_member("Melody Lan", mapping_user)
+for a in lanyil:
+    # print(a, "\n")
+    print(a)
+    for commit in a.related_commits_list:
+        print(commit)
+    print("\n")
+
+    # print("LENGTH : ", len(a["commits"]))

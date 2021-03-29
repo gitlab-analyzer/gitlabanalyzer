@@ -66,3 +66,8 @@ class Commit(DataObject):
     @line_counts.setter
     def line_counts(self, lineCounts) -> None:
         self.__line_counts = lineCounts
+
+    @author_name.setter
+    def author_name(self, authorName) -> None:
+        self.__author_name = authorName
+
