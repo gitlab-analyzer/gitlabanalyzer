@@ -169,7 +169,7 @@ class GitLabProject:
             "blanks_added": 0,
             "blanks_deleted": 0,
             "spacing_changes": 0,
-            "syntax_changes": 0,
+            "syntax_changes": 0
         }
 
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
@@ -190,7 +190,7 @@ class GitLabProject:
                 "blanks_added": 0,
                 "blanks_deleted": 0,
                 "spacing_changes": 0,
-                "syntax_changes": 0,
+                "syntax_changes": 0
             },
             "relatedCommitsScoreData": {},
         }
