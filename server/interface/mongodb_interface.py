@@ -7,8 +7,9 @@ from pymongo.results import *
 from model.commit import Commit
 from model.merge_request import MergeRequest
 from model.comment import Comment
+from interface.gitlab_project_interface import GitLabProject
 
-CodeDiffPack = NamedTuple('CodeDiffPack', ('id', 'diffs'))
+from datetime import datetime, timezone
 
 class MongoDB:
     def __init__(self, addr: str = 'localhost', port: int = 27017) -> None:
@@ -20,6 +21,27 @@ class MongoDB:
         self.__mergeRequestColl = self.__gitLabAnalyzerDB["mergeRequests"]
         self.__commitColl = self.__gitLabAnalyzerDB["commits"]
         self.__codeDiffColl = self.__gitLabAnalyzerDB["codeDiffs"]
+
+    def insert_project(self, glProject: GitLabProject, projectConfig: dict) -> bool:
+        memberIDs: List[int] = []
+        for member in glProject.member_manager.get_member_list():
+            memberIDs.append(member.id)
+
+        body: dict = {
+            'project_id': glProject.project_id,
+            'name': glProject.project.name,
+            'path': glProject.project.path,
+            'namespace': {
+                'name': glProject.project.namespace,
+                'path': glProject.project.path_namespace
+            },
+            'last_cached_date': datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0).isoformat(),
+            'config': projectConfig,
+            'member_ids': memberIDs,
+            'user_list': glProject.user_list
+        }
+        result: InsertOneResult = self.__projectColl.insert_one(body)
+        return result.acknowledged
 
     def insert_many_MRs(self, projectID, mergeRequestList: List[MergeRequest]) -> bool:
         body: List[dict] = []
@@ -155,18 +177,13 @@ Project Collection: [
         config: {
             <project config. Starts empty, and gets user's config when project is analyzed for the first time.
              this config will include the mapping of user names and members>
-        }
-        members: [
+        },
+        member_ids: [
             <will contain all contributors of the project (members and users)>
+        ],
+        user_list: [
+            <users list>
         ]
-        score_data: {
-            merge_requests: [
-                <ids of MRs>
-            ],
-            commits: [
-                <ids of MASTER commits; {mr_id: NULL} commits>
-            ],
-        }
     }
 ]
 
