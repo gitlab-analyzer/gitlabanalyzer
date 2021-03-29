@@ -39,8 +39,7 @@ class MongoDB:
                 'contributors': list(contributors),
                 'related_commit_ids': list(relatedCommitIDs)
             })
-
-        result: InsertManyResult = self.__mergeRequestColl.insert_many()
+        result: InsertManyResult = self.__mergeRequestColl.insert_many(body)
         return result.acknowledged
     
     def insert_one_MR(self, projectID, mergeRequest: MergeRequest) -> bool:
