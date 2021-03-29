@@ -36,10 +36,11 @@ class GitLabAnalyzer:
                 return project
         return None
 
-    def get_all_gitlab_project_name(self) -> list:
+    def get_all_gitlab_project_name_and_id(self) -> list:
         myList: list = []
         for project in self.__project_list:
-            myList.append(project.project_name)
+            projectInfo = {"name": project.project_name, "id": project.project_id}
+            myList.append(projectInfo)
         return myList
 
     def update_project(self, projectID):

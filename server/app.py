@@ -29,7 +29,7 @@ def auth():
         myToken, hashedToken, request.form['url']
     )
     response = make_response(
-        jsonify({'username': username, 'response': isSuccess, 'Cause': errorCode})
+        jsonify({'username': username, 'response': isSuccess, 'cause': errorCode})
     )
     if isSuccess:
         response.set_cookie(key="id", value=hashedToken)
@@ -43,7 +43,7 @@ def get_project_list():
         request.cookies.get("id", "")
     )
 
-    return jsonify({'projects': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'projects': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/sync', methods=['post'])
@@ -52,7 +52,7 @@ def sync_project(projectID: int):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({"response": isSuccess, 'Cause': errorCode})
+    return jsonify({"response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
@@ -61,7 +61,7 @@ def get_state(projectID: int):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'status': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'status': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/members', methods=['get'])
@@ -70,7 +70,7 @@ def get_project_members(projectID):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'members': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'members': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/users', methods=['get'])
@@ -79,7 +79,7 @@ def get_project_users(projectID):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'users': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'users': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/commit', methods=['get'])
@@ -88,7 +88,7 @@ def get_commits(projectID):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'commit_list': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/commit/user/all')
@@ -97,7 +97,7 @@ def get_commits_for_users(projectID):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'commit_list': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/merge_request/user/all')
@@ -107,7 +107,7 @@ def get_merge_requests_for_users(projectID):
     )
 
     return jsonify(
-        {'merge_request_users_list': value, "response": isSuccess, 'Cause': errorCode}
+        {'merge_request_users_list': value, "response": isSuccess, 'cause': errorCode}
     )
 
 
@@ -118,7 +118,7 @@ def get_all_merge_requests(projectID):
     )
 
     return jsonify(
-        {'merge_request_list': value, "response": isSuccess, 'Cause': errorCode}
+        {'merge_request_list': value, "response": isSuccess, 'cause': errorCode}
     )
 
 
@@ -128,7 +128,7 @@ def get_code_diff(projectID, codeDiffID):
         request.cookies.get("id", ""), projectID, codeDiffID
     )
 
-    return jsonify({'code_diff_list': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'code_diff_list': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/comments/all')
@@ -137,7 +137,7 @@ def get_all_notes(projectID):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'notes': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'notes': value, "response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/comments/user/all')
@@ -146,7 +146,7 @@ def get_notes_for_all_users(projectID):
         request.cookies.get("id", ""), projectID
     )
 
-    return jsonify({'notes': value, "response": isSuccess, 'Cause': errorCode})
+    return jsonify({'notes': value, "response": isSuccess, 'cause': errorCode})
 
 
 if __name__ == '__main__':

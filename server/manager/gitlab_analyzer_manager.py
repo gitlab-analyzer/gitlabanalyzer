@@ -34,7 +34,7 @@ class GitLabAnalyzerManager:
     def get_project_list(self, hashedToken: str) -> Tuple[bool, str, list]:
         myGitLab = self.__find_gitlab(hashedToken)
         if myGitLab is not None:
-            return True, "", myGitLab.get_all_gitlab_project_name()
+            return True, "", myGitLab.get_all_gitlab_project_name_and_id()
         else:
             return False, ERROR_CODES["invalidToken"], []
 
