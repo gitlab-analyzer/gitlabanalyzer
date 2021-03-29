@@ -60,11 +60,11 @@ class MongoDB:
         body: List[dict] = []
 
         for mr in mergeRequestList:
-            contributors: set = {}
-            relatedCommitIDs: set = {}
+            contributors: set = set()
+            relatedCommitIDs: list = []
             for commit in mr.related_commits_list:
                 contributors.add(commit.author_name)
-                relatedCommitIDs.add(commit.id)
+                relatedCommitIDs.append(commit.id)
             
             body.append({
                 'mr_id': mr.id,
@@ -78,11 +78,11 @@ class MongoDB:
         return result.acknowledged
     
     def insert_one_MR(self, projectID, mergeRequest: MergeRequest) -> bool:
-        contributors: set = {}
-        relatedCommitIDs: set = {}
+        contributors: set = set()
+        relatedCommitIDs: list = []
         for commit in mergeRequest.related_commits_list:
             contributors.add(commit.author_name)
-            relatedCommitIDs.add(commit.id)
+            relatedCommitIDs.append(commit.id)
 
         body: dict = {
             'mr_id': mergeRequest.id,
