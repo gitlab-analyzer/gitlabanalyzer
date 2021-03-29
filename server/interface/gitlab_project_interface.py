@@ -48,7 +48,7 @@ class GitLabProject:
     def update(self, myGitlab: GitLab) -> None:
         self.__syncing_progress = 0
         self.__is_syncing = True
-        myGitlab.set_project(projectID=self.project_id)
+        myGitlab.set_project(projectID=self.__project.project_id)
         # construct a thread list that each thread responsible to update a different manager
         myThreadList: list = [
             threading.Thread(
