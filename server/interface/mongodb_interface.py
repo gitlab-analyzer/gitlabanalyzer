@@ -22,6 +22,14 @@ class MongoDB:
         self.__commitColl = self.__gitLabAnalyzerDB["commits"]
         self.__codeDiffColl = self.__gitLabAnalyzerDB["codeDiffs"]
 
+    def insert_GitLabAnalyzerUser(self, hashedToken: str, config: dict):
+        body: dict = {
+            'hashed_token': hashedToken,
+            'config': config
+        }
+        result: InsertOneResult = self.__userColl.insert_one(body)
+        return result.acknowledged
+
     def insert_project(self, glProject: GitLabProject, projectConfig: dict) -> bool:
         memberIDs: List[int] = []
         for member in glProject.member_manager.get_member_list():
@@ -152,9 +160,7 @@ DRAFT SCHEMA
 // PRIMARY KEY: (_id)
 Users Collection: [
 	{
-		_id: ObjectId("IKNF23141ASFINO"), (_id is the user's hashed token)
-		username: John123,
-        name: John Lee,
+		hashed_token: (the user's hashed token)
 		config: <user's global config>
 
         NOTE: config will probably contain info relating to modifications
