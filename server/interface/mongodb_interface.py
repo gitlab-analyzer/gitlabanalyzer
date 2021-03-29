@@ -26,7 +26,7 @@ class MongoDB:
 
     # NOTE: what about duplicate insertions?
 
-    def insert_GitLabAnalyzerUser(self, hashedToken: str, config: dict):
+    def insert_GitLabAnalyzerUser(self, hashedToken: str, config: dict) -> bool:
         # STUB
         body: dict = {
             'hashed_token': hashedToken,
