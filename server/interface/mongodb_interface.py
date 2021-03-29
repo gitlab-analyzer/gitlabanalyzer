@@ -1,10 +1,14 @@
-from typing import List
-from pprint import pprint
+from typing import List, NamedTuple, Tuple
 
 from pymongo import MongoClient
 from pymongo.cursor import Cursor
+from pymongo.results import *
 
-from bson.objectid import ObjectId
+from model.commit import Commit
+from model.merge_request import MergeRequest
+from model.comment import Comment
+
+CodeDiffPack = NamedTuple('CodeDiffPack', ('id', 'diffs'))
 
 class MongoDB:
     def __init__(self, addr: str = 'localhost', port: int = 27017) -> None:
@@ -15,33 +19,98 @@ class MongoDB:
         self.__projectColl = self.__gitLabAnalyzerDB["projects"]
         self.__mergeRequestColl = self.__gitLabAnalyzerDB["mergeRequests"]
         self.__commitColl = self.__gitLabAnalyzerDB["commits"]
+        self.__codeDiffColl = self.__gitLabAnalyzerDB["codeDiffs"]
 
-        self.__gitLabAnalyzerDB["accounts"].drop()
-    # def find_users(self, num: int, obj: dict) -> Cursor:
-    #     return self.__userColl.find(obj)
+    def insert_many_MRs(self, projectID, mergeRequestList: List[MergeRequest]) -> bool:
+        body: List[dict] = []
 
-    # # insert a single user
-    # def insert_user(self, obj: dict) -> None:
-    #     obj['_id'] = self.__userNextId
-    #     self.__userNextId += 1
-    #     self.__userColl.insert_one(obj)
+        for mr in mergeRequestList:
+            contributors: set = {}
+            relatedCommitIDs: set = {}
+            for commit in mr.related_commits_list:
+                contributors.add(commit.author_name)
+                relatedCommitIDs.add(commit.id)
+            
+            body.append({
+                'mr_id': mr.id,
+                'project_id': projectID,
+                'issue_id': mr.__related_issue_iid,
+                'merged_date': mr.merged_date,
+                'contributors': list(contributors),
+                'related_commit_ids': list(relatedCommitIDs)
+            })
+
+        result: InsertManyResult = self.__mergeRequestColl.insert_many()
+        return result.acknowledged
     
-    # # insert multiple users at once
-    # def insert_many_users(self, objList: List[dict]) -> None:
-    #     for obj in objList:
-    #         obj['_id'] = self.__userNextId
-    #         self.__userNextId += 1
-    #     self.__userColl.insert_many(objList)
-    
-    # def update_user(self, obj: dict, update: dict) -> None:
-    #     self.__userColl.update_one(obj, update)
+    def insert_one_MR(self, projectID, mergeRequest: MergeRequest) -> bool:
+        contributors: set = {}
+        relatedCommitIDs: set = {}
+        for commit in mergeRequest.related_commits_list:
+            contributors.add(commit.author_name)
+            relatedCommitIDs.add(commit.id)
 
-    # def remove_user(self, obj: dict) -> None:
-    #     self.__userColl.delete_one(obj)
+        body: dict = {
+            'mr_id': mergeRequest.id,
+            'project_id': projectID,
+            'issue_id': mergeRequest.__related_issue_iid,
+            'merged_date': mergeRequest.merged_date,
+            'contributors': list(contributors),
+            'related_commit_ids': list(relatedCommitIDs)
+        }
+        result: InsertOneResult = self.__mergeRequestColl.insert_one(body)
+        return result.acknowledged
 
-    # # This will delete ALL entries in the users collection. IRREVERSIBLE OPERATION
-    # def clear_users(self) -> None:
-    #     self.__userColl.delete_many({})
+    # precondition: all commits in the list belongs to the same mergeRequest.
+    #   if they are all master commits, put None for mergeRequestID.
+    def insert_many_commits(self, projectID, mergeRequestID, commitList: List[Commit]) -> bool:
+        body: List[dict] = []
+        for commit in commitList:
+            body.append({
+                'commit_id': commit.id,
+                'project_id': projectID,
+                'mr_id': mergeRequestID,
+                'author': commit.author_name,
+                'commit_date': commit.committed_date,
+                'code_diff_id': commit.code_diff_id
+            })
+        result: InsertManyResult = self.__commitColl.insert_many(body)
+        return result.acknowledged
+
+    # if the commit is a commit on the master branch, put None for mergeRequestID
+    def insert_one_commit(self, projectID, mergeRequestID, commit: Commit) -> bool:
+        body: dict = {
+            'commit_id': commit.id,
+            'project_id': projectID,
+            'mr_id': mergeRequestID,
+            'author': commit.author_name,
+            'commiter': commit.committer_name,
+            'commit_date': commit.committed_date,
+            'code_diff_id': commit.code_diff_id
+        }
+        result: InsertOneResult = self.__commitColl.insert_one(body)
+        return result.acknowledged
+
+    # precondition: the list of codeDiffs are in the order where their index is their artif_id
+    def insert_many_codeDiffs(self, projectID, codeDiffList: List[List[dict]]) -> bool:
+        body: List[dict] = []
+        for index, codeDiff in zip(range(len(codeDiffList)), codeDiffList):
+            body.append({
+                "project_id": projectID,
+                "artif_id": index,
+                "diffs": codeDiff
+            })
+        result: InsertManyResult = self.__codeDiffColl.insert_many(body)
+        return result.acknowledged
+
+    def insert_one_codeDiff(self, projectID, codeDiffID: int, diffs: List[dict]) -> bool:
+        body: dict = {
+            "project_id": projectID,
+            "artif_id": codeDiffID,
+            "diffs": diffs
+        }
+        result: InsertOneResult = self.__codeDiffColl.insert_one(body)
+        return result.acknowledged
 
     @property
     def collections(self) -> List[str]:
@@ -76,7 +145,7 @@ Users Collection: [
 // PRIMARY KEY: (_id)
 Project Collection: [
     {
-        _id: <project id>,
+        project_id: <project id>,
         name: <project name>,
         path: <project path>,
         namespace: {
@@ -102,10 +171,10 @@ Project Collection: [
     }
 ]
 
-// PRIMARY KEY: (_id, project_id)
+// PRIMARY KEY: (mr_id, project_id)
 MergeRequest Collection: [
     {
-        _id: <merge request id (project scoped id)>,
+        mr_id: <merge request id (project scoped id)>,
         project_id: <id of project this MR belongs to>,
         merged_date: <date when MR was merged>,
         contributors: [
@@ -117,19 +186,21 @@ MergeRequest Collection: [
     }
 ]
 
-// PRIMARY KEY: (_id, project_id)
+// PRIMARY KEY: (commit_id, project_id)
 Commit Collection: [
     {
-        _id: <id of commit>,
+        commit_id: <id of commit>,
         project_id: <id of project this commit belongs to>,
         mr_id: <id of MR this commit is related to OR NULL if master commit>,
         commiter: <person who made this commit>,
+        commit_date: <date of commit ISO 8601>
         code_diff_ids: [
             <ids of code diffs for this commit>
         ]
     }
 ]
 
+// PRIMARY KEY: (artif_id, project_id)
 CodeDiff Collection: [
     {
         project_id: <project id>,
