@@ -23,6 +23,7 @@ class MongoDB:
         self.__codeDiffColl = self.__gitLabAnalyzerDB["codeDiffs"]
 
     def insert_GitLabAnalyzerUser(self, hashedToken: str, config: dict):
+        # STUB
         body: dict = {
             'hashed_token': hashedToken,
             'config': config
@@ -140,6 +141,10 @@ class MongoDB:
         }
         result: InsertOneResult = self.__codeDiffColl.insert_one(body)
         return result.acknowledged
+
+    # TODO: insert Comment methods
+    # TODO: insert Member methods
+    # TODO: insert Issue methods
 
     @property
     def collections(self) -> List[str]:
