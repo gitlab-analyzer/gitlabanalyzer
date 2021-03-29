@@ -350,100 +350,69 @@ class GitLabProject:
     def member_manager(self) -> MemberManager:
         return self.__membersManager
 
-    # Iterate through the Commits Manager and Merge Request Manager
-    # Change the author's names.
-    # Find Commits written by the users in userList
-    #       replace the author name of them -> member name
-    def map_users_to_member_temp(self, member, userList):
-        # overwrite commits
+
+# ----------------------------------------------------------------------------------
+
+    # update merge request manager after mapping
+    def map_users_to_member_version2(self, member, userList):
+        self.update_merge_request_manager_after_mapping(member,userList)
+        self.update_commits_manager_after_mapping(member, userList)
+
+    def update_commits_manager_after_mapping(self, member, userList):
         all_commits_list = self.commits_manager.get_commit_list()
-        changed_commits_list = []
-
         for commit in all_commits_list:
-            # committer_name
-            for mapping_user in userList:
-                if commit.author_name == mapping_user:
-                    commit.author_name = "Changed"
-                    changed_commits_list.append(commit)
+            if commit.author_name in userList:
+                commit.author_name = member     # temp: "Changed"
 
-        #overwrite merge requests
-        all_mrs_list = self.merge_request_manager.merge_request_list
-        # for mr in all_mrs_list:
-
-
-        return all_commits_list
-        # return all_commits_list # temp
-
-        # iterate thorugh commits manager.
-        #       if commit.author_name == mapping user's author name
-        #           then change that commit name's to the member's name
-
-        # iterate through the merge request manager
-        # since commit manager changed, merge request manager also must be changed
-        # iterate through all merge request and that merge request's commit list
-        #
-
-    def map_users_to_member(self, member, userList):
+    def update_merge_request_manager_after_mapping(self, member, userList):
         all_mrs_list = self.merge_request_manager.merge_request_list
         for mr in all_mrs_list:
             commits_list = mr.related_commits_list
             for commit in commits_list:
+                if commit.author_name in userList:
+                    commit.author_name = member     # temp: "Changed"
+                """
                 for mapping_user in userList:
                     if commit.author_name == mapping_user:
                         commit.author_name = "c_hanged!"
-        return all_mrs_list
+                """
 
+    # ----------------------------------------------------------------------------------
 
-gl = GitLab(token="c-Z7RjtQ1qtt2vWVYbjx", url="https://csil-git1.cs.surrey.sfu.ca/")
-gl.authenticate()
+    # memberList: [memberA, memberB]
+    # userList: [[userA_1, userA_2], [userB_1]]
+    def map_users_multiple_members(self, memberList, userList):
+        self.update_merge_request_manager_version2(memberList, userList)
+        self.update_commits_manager_version2(memberList, userList)
 
-print("\nSTART")
-interface = GitLabProject(19439)
-interface.update(gl)
+    def update_merge_request_manager_version2(self, memberList, userList):
+        all_mrs_list = self.merge_request_manager.merge_request_list
+        for mr in all_mrs_list:
+            commits_list = mr.related_commits_list
+            for i in range (0, len(commits_list)):
+                commit_authorName = commits_list[i].author_name
+                for user_sublist in range (0, len(userList)):
+                    if commit_authorName in userList[user_sublist]:
+                        # index = userList[j].index(commit_authorName)
+                        mr.related_commits_list[i].author_name = memberList[user_sublist]
+                    """
+                    index = userList.index(commit_authorName)
+                    mr.related_commits_list[i].author_name = memberList[index]  # replace author name
+                    """
 
-
-print("MEMBER LIST \n")
-for member in interface.member_manager.get_member_list():
-    print(member)
-
-"""
-print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-print("USER LIST \n")
-for user in interface.user_list:
-    print(user)
-
-print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-mrList = interface.get_merge_request_and_commit_list_for_users()
-for mr in mrList:
-    print(mr)
-
-
-print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-print("COMMIT LIST \n")
-commitList = interface.get_commits_for_all_users()
-for commit in commitList:
-    print(commit)
-    print(commit["user_name"], "\n")
-    print(commit["commits"], "\n")
-
-print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-print("ALL MR LIST \n")
-mrs = interface.get_all_merge_request_and_commit()
-for mr in mrs:
-    print(mr, "\n")
-
-"""
-
-
-mapping_user = []
-mapping_user.append("lanyil")
-mapping_user.append("jiwonj")
-lanyil = interface.map_users_to_member("Melody Lan", mapping_user)
-for a in lanyil:
-    # print(a, "\n")
-    print(a)
-    for commit in a.related_commits_list:
-        print(commit)
-    print("\n")
-
-    # print("LENGTH : ", len(a["commits"]))
+    def update_commits_manager_version2(self, memberList, userList):
+        """
+        all_commits_list = self.commits_manager.get_commit_list()
+        for i in range (0, len(all_commits_list)):
+            commit_authorName = all_commits_list[i].author_name
+            if commit_authorName in userList:
+                index = userList.index(commit_authorName)
+                all_commits_list[i].author_name = memberList[index]
+        """
+        all_commits_list = self.commits_manager.get_commit_list()
+        for i in range (0, len(all_commits_list)):
+            commit_authorName = all_commits_list[i].author_name
+            for user_sublist in range (0, len(userList)):
+                if commit_authorName in userList[user_sublist]:
+                    all_commits_list[i].author_name = memberList[user_sublist]
+        
