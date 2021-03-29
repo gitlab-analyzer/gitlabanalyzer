@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router';
+import { Alert, Spin } from 'antd';
+import axios from 'axios';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import SearchBar from '../components/login/SearchBar';
-import { Alert, Spin } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import Repo from '../components/login/Repo';
-import axios from 'axios';
-import { Redirect } from 'react-router';
 import LogOut from '../components/LogOut';
 
 function SearchPage() {
@@ -21,27 +21,10 @@ function SearchPage() {
     const getRepos = async () => {
       setLoading(true);
       const repoList = await axios.get('http://localhost:5678/projects');
+      console.log(repoList);
       setRepo(repoList.data.projects);
-      setReList([
-        ...repoList.data.projects,
-        'Admin / Polaris GitLab 373',
-        'Admin / Alpha C GitLab 373',
-        'Admin / Sirius GitLab 373',
-        'Admin / Rigel GitLab 373',
-        'Admin / Vega GitLab 373',
-        'Admin / Antares Github 276',
-        'Admin / Pleiades Github 276',
-      ]);
-      setFilteredList([
-        ...repoList.data.projects,
-        'Admin / Polaris GitLab 373',
-        'Admin / Alpha C GitLab 373',
-        'Admin / Sirius GitLab 373',
-        'Admin / Rigel GitLab 373',
-        'Admin / Vega GitLab 373',
-        'Admin / Antares Github 276',
-        'Admin / Pleiades Github 276',
-      ]);
+      setReList([...repoList.data.projects]);
+      setFilteredList([...repoList.data.projects]);
       setLoading(false);
     };
     getRepos();

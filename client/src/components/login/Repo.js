@@ -76,7 +76,7 @@ const Repo = ({
 
   // Set project ID to the users chosen ID
   // Currently it is hard coded to 2 since no other projects exist
-  const setProjectId = async () => {
+  const syncProjectId = async () => {
     const projectRes = await axios.post(
       'http://localhost:5678/projects/sync',
       {},
@@ -100,7 +100,6 @@ const Repo = ({
    * Fetch sync status with an interval of 5,000 milliseconds until it is 100% synced.
    * Upon syncing, it will update syncDone state to reveal redirect button.
    */
-  // let timerId = 0;
   const syncProject = async () => {
     const syncStatus = await axios.get(
       'http://localhost:5678/projects/2/sync/state'
@@ -113,10 +112,6 @@ const Repo = ({
     console.log('syncDone: ', syncDone);
     if (syncStatus.data['status'].is_syncing) {
       setTimeout(async function repeat() {
-        // if (!syncStatus.data['status'].is_syncing) {
-        //   setSyncDone(true);
-        //   setAnalyzing(false);
-        // }
         syncProject();
       }, 5000);
       return;
@@ -125,13 +120,6 @@ const Repo = ({
       setAnalyzing(false);
       return;
     }
-  };
-
-  const checkSync = async () => {
-    const result = await axios.get(
-      'http://localhost:5678/projects/2/sync/state'
-    );
-    return result.data['status'].syncing_progress;
   };
 
   // Function for fetching members list data
@@ -339,35 +327,14 @@ const Repo = ({
       setAnalyzing(true);
 
       /**
-       * This setProjectIs() is important, it is needed for iteration 3, but this process calls
+       * This syncProjectId() is important, it is needed for iteration 3, but this process calls
        * an API in the backend that currently takes a long time (2+ minutes).
        * This call is disabled for the demo on Monday.
        */
 
       await fetchMembers();
-
-      // const syncStatus = await axios.get(
-      //   'http://localhost:5678/projects/2/sync/state'
-      // );
-
-      // if (parseInt(syncStatus.data['status'].syncing_progress) !== 100) {
-      //   await setProjectId();
-      // }
-      if (!syncDone) {
-        await setProjectId();
-      }
-
-      // await setProjectId();
+      await syncProjectId();
       await syncProject();
-
-      // await fetchUsers();
-      // await fetchCommits();
-      // await fetchMergeRequests();
-      // await fetchNotes();
-      // await fetchComments();
-
-      // setAnalyzing(false);
-      // setRedirect(true);
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
@@ -447,12 +414,7 @@ const Repo = ({
 
   const redirectButton = () => {
     if (syncDone) {
-      return (
-        // <Link to="/summary" className="btn btn-primary">
-        //   Redirect
-        // </Link>
-        <Button onClick={fetchAndRedirect}>Redirect</Button>
-      );
+      return <Button onClick={fetchAndRedirect}>Redirect</Button>;
     } else {
       return null;
     }
