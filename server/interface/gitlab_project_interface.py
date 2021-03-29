@@ -1,5 +1,7 @@
 import datetime
+from model.project import Project
 import threading
+
 from interface.gitlab_interface import GitLab
 from manager.code_diff_temp import CodeDiffAnalyzer
 from manager.comment_manager import CommentManager
@@ -18,7 +20,7 @@ TOTAL_SYNC_STAGES: int = 7
 
 
 class GitLabProject:
-    def __init__(self, projectID: int, projectName: str = ""):
+    def __init__(self, project):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -26,8 +28,7 @@ class GitLabProject:
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
         self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
-        self.__projectID: int = projectID
-        self.__projectName: str = projectName
+        self.__project: Project = Project(project)
         self.__is_syncing: bool = False
         self.__last_synced: datetime = None
         self.__syncing_state: str = "Not Synced"
@@ -37,7 +38,7 @@ class GitLabProject:
 
     def get_project_sync_state(self) -> dict:
         return {
-            "projectID": self.__projectID,
+            "projectID": self.__project.project_id,
             "is_syncing": self.__is_syncing,
             "last_synced": self.__last_synced,
             "syncing_state": self.__syncing_state,
@@ -324,12 +325,16 @@ class GitLabProject:
         return memberInfoList
 
     @property
+    def project(self) -> Project:
+        return self.__project
+
+    @property
     def project_id(self) -> int:
-        return self.__projectID
+        return self.__project.project_id
 
     @property
     def project_name(self) -> str:
-        return self.__projectName
+        return self.__project.name
 
     @property
     def user_list(self) -> list:
