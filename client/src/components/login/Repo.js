@@ -100,23 +100,30 @@ const Repo = ({
    * Fetch sync status with an interval of 5,000 milliseconds until it is 100% synced.
    * Upon syncing, it will update syncDone state to reveal redirect button.
    */
+  // let timerId = 0;
   const syncProject = async () => {
-    if (!syncDone) {
-      setTimeout(async () => {
-        const syncStatus = await axios.get(
-          'http://localhost:5678/projects/2/sync/state'
-        );
-        fetchErrorChecker(syncStatus.data['response'], 'sync');
-        console.log(syncStatus.data['status'].is_syncing);
-        const numberStat = syncStatus.data['status'].syncing_progress;
-        console.log(numberStat);
-        setSyncPercent(parseInt(numberStat));
-        if (!syncStatus.data['status'].is_syncing) {
-          setSyncDone(true);
-          setAnalyzing(false);
-        }
+    const syncStatus = await axios.get(
+      'http://localhost:5678/projects/2/sync/state'
+    );
+    fetchErrorChecker(syncStatus.data['response'], 'sync');
+    console.log(syncStatus.data['status'].is_syncing);
+    const numberStat = syncStatus.data['status'].syncing_progress;
+    console.log(numberStat);
+    setSyncPercent(parseInt(numberStat));
+    console.log('syncDone: ', syncDone);
+    if (syncStatus.data['status'].is_syncing) {
+      setTimeout(async function repeat() {
+        // if (!syncStatus.data['status'].is_syncing) {
+        //   setSyncDone(true);
+        //   setAnalyzing(false);
+        // }
         syncProject();
       }, 5000);
+      return;
+    } else {
+      setSyncDone(true);
+      setAnalyzing(false);
+      return;
     }
   };
 
