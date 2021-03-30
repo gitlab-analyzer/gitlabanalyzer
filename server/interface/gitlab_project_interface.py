@@ -324,9 +324,9 @@ class GitLabProject:
         return memberInfoList
 
     # Assumed dictionary passed from frontend:
-    #     Ex. { "MemberA": ["UserA", "UserB"],
-    #           "MemberB": ["UserC", "UserD", "UserE"]  }
-    # Parse the dictionary and break down to memberList, userList to call mapping function below
+    #     Ex. { "MemberA": ["userA_1", "userA_2"],
+    #           "MemberB": ["userB_1", "userB_2", "userB_3"]  }
+    # Parse the dictionary and break down to memberList & userList to call mapping function below
     def call_map_users_to_members(self, map_dictionary) -> None:
         memberList = []
         userList = []
