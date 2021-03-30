@@ -56,15 +56,27 @@ const TablePage = () => {
 
   const populateTable = (notes) => {
     var i,j, result = [];
+    var type, date;
     for (i = 0; i < notes.length; i++) {
       if (selectUser === notes[i].author) {
-        result.push(createData(notes[i].createdDate.toString(), notes[i].wordCount, notes[i].body, "N/A", notes[i].noteableType))
+        if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+          type = "Code Review"
+        } else {
+          type = "Issue"
+        }
+        date = [
+          notes[i].createdDate.getFullYear(),
+          notes[i].createdDate.getMonth() +1,
+          notes[i].createdDate.getDate(),
+        ].join('-');
+        result.push(createData(date, notes[i].wordCount, notes[i].body, "author", type))
         }
       }
       return result;
     }
 
   // Table updates based on state of this
+  console.log(notesList)
   var rows = populateTable(notesList)
 
   return (

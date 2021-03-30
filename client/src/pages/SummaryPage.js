@@ -33,6 +33,8 @@ const Summary = () => {
     setCommitsList,
     mergeRequestList,
     setMergeRequestList,
+    notesList,
+    setNotesList
   } = useAuth();
   const [startDate, setStartDate] = useState('March 1, 2021');
   const [endDate, setEndDate] = useState('March 12, 2021');
@@ -46,9 +48,8 @@ const Summary = () => {
 
   const classes = useStyles();
 
-  console.log(mergeRequestList)
-
-  console.log(userCommitsList)
+  console.log(notesList)
+  console.log(commitsList)
 
   const countDates = (commitsList) => {
     var result = {},
@@ -77,6 +78,27 @@ const Summary = () => {
     return rarr;
   };
 
+  const countIssues = (notesList) => {
+    var result = {}, i, j, rarr = [],date;
+
+    for(i = 0; i < notesList.length; i++) {
+      if (selectUser === notesList[i].author) {
+        date = [notesList[i].createdDate.getFullYear(),
+        notesList[i].createdDate.getMonth() + 1,
+        notesList[i].createdDate.getDate(),
+      ].join('-');
+      result[date] = result[date] || 0;
+      result[date] += notesList[i].wordCount;
+      }
+    }
+    for (i in result) {
+      if (result.hasOwnProperty(i)) {
+        rarr.push({ date: i, counts: result[i] });
+      }
+    }
+    return rarr;
+  }
+
   const populateDates = (array) => {
     var result = [],
       i;
@@ -100,10 +122,19 @@ const Summary = () => {
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
+  var dailyIssuesArray = countIssues(notesList)
+  var issueDatesArray = populateDates(dailyIssuesArray)
+  var issueCountsArray = populateCounts(dailyIssuesArray)
+
+  console.log(issueDatesArray)
+  console.log(issueCountsArray)
+
+
   var dailyMRsArray = countDates(userCommitsList)
   var mrDatesArray = populateDates(dailyMRsArray)
   var mrCountsArray = populateCounts(dailyMRsArray)
 
+  // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
 
   useEffect(() => {
@@ -121,37 +152,6 @@ const Summary = () => {
     console.log(dateArray)
   }, [selectUser])
 
-  // will be replaced once we find out how to get data from backend
-  const data = [10, 20, 45, 33, 11, 2, 55, 3, 11, 43, 11, 66, 32, 21];
-
-  const data2 = [5, 5, 4, 2, 7, 10, 5, 11, 1, 15, 10, 10, 5, 2];
-
-  const data3 = [
-    10,
-    44,
-    55,
-    41,
-    43,
-    0,
-    30,
-    10,
-    10,
-    10,
-    44,
-    44,
-    55,
-    41,
-    67,
-    22,
-    10,
-    44,
-    44,
-    55,
-    41,
-    55,
-    41,
-  ];
-
   const [combinedSeries, setCombinedSeries] = useState([
     {
       name: 'Merge Requests',
@@ -166,14 +166,14 @@ const Summary = () => {
   const [crSeries, setCrSeries] = useState([
     {
       name: 'Code Review Words',
-      data: data,
+      data: [],
     },
   ]);
 
   const [issueSeries, setIssueSeries] = useState([
     {
       name: 'Issue Words',
-      data: data,
+      data: [],
     },
   ]);
 
@@ -182,10 +182,10 @@ const Summary = () => {
       setCombinedDropdown('Number');
       setCombinedSeries([
         {
-          data: data,
+          data: [],
         },
         {
-          data: data2,
+          data: [],
         },
       ]);
       setTextRender('Number');
@@ -193,10 +193,10 @@ const Summary = () => {
       setCombinedDropdown('Score');
       setCombinedSeries([
         {
-          data: data3,
+          data: [],
         },
         {
-          data: data,
+          data: [],
         },
       ]);
       setTextRender('Score');
@@ -204,21 +204,21 @@ const Summary = () => {
       setCrDropdown('All');
       setCrSeries([
         {
-          data: data,
+          data: [],
         },
       ]);
     } else if (e.key === 'crOwn') {
       setCrDropdown('Own');
       setCrSeries([
         {
-          data: data2,
+          data: [],
         },
       ]);
     } else if (e.key === 'crOthers') {
       setCrDropdown('Others');
       setCrSeries([
         {
-          data: data3,
+          data: [],
         },
       ]);
     }
