@@ -323,9 +323,23 @@ class GitLabProject:
             memberInfoList.append(member.to_dict())
         return memberInfoList
 
+    # Assumed dictionary passed from frontend:
+    #     Ex. { "MemberA": ["UserA", "UserB"],
+    #           "MemberB": ["UserC", "UserD", "UserE"]  }
+    # Parse the dictionary and break down to memberList, userList to call mapping function below
+    def call_map_users_to_members(self, map_dictionary) -> None:
+        memberList = []
+        userList = []
+
+        for key in map_dictionary:
+            memberList.append(key)
+            userList.append(map_dictionary[key])
+
+        self.map_users_to_members(memberList, userList)
+
     # memberList: [memberA, memberB]
     # userList: [[userA_1, userA_2], [userB_1]]
-    def map_users_to_members(self, memberList, userList):
+    def map_users_to_members(self, memberList, userList) -> None:
         self.update_merge_request_manager_after_mapping(memberList, userList)
         self.update_commits_manager_after_mapping(memberList, userList)
 
@@ -341,7 +355,7 @@ class GitLabProject:
                             user_sublist
                         ]
 
-    def update_commits_manager_after_mapping(self, memberList, userList):
+    def update_commits_manager_after_mapping(self, memberList, userList) -> None:
         all_commits_list = self.commits_manager.get_commit_list()
         for i in range(0, len(all_commits_list)):
             commit_authorName = all_commits_list[i].author_name
