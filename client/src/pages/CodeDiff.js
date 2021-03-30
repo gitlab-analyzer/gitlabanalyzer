@@ -54,6 +54,7 @@ const Appdiff = ({ diffText }) => {
 
 const CodeDiff = () => {
   const [codeDiff, setCodeDiff] = useState([]);
+  const [codeFiles, setCodeFiles] = useState([]);
   const [showFiles, setShowFiles] = useState(false);
 
   useEffect(() => {
@@ -61,8 +62,10 @@ const CodeDiff = () => {
       const codeRes = await axios.get(
         'http://localhost:5678/projects/2/code_diff/8'
       );
-      // console.log('data', codeRes.data.code_diff_list);
+      console.log('data', codeRes.data.code_diff_list);
       await setCodeDiff(codeRes.data.code_diff_list);
+      const files = codeDiff.map((code) => code.new_path);
+      setCodeFiles(files);
     };
     getData();
   }, []);
@@ -98,7 +101,7 @@ const CodeDiff = () => {
       <div style={{ marginBottom: '20px' }}>
         <List
           size="small"
-          dataSource={data}
+          dataSource={codeFiles}
           renderItem={(item) => (
             <List.Item>
               <FileExcelOutlined /> {item}
