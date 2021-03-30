@@ -59,13 +59,15 @@ class GitLabProject:
         ]
         self.__syncing_state = "Syncing data from remote..."
         self.__start_and_join_all_thread(myThreadList)
+        """
         self.__update_code_diff_manager(myGitlab)
         myThreadList: list = [
             threading.Thread(target=self.__analyze_master_commits_code_diff, args=()),
             threading.Thread(target=self.__analyze_merge_requests_code_diff, args=()),
         ]
+        """
         self.__syncing_state = "Analyzing..."
-        self.__start_and_join_all_thread(myThreadList)
+        # self.__start_and_join_all_thread(myThreadList)
         self.__syncing_state = "Synced"
         self.__last_synced = datetime.datetime.now()
         self.__is_syncing = False
@@ -335,15 +337,17 @@ class GitLabProject:
             memberList.append(key)
             userList.append(map_dictionary[key])
 
-        self.map_users_to_members(memberList, userList)
+        self.__map_users_to_members(memberList, userList)
 
     # memberList: [memberA, memberB]
     # userList: [[userA_1, userA_2], [userB_1]]
-    def map_users_to_members(self, memberList, userList) -> None:
-        self.update_merge_request_manager_after_mapping(memberList, userList)
-        self.update_commits_manager_after_mapping(memberList, userList)
+    def __map_users_to_members(self, memberList, userList) -> None:
+        self.__update_merge_request_manager_after_mapping(memberList, userList)
+        self.__update_commits_manager_after_mapping(memberList, userList)
 
-    def update_merge_request_manager_after_mapping(self, memberList, userList) -> None:
+    def __update_merge_request_manager_after_mapping(
+        self, memberList, userList
+    ) -> None:
         all_mrs_list = self.merge_request_manager.merge_request_list
         for mr in all_mrs_list:
             commits_list = mr.related_commits_list
@@ -355,7 +359,7 @@ class GitLabProject:
                             user_sublist
                         ]
 
-    def update_commits_manager_after_mapping(self, memberList, userList) -> None:
+    def __update_commits_manager_after_mapping(self, memberList, userList) -> None:
         all_commits_list = self.commits_manager.get_commit_list()
         for i in range(0, len(all_commits_list)):
             commit_authorName = all_commits_list[i].author_name
