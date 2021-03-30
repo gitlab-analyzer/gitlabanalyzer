@@ -262,5 +262,5 @@ class CodeDiffAnalyzer:
             info[info_name + "_added"] = info[info_name + "_added"] + 1
         if signal == '-':
             info[info_name + "_deleted"] = info[info_name + "_deleted"] + 1
-
+        return info
 
