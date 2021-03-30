@@ -59,15 +59,13 @@ class GitLabProject:
         ]
         self.__syncing_state = "Syncing data from remote..."
         self.__start_and_join_all_thread(myThreadList)
-        """
         self.__update_code_diff_manager(myGitlab)
         myThreadList: list = [
             threading.Thread(target=self.__analyze_master_commits_code_diff, args=()),
             threading.Thread(target=self.__analyze_merge_requests_code_diff, args=()),
         ]
-        """
         self.__syncing_state = "Analyzing..."
-        # self.__start_and_join_all_thread(myThreadList)
+        self.__start_and_join_all_thread(myThreadList)
         self.__syncing_state = "Synced"
         self.__last_synced = datetime.datetime.now()
         self.__is_syncing = False
