@@ -70,4 +70,3 @@ class Commit(DataObject):
     @author_name.setter
     def author_name(self, authorName) -> None:
         self.__author_name = authorName
-

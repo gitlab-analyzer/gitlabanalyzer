@@ -323,6 +323,32 @@ class GitLabProject:
             memberInfoList.append(member.to_dict())
         return memberInfoList
 
+    # memberList: [memberA, memberB]
+    # userList: [[userA_1, userA_2], [userB_1]]
+    def map_users_to_members(self, memberList, userList):
+        self.update_merge_request_manager_after_mapping(memberList, userList)
+        self.update_commits_manager_after_mapping(memberList, userList)
+
+    def update_merge_request_manager_after_mapping(self, memberList, userList):
+        all_mrs_list = self.merge_request_manager.merge_request_list
+        for mr in all_mrs_list:
+            commits_list = mr.related_commits_list
+            for i in range(0, len(commits_list)):
+                commit_authorName = commits_list[i].author_name
+                for user_sublist in range(0, len(userList)):
+                    if commit_authorName in userList[user_sublist]:
+                        mr.related_commits_list[i].author_name = memberList[
+                            user_sublist
+                        ]
+
+    def update_commits_manager_after_mapping(self, memberList, userList):
+        all_commits_list = self.commits_manager.get_commit_list()
+        for i in range(0, len(all_commits_list)):
+            commit_authorName = all_commits_list[i].author_name
+            for user_sublist in range(0, len(userList)):
+                if commit_authorName in userList[user_sublist]:
+                    all_commits_list[i].author_name = memberList[user_sublist]
+
     @property
     def project_id(self) -> int:
         return self.__projectID
@@ -349,70 +375,3 @@ class GitLabProject:
     @property
     def member_manager(self) -> MemberManager:
         return self.__membersManager
-
-
-# ----------------------------------------------------------------------------------
-
-    # update merge request manager after mapping
-    def map_users_to_member_version2(self, member, userList):
-        self.update_merge_request_manager_after_mapping(member,userList)
-        self.update_commits_manager_after_mapping(member, userList)
-
-    def update_commits_manager_after_mapping(self, member, userList):
-        all_commits_list = self.commits_manager.get_commit_list()
-        for commit in all_commits_list:
-            if commit.author_name in userList:
-                commit.author_name = member     # temp: "Changed"
-
-    def update_merge_request_manager_after_mapping(self, member, userList):
-        all_mrs_list = self.merge_request_manager.merge_request_list
-        for mr in all_mrs_list:
-            commits_list = mr.related_commits_list
-            for commit in commits_list:
-                if commit.author_name in userList:
-                    commit.author_name = member     # temp: "Changed"
-                """
-                for mapping_user in userList:
-                    if commit.author_name == mapping_user:
-                        commit.author_name = "c_hanged!"
-                """
-
-    # ----------------------------------------------------------------------------------
-
-    # memberList: [memberA, memberB]
-    # userList: [[userA_1, userA_2], [userB_1]]
-    def map_users_multiple_members(self, memberList, userList):
-        self.update_merge_request_manager_version2(memberList, userList)
-        self.update_commits_manager_version2(memberList, userList)
-
-    def update_merge_request_manager_version2(self, memberList, userList):
-        all_mrs_list = self.merge_request_manager.merge_request_list
-        for mr in all_mrs_list:
-            commits_list = mr.related_commits_list
-            for i in range (0, len(commits_list)):
-                commit_authorName = commits_list[i].author_name
-                for user_sublist in range (0, len(userList)):
-                    if commit_authorName in userList[user_sublist]:
-                        # index = userList[j].index(commit_authorName)
-                        mr.related_commits_list[i].author_name = memberList[user_sublist]
-                    """
-                    index = userList.index(commit_authorName)
-                    mr.related_commits_list[i].author_name = memberList[index]  # replace author name
-                    """
-
-    def update_commits_manager_version2(self, memberList, userList):
-        """
-        all_commits_list = self.commits_manager.get_commit_list()
-        for i in range (0, len(all_commits_list)):
-            commit_authorName = all_commits_list[i].author_name
-            if commit_authorName in userList:
-                index = userList.index(commit_authorName)
-                all_commits_list[i].author_name = memberList[index]
-        """
-        all_commits_list = self.commits_manager.get_commit_list()
-        for i in range (0, len(all_commits_list)):
-            commit_authorName = all_commits_list[i].author_name
-            for user_sublist in range (0, len(userList)):
-                if commit_authorName in userList[user_sublist]:
-                    all_commits_list[i].author_name = memberList[user_sublist]
-        
