@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { parseDiff, Diff, Hunk, Decoration } from 'react-diff-view';
 import { Checkbox, List, Button } from 'antd';
-import { FileExcelOutlined } from '@ant-design/icons';
+import { CloudDownloadOutlined, FileExcelOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import 'react-diff-view/style/index.css';
 import './styles.css';
@@ -61,7 +61,7 @@ const CodeDiff = () => {
       const codeRes = await axios.get(
         'http://localhost:5678/projects/2/code_diff/8'
       );
-      console.log('data', codeRes.data.code_diff_list);
+      // console.log('data', codeRes.data.code_diff_list);
       await setCodeDiff(codeRes.data.code_diff_list);
     };
     getData();
@@ -114,8 +114,30 @@ const CodeDiff = () => {
   const header =
     'diff --git a/requirements.txt b/requirements.txt\nindex c3f75dc..2cda10e 100644\n--- a/requirements.txt\n+++ b/requirements.txt\n';
 
+  const headerGenerator = (code) => {
+    let header = 'diff --git';
+    header =
+      header +
+      ' a/' +
+      code.old_path +
+      ' b/' +
+      code.new_path +
+      '\n' +
+      'index c3f75dc..2cda10e 100644\n' +
+      '--- a/' +
+      code.old_path +
+      '\n+++ b/' +
+      code.new_path +
+      '\n';
+    return header + code.diff;
+  };
+
   const mapDiff = codeDiff.map((code) => (
-    <Appdiff diffText={header + code.diff} />
+    <>
+      {console.log(code)}
+      <Appdiff diffText={headerGenerator(code)} />
+      {/* <Appdiff diffText={header + code.diff} /> */}
+    </>
   ));
 
   // const wow = hey + codeDiff[0].diff;
