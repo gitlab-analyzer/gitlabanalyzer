@@ -211,7 +211,7 @@ class GitLabProject:
 
     def __analyze_master_commits_code_diff(self) -> None:
         self.__syncing_state = "Analyzing commits"
-        for commit in self.commits_manager.get_commit_list():
+        for commit in self.__commitsManager.get_commit_list():
             commit.line_counts = self.get_commit_score_data(commit)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -228,7 +228,7 @@ class GitLabProject:
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
-        for member in self.member_manager.get_member_list():
+        for member in self.__membersManager.get_member_list():
             member_and_user_list.add(member.username)
         for user in self.__user_list:
             member_and_user_list.add(user)
@@ -335,17 +335,6 @@ class GitLabProject:
     def user_list(self) -> list:
         return self.__user_list
 
-    # TODO: Need to be removed in the future
     @property
-    def merge_request_manager(self) -> MergeRequestManager:
-        return self.__mergeRequestManager
-
-    # TODO: Need to be removed in the future
-    @property
-    def commits_manager(self) -> CommitManager:
-        return self.__commitsManager
-
-    # TODO: Need to be removed in the future
-    @property
-    def member_manager(self) -> MemberManager:
-        return self.__membersManager
+    def is_syncing(self):
+        return self.__is_syncing
