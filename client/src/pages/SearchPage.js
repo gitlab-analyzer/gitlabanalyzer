@@ -20,11 +20,22 @@ function SearchPage() {
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/projects');
+      const repoList = await axios.get('http://localhost:5678/projects', {
+        withCredentials: true,
+      });
       console.log(repoList);
       setRepo(repoList.data.projects);
-      setReList([...repoList.data.projects]);
-      setFilteredList([...repoList.data.projects]);
+
+      const projectsData = repoList.data.projects;
+
+      const projectsList = projectsData.map((project) => {
+        return {
+          id: project.id,
+          name: project.name,
+        };
+      });
+      setReList([...projectsList]);
+      setFilteredList([...projectsList]);
       setLoading(false);
     };
     getRepos();

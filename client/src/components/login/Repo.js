@@ -74,19 +74,35 @@ const Repo = ({
     }
   };
 
+  // // Set project ID to the users chosen ID
+  // // Currently it is hard coded to 2 since no other projects exist
+  // const syncProjectId = async () => {
+  //   const projectRes = await axios.post('http://localhost:5678/projects/sync', {
+  //     withCredentials: true,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Access-Control-Allow-Origin': '*',
+  //     },
+  //     params: {
+  //       projectID: 2,
+  //     },
+  //   });
+  //   if (!projectRes.data['response']) {
+  //     console.log('Failed to set project ID!');
+  //     throw new Error('Fetch request failed.');
+  //   }
+  // };
+
   // Set project ID to the users chosen ID
   // Currently it is hard coded to 2 since no other projects exist
   const syncProjectId = async () => {
-    const projectRes = await axios.post(
-      'http://localhost:5678/projects/sync',
-      {},
+    const projectRes = await axios.get(
+      'http://localhost:5678/projects/2/sync',
       {
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
-        },
-        params: {
-          projectID: 2,
         },
       }
     );
@@ -102,7 +118,10 @@ const Repo = ({
    */
   const syncProject = async () => {
     const syncStatus = await axios.get(
-      'http://localhost:5678/projects/2/sync/state'
+      'http://localhost:5678/projects/2/sync/state',
+      {
+        withCredentials: true,
+      }
     );
     fetchErrorChecker(syncStatus.data['response'], 'sync');
     console.log(syncStatus.data['status'].is_syncing);
@@ -125,7 +144,10 @@ const Repo = ({
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
-      'http://localhost:5678/projects/2/members'
+      'http://localhost:5678/projects/2/members',
+      {
+        withCredentials: true,
+      }
     );
 
     fetchErrorChecker(membersRes.data['response'], 'members');
@@ -142,7 +164,9 @@ const Repo = ({
 
   // Function for fetching users list data
   const fetchUsers = async () => {
-    const usersRes = await axios.get('http://localhost:5678/projects/2/users');
+    const usersRes = await axios.get('http://localhost:5678/projects/2/users', {
+      withCredentials: true,
+    });
 
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
@@ -151,7 +175,10 @@ const Repo = ({
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
-      'http://localhost:5678/projects/2/commit/user/all'
+      'http://localhost:5678/projects/2/commit/user/all',
+      {
+        withCredentials: true,
+      }
     );
     fetchErrorChecker(commitsRes.data['response'], 'commits');
 
@@ -179,7 +206,10 @@ const Repo = ({
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
-      'http://localhost:5678/projects/2/merge_request/user/all'
+      'http://localhost:5678/projects/2/merge_request/user/all',
+      {
+        withCredentials: true,
+      }
     );
     // console.log(mergeRequestRes.data['merge_request_users_list']);
 
@@ -196,6 +226,7 @@ const Repo = ({
           weightedScore: 0,
         };
         // Loop through object item
+        console.log(mrList[user]);
         for (let author of mrList[user]) {
           let tempCommits = {};
           for (let commit of author.commit_list) {
@@ -256,7 +287,10 @@ const Repo = ({
   // Function for fetching, parsing, and storing notes list data
   const fetchNotes = async () => {
     const notesRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/all'
+      'http://localhost:5678/projects/2/comments/all',
+      {
+        withCredentials: true,
+      }
     );
 
     fetchErrorChecker(notesRes.data['response'], 'notes');
@@ -283,7 +317,10 @@ const Repo = ({
   // Function for fetching, parsing, and storing comments list data
   const fetchComments = async () => {
     const commentsRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/user/all'
+      'http://localhost:5678/projects/2/comments/user/all',
+      {
+        withCredentials: true,
+      }
     );
     fetchErrorChecker(commentsRes.data['response'], 'comments');
     const generateTempComments = () => {
@@ -452,8 +489,7 @@ const Repo = ({
                     src="https://cdn4.iconfinder.com/data/icons/logos-and-brands-1/512/144_Gitlab_logo_logos-512.png"
                   />
                 }
-                title={item}
-                description="Web app for GitLab Analyzer"
+                title={item.name}
               />
             </List.Item>
           )}
