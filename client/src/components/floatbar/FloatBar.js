@@ -90,14 +90,12 @@ function FloatBar() {
               </div>
             </Grid>
             <Grid item xs={12}>
-              {console.log(barData)}
               <CopyToClipboard
                 format={'text/plain'}
                 text={
                   '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
                   renderToStaticMarkup(
                     <div>
-                      {console.log(barData)}
                       {barData.map((Detail) => {
                         return (
                           <div>

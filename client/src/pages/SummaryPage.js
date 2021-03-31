@@ -50,12 +50,7 @@ const Summary = () => {
 
   console.log(notesList)
   console.log(commitsList)
-
-  // Parameters for calculating graph data
-  const COMMITS = 1;
-  const MERGE_REQUESTS = 2;
-  const CODE_REVIEWS = 3;
-  const ISSUES = 4;
+  
 
   const countDates = (commitsList) => {
     var result = {},
@@ -142,7 +137,7 @@ const Summary = () => {
 
   // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
-
+  const [crDateArray, setCrDateArray] = useState(issueDatesArray);
   useEffect(() => {
     setCombinedSeries([
       {
@@ -154,8 +149,15 @@ const Summary = () => {
         data: commitCountsArray,
       },
     ])
+    setCrSeries([
+      {
+        name: 'CR Words',
+        data: issueCountsArray,
+      }
+    ])
     setDateArray(commitDatesArray)
-    console.log(dateArray)
+    setCrDateArray(issueDatesArray)
+    console.log(issueCountsArray)
   }, [selectUser])
 
   const [combinedSeries, setCombinedSeries] = useState([
@@ -271,7 +273,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={issueDatesArray}/>
+          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={crDateArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
