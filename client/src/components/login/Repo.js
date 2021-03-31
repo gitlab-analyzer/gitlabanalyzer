@@ -96,7 +96,7 @@ const Repo = ({
   // Set project ID to the users chosen ID
   // Currently it is hard coded to 2 since no other projects exist
   const syncProjectId = async () => {
-    const projectRes = await axios.get(
+    const projectRes = await axios.post(
       'http://localhost:5678/projects/2/sync',
       {
         withCredentials: true,
@@ -104,6 +104,7 @@ const Repo = ({
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
         },
+        crossorigin: true,
       }
     );
     if (!projectRes.data['response']) {

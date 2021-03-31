@@ -46,27 +46,13 @@ def get_project_list():
     return jsonify({'projects': value, "response": isSuccess, 'cause': errorCode})
 
 
-# @app.route('/projects/<int:projectID>/sync', methods=['post'])
-# @cross_origin()
-# def sync_project(projectID: int):
-#     isSuccess, errorCode = gitlab_manager.sync_project(
-#         request.cookies.get("id", ""), projectID
-#     )
-
-#     return jsonify({"response": isSuccess, 'cause': errorCode})
-
-@app.route('/projects/<int:projectID>/sync', methods=['get'])
-@cross_origin(supports_credentials=True)
+@app.route('/projects/<int:projectID>/sync', methods=['post'])
 def sync_project(projectID: int):
-    isSuccess, errorCode = \
-        gitlab_manager.sync_project(request.cookies.get("id", ""), projectID)
-
-    response = make_response(
-        jsonify({"response": isSuccess, 'Cause': errorCode})
+    isSuccess, errorCode = gitlab_manager.sync_project(
+        request.cookies.get("id", ""), projectID
     )
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
 
-    return jsonify({"response": isSuccess, 'Cause': errorCode})
+    return jsonify({"response": isSuccess, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
