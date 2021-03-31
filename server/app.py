@@ -55,6 +55,15 @@ def sync_project(projectID: int):
     return jsonify({"response": isSuccess, 'cause': errorCode})
 
 
+@app.route('/projects/sync/batch', methods=['post'])
+def sync_a_list_of_products():
+    isSuccess, response = gitlab_manager.sync_list_of_projects(
+        request.cookies.get("id", ""), request.form['project_list']
+    )
+
+    return jsonify({"response": isSuccess, "status": response, 'cause': ""})
+
+
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
 def get_state(projectID: int):
     isSuccess, errorCode, value = gitlab_manager.check_sync_state(
@@ -62,6 +71,11 @@ def get_state(projectID: int):
     )
 
     return jsonify({'status': value, "response": isSuccess, 'cause': errorCode})
+
+
+@app.route('/projects/sync/batch/state', methods=['get'])
+def get_state():
+    pass
 
 
 @app.route('/projects/<int:projectID>/members', methods=['get'])
