@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SplitPane, { Pane } from 'react-split-pane';
 import CommitBar from '../components/commits/CommitBar';
 import './CommitsPage.css';
 import Header from '../components/Header';
