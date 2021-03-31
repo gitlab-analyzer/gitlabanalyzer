@@ -58,7 +58,7 @@ def sync_project(projectID: int):
 @app.route('/projects/sync/batch', methods=['post'])
 def sync_a_list_of_products():
     isSuccess, errorCode, response = gitlab_manager.sync_list_of_projects(
-        request.cookies.get("id", ""), request.form['project_list']
+        request.cookies.get("id", ""), request.form.getlist('project_list', type=int)
     )
 
     return jsonify({"response": isSuccess, "status": response, 'cause': errorCode})
@@ -74,8 +74,12 @@ def get_state(projectID: int):
 
 
 @app.route('/projects/sync/batch/state', methods=['get'])
-def get_state():
-    pass
+def get_state_for_multiple_project():
+    isSuccess, errorCode, value = gitlab_manager.check_project_list_sync_state(
+        request.cookies.get("id", ""), request.form.getlist('project_list', type=int)
+    )
+
+    return jsonify({"response": isSuccess, "status": value, 'cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/members', methods=['get'])
@@ -105,7 +109,7 @@ def get_commits(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/commit/user/all')
+@app.route('/projects/<int:projectID>/commit/user/all', methods=['get'])
 def get_commits_for_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_all_commits_by_user(
         request.cookies.get("id", ""), projectID
@@ -114,7 +118,7 @@ def get_commits_for_users(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/merge_request/user/all')
+@app.route('/projects/<int:projectID>/merge_request/user/all', methods=['get'])
 def get_merge_requests_for_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_merge_request_by_user(
         request.cookies.get("id", ""), projectID
@@ -125,7 +129,7 @@ def get_merge_requests_for_users(projectID):
     )
 
 
-@app.route('/projects/<int:projectID>/merge_request/all')
+@app.route('/projects/<int:projectID>/merge_request/all', methods=['get'])
 def get_all_merge_requests(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_all_merge_request(
         request.cookies.get("id", ""), projectID
@@ -136,7 +140,7 @@ def get_all_merge_requests(projectID):
     )
 
 
-@app.route('/projects/<int:projectID>/code_diff/<int:codeDiffID>')
+@app.route('/projects/<int:projectID>/code_diff/<int:codeDiffID>', methods=['get'])
 def get_code_diff(projectID, codeDiffID):
     isSuccess, errorCode, value = gitlab_manager.get_code_diff(
         request.cookies.get("id", ""), projectID, codeDiffID
@@ -145,7 +149,7 @@ def get_code_diff(projectID, codeDiffID):
     return jsonify({'code_diff_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/comments/all')
+@app.route('/projects/<int:projectID>/comments/all', methods=['get'])
 def get_all_notes(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_all_project_notes(
         request.cookies.get("id", ""), projectID
@@ -154,7 +158,7 @@ def get_all_notes(projectID):
     return jsonify({'notes': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/comments/user/all')
+@app.route('/projects/<int:projectID>/comments/user/all', methods=['get'])
 def get_notes_for_all_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_notes_by_user(
         request.cookies.get("id", ""), projectID
