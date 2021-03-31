@@ -162,7 +162,7 @@ class GitLabAnalyzerManager:
             commitList = myProject.get_commits_for_all_users()
         return isValid, errorCode, commitList
 
-    def get_project_all_merge_request(
+    def get_project_merge_request_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
@@ -173,7 +173,7 @@ class GitLabAnalyzerManager:
             mergeRequestList = myProject.get_merge_request_and_commit_list_for_users()
         return isValid, errorCode, mergeRequestList
 
-    def get_project_merge_request_by_user(
+    def get_project_all_merge_request(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
