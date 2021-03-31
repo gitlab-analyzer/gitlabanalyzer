@@ -192,7 +192,16 @@ class GitLabProject:
                 "spacing_changes": 0,
                 "syntax_changes": 0,
             },
-            "relatedCommitsScoreData": {},
+            "relatedCommitsScoreData": {
+                "lines_added": 0,
+                "lines_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "blanks_added": 0,
+                "blanks_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0,
+            },
         }
 
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(
@@ -254,7 +263,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commits: List[str]) -> Tuple[list]:
+    def __get_commit_list_and_authors(self, commits: List[str]) -> Tuple[list, list]:
         commitList = []
         authors = set()
         for commit in commits:
