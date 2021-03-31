@@ -76,7 +76,9 @@ class GitLabAnalyzerManager:
             ).start()
         return isValid, errorCode
 
-    def sync_list_of_projects(self, hashedToken: str, projectList: list) -> Tuple[bool, str, dict]:
+    def sync_list_of_projects(
+        self, hashedToken: str, projectList: list
+    ) -> Tuple[bool, str, dict]:
         isAllSuccess = True
         response = {}
 
@@ -84,7 +86,7 @@ class GitLabAnalyzerManager:
             return False, ERROR_CODES["invalidToken"], response
         else:
             for projectID in projectList:
-                isValid, errorCode, myGitLab, _ = self.__validate_token_and_project_state(
+                isValid, _, myGitLab, _ = self.__validate_token_and_project_state(
                     hashedToken, projectID
                 )
                 if isValid:
@@ -114,7 +116,7 @@ class GitLabAnalyzerManager:
         return True, "", myProject.get_project_sync_state()
 
     def check_project_list_sync_state(
-            self, hashedToken: str, projectList: list
+        self, hashedToken: str, projectList: list
     ) -> Tuple[bool, str, dict]:
         response = {}
         isAllSuccess = True
