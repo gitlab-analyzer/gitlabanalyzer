@@ -51,6 +51,12 @@ const Summary = () => {
   console.log(notesList)
   console.log(commitsList)
 
+  // Parameters for calculating graph data
+  const COMMITS = 1;
+  const MERGE_REQUESTS = 2;
+  const CODE_REVIEWS = 3;
+  const ISSUES = 4;
+
   const countDates = (commitsList) => {
     var result = {},
       i,
@@ -265,7 +271,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} />
+          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={issueDatesArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

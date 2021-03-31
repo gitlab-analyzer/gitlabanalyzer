@@ -47,10 +47,9 @@ class BarGraph extends React.Component {
               endingShape: 'flat'
             }
           },
-          // xaxis: {
-          //   type: 'datetime',
-          //   categories: this.props.xlabel
-          // },
+          xaxis: {
+            categories: this.props.xlabel
+          },
           fill: {
             type: 'solid',
             opacity: 1

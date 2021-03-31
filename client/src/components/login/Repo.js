@@ -306,7 +306,7 @@ const Repo = ({
 
       await fetchMembers();
 
-      await setProjectId();
+      // await setProjectId();
 
       await fetchUsers();
       await fetchCommits();
