@@ -46,13 +46,27 @@ def get_project_list():
     return jsonify({'projects': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/sync', methods=['post'])
-def sync_project(projectID: int):
-    isSuccess, errorCode = gitlab_manager.sync_project(
-        request.cookies.get("id", ""), projectID
-    )
+# @app.route('/projects/<int:projectID>/sync', methods=['post'])
+# @cross_origin()
+# def sync_project(projectID: int):
+#     isSuccess, errorCode = gitlab_manager.sync_project(
+#         request.cookies.get("id", ""), projectID
+#     )
 
-    return jsonify({"response": isSuccess, 'cause': errorCode})
+#     return jsonify({"response": isSuccess, 'cause': errorCode})
+
+@app.route('/projects/<int:projectID>/sync', methods=['get'])
+@cross_origin(supports_credentials=True)
+def sync_project(projectID: int):
+    isSuccess, errorCode = \
+        gitlab_manager.sync_project(request.cookies.get("id", ""), projectID)
+
+    response = make_response(
+        jsonify({"response": isSuccess, 'Cause': errorCode})
+    )
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+
+    return jsonify({"response": isSuccess, 'Cause': errorCode})
 
 
 @app.route('/projects/<int:projectID>/sync/state', methods=['get'])
@@ -107,7 +121,8 @@ def get_merge_requests_for_users(projectID):
     )
 
     return jsonify(
-        {'merge_request_users_list': value, "response": isSuccess, 'cause': errorCode}
+        {'merge_request_users_list': value,
+            "response": isSuccess, 'cause': errorCode}
     )
 
 
