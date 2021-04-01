@@ -17,6 +17,7 @@ import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
+let selectRepo = null;
 const Repo = ({
   analyzing,
   setAnalyzing,
@@ -33,8 +34,6 @@ const Repo = ({
     setCommentsList,
     setSelectMembersList,
     setSelectUser,
-    selectRepo,
-    setSelectRepo,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -45,12 +44,11 @@ const Repo = ({
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
-
   const history = useHistory();
 
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
-  useEffect(() => {}, [filteredList]);
+  useEffect(() => {}, [filteredList, selectRepo]);
 
   const handleRoute = () => {
     if (
@@ -349,7 +347,7 @@ const Repo = ({
     try {
       setAnalyzing(true);
       // Set project ID in context api
-      await setSelectRepo(2);
+      selectRepo = 2;
       // Fetches Member list
       await fetchMembers();
       // This sets the project ID to be analyzed and initiates syncing process
