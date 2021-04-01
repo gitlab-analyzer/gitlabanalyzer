@@ -33,6 +33,8 @@ const Repo = ({
     setCommentsList,
     setSelectMembersList,
     setSelectUser,
+    selectRepo,
+    setSelectRepo,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -74,30 +76,10 @@ const Repo = ({
     }
   };
 
-  // // Set project ID to the users chosen ID
-  // // Currently it is hard coded to 2 since no other projects exist
-  // const syncProjectId = async () => {
-  //   const projectRes = await axios.post('http://localhost:5678/projects/sync', {
-  //     withCredentials: true,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Access-Control-Allow-Origin': '*',
-  //     },
-  //     params: {
-  //       projectID: 2,
-  //     },
-  //   });
-  //   if (!projectRes.data['response']) {
-  //     console.log('Failed to set project ID!');
-  //     throw new Error('Fetch request failed.');
-  //   }
-  // };
-
   // Set project ID to the users chosen ID
-  // Currently it is hard coded to 2 since no other projects exist
   const syncProjectId = async () => {
     const projectRes = await axios.post(
-      'http://localhost:5678/projects/2/sync',
+      `http://localhost:5678/projects/${selectRepo}/sync`,
       {
         withCredentials: true,
         headers: {
@@ -119,7 +101,7 @@ const Repo = ({
    */
   const syncProject = async () => {
     const syncStatus = await axios.get(
-      'http://localhost:5678/projects/2/sync/state',
+      `http://localhost:5678/projects/${selectRepo}/sync/state`,
       {
         withCredentials: true,
       }
@@ -145,7 +127,7 @@ const Repo = ({
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
-      'http://localhost:5678/projects/2/members',
+      `http://localhost:5678/projects/${selectRepo}/members`,
       {
         withCredentials: true,
       }
@@ -165,9 +147,12 @@ const Repo = ({
 
   // Function for fetching users list data
   const fetchUsers = async () => {
-    const usersRes = await axios.get('http://localhost:5678/projects/2/users', {
-      withCredentials: true,
-    });
+    const usersRes = await axios.get(
+      `http://localhost:5678/projects/${selectRepo}/users`,
+      {
+        withCredentials: true,
+      }
+    );
 
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
@@ -176,7 +161,7 @@ const Repo = ({
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
-      'http://localhost:5678/projects/2/commit/user/all',
+      `http://localhost:5678/projects/${selectRepo}/commit/user/all`,
       {
         withCredentials: true,
       }
@@ -207,7 +192,7 @@ const Repo = ({
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
-      'http://localhost:5678/projects/2/merge_request/user/all',
+      `http://localhost:5678/projects/${selectRepo}/merge_request/user/all`,
       {
         withCredentials: true,
       }
@@ -288,7 +273,7 @@ const Repo = ({
   // Function for fetching, parsing, and storing notes list data
   const fetchNotes = async () => {
     const notesRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/all',
+      `http://localhost:5678/projects/${selectRepo}/comments/all`,
       {
         withCredentials: true,
       }
@@ -318,7 +303,7 @@ const Repo = ({
   // Function for fetching, parsing, and storing comments list data
   const fetchComments = async () => {
     const commentsRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/user/all',
+      `http://localhost:5678/projects/${selectRepo}/comments/user/all`,
       {
         withCredentials: true,
       }
@@ -363,15 +348,13 @@ const Repo = ({
   const handleAnalyze = async () => {
     try {
       setAnalyzing(true);
-
-      /**
-       * This syncProjectId() is important, it is needed for iteration 3, but this process calls
-       * an API in the backend that currently takes a long time (2+ minutes).
-       * This call is disabled for the demo on Monday.
-       */
-
+      // Set project ID in context api
+      await setSelectRepo(2);
+      // Fetches Member list
       await fetchMembers();
+      // This sets the project ID to be analyzed and initiates syncing process
       await syncProjectId();
+      // This is a recursive call that checks the status of syncing process every 5000 milliseconds
       await syncProject();
     } catch (error) {
       setAnalyzing(false);
@@ -436,6 +419,12 @@ const Repo = ({
     // }
   };
 
+  /**
+   * Function that is responsible to fetching all data from backend,
+   * Parsing and storing in global context for frontend services to use
+   * This function is lightweight, as most of the time consuming work has been done
+   * in the backend during handelAnazlye() call.
+   */
   const fetchAndRedirect = async () => {
     try {
       await fetchUsers();
