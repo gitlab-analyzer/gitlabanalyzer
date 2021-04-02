@@ -102,12 +102,15 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_for_code_type(self,fileName) -> bool:
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> bool:
+        diffCode = codeDiffObject
+        fileName = diffCode.new_path
         found = re.search('\.(.+?)$', fileName)
         if found is not None:
             if found.group(1) == 'py':
                 return True
         return False
+
 
     def add_normal_line_of_code(self, info, line, python) -> dict:
 
