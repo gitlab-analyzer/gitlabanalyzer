@@ -1,4 +1,7 @@
 import hashlib
+from typing import Any
+
+import flask
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
@@ -55,10 +58,17 @@ def sync_project(projectID: int):
     return jsonify({"response": isSuccess, 'cause': errorCode})
 
 
+def get_request(myRequest: flask.Request, key: str) -> Any:
+    requestBody = myRequest.get_json()
+    if requestBody is None:
+        requestBody = {}
+    return requestBody.get(key)
+
+
 @app.route('/projects/sync/batch', methods=['post'])
 def sync_a_list_of_products():
     isSuccess, errorCode, response = gitlab_manager.sync_list_of_projects(
-        request.cookies.get("id", ""), request.form.getlist('project_list', type=int)
+        request.cookies.get("id", ""), get_request(request, "project_list")
     )
 
     return jsonify({"response": isSuccess, "status": response, 'cause': errorCode})
@@ -75,11 +85,11 @@ def get_state(projectID: int):
 
 @app.route('/projects/sync/batch/state', methods=['get'])
 def get_state_for_multiple_project():
-    isSuccess, errorCode, value = gitlab_manager.check_project_list_sync_state(
-        request.cookies.get("id", ""), request.form.getlist('project_list', type=int)
+    isSuccess, errorCode, value, totalProgress = gitlab_manager.check_project_list_sync_state(
+        request.cookies.get("id", ""), get_request(request, "project_list")
     )
 
-    return jsonify({"response": isSuccess, "status": value, 'cause': errorCode})
+    return jsonify({"response": isSuccess, "status": value, 'cause': errorCode, "totalProgress": totalProgress})
 
 
 @app.route('/projects/<int:projectID>/members', methods=['get'])
