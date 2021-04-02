@@ -17,13 +17,6 @@ class CodeDiffAnalyzer:
 
     def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> None:
 
-        # TODO:
-        # Case where the commit diff is a block of comment
-        # Case where there is some insertion into the middle of a line of code
-        # without any deletion (current code will mark it as one addition and one deletion)
-        # This need to be just one addition
-        # Assert no new line thing that gitlab have
-
         info = {
             "lines_added": 0,
             "lines_deleted": 0,
@@ -217,44 +210,22 @@ class CodeDiffAnalyzer:
         
         for i in range(0, len(line)):
             if python is False:
-                if line[i:i+2] == "/*":
+                if line[i:i+2] == "/*" or line[i:i+2] == "*/":
                     temp = i
-                if line[i:i+2] == "*/":
-                    temp = i+2
             else:
                 if line[i:i+3] == "'''":
                     temp = i
         
         if python is False:
             if line[temp:temp+2] == "/*":
-                if (line[1:temp].isspace() or line[1:temp] == "") and line[temp+2:] != "" and line[temp+2:].isspace() is False:
-                    info = self.modify_info_value("comments", info, line[0])
-                elif line[1:temp].isspace() or line[1:temp] == "" and line[temp+2:].isspace() or line[temp+2:] == "":
-                    info["syntax_changes"] = info["syntax_changes"] + 1
-                else:
-                    info = self.modify_to_a_new_line (info, line[0:temp],python) 
+                info = self.check_block_code_cases(line[1:temp],line[temp+2:],info,line,python)
             if line[temp-2:temp] == "*/":
-                if (line[temp:].isspace() or line[temp:] == "") and line[1:temp-2] != "" and line[1:temp-2].isspace() is False:
-                    info = self.modify_info_value("comments", info, line[0])
-                elif line[1:temp-2].isspace() or line[1:temp-2] == "" and line[temp:].isspace() or line[temp:] == "":
-                    info["syntax_changes"] = info["syntax_changes"] + 1
-                else:
-                    info = self.modify_to_a_new_line (info, line[0]+line[temp:],python) 
+                info = self.check_block_code_cases(line[temp+2:],line[1:temp],info,line,python)
         else:
             if block_code:
-                if (line[temp+3:].isspace() or line[temp+3:] == "") and line[1:temp] != "" and line[1:temp].isspace() is False:
-                    info = self.modify_info_value("comments", info, line[0])
-                elif line[1:temp].isspace() or line[1:temp] == "" and line[temp+3:].isspace() or line[temp+3:] == "":
-                    info["syntax_changes"] = info["syntax_changes"] + 1
-                else:
-                    info = self.modify_to_a_new_line (info, line[0]+line[temp+3:],python) 
+                info = self.check_block_code_cases(line[temp+3:],line[1:temp],info,line,python)
             else:
-                if (line[1:temp].isspace() or line[1:temp] == "") and line[temp+3:] != "" and line[temp+3:].isspace() is False:
-                    info = self.modify_info_value("comments", info, line[0])
-                elif line[1:temp].isspace() or line[1:temp] == "" and line[temp+3:].isspace() or line[temp+3:] == "":
-                    info["syntax_changes"] = info["syntax_changes"] + 1
-                else:
-                    info = self.modify_to_a_new_line (info, line[0:temp],python) 
+                info = self.check_block_code_cases(line[1:temp],line[temp+3:],info,line,python)
         return info
 
     def modify_info_value(self, info_name, info, signal) -> dict: #done
@@ -264,3 +235,11 @@ class CodeDiffAnalyzer:
             info[info_name + "_deleted"] = info[info_name + "_deleted"] + 1
         return info
 
+    def check_block_code_cases(self, str1, str2, info, line, python) -> dict: 
+        if (str1.isspace() or str1 == "") and str2 != "" and str2.isspace() is False:
+            info = self.modify_info_value("comments", info, line[0])
+        elif str1.isspace() or str1 == "" and str2.isspace() or str2 == "":
+            info["syntax_changes"] = info["syntax_changes"] + 1
+        else:
+            info = self.modify_to_a_new_line (info, line[0]+str1,python) 
+        return info
