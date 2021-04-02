@@ -343,11 +343,11 @@ const Repo = ({
    * for analysis
    * Parses all fetched data and store them in global context state
    */
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (e, id) => {
     try {
       setAnalyzing(true);
       // Set project ID in context api
-      selectRepo = 2;
+      selectRepo = id;
       // This sets the project ID to be analyzed and initiates syncing process
       await syncProjectId();
       // This is a recursive call that checks the status of syncing process every 5000 milliseconds
@@ -463,7 +463,12 @@ const Repo = ({
                 <Tag color={'green'} key={'cached'}>
                   Cached
                 </Tag>,
-                <Button onClick={handleAnalyze} key="analyze">
+                <Button
+                  onClick={(e) => {
+                    handleAnalyze(e, item.id);
+                  }}
+                  key="analyze"
+                >
                   Analyze
                 </Button>,
                 <Checkbox>Batch</Checkbox>,

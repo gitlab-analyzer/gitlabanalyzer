@@ -37,6 +37,7 @@ function SearchPage() {
       setReList([...projectsList]);
       setFilteredList([...projectsList]);
       setLoading(false);
+      console.log('filtered list: ', filteredList);
     };
     getRepos();
   }, []);
