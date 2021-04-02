@@ -10,6 +10,7 @@ ERROR_CODES = {
     "invalidToken": "Invalid token",
     "invalidProjectID": "Invalid project ID",
     "projectIsSyncing": "Project is syncing",
+    "partialInvalidProjectID": "Some project IDs are invalid or they are already syncing",
 }
 
 
@@ -75,6 +76,31 @@ class GitLabAnalyzerManager:
             ).start()
         return isValid, errorCode
 
+    def sync_list_of_projects(
+        self, hashedToken: str, projectList: list
+    ) -> Tuple[bool, str, dict]:
+        isAllSuccess = True
+        response = {}
+
+        if self.__find_gitlab(hashedToken) is None:
+            return False, ERROR_CODES["invalidToken"], response
+        else:
+            for projectID in projectList:
+                isValid, _, myGitLab, _ = self.__validate_token_and_project_state(
+                    hashedToken, projectID
+                )
+                if isValid:
+                    threading.Thread(
+                        target=self.__sync_project_helper, args=(projectID, myGitLab)
+                    ).start()
+                    response[projectID] = True
+                else:
+                    isAllSuccess = False
+                    response[projectID] = False
+        if isAllSuccess:
+            return True, "", response
+        return False, ERROR_CODES["partialInvalidProjectID"], response
+
     def check_sync_state(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
@@ -88,6 +114,29 @@ class GitLabAnalyzerManager:
             return False, ERROR_CODES["invalidProjectID"], {}
 
         return True, "", myProject.get_project_sync_state()
+
+    def check_project_list_sync_state(
+        self, hashedToken: str, projectList: list
+    ) -> Tuple[bool, str, dict]:
+        response = {}
+        isAllSuccess = True
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is None:
+            return False, ERROR_CODES["invalidToken"], {}
+
+        for projectID in projectList:
+            myGitLab, myProject = self.__get_project_analyzer_and_project(
+                hashedToken, projectID
+            )
+
+            if myProject is None:
+                isAllSuccess = False
+                continue
+            response[projectID] = myProject.get_project_sync_state()
+
+        if isAllSuccess:
+            return True, "", response
+        return False, ERROR_CODES["partialInvalidProjectID"], response
 
     def get_project_members(
         self, hashedToken: str, projectID: int
@@ -133,7 +182,7 @@ class GitLabAnalyzerManager:
             commitList = myProject.get_commits_for_all_users()
         return isValid, errorCode, commitList
 
-    def get_project_all_merge_request(
+    def get_project_merge_request_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
@@ -144,7 +193,7 @@ class GitLabAnalyzerManager:
             mergeRequestList = myProject.get_merge_request_and_commit_list_for_users()
         return isValid, errorCode, mergeRequestList
 
-    def get_project_merge_request_by_user(
+    def get_project_all_merge_request(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
@@ -157,11 +206,11 @@ class GitLabAnalyzerManager:
 
     def get_code_diff(
         self, hashedToken: str, projectID: int, codeDiffID
-    ) -> Tuple[bool, str, dict]:
+    ) -> Tuple[bool, str, list]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
-        codeDiff: dict = {}
+        codeDiff: list = []
         if isValid:
             codeDiff = myProject.get_code_diff(codeDiffID)
         return isValid, errorCode, codeDiff

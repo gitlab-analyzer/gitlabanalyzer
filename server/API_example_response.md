@@ -5,8 +5,12 @@
     - `GET /projects`
 - [Start syncing the project](#set-the-current-project-to-projectid)
     - `POST /projects/<int:projectID>/sync`
+- [Sync a list of projects(batch processing)](#sync-a-list-of-projectsbatch-processing)
+    - `POST /projects/sync/batch`
 - [Get project syncing state](#get-project-syncing-state)
     - `GET /projects/<int:projectID>/sync/state`
+- [Get a list of projects' syncing state](#get-a-list-of-projects-syncing-statebatch-processing)
+    - `GET /projects/sync/batch/state`
 - [Get all the members in the repo](#get-all-the-members-in-the-project)
     - `GET /projects/<int:projectID>/members`
 - [Get all the committers' name](#get-all-the-users-in-the-project)
@@ -74,6 +78,26 @@ Required body:
 ```
 [Go back to API list](#api-example-response)
 
+### Sync a list of projects(batch processing)
+#### `POST /projects/sync/batch`
+```json
+{
+    "cause": "Some project IDs are invalid or they are already syncing",
+    "response": false,
+    "status": {
+        "2": true,
+        "5": false
+    }
+}
+```
+Value need to pass in the form-data:
+- a list of projectIDs
+
+Note: It is possible that some projectIDs are invalid, or they are already syncing.
+`true` in status means the project started syncing successfully.
+
+[Go back to API list](#api-example-response)
+
 ### Get project syncing state
 #### `GET /projects/<int:projectID>/sync/state`
 ```json
@@ -97,6 +121,31 @@ Required body:
 
 **last_synced** date format:
 - "Wed, 17 Mar 2021 22:38:05 GMT"
+
+[Go back to API list](#api-example-response)
+
+### Get a list of projects' syncing state(batch processing)
+#### `GET /projects/sync/batch/state`
+```json
+{
+    "cause": "Some project IDs are invalid",
+    "response": false,
+    "status": {
+        "2": {
+            "is_syncing": true,
+            "last_synced": null,
+            "projectID": 2,
+            "syncing_progress": 42,
+            "syncing_state": "Syncing data from remote..."
+        }
+    }
+}
+```
+Value need to pass in the form-data:
+- a list of projectIDs
+
+Note: Only valid projectIDs' status will be included in the response. 
+The example above shows a call to project `2` and `5` (Project `5` does not exist)
 
 [Go back to API list](#api-example-response)
 
