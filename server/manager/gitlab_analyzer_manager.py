@@ -33,7 +33,8 @@ class GitLabAnalyzerManager:
         return self.__gitlab_list.get(hashedToken, None)
 
     def __update_project_list_with_last_synced_time(
-            self, hashedToken: str, projectList: list) -> None:
+        self, hashedToken: str, projectList: list
+    ) -> None:
         for project in projectList:
             isValid, _, _, myProject = self.__validate_token_and_project_state(
                 hashedToken, project["id"]
