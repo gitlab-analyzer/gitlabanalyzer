@@ -355,7 +355,7 @@ class GitLabProject:
     def __update_merge_request_manager_after_mapping(
         self, memberList, userList
     ) -> None:
-        all_mrs_list = self.merge_request_manager.merge_request_list
+        all_mrs_list = self.__mergeRequestManager.merge_request_list
         for mr in all_mrs_list:
             commits_list = mr.related_commits_list
             for i in range(0, len(commits_list)):
@@ -367,7 +367,7 @@ class GitLabProject:
                         ]
 
     def __update_commits_manager_after_mapping(self, memberList, userList) -> None:
-        all_commits_list = self.commits_manager.get_commit_list()
+        all_commits_list = self.__commitsManager.get_commit_list()
         for i in range(0, len(all_commits_list)):
             commit_authorName = all_commits_list[i].author_name
             for user_sublist in range(0, len(userList)):
