@@ -347,3 +347,7 @@ class GitLabProject:
     @property
     def is_syncing(self):
         return self.__is_syncing
+
+    @property
+    def last_synced(self):
+        return self.__last_synced
