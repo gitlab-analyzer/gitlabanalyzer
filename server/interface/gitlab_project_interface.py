@@ -90,7 +90,9 @@ class GitLabProject:
             mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(item)
+                    self.__commentsManager.add_comment(
+                        item, mergeRequests[i].author["name"]
+                    )
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
@@ -109,7 +111,9 @@ class GitLabProject:
             # Get comments
             commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
             for item in commit_notes:
-                self.__commentsManager.add_comment(item, commit.short_id)
+                self.__commentsManager.add_comment(
+                    item, commit.author_name, commit.short_id
+                )
         self.__user_list = list(tempUserSet)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -121,7 +125,7 @@ class GitLabProject:
             issue_notes = myGitlab.get_comments_of_issue(issue.iid)
             for item in issue_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(item)
+                    self.__commentsManager.add_comment(item, issue.author["name"])
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
