@@ -78,12 +78,33 @@ const Summary = () => {
     }
     return rarr;
   };
+  console.log(notesList)
+  const countCodeReviews = (notesList) => {
+    var result = {}, i, j, rarr = [],date;
+
+    for(i = 0; i < notesList.length; i++) {
+      if (selectUser === notesList[i].author && (notesList[i].noteableType == "MergeRequest" || notesList[i].noteableType == "Commit")) {
+        date = [notesList[i].createdDate.getFullYear(),
+        notesList[i].createdDate.getMonth() + 1,
+        notesList[i].createdDate.getDate(),
+      ].join('-');
+      result[date] = result[date] || 0;
+      result[date] += notesList[i].wordCount;
+      }
+    }
+    for (i in result) {
+      if (result.hasOwnProperty(i)) {
+        rarr.push({ date: i, counts: result[i] });
+      }
+    }
+    return rarr;
+  }
 
   const countIssues = (notesList) => {
     var result = {}, i, j, rarr = [],date;
 
     for(i = 0; i < notesList.length; i++) {
-      if (selectUser === notesList[i].author) {
+      if (selectUser === notesList[i].author && notesList[i].noteableType == "Issue") {
         date = [notesList[i].createdDate.getFullYear(),
         notesList[i].createdDate.getMonth() + 1,
         notesList[i].createdDate.getDate(),
@@ -123,21 +144,23 @@ const Summary = () => {
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
-  var dailyIssuesArray = countIssues(notesList)
-  var issueDatesArray = populateDates(dailyIssuesArray)
-  var issueCountsArray = populateCounts(dailyIssuesArray)
-
-  console.log(issueDatesArray)
-  console.log(issueCountsArray)
-
-
   var dailyMRsArray = countDates(userCommitsList)
   var mrDatesArray = populateDates(dailyMRsArray)
   var mrCountsArray = populateCounts(dailyMRsArray)
 
+  var dailyCRArray = countCodeReviews(notesList)
+  var CRDatesArray = populateDates(dailyCRArray)
+  var CRCountsArray = populateCounts(dailyCRArray)
+
+  var dailyIssuesArray = countIssues(notesList)
+  var issueDatesArray = populateDates(dailyIssuesArray)
+  var issueCountsArray = populateCounts(dailyIssuesArray)
+
   // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
-  const [crDateArray, setCrDateArray] = useState(issueDatesArray);
+  const [crDateArray, setCrDateArray] = useState(CRDatesArray);
+  const [issueDateArray, setIssueDateArray] = useState(issueDatesArray);
+
   useEffect(() => {
     setCombinedSeries([
       {
@@ -152,12 +175,19 @@ const Summary = () => {
     setCrSeries([
       {
         name: 'CR Words',
-        data: issueCountsArray,
+        data: CRCountsArray,
+      }
+    ])
+    setIssueSeries([
+      {
+      name: 'Issue Words',
+      data: issueCountsArray,
       }
     ])
     setDateArray(commitDatesArray)
-    setCrDateArray(issueDatesArray)
-    console.log(issueCountsArray)
+    setCrDateArray(CRDatesArray)
+    setIssueDateArray(issueDatesArray)
+    console.log(CRCountsArray)
   }, [selectUser])
 
   const [combinedSeries, setCombinedSeries] = useState([
@@ -273,7 +303,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={issueDatesArray} id={2}/>
+          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={CRDatesArray} id={2}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
@@ -289,12 +319,13 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          {/* <BarGraph
+          <BarGraph
             series={issueSeries}
             colors={'#d4d8f8'}
             stroke={'#7F87CF'}
+            xlabel={issueDatesArray}
             id={3}
-          /> */}
+          />
         </Grid>
         <Grid item xs={2}></Grid>
       </Grid>
