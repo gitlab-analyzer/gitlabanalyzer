@@ -12,7 +12,7 @@ class CodeDiffAnalyzer:
     # TODO: a way to fill the code diff list
 
     # The ID's of the codeDiffs are their index in the list
-    def get_code_diff_by_id(self, codeDiffId: int) -> list: #done
+    def get_code_diff_by_id(self, codeDiffId: int) -> list: 
         return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
 
     def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> None:
@@ -49,12 +49,12 @@ class CodeDiffAnalyzer:
                         if "*/" in line:
                             info = self.modify_info_value("comments", info, line[0])
                         else:
-                            info = self.check_block_comments(line,python, info,block_code)
+                            info = self.add_block_of_comments(line,python, info,block_code)
                             block_code = True
                         continue
 
                     if "*/" in line:
-                        info = self.check_block_comments(line,python, info,block_code)
+                        info = self.add_block_of_comments(line,python, info,block_code)
                         block_code = False
                         continue
                 else:
@@ -66,7 +66,7 @@ class CodeDiffAnalyzer:
                         if line.count("'''") == 2:
                             info = self.modify_info_value("comments", info, line[0])
                         else:
-                            info = self.check_block_comments(line,python, info,block_code)
+                            info = self.add_block_of_comments(line,python, info,block_code)
                             block_code = not block_code
                         continue
                 #-------------------------------------------------
@@ -75,42 +75,25 @@ class CodeDiffAnalyzer:
                 #-------------------------------------------------
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                     temp = info.copy()
-                    info = self.check_middle_syntax_addition(
+                    info = self.add_one_char_middle(
                         line, oldLine, info, python
                     )
                     if temp != info:
-                        info = self.modify_info_value("lines", info, oldLine[0])
+                        info = self.modify_info_value("lines", info, oldLine[0],-1)
                         continue
                 #-------------------------------------------------
 
                 #Adding to an exisiting line
                 #-------------------------------------------------
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                    if oldLine != " " and line[1:] != oldLine[1:]:
-                        info = self.modify_info_value("lines", info, oldLine[0])
-                        tempLine = '+' + line[1:].replace(oldLine[1:], '')
-                        info = self.modify_to_a_new_line(
-                            info,
-                            tempLine,
-                            python,
-                        )
-                        continue
-
+                    info = self.add_to_existing_line("+",line,oldLine,info,python)
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                    if oldLine != " " and line[1:] != oldLine[1:]:
-                        info = self.modify_info_value("lines", info, oldLine[0])
-                        tempLine = '-' + oldLine[1:].replace(line[1:], '')
-                        info = self.modify_to_a_new_line(
-                            info,
-                            tempLine,
-                            python,
-                        )
-                        continue
+                    info = self.add_to_existing_line("-",line,oldLine,info,python)
                 #-------------------------------------------------
 
                 #Normal case
                 #-------------------------------------------------
-                info = self.modify_to_a_new_line(
+                info = self.add_normal_line_of_code(
                     info,
                     line,
                     python,
@@ -120,7 +103,14 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def modify_to_a_new_line(self, info, line, python) -> dict: #done
+    def check_for_code_type(fileName) -> bool:
+        found = re.search('\.(.+?)$', fileName)
+        if found is not None:
+            if found.group(1) == 'py':
+                return True
+        return False
+
+    def add_normal_line_of_code(self, info, line, python) -> dict:
 
         if len(line) == 1:
             info = self.modify_info_value("blanks",info,line)
@@ -136,7 +126,7 @@ class CodeDiffAnalyzer:
         info = self.modify_info_value("lines",info,line[0])
         return info
 
-    def check_for_spacing_syntax_or_comment(self, signal, info, str, python) -> dict: #done
+    def check_for_spacing_syntax_or_comment(self, signal, info, str, python) -> dict: 
 
         isSyntax = False
         syntaxStr = {"{","}",";","(",")"}
@@ -168,16 +158,7 @@ class CodeDiffAnalyzer:
             info["syntax_changes"] = info["syntax_changes"] + 1
         return info
 
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> bool: #done
-        diffCode = codeDiffObject
-        fileName = diffCode.new_path
-        found = re.search('\.(.+?)$', fileName)
-        if found is not None:
-            if found.group(1) == 'py':
-                return True
-        return False
-
-    def check_middle_syntax_addition(self, line, oldLine, info, python) -> dict: #done
+    def add_one_char_middle(self, line, oldLine, info, python) -> dict: 
         temp = 0
         syntaxStr = {"{","}",";","(",")"}
 
@@ -205,7 +186,7 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_block_comments(self,line,python, info,block_code) -> dict:
+    def add_block_of_comments(self,line,python, info,block_code) -> dict:
         temp = 0
         
         for i in range(0, len(line)):
@@ -228,18 +209,29 @@ class CodeDiffAnalyzer:
                 info = self.check_block_code_cases(line[1:temp],line[temp+3:],info,line,python)
         return info
 
-    def modify_info_value(self, info_name, info, signal) -> dict: #done
-        if signal == '+':
-            info[info_name + "_added"] = info[info_name + "_added"] + 1
-        if signal == '-':
-            info[info_name + "_deleted"] = info[info_name + "_deleted"] + 1
-        return info
-
-    def check_block_code_cases(self, str1, str2, info, line, python) -> dict: 
-        if (str1.isspace() or str1 == "") and str2 != "" and str2.isspace() is False:
+    def check_block_code_cases(self, strFront, strBack, info, line, python) -> dict: 
+        if (strFront.isspace() or strFront == "") and strBack != "" and strBack.isspace() is False:
             info = self.modify_info_value("comments", info, line[0])
-        elif str1.isspace() or str1 == "" and str2.isspace() or str2 == "":
+        elif strFront.isspace() or strFront == "" and strBack.isspace() or strBack == "":
             info["syntax_changes"] = info["syntax_changes"] + 1
         else:
-            info = self.modify_to_a_new_line (info, line[0]+str1,python) 
+            info = self.add_normal_line_of_code (info, line[0]+strFront,python) 
+        return info
+
+    def add_to_existing_line(self, signal,line,oldLine,info,python) -> dict:
+        if oldLine != " " and line[1:] != oldLine[1:]:
+            info = self.modify_info_value("lines", info, oldLine[0],-1)
+            tempLine = signal + oldLine[1:].replace(line[1:], '')
+            info = self.add_normal_line_of_code(
+                info,
+                tempLine,
+                python,
+            )
+        return info
+
+    def modify_info_value(self, info_name, info, signal, amount = 1) -> dict: 
+        if signal == '+':
+            info[info_name + "_added"] = info[info_name + "_added"] + amount
+        if signal == '-':
+            info[info_name + "_deleted"] = info[info_name + "_deleted"] + amount
         return info
