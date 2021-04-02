@@ -3,10 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import BarGraph from '../components/summary/BarGraph';
 import { Menu, Dropdown, Button } from 'antd';
-import { DashOutlined, DownOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import StackedBarGraph from '../components/summary/StackedBar';
-import SelectUser from '../components/SelectUser';
 import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
 
@@ -28,13 +27,9 @@ const useStyles = makeStyles((theme) => ({
 const Summary = () => {
   const {
     selectUser,
-    setSelectUser,
     commitsList,
-    setCommitsList,
     mergeRequestList,
-    setMergeRequestList,
     notesList,
-    setNotesList
   } = useAuth();
   const [startDate, setStartDate] = useState('March 1, 2021');
   const [endDate, setEndDate] = useState('March 12, 2021');
@@ -80,7 +75,7 @@ const Summary = () => {
   };
   console.log(notesList)
   const countCodeReviews = (notesList) => {
-    var result = {}, i, j, rarr = [],date;
+    var result = {}, i, rarr = [],date;
 
     for(i = 0; i < notesList.length; i++) {
       if (selectUser === notesList[i].author && (notesList[i].noteableType == "MergeRequest" || notesList[i].noteableType == "Commit")) {
@@ -101,7 +96,7 @@ const Summary = () => {
   }
 
   const countIssues = (notesList) => {
-    var result = {}, i, j, rarr = [],date;
+    var result = {}, i, rarr = [],date;
 
     for(i = 0; i < notesList.length; i++) {
       if (selectUser === notesList[i].author && notesList[i].noteableType == "Issue") {
@@ -220,10 +215,10 @@ const Summary = () => {
       setCombinedDropdown('Number');
       setCombinedSeries([
         {
-          data: [],
+          data: mrCountsArray,
         },
         {
-          data: [],
+          data: commitCountsArray,
         },
       ]);
       setTextRender('Number');
@@ -242,7 +237,7 @@ const Summary = () => {
       setCrDropdown('All');
       setCrSeries([
         {
-          data: [],
+          data: CRCountsArray,
         },
       ]);
     } else if (e.key === 'crOwn') {
