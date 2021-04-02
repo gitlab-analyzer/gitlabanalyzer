@@ -98,11 +98,22 @@ Required body:
     }
 }
 ```
-Value need to pass in the form-data:
-- a list of projectIDs
+Note:
+- Only valid projectIDs' status will be included in the response. 
+The example above shows a call to project `2` and `5` (Project `5` does not exist)
+- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_id"` in the request body
 
-Note: It is possible that some projectIDs are invalid, or they are already syncing.
-`true` in status means the project started syncing successfully.
+Example javascript ajax call:
+```javascript
+  var dict = {username : "username" , password:"password"};
+
+  $.ajax({
+      type: "POST", 
+      url: "http://127.0.0.1:5000/", //localhost Flask
+      data : JSON.stringify(dict),
+      contentType: "application/json",
+  });
+```
 
 [Go back to API list](#api-example-response)
 
@@ -136,24 +147,43 @@ Note: It is possible that some projectIDs are invalid, or they are already synci
 #### `GET /projects/sync/batch/state`
 ```json
 {
-    "cause": "Some project IDs are invalid",
-    "response": false,
+    "cause": "",
+    "response": true,
     "status": {
         "2": {
             "is_syncing": true,
             "last_synced": null,
             "projectID": 2,
+            "syncing_progress": 14,
+            "syncing_state": "Syncing data from remote..."
+        },
+        "3": {
+            "is_syncing": true,
+            "last_synced": null,
+            "projectID": 3,
             "syncing_progress": 42,
             "syncing_state": "Syncing data from remote..."
         }
-    }
+    },
+    "totalProgress": 28
 }
 ```
-Value need to pass in the form-data:
-- a list of projectIDs
-
-Note: Only valid projectIDs' status will be included in the response. 
+Note:
+- Only valid projectIDs' status will be included in the response. 
 The example above shows a call to project `2` and `5` (Project `5` does not exist)
+- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_id"` in the request body
+
+Example javascript ajax call:
+```javascript
+  var dict = {username : "username" , password:"password"};
+
+  $.ajax({
+      type: "POST", 
+      url: "http://127.0.0.1:5000/", //localhost Flask
+      data : JSON.stringify(dict),
+      contentType: "application/json",
+  });
+```
 
 [Go back to API list](#api-example-response)
 

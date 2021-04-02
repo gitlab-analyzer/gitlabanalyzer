@@ -130,7 +130,7 @@ class GitLabAnalyzerManager:
         return True, "", myProject.get_project_sync_state()
 
     def __get_sync_state_list(
-            self, hashedToken: str, projectList: list
+        self, hashedToken: str, projectList: list
     ) -> Tuple[bool, int, dict]:
         totalProgress = 0
         response = {}

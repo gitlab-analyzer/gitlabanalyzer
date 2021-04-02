@@ -85,11 +85,23 @@ def get_state(projectID: int):
 
 @app.route('/projects/sync/batch/state', methods=['get'])
 def get_state_for_multiple_project():
-    isSuccess, errorCode, value, totalProgress = gitlab_manager.check_project_list_sync_state(
+    (
+        isSuccess,
+        errorCode,
+        value,
+        totalProgress,
+    ) = gitlab_manager.check_project_list_sync_state(
         request.cookies.get("id", ""), get_request(request, "project_list")
     )
 
-    return jsonify({"response": isSuccess, "status": value, 'cause': errorCode, "totalProgress": totalProgress})
+    return jsonify(
+        {
+            "response": isSuccess,
+            "status": value,
+            'cause': errorCode,
+            "totalProgress": totalProgress,
+        }
+    )
 
 
 @app.route('/projects/<int:projectID>/members', methods=['get'])
