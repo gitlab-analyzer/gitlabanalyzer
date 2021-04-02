@@ -29,10 +29,9 @@ class CodeDiffAnalyzer:
         }
 
         oldLine = " "
-        python = False
+        python = self.check_for_code_type(codeDiffObject)
         block_code = False
 
-        self.check_for_code_type(codeDiffObject)
 
         diffCode = codeDiffObject
         for line in diffCode.diff.splitlines():
@@ -103,7 +102,7 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_for_code_type(fileName) -> bool:
+    def check_for_code_type(self,fileName) -> bool:
         found = re.search('\.(.+?)$', fileName)
         if found is not None:
             if found.group(1) == 'py':
