@@ -348,8 +348,6 @@ const Repo = ({
       setAnalyzing(true);
       // Set project ID in context api
       selectRepo = 2;
-      // Fetches Member list
-      await fetchMembers();
       // This sets the project ID to be analyzed and initiates syncing process
       await syncProjectId();
       // This is a recursive call that checks the status of syncing process every 5000 milliseconds
@@ -425,6 +423,8 @@ const Repo = ({
    */
   const fetchAndRedirect = async () => {
     try {
+      // Fetches Member list
+      await fetchMembers();
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
