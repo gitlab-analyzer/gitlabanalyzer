@@ -36,9 +36,24 @@ function FloatBar() {
     commentsList,
   } = useAuth();
   useEffect(() => {}, []);
-    
+  const iterDates = [
+    {
+      name: "iter1",
+      start: "20210301 120000",
+      end: "20210320 120000"
+    },
+    {
+      name: "iter2",
+      start: "20210325 120000",
+      end: "20210330 120000"
+    },
+  ]
+  let dateObj = {}  
+  for(let dateprop of iterDates){
+    dateObj[dateprop.name] = [moment().startOf('month'), moment().endOf('month')]
+  }
   return (
-    <>
+    <listitem>
       <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
       <div className="floatbar-container">
         <div className="floatbaralign">
@@ -57,21 +72,7 @@ function FloatBar() {
                 <RangePicker 
                   defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
                   format="YYYY/MM/DD hh:mm:ss"
-                  ranges={{
-                    Today: [moment().startOf('day'), moment().endOf('day')],
-                    'Iteration 1': [
-                      moment(IterationDates.iter1start), 
-                      moment(IterationDates.iter1end)
-                    ],
-                    'Iteration 2': [
-                      moment(IterationDates.iter2start), 
-                      moment(IterationDates.iter2end)
-                    ],
-                    'Iteration 3': [
-                      moment(IterationDates.iter2start), 
-                      moment(IterationDates.iter3end)
-                    ],
-                  }}
+                  ranges={dateObj}
                   showTime
                 />
               </div>
@@ -90,14 +91,12 @@ function FloatBar() {
               </div>
             </Grid>
             <Grid item xs={12}>
-              {console.log(barData)}
               <CopyToClipboard
                 format={'text/plain'}
                 text={
                   '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
                   renderToStaticMarkup(
                     <div>
-                      {console.log(barData)}
                       {barData.map((Detail) => {
                         return (
                           <div>
@@ -126,7 +125,7 @@ function FloatBar() {
           </Grid>
         </div>
       </div>
-    </>
+    </listitem>
   );
 }
 
