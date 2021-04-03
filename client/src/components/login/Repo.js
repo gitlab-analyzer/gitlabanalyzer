@@ -34,6 +34,8 @@ const Repo = ({
     setCommentsList,
     setSelectMembersList,
     setSelectUser,
+    selectedRepo,
+    setSelectedRepo,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -347,6 +349,7 @@ const Repo = ({
     try {
       setAnalyzing(true);
       // Set project ID in context api
+      setSelectedRepo(id);
       selectRepo = id;
       // This sets the project ID to be analyzed and initiates syncing process
       await syncProjectId();

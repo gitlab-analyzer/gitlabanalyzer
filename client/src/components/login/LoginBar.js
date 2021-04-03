@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Input, Tooltip, Select } from 'antd';
 import { InfoCircleOutlined, GitlabOutlined } from '@ant-design/icons';
 import useStyles from './BarStyles';
@@ -22,6 +22,7 @@ const LoginBar = ({ setRedirect }) => {
 
   // Global states from Context API
   const { user, setUser, setIncorrect } = useAuth();
+  useEffect(() => {}, [loading]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,6 +45,7 @@ const LoginBar = ({ setRedirect }) => {
         // TODO Error handling on failed request
       } catch (err) {
         setIncorrect(true);
+        setLoading(false);
         console.log(err);
       }
     }
