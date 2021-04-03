@@ -13,14 +13,15 @@ const SearchBarComp = ({ reList, setFilteredList }) => {
   useEffect(() => {
     if (value === '') {
       setFilteredList(reList);
+      console.log(reList);
     } else {
       setFilteredList(
         reList.filter((repo) =>
-          repo.toLowerCase().includes(value.toLowerCase())
+          repo['name'].toLowerCase().includes(value.toLowerCase())
         )
       );
     }
-  }, [value]);
+  }, [value, reList]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
