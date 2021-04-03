@@ -36,6 +36,8 @@ const Repo = ({
     setSelectUser,
     selectedRepo,
     setSelectedRepo,
+    batchList,
+    setBatchList,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -50,7 +52,7 @@ const Repo = ({
 
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
-  useEffect(() => {}, [filteredList, selectRepo]);
+  useEffect(() => {}, [filteredList, selectRepo, setBatchList]);
 
   const handleRoute = () => {
     if (
@@ -448,6 +450,11 @@ const Repo = ({
     }
   };
 
+  const addtoBatchList = (item) => {
+    setBatchList([...batchList, item]);
+    console.log(batchList);
+  };
+
   if (redirect) {
     return <Redirect to="/summary" />;
   } else {
@@ -474,7 +481,13 @@ const Repo = ({
                 >
                   Analyze
                 </Button>,
-                <Checkbox>Batch</Checkbox>,
+                <Checkbox
+                  onClick={() => {
+                    addtoBatchList(item);
+                  }}
+                >
+                  Batch
+                </Checkbox>,
                 <SettingOutlined onClick={handleDrawer} />,
               ]}
             >

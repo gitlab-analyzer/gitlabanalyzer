@@ -13,7 +13,6 @@ const SearchBarComp = ({ reList, setFilteredList }) => {
   useEffect(() => {
     if (value === '') {
       setFilteredList(reList);
-      console.log(reList);
     } else {
       setFilteredList(
         reList.filter((repo) =>

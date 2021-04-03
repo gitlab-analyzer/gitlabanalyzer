@@ -23,7 +23,6 @@ function SearchPage() {
       const repoList = await axios.get('http://localhost:5678/projects', {
         withCredentials: true,
       });
-      console.log(repoList);
       setRepo(repoList.data.projects);
 
       const projectsData = repoList.data.projects;
@@ -37,7 +36,6 @@ function SearchPage() {
       setReList([...projectsList]);
       setFilteredList([...projectsList]);
       setLoading(false);
-      console.log('filtered list: ', filteredList);
     };
     getRepos();
   }, []);
