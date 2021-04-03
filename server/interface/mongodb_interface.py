@@ -1,12 +1,16 @@
+from model.issue import Issue
 from typing import List, NamedTuple, Tuple
 
 from pymongo import MongoClient
+from pymongo.collection import Collection
 from pymongo.cursor import Cursor
+from pymongo.errors import DuplicateKeyError
 from pymongo.results import *
 
 from model.commit import Commit
 from model.merge_request import MergeRequest
 from model.comment import Comment
+from model.member import Member
 from interface.gitlab_project_interface import GitLabProject
 
 from datetime import datetime, timezone
@@ -21,19 +25,30 @@ class MongoDB:
         self.__mergeRequestColl = self.__gitLabAnalyzerDB["mergeRequests"]
         self.__commitColl = self.__gitLabAnalyzerDB["commits"]
         self.__codeDiffColl = self.__gitLabAnalyzerDB["codeDiffs"]
+        self.__commentColl = self.__gitLabAnalyzerDB["comments"]
+        self.__memberColl = self.__gitLabAnalyzerDB["members"]
+        self.__issueColl = self.__gitLabAnalyzerDB["issues"]
 
     # ********************** INSERT METHODS ******************************
 
     # NOTE: what about duplicate insertions?
+    @staticmethod
+    def __insertOne(coll: Collection, body: dict) -> bool:
+        try:
+            result: InsertOneResult = coll.insert_one(body)
+            return result.acknowledged
+        except DuplicateKeyError:
+            print("MongoDB_interface: Duplicate insert in collection:{}. body:{}".format(coll, body))
+            return False
 
-    def insert_GitLabAnalyzerUser(self, hashedToken: str, config: dict) -> bool:
+    def insert_GLAUser(self, hashedToken: str, config: dict) -> bool:
         # STUB
         body: dict = {
+            '_id': hashedToken,
             'hashed_token': hashedToken,
             'config': config
         }
-        result: InsertOneResult = self.__userColl.insert_one(body)
-        return result.acknowledged
+        return self.__insertOne(self.__userColl, body)
 
     def insert_project(self, glProject: GitLabProject, projectConfig: dict) -> bool:
         memberIDs: List[int] = []
@@ -41,6 +56,7 @@ class MongoDB:
             memberIDs.append(member.id)
 
         body: dict = {
+            '_id': glProject.project_id,
             'project_id': glProject.project_id,
             'name': glProject.project.name,
             'path': glProject.project.path,
@@ -53,8 +69,7 @@ class MongoDB:
             'member_ids': memberIDs,
             'user_list': glProject.user_list
         }
-        result: InsertOneResult = self.__projectColl.insert_one(body)
-        return result.acknowledged
+        return self.__insertOne(self.__projectColl, body)
 
     def insert_many_MRs(self, projectID, mergeRequestList: List[MergeRequest]) -> bool:
         body: List[dict] = []
@@ -85,6 +100,7 @@ class MongoDB:
             relatedCommitIDs.append(commit.id)
 
         body: dict = {
+            "_id": (mergeRequest.id, projectID),
             'mr_id': mergeRequest.id,
             'project_id': projectID,
             'issue_id': mergeRequest.__related_issue_iid,
@@ -92,8 +108,7 @@ class MongoDB:
             'contributors': list(contributors),
             'related_commit_ids': list(relatedCommitIDs)
         }
-        result: InsertOneResult = self.__mergeRequestColl.insert_one(body)
-        return result.acknowledged
+        return self.__insertOne(self.__mergeRequestColl, body)
 
     # precondition: all commits in the list belongs to the same mergeRequest.
     #   if they are all master commits, put None for mergeRequestID.
@@ -114,6 +129,7 @@ class MongoDB:
     # if the commit is a commit on the master branch, put None for mergeRequestID
     def insert_one_commit(self, projectID, mergeRequestID, commit: Commit) -> bool:
         body: dict = {
+            "_id": (commit.id, projectID),
             'commit_id': commit.id,
             'project_id': projectID,
             'mr_id': mergeRequestID,
@@ -122,8 +138,7 @@ class MongoDB:
             'commit_date': commit.committed_date,
             'code_diff_id': commit.code_diff_id
         }
-        result: InsertOneResult = self.__commitColl.insert_one(body)
-        return result.acknowledged
+        return self.__insertOne(self.__codeDiffColl, body)
 
     # precondition: the list of codeDiffs are in the order where their index is their artif_id
     def insert_many_codeDiffs(self, projectID, codeDiffList: List[List[dict]]) -> bool:
@@ -139,16 +154,63 @@ class MongoDB:
 
     def insert_one_codeDiff(self, projectID, codeDiffID: int, diffs: List[dict]) -> bool:
         body: dict = {
+            "_id": (codeDiffID, projectID),
             "project_id": projectID,
             "artif_id": codeDiffID,
             "diffs": diffs
         }
-        result: InsertOneResult = self.__codeDiffColl.insert_one(body)
+        return self.__insertOne(self.__codeDiffColl, body)
+
+    def insert_many_comments(self, projectID, commentList: List[Comment]) -> bool:
+        body: List[dict] = []
+        for comment in commentList:
+            body.append({"project": projectID}.update(comment.to_dict))
+        result: InsertManyResult = self.__commentColl.insert_many(body)
         return result.acknowledged
 
-    # TODO: insert Comment methods
-    # TODO: insert Member methods
+    def insert_one_comment(self, projectID, comment: Comment) -> bool:
+        body: dict = {"project_id": projectID}
+        body.update(comment.to_dict())
+        result: InsertOneResult = self.__commentColl.insert_one(body)
+        return result.acknowledged
+
+    def insert_many_members(self, memberList: List[Member]) -> bool:
+        body: List[dict] = []
+        for member in memberList:
+            memberObj = {"_id": member.id}
+            memberObj.update(member.to_dict())
+            body.append(memberObj)
+        try:
+            result: InsertManyResult = self.__memberColl.insert_many(body)
+            return result.acknowledged
+        except DuplicateKeyError:
+            print("MongoDB_interface::insert_many_members(): Duplicate insert(s)")
+            return False
+
+    def insert_one_member(self, member: Member) -> bool:
+        memberDict: dict = member.to_dict()
+        body: dict = {"_id": member.id}
+        body.update(memberDict)
+        return self.__insertOne(self.__memberColl, body)
+
     # TODO: insert Issue methods
+    def insert_one_issue(self, issue: Issue) -> bool:
+        body: dict = {
+            "_id": (issue.issue_id, issue.project_id),
+            "project_id": issue.project_id,
+            "issue_id": issue.issue_id,
+            "author_id": issue.author_id,
+            "merge_requests_count": issue.merge_requests_count,
+            "commment_count": issue.comment_count,
+            "title": issue.title,
+            "description": issue.description,
+            "state": issue.state,
+            "updated_date": issue.updated_date,
+            "created_date": issue.created_date,
+            "closed_date": issue.closed_date,
+            "assignee_id_list": issue.assignee_id_list
+        }
+        return self.__insertOne(self.__issueColl, body)
 
     @property
     def collections(self) -> List[str]:
@@ -265,6 +327,27 @@ Comment Collection: [
 Member Collection: [
     {
         
+    }
+]
+
+// PRIMARY KEY(project_id, issue_id)
+Issue Collection: [
+    {
+        project_id,
+        issue_id,
+        author_id,
+        merge_requests_count,
+        comment_count,
+        title: str = gitlab_issue.title
+        description: str = gitlab_issue.description
+        state: str = gitlab_issue.state
+        updated_date: str = gitlab_issue.updated_at
+        created_date: str = gitlab_issue.created_at
+        closed_date: Optional[str] = gitlab_issue.closed_at
+        assignee_id_list: List[int] = [
+            member['id'] for member in gitlab_issue.assignees
+        ]
+
     }
 ]
 """
