@@ -1,12 +1,10 @@
-from typing import List, Optional, Union
+from typing import List, Union
 from datetime import datetime, timezone
 from dateutil.parser import isoparse
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from pymongo.cursor import Cursor
 from pymongo.errors import DuplicateKeyError, ExecutionTimeout
-from pymongo.message import query
 from pymongo.results import *
 
 from model.commit import Commit
@@ -16,7 +14,7 @@ from model.member import Member
 from model.issue import Issue
 from model.project import Project
 
-class MongoDB:
+class GitLabDB:
     CursorTimeOutMS = 5000
 
     def __init__(self, addr: str = 'localhost', port: int = 27017) -> None:
@@ -37,7 +35,7 @@ class MongoDB:
     @staticmethod
     def __find(coll: Collection, query: dict) -> List[dict]:
         try:
-            cursor = coll.find(filter=query, max_time_ms=MongoDB.CursorTimeOutMS)
+            cursor = coll.find(filter=query, max_time_ms=GitLabDB.CursorTimeOutMS)
             # NOTE: For large results, program may freeze here
             return list(cursor)
         except ExecutionTimeout:
@@ -47,7 +45,7 @@ class MongoDB:
     @staticmethod
     def __findOne(coll: Collection, query: dict) -> dict:
         try:
-            return coll.find_one(filter=query, max_time_ms=MongoDB.CursorTimeOutMS)
+            return coll.find_one(filter=query, max_time_ms=GitLabDB.CursorTimeOutMS)
         except ExecutionTimeout:
             print("MongoDB_interface: FindOne Operation Timed Out for collection:{}. query={}".format(coll, query))
             return dict()
@@ -146,7 +144,7 @@ class MongoDB:
         return self.__findOne(self.__issueColl, {"project_id": project_id, "issue_id": issue_id})
 
     def find_many_issues(self, project_id: Union[int, str], issue_ids: List[int]) -> List[dict]:
-        query: dict {
+        query: dict = {
             "project_id": project_id,
             "$or": [{"issue_id": issue_id} for issue_id in issue_ids]
         }
@@ -354,7 +352,7 @@ class MongoDB:
 
 if __name__ == '__main__':
     # root:pass@mangodb
-    testDB = MongoDB('localhost', 27017)
+    testDB = GitLabDB('localhost', 27017)
 
     userObj = {"name": "John", "repoInfo": "this is a test"}
 
