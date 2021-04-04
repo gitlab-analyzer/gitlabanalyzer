@@ -4,6 +4,7 @@ import moment from 'moment';
 import { configSettings } from '../login/Repo';
 import { useAuth } from '../../context/AuthContext';
 
+
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
@@ -20,6 +21,7 @@ function InitialUserDates() {
       <Form.Item
         label="User"
         name="user"
+        initialValue={(selectUser && selectUser)}
         rules={[
           {
             required: true,
@@ -29,7 +31,7 @@ function InitialUserDates() {
       >
         <Select
           style={{ width: 200 }}
-          defaultValue={(selectUser && selectUser)}
+          // defaultValue={(selectUser && selectUser)}
           onChange={(value) => setSelectUser(selectMembersList[value])}
           showSearch
         >
@@ -51,6 +53,7 @@ function InitialUserDates() {
       <Form.Item
         label="Dates"
         name="date"
+        initialValue={[moment().startOf('day'), moment().endOf('day')]}
         rules={[
           {
             required: true,
@@ -58,7 +61,7 @@ function InitialUserDates() {
           },
         ]}
       >
-        <div className="daterange">
+        {/* <div className="daterange"> */}
           <RangePicker
             format="YYYY/MM/DD hh:mm:ss"
             ranges={{
@@ -66,19 +69,19 @@ function InitialUserDates() {
             }}
             showTime
             allowClear={false}
-            defaultValue={
-              configSettings.enddate && [
-                moment(configSettings.startdate),
-                moment(configSettings.enddate),
-              ]
-            }
+            // defaultValue={
+            //   configSettings.enddate && [
+            //     moment(configSettings.startdate),
+            //     moment(configSettings.enddate),
+            //   ]
+            // }
             onChange={(value) => {
               configSettings.startdate = value[0].format();
               configSettings.enddate = value[1].format();
             }}
             renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}
           />
-        </div>
+        {/* </div> */}
       </Form.Item>
     </div>
   );
