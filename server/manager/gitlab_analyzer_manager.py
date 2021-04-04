@@ -16,11 +16,18 @@ ERROR_CODES = {
 
 
 class GitLabAnalyzerManager:
-    def __init__(self, maximum_exist_time=datetime.timedelta(hours=6)):
+    def __init__(self, maximum_exist_time=datetime.timedelta(hours=6), worker_check_period_hours: int = 6):
         self.__gitlab_list: dict = {}
+        self.__gitlab_list_lock = threading.Lock()
         self.__worker_should_run_signal: bool = False
-        self.__garbage_monitor = threading.Thread(target=self.__garbage_monitor_worker())
+        self.__garbage_monitor = threading.Thread(
+            target=self.__garbage_monitor_worker, args=(self.__gitlab_list_lock,))
         self.__maximum_exist_time: datetime = maximum_exist_time
+        self.__worker_check_period = self.__hour_to_seconds(worker_check_period_hours)
+        # TODO: add lock to all functions that access self.__gitlab_list
+
+    def __hour_to_seconds(self, hours: int) -> int:
+        return hours * 60 * 60
 
     # authenticate and add the gitlab instance on success. If success, it will also return username
     def add_gitlab(
@@ -268,10 +275,15 @@ class GitLabAnalyzerManager:
         if self.__gitlab_list.get(hashedToken, None) is not None:
             self.__gitlab_list.pop(hashedToken)
 
-    def __garbage_monitor_worker(self):
+    def __garbage_monitor_worker(self, lock: threading.Lock):
         while self.__worker_should_run_signal:
-            pass
-            # TODO: do time.sleep() here
+            lock.acquire()
+            gitLabUser: GitLabAnalyzer
+            for key, gitLabUser in self.__gitlab_list:
+                if datetime.datetime.now() - gitLabUser.last_time_access > self.__maximum_exist_time:
+                    self.__gitlab_list.pop(key)
+            lock.release()
+            time.sleep(self.__worker_check_period)
 
     def start_garbage_monitor_thread(self):
         self.__worker_should_run_signal = True
@@ -279,3 +291,6 @@ class GitLabAnalyzerManager:
 
     def stop_garbage_monitor_thread(self):
         self.__worker_should_run_signal = False
+
+    def change_worker_check_period(self, hours: int):
+        self.__worker_check_period = self.__hour_to_seconds(hours)
