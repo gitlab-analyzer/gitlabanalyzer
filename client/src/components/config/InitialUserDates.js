@@ -15,10 +15,10 @@ function InitialUserDates() {
     selectUser, 
     setSelectUser, 
     anon, 
-    viewDates,
-    setViewDates,
+    dataList,
+    setDataList
   } = useAuth();
-  useEffect(() => {}, [viewDates]);
+  useEffect(() => {}, []);
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
@@ -38,8 +38,14 @@ function InitialUserDates() {
       >
         <Select
           style={{ width: 200 }}
-          // defaultValue={(selectUser && selectUser)}
-          onChange={(value) => setSelectUser(selectMembersList[value])}
+          defaultValue={
+            (selectUser || (setSelectUser(selectMembersList[0])))
+          }
+          onChange={(value) => 
+            {
+              setSelectUser(selectMembersList[value])
+            }
+          }
           showSearch
         >
           {(anon && (
@@ -60,7 +66,7 @@ function InitialUserDates() {
       <Form.Item
         label="Dates"
         name="date"
-        initialValue={viewDates}
+        initialValue={dataList}
         
         rules={[
           {
@@ -74,7 +80,7 @@ function InitialUserDates() {
             ranges={{
               Today: [moment().startOf('day'), moment().endOf('day')],
             }}
-            onChange={setViewDates}
+            onChange={setDataList}
             showTime
             allowClear={false}
             renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}

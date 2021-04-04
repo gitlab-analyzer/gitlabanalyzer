@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
-import { CheckCircleOutlined, CopyOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
 import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
-import EveryoneScore, { ScoreCalculator, barData } from './EveryoneScore.js';
-import { renderToStaticMarkup } from 'react-dom/server'
+import EveryoneScore, { ScoreCalculator, barData, FillBarData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-
 
 import './FloatBar.css';
 
@@ -26,7 +24,8 @@ const copySuccessful = () => {
 };
 
 function FloatBar() {
-  const [sortType, setSortType] = React.useState('');
+  const [ sortType, setSortType ] = React.useState('alpha');
+  
   const {
     membersList,
     usersList,
@@ -34,8 +33,9 @@ function FloatBar() {
     notesList,
     mergeRequestList,
     commentsList,
-    viewDates,
-    setViewDates,
+    selectUser,
+    dataList,
+    setDataList,
   } = useAuth();
   useEffect(() => {}, []);
   const iterDates = [
@@ -54,6 +54,28 @@ function FloatBar() {
   for(let dateprop of iterDates){
     dateObj[dateprop.name] = [moment().startOf('month'), moment().endOf('month')]
   }
+
+  const handleSort = (value) => {
+    setSortType(value)
+    if (value === "alpha"){
+      barData.sort((a,b) => (a.name > b.name) ? 1 : -1)
+    }
+    else if (value === "low"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) > ScoreCalculator(b.name)) ? 1 : -1)
+    }
+    else if (value === "high"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) < ScoreCalculator(b.name)) ? 1 : -1)     
+    }
+  }
+
+  const handleDate = (value) => {
+    configSettings.startdate = value[0]
+    configSettings.enddate = value[1]
+    setDataList(value)
+  }
+  let userData = barData.find(x=>x.name===selectUser)
+
+
   return (
     <listitem>
       <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
@@ -72,8 +94,8 @@ function FloatBar() {
             <Grid item xs={12}>
               <div className="daterange">
                 <RangePicker 
-                  defaultValue={viewDates}
-                  onChange={setViewDates}
+                  defaultValue={dataList}
+                  onChange={setDataList}
                   format="YYYY/MM/DD hh:mm:ss"
                   ranges={dateObj}
                   showTime
@@ -85,45 +107,38 @@ function FloatBar() {
                 <Select
                   placeholder="Sort"
                   style={{ width: 150 }}
-                  onChange={(value) => setSortType(value)}
+                  onChange={handleSort}
+                  defaultValue="alpha"
                 >
-                  <Option value="Alphabetical">Alphabetical</Option>
-                  <Option value="Low to High">Low to High</Option>
-                  <Option value="High to Low">High to Low</Option>
+                  <Option value="alpha">Alphabetical</Option>
+                  <Option value="low">Low to High</Option>
+                  <Option value="high">High to Low</Option>
                 </Select>
               </div>
             </Grid>
             <Grid item xs={12}>
-              <CopyToClipboard
-                format={'text/plain'}
-                text={
-                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +            
-                  renderToStaticMarkup(
-                    <div>
-                      {barData.map((Detail) => {
-                        return (
-                          <div>
-                            <div>{Detail.name}</div>
-                            <div>{ScoreCalculator(Detail.name).toFixed(0)}</div>
-                            <div>{Detail.commits}</div>
-                            <div>{Detail.code}</div>
-                            <div>{Detail.issue}</div>
-                            {/* <br/> */}
-                          </div>
-                        ); 
-                      })}                  
-                    </div>
-                    ).replaceAll('</div><div><div>', '\n')
-                    .replaceAll('</div><div>', '\t')
-                    .replaceAll('</div>', '')
-                    .replaceAll('<div>', '') 
-                }
-              >
-                <Button style={{ width: 150 }} onClick={copySuccessful}>
-                  Copy
-                  <CopyOutlined className="copyicon" />
-                </Button>
-              </CopyToClipboard>
+                <CopyToClipboard
+                  format={'text/plain'}
+                  text={ (userData &&
+                    (
+                      String(ScoreCalculator(userData.name).toFixed(0)) + '\t' +
+                      userData.commits + '\t' +
+                      userData.code + '\t' +
+                      userData.issue
+                    )) || (
+                      '0\t0\t0\t0'
+                    )
+                  }
+                >
+                  <Button 
+                    style={{ width: 150 }} 
+                    onClick={copySuccessful}
+                  >
+                    Copy
+                    <CopyOutlined className="copyicon" />
+                  </Button>
+                </CopyToClipboard>
+              {/* )} */}
             </Grid>
           </Grid>
         </div>
