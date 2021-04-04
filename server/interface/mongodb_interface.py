@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.cursor import Cursor
 from pymongo.errors import DuplicateKeyError, ExecutionTimeout
+from pymongo.message import query
 from pymongo.results import *
 
 from model.commit import Commit
@@ -22,6 +23,7 @@ class MongoDB:
         self.__client = MongoClient(addr, port)
 
         self.__gitLabAnalyzerDB = self.__client["GitLabAnalyzer"]
+
         self.__userColl = self.__gitLabAnalyzerDB["users"]
         self.__projectColl = self.__gitLabAnalyzerDB["projects"]
         self.__mergeRequestColl = self.__gitLabAnalyzerDB["mergeRequests"]
@@ -31,7 +33,7 @@ class MongoDB:
         self.__memberColl = self.__gitLabAnalyzerDB["members"]
         self.__issueColl = self.__gitLabAnalyzerDB["issues"]
 
-    # ********************** SEARCH METHODS ******************************
+    # ********************** FIND METHODS ******************************
     @staticmethod
     def __find(coll: Collection, query: dict) -> List[dict]:
         try:
@@ -55,10 +57,14 @@ class MongoDB:
     def find_one_project(self, project_id: Union[int, str]) -> dict:
         return self.__findOne(self.__projectColl, {"projectid": project_id})
     
-    # NOTE: THE FOLLOWING METHODS REALLY NEEDS TESTING
     def find_one_MR(self, project_id: Union[int, str], mr_id: int) -> dict:
-        pass
+        query: dict = {
+            "project_id": project_id,
+            "mr_id": mr_id
+        }
+        return self.__findOne(self.__mergeRequestColl, query)
 
+    # NOTE: MUST TEST
     def find_MRs_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
         query: dict = {
             "project_id": project_id, 
@@ -70,16 +76,57 @@ class MongoDB:
         return self.__find(self.__mergeRequestColl, query)
 
     def find_one_commit(self, project_id: Union[int, str], commit_id: int) -> dict:
-        pass
+        query: dict = {
+            "project_id": project_id,
+            "commit_id": commit_id
+        }
+        return self.__findOne(self.__commitColl, query)
+
+    def find_many_commits(self, project_id: Union[int, str], commit_ids: List[int]) -> dict:
+        if len(commit_ids) == 0:
+            return list()
+        
+        query: dict = {
+            "project_id": project_id,
+            "$or": [{"commit_id": id for id in commit_ids}]
+        }
+        return self.__find(self.__commitColl, query)
 
     def find_commits_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
-        pass
+        query: dict = {
+            "project_id": project_id,
+            "$and": [
+                {"commit_date": {"$gte": start_date}},
+                {"commit_date": {"$lte": end_date}}
+            ]
+        }
+        return self.__find(self.__commitColl, query)
 
     def find_one_codeDiff(self, project_id: Union[int, str], artif_id: int) -> dict:
-        pass
+        query: dict = {
+            "project_id": project_id,
+            "artif_id": artif_id
+        }
+        return self.__findOne(self.__codeDiffColl, query)
+
+    def find_many_codeDiffs(self, project_id: Union[int, str], artif_ids: List[int]) -> List[dict]:
+        if len(artif_ids) == 0:
+            return list()
+
+        query: dict = {
+            "project_id": project_id,
+            "$or": [{"artif_id": id} for id in artif_ids]
+        }
+        return self.__find(self.__codeDiffColl, query)
 
     def find_codeDiffs_in_MR(self, project_id: Union[int, str], mr_id: int) -> List[dict]:
-        pass
+        mr: dict = self.find_one_MR(project_id, mr_id)
+        if not mr:
+            return list()
+
+        commits: List[dict] = self.find_many_commits(project_id, mr['related_commit_ids'])
+        codeDiffIds: List[int] = [commit['code_diff_id'] for commit in commits]
+        return self.find_many_codeDiffs(project_id, codeDiffIds)
 
 
     # ********************** INSERT METHODS ******************************
@@ -198,7 +245,7 @@ class MongoDB:
         }
         return self.__insertOne(self.__codeDiffColl, body)
 
-    # precondition: the list of codeDiffs are in the order where their index is their artif_id
+    # precondition: the list of codeDiffs are in the order how they are stored in codeDiffManager
     def insert_many_codeDiffs(self, project_id: Union[int, str], codeDiffList: List[List[dict]]) -> bool:
         body: List[dict] = []
         for index, codeDiff in zip(range(len(codeDiffList)), codeDiffList):
@@ -209,12 +256,12 @@ class MongoDB:
             })
         return self.__insertMany(self.__codeDiffColl, body)
 
-    def insert_one_codeDiff(self, project_id: Union[int, str], codeDiffID: int, diffs: List[dict]) -> bool:
+    def insert_one_codeDiff(self, project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]) -> bool:
         body: dict = {
             "_id": (codeDiffID, project_id),
             "projectid": project_id,
             "artif_id": codeDiffID,
-            "diffs": diffs
+            "diffs": codeDiff
         }
         return self.__insertOne(self.__codeDiffColl, body)
 
@@ -334,9 +381,7 @@ Commit Collection: [
         mr_id: <id of MR this commit is related to OR NULL if master commit>,
         commiter: <person who made this commit>,
         commit_date: <date of commit ISO 8601>
-        code_diff_ids: [
-            <ids of code diffs for this commit>
-        ]
+        code_diff_id: <code_diff_id (codediff's artif id)>
     }
 ]
 
@@ -345,22 +390,26 @@ CodeDiff Collection: [
     {
         project_id: <project id>,
         artif_id: 0,
-        "a_mode": "0",
-        "b_mode": "100644",
-        "deleted_file": false,
-        "diff": "@@ -0,0 +1,100 @@\n+import copy\n+\n+class Analyzer:\n+    def __init__(self, acceptor_ids, factor=0.05):\n+        self.weight_changed = False\n+        self.acceptor_ids = acceptor_ids\n+        self.factor=factor\n+        self.num_acceptors = len(acceptor_ids)\n+        self.nominal = 1 / self.num_acceptors\n+        #self.ceiling = (int(self.num_acceptors/3)+1) * self.nominal\n+        self.ceiling = 1/2\n+\n+        self.weights = {}\n+        self.msgs_sent = {}\n+        self.msgs_recvd = {}\n+        self.msg_ratios = {}\n+        self.thresholds = {}\n+        for pid in acceptor_ids:\n+            self.weights[pid] = self.nominal\n+            self.msgs_sent[pid] = 0\n+            self.msgs_recvd[pid] = 0\n+            self.msg_ratios[pid] = 0\n+            self.thresholds[pid] = round(1-self.factor,2)\n+\n+        # make copy of state to compare before/after run\n+        self._pre = copy.copy(self)\n+\n+    def add_send(self, pid):\n+        self.msgs_sent[pid] += 1\n+\n+    def add_recvd(self, pid):\n+        self.msgs_recvd[pid] += 1\n+        try:\n+            self.msg_ratios[pid] = round(self.msgs_recvd[pid]/self.msgs_sent[pid],2)\n+        except ZeroDivisionError:\n+            pass\n+        #self.check_threshold(pid)\n+\n+    def check(self):\n+        for pid in self.acceptor_ids:\n+            self.check_threshold(pid)\n+\n+    def check_threshold(self, pid):\n+        if self.msg_ratios[pid] <= self.thresholds[pid]:\n+            self.thresholds[pid] = round(self.thresholds[pid]-self.factor,2)\n+            self.lower_weight(pid)\n+\n+    def lower_weight(self, pid):\n+        # lower the pid's weight\n+        tmp = round(self.weights[pid]-self.factor,2)\n+        if tmp > 0.0:\n+            self.weights[pid] = tmp\n+        else:\n+            self.weights[pid] = 0.0\n+        self.raise_weight()\n+        self.weight_changed = True\n+\n+    def raise_weight(self):\n+        # increase another pid's weight\n+        if self.nominal != self.ceiling:\n+            adjusted = False\n+            while not adjusted:\n+                for i in range(self.num_acceptors):\n+                    pid = self.acceptor_ids[i]\n+                    diff = self.weights[pid] - self.nominal\n+                    if diff == 0.0:\n+                        self.weights[pid] = round(self.weights[pid]+self.factor,2)\n+                        adjusted = True\n+                        break\n+                if i is (self.num_acceptors-1):\n+                    self.nominal = round(self.nominal+self.factor,2)\n+\n+    def log(self):\n+        print(\"Acceptor weights: {}\".format(self.weights))\n+        print(\"Acceptor ratios: {}\".format(self.msg_ratios))\n+        print(\"Acceptor thresholds: {}\".format(self.thresholds))\n+\n+\n+if __name__ == '__main__':\n+    import random\n+\n+    def test(acceptors, fail_rates, num_msgs):\n+        print(\"testing pids {}: \".format(acceptors))\n+        a=Analyzer(acceptors)\n+        print(\"\\nBefore rounds...\")\n+        a.log()\n+        for n in range(num_msgs):\n+            for pid in acceptors:\n+                a.add_send(pid)\n+                if fail_rates[pid] > random.random():\n+                    pass\n+                else:\n+                    a.add_recvd(pid)\n+        print(\"\\nAfter rounds...\")\n+        a.log()\n+        print('\\n')\n+\n+    test([0,1,2,3],[0,0,0.05,0],100)\n+    test([0,1,2,3,4],[0,0,0.05,0,0],100)\n+    test([0,1,2,3,4,5,6,7,8,9],[0,0,0.05,0,0,0,0,0,0.1,0],1000)\n\\ No newline at end of file\n",
-        "new_file": true,
-        "new_path": "server/model/analyzer.py",
-        "old_path": "server/model/analyzer.py",
-        "renamed_file": false
-        "lines_added": 0,
-        "lines_deleted": 0,
-        "comments_added": 0,
-        "comments_deleted": 0,
-        "blanks_added": 0,
-        "blanks_deleted": 0,
-        "spacing_changes": 0,
-        "syntax_changes": 0
+        diffs: [
+            {
+                "a_mode": "0",
+                "b_mode": "100644",
+                "deleted_file": false,
+                "diff": "@@ -0,0 +1,100 @@\n+import copy\n+\n+class Analyzer:\n+    def __init__(self, acceptor_ids, factor=0.05):\n+        self.weight_changed = False\n+        self.acceptor_ids = acceptor_ids\n+        self.factor=factor\n+        self.num_acceptors = len(acceptor_ids)\n+        self.nominal = 1 / self.num_acceptors\n+        #self.ceiling = (int(self.num_acceptors/3)+1) * self.nominal\n+        self.ceiling = 1/2\n+\n+        self.weights = {}\n+        self.msgs_sent = {}\n+        self.msgs_recvd = {}\n+        self.msg_ratios = {}\n+        self.thresholds = {}\n+        for pid in acceptor_ids:\n+            self.weights[pid] = self.nominal\n+            self.msgs_sent[pid] = 0\n+            self.msgs_recvd[pid] = 0\n+            self.msg_ratios[pid] = 0\n+            self.thresholds[pid] = round(1-self.factor,2)\n+\n+        # make copy of state to compare before/after run\n+        self._pre = copy.copy(self)\n+\n+    def add_send(self, pid):\n+        self.msgs_sent[pid] += 1\n+\n+    def add_recvd(self, pid):\n+        self.msgs_recvd[pid] += 1\n+        try:\n+            self.msg_ratios[pid] = round(self.msgs_recvd[pid]/self.msgs_sent[pid],2)\n+        except ZeroDivisionError:\n+            pass\n+        #self.check_threshold(pid)\n+\n+    def check(self):\n+        for pid in self.acceptor_ids:\n+            self.check_threshold(pid)\n+\n+    def check_threshold(self, pid):\n+        if self.msg_ratios[pid] <= self.thresholds[pid]:\n+            self.thresholds[pid] = round(self.thresholds[pid]-self.factor,2)\n+            self.lower_weight(pid)\n+\n+    def lower_weight(self, pid):\n+        # lower the pid's weight\n+        tmp = round(self.weights[pid]-self.factor,2)\n+        if tmp > 0.0:\n+            self.weights[pid] = tmp\n+        else:\n+            self.weights[pid] = 0.0\n+        self.raise_weight()\n+        self.weight_changed = True\n+\n+    def raise_weight(self):\n+        # increase another pid's weight\n+        if self.nominal != self.ceiling:\n+            adjusted = False\n+            while not adjusted:\n+                for i in range(self.num_acceptors):\n+                    pid = self.acceptor_ids[i]\n+                    diff = self.weights[pid] - self.nominal\n+                    if diff == 0.0:\n+                        self.weights[pid] = round(self.weights[pid]+self.factor,2)\n+                        adjusted = True\n+                        break\n+                if i is (self.num_acceptors-1):\n+                    self.nominal = round(self.nominal+self.factor,2)\n+\n+    def log(self):\n+        print(\"Acceptor weights: {}\".format(self.weights))\n+        print(\"Acceptor ratios: {}\".format(self.msg_ratios))\n+        print(\"Acceptor thresholds: {}\".format(self.thresholds))\n+\n+\n+if __name__ == '__main__':\n+    import random\n+\n+    def test(acceptors, fail_rates, num_msgs):\n+        print(\"testing pids {}: \".format(acceptors))\n+        a=Analyzer(acceptors)\n+        print(\"\\nBefore rounds...\")\n+        a.log()\n+        for n in range(num_msgs):\n+            for pid in acceptors:\n+                a.add_send(pid)\n+                if fail_rates[pid] > random.random():\n+                    pass\n+                else:\n+                    a.add_recvd(pid)\n+        print(\"\\nAfter rounds...\")\n+        a.log()\n+        print('\\n')\n+\n+    test([0,1,2,3],[0,0,0.05,0],100)\n+    test([0,1,2,3,4],[0,0,0.05,0,0],100)\n+    test([0,1,2,3,4,5,6,7,8,9],[0,0,0.05,0,0,0,0,0,0.1,0],1000)\n\\ No newline at end of file\n",
+                "new_file": true,
+                "new_path": "server/model/analyzer.py",
+                "old_path": "server/model/analyzer.py",
+                "renamed_file": false
+                "lines_added": 0,
+                "lines_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "blanks_added": 0,
+                "blanks_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0
+            }
+        ]
     }
 ]
 
