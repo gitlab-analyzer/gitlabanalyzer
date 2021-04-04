@@ -120,6 +120,9 @@ class MongoDB:
         }
         return self.__find(self.__codeDiffColl, query)
 
+    def find_codeDiffs_in_project(self, project_id: Union[int, str]) -> List[dict]:
+        return self.__find(self.__codeDiffColl, {"project_id": project_id})
+
     def find_codeDiffs_in_MR(self, project_id: Union[int, str], mr_id: int) -> List[dict]:
         mr: dict = self.find_one_MR(project_id, mr_id)
         if not mr:
@@ -129,9 +132,8 @@ class MongoDB:
         codeDiffIds: List[int] = [commit['code_diff_id'] for commit in commits]
         return self.find_many_codeDiffs(project_id, codeDiffIds)
 
-    # TODO: Comments
+    # TODO: Comments. PROBLEM: What is a Comment's primary key(s)?
 
-    # TODO: Members
     def find_one_member(self, member_id: int) -> dict:
         return self.__findOne(self.__memberColl, {"id": member_id})
 
@@ -140,6 +142,25 @@ class MongoDB:
         return self.__find(self.__memberColl, query)
 
     # TODO: Issues
+    def find_one_issue(self, project_id: Union[int, str], issue_id: int) -> dict:
+        return self.__findOne(self.__issueColl, {"project_id": project_id, "issue_id": issue_id})
+
+    def find_many_issues(self, project_id: Union[int, str], issue_ids: List[int]) -> List[dict]:
+        query: dict {
+            "project_id": project_id,
+            "$or": [{"issue_id": issue_id} for issue_id in issue_ids]
+        }
+        return self.__find(self.__issueColl, query)
+    
+    def find_issues_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
+        query: dict = {
+            "project_id": project_id,
+            "$and": [
+                {"created_date": {"$gte": start_date}},
+                {"created_date": {"$lte": end_date}}
+            ]
+        }
+        return self.__find(self.__issueColl, query)
 
 
     # ********************** INSERT METHODS ******************************
