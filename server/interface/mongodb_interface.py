@@ -14,7 +14,7 @@ from model.merge_request import MergeRequest
 from model.comment import Comment
 from model.member import Member
 from model.issue import Issue
-from interface.gitlab_project_interface import GitLabProject
+from model.project import Project
 
 class MongoDB:
     CursorTimeOutMS = 5000
@@ -44,6 +44,7 @@ class MongoDB:
             print("MongoDB_interface: Find Operation Timed Out for collection:{}. query={}".format(coll, query))
             return list()
 
+    @staticmethod
     def __findOne(coll: Collection, query: dict) -> dict:
         try:
             return coll.find_one(filter=query, max_time_ms=MongoDB.CursorTimeOutMS)
@@ -128,6 +129,18 @@ class MongoDB:
         codeDiffIds: List[int] = [commit['code_diff_id'] for commit in commits]
         return self.find_many_codeDiffs(project_id, codeDiffIds)
 
+    # TODO: Comments
+
+    # TODO: Members
+    def find_one_member(self, member_id: int) -> dict:
+        return self.__findOne(self.__memberColl, {"id": member_id})
+
+    def find_many_members(self, member_ids: List[int]) -> List[dict]:
+        query: dict = {"$or": [{"id": id} for id in member_ids]}
+        return self.__find(self.__memberColl, query)
+
+    # TODO: Issues
+
 
     # ********************** INSERT METHODS ******************************
     @staticmethod
@@ -157,24 +170,19 @@ class MongoDB:
         }
         return self.__insertOne(self.__userColl, body)
 
-    def insert_one_project(self, glProject: GitLabProject, projectConfig: dict) -> bool:
-        memberIDs: List[int] = []
-        for member in glProject.member_manager.get_member_list():
-            memberIDs.append(member.id)
-
+    def insert_one_project(self, project: Project, projectConfig: dict, memberMap: dict) -> bool:
         body: dict = {
-            '_id': glProject.project_id,
-            'project_id': glProject.project_id,
-            'name': glProject.project.name,
-            'path': glProject.project.path,
+            '_id': project.project_id,
+            'project_id': project.project_id,
+            'name': project.name,
+            'path': project.path,
             'namespace': {
-                'name': glProject.project.namespace,
-                'path': glProject.project.path_namespace
+                'name': project.namespace,
+                'path': project.path_namespace
             },
             'last_cached_date': datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0).isoformat(),
             'config': projectConfig,
-            'member_ids': memberIDs,
-            'user_list': glProject.user_list
+            'member_map': memberMap
         }
         return self.__insertOne(self.__projectColl, body)
 
@@ -265,12 +273,14 @@ class MongoDB:
         }
         return self.__insertOne(self.__codeDiffColl, body)
 
+    # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS
     def insert_many_comments(self, project_id: Union[int, str], commentList: List[Comment]) -> bool:
         body: List[dict] = []
         for comment in commentList:
             body.append({"project": project_id}.update(comment.to_dict))
         return self.__insertMany(self.__commentColl, body)
 
+    # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS    
     def insert_one_comment(self, project_id: Union[int, str], comment: Comment) -> bool:
         body: dict = {"projectid": project_id}
         body.update(comment.to_dict())
@@ -280,15 +290,25 @@ class MongoDB:
     def insert_many_members(self, memberList: List[Member]) -> bool:
         body: List[dict] = []
         for member in memberList:
-            memberObj = {"_id": member.id}
-            memberObj.update(member.to_dict())
-            body.append(memberObj)
+            body.append({
+                "_id": member.id,
+                "member_id": member.id,
+                "username": member.username,
+                "name": member.name,
+                "state": member.state,
+                "access_level": member.access_level
+            })
         return self.__insertMany(self.__memberColl, body)
 
     def insert_one_member(self, member: Member) -> bool:
-        memberDict: dict = member.to_dict()
-        body: dict = {"_id": member.id}
-        body.update(memberDict)
+        body: dict = {
+            "_id": member.id,
+            "member_id": member.id,
+            "username": member.username,
+            "name": member.name,
+            "state": member.state,
+            "access_level": member.access_level
+        }
         return self.__insertOne(self.__memberColl, body)
 
     def insert_many_issues(self, issueList: List[Issue]) -> bool:
@@ -349,12 +369,12 @@ Project Collection: [
             <project config. Starts empty, and gets user's config when project is analyzed for the first time.
              this config will include the mapping of user names and members>
         },
-        member_ids: [
-            <will contain all contributors of the project (members and users)>
-        ],
-        user_list: [
-            <users list>
-        ]
+        member_map: { // example
+            "springbro294": <member_id of alex>,
+            "xtran": <member_id of alex>,
+            "Henry Fang": <member_id of henry>,
+            "jiwonj": <member_id of jiwon> 
+        }
     }
 ]
 
@@ -422,7 +442,12 @@ Comment Collection: [
 
 Member Collection: [
     {
-        
+        _id: member.id
+        id: member.id
+        username: member.username
+        name: member.name
+        state: member.state
+        access_level: member.access_level
     }
 ]
 
