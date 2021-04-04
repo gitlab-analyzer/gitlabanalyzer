@@ -52,7 +52,10 @@ const Repo = ({
 
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
-  useEffect(() => {}, [filteredList, selectRepo, setBatchList]);
+  useEffect(() => {
+    console.log(batchList);
+    console.log('filtered list:', filteredList);
+  }, [filteredList, selectRepo, batchList]);
 
   const handleRoute = () => {
     if (
@@ -450,9 +453,24 @@ const Repo = ({
     }
   };
 
+  const checkBatchList = (item) => {
+    let isInArray = batchList.find((el) => {
+      return el.id === item.id;
+    });
+    return isInArray;
+  };
+
   const addtoBatchList = (item) => {
-    setBatchList([...batchList, item]);
-    console.log(batchList);
+    // Todo
+    // Check if included in batchlist, if so, remove
+    if (checkBatchList(item)) {
+      // Remove
+      let newList = batchList.filter((batch) => batch.id !== item.id);
+      setBatchList([...newList]);
+    } else {
+      // If not, add to batchlist
+      setBatchList([...batchList, item]);
+    }
   };
 
   if (redirect) {
