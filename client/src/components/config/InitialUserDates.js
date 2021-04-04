@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import { configSettings } from '../login/Repo';
@@ -10,8 +10,15 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
-  const { selectMembersList, selectUser, setSelectUser, anon } = useAuth();
-
+  const { 
+    selectMembersList, 
+    selectUser, 
+    setSelectUser, 
+    anon, 
+    viewDates,
+    setViewDates,
+  } = useAuth();
+  useEffect(() => {}, [viewDates]);
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
@@ -53,7 +60,8 @@ function InitialUserDates() {
       <Form.Item
         label="Dates"
         name="date"
-        initialValue={[moment().startOf('day'), moment().endOf('day')]}
+        initialValue={viewDates}
+        
         rules={[
           {
             required: true,
@@ -61,27 +69,16 @@ function InitialUserDates() {
           },
         ]}
       >
-        {/* <div className="daterange"> */}
           <RangePicker
             format="YYYY/MM/DD hh:mm:ss"
             ranges={{
               Today: [moment().startOf('day'), moment().endOf('day')],
             }}
+            onChange={setViewDates}
             showTime
             allowClear={false}
-            // defaultValue={
-            //   configSettings.enddate && [
-            //     moment(configSettings.startdate),
-            //     moment(configSettings.enddate),
-            //   ]
-            // }
-            onChange={(value) => {
-              configSettings.startdate = value[0].format();
-              configSettings.enddate = value[1].format();
-            }}
             renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}
           />
-        {/* </div> */}
       </Form.Item>
     </div>
   );

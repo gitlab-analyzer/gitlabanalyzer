@@ -7,7 +7,8 @@ import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 const { RangePicker } = DatePicker;
 
 function IterationDates() {
-  let tempitername;
+
+  // let tempitername;
   return (
     <div>
       <h6>Iteration Duration</h6>
@@ -27,8 +28,8 @@ function IterationDates() {
                   {...field}
                   name={[field.name, 'itername']}
                   fieldKey={[field.fieldKey, 'itername']}
-                  onValuesChange={(field) => {tempitername=field.target.value}}
-                  rule={[{ 
+                  // onValuesChange={(field) => {tempitername=field.target.value}}
+                  rules={[{ 
                     required:true, 
                     message: 'Missing Iteration Name'
                   }]}
@@ -37,7 +38,7 @@ function IterationDates() {
                     placeholder="Iteration Name" 
                     // onValuesChange={(field) => {tempitername=field.target.value}}
                   />
-                  {console.log('tempitername',tempitername, index)}
+                  {/* {console.log('tempitername',tempitername, index)} */}
                 </Form.Item>
                 <p>:</p>
                 <Form.Item
@@ -49,15 +50,15 @@ function IterationDates() {
                   //   configSettings.iteration.iter1start = value[0].format();
                   //   configSettings.iteration.iter1end = value[1].format();
                   // }}
-                  initialValue={
-                    [moment().startOf('moment'), moment().endOf('month')]
-                  }
+                  // initialValue={
+                  //   [moment().startOf('moment'), moment().endOf('month')]
+                  // }
                   rules={[{ 
                     required: true, 
                     message: 'Missing Dates'
                   }]}
                 >
-                  {console.log('field', field)}
+                  {/* {console.log('field', field)} */}
                   {/* {console.log('field target value', field.target.value)} */}
                   {/* {console.log('start', field.value[0])}
                   {console.log('end', field.value[1])}   */}

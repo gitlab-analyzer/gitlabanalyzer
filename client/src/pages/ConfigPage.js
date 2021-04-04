@@ -6,9 +6,9 @@ import InitialUserDates from '../components/config/InitialUserDates';
 import AnonymousViewing from '../components/config/AnonymousViewing';
 import FooterBar from '../components/FooterBar';
 import { Form, Divider, Row, Col, Button } from 'antd';
-import { VerticalAlignBottomOutlined } from '@ant-design/icons';
 
 const ConfigPage = () => {
+
   // const [form] = Form.useForm();
   const findValues = (value) => {
     console.log("from form", value)

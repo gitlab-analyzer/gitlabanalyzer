@@ -34,6 +34,8 @@ function FloatBar() {
     notesList,
     mergeRequestList,
     commentsList,
+    viewDates,
+    setViewDates,
   } = useAuth();
   useEffect(() => {}, []);
   const iterDates = [
@@ -70,7 +72,8 @@ function FloatBar() {
             <Grid item xs={12}>
               <div className="daterange">
                 <RangePicker 
-                  defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
+                  defaultValue={viewDates}
+                  onChange={setViewDates}
                   format="YYYY/MM/DD hh:mm:ss"
                   ranges={dateObj}
                   showTime
