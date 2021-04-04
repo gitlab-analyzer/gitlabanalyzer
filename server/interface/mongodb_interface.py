@@ -31,7 +31,7 @@ class GitLabDB:
         self.__memberColl = self.__gitLabAnalyzerDB["members"]
         self.__issueColl = self.__gitLabAnalyzerDB["issues"]
 
-    # ********************** FIND METHODS ******************************
+    # ********************** FIND METHODS ************************************************************************************
     @staticmethod
     def __find(coll: Collection, query: dict) -> List[dict]:
         try:
@@ -91,6 +91,7 @@ class GitLabDB:
         }
         return self.__find(self.__commitColl, query)
 
+    # NOTE: MUST TEST
     def find_commits_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
         query: dict = {
             "project_id": project_id,
@@ -121,6 +122,7 @@ class GitLabDB:
     def find_codeDiffs_in_project(self, project_id: Union[int, str]) -> List[dict]:
         return self.__find(self.__codeDiffColl, {"project_id": project_id})
 
+    # NOTE: MUST TEST
     def find_codeDiffs_in_MR(self, project_id: Union[int, str], mr_id: int) -> List[dict]:
         mr: dict = self.find_one_MR(project_id, mr_id)
         if not mr:
@@ -150,6 +152,7 @@ class GitLabDB:
         }
         return self.__find(self.__issueColl, query)
     
+    # NOTE: MUST TEST
     def find_issues_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
         query: dict = {
             "project_id": project_id,
@@ -159,9 +162,15 @@ class GitLabDB:
             ]
         }
         return self.__find(self.__issueColl, query)
+    
+    def find_issue_of_MR(self, project_id: Union[int, str], mr_id: int) -> dict:
+        mr: dict = self.find_one_MR(project_id, mr_id)
+        if not mr:
+            return dict()
+        return self.__findOne(self.__issueColl, {'issue_id': mr['issue_id']})
 
 
-    # ********************** INSERT METHODS ******************************
+    # ********************** INSERT METHODS *****************************************************************************************
     @staticmethod
     def __insertOne(coll: Collection, body: dict) -> bool:
         try:
@@ -219,6 +228,7 @@ class GitLabDB:
                 'mr_id': mr.id,
                 'project_id': project_id,
                 'issue_id': mr.__related_issue_iid,
+                'code_diff_id': mr.code_diff_id,
                 'merged_date': isoparse(mr.merged_date) if mr.merged_date is not None else None,
                 'contributors': list(contributors),
                 'related_commit_ids': list(relatedCommitIDs)
@@ -237,6 +247,7 @@ class GitLabDB:
             'mr_id': mergeRequest.id,
             'project_id': project_id,
             'issue_id': mergeRequest.__related_issue_iid,
+            'code_diff_id': mergeRequest.code_diff_id,
             'merged_date': isoparse(mergeRequest.merged_date) if mergeRequest.merged_date is not None else None,
             'contributors': list(contributors),
             'related_commit_ids': list(relatedCommitIDs)
@@ -409,6 +420,7 @@ MergeRequest Collection: [
         related_commit_ids: [
             <ids of commits in the merge request>
         ]
+        code_diff_id: <code_diff_id (codediff's artif id)>
     }
 ]
 
