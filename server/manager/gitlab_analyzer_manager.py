@@ -1,8 +1,9 @@
+import datetime
 import threading
+import time
 from typing import Union, Tuple
 
 import gitlab
-
 from interface.gitlab_analyzer_interface import GitLabAnalyzer
 from interface.gitlab_project_interface import GitLabProject
 
@@ -15,8 +16,11 @@ ERROR_CODES = {
 
 
 class GitLabAnalyzerManager:
-    def __init__(self):
+    def __init__(self, maximum_exist_time=datetime.timedelta(hours=6)):
         self.__gitlab_list: dict = {}
+        self.__worker_should_run_signal: bool = False
+        self.__garbage_monitor = threading.Thread(target=self.__garbage_monitor_worker())
+        self.__maximum_exist_time: datetime = maximum_exist_time
 
     # authenticate and add the gitlab instance on success. If success, it will also return username
     def add_gitlab(
@@ -259,3 +263,19 @@ class GitLabAnalyzerManager:
         if isValid:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
+
+    def __delete_GitLab_instance(self, hashedToken: str):
+        if self.__gitlab_list.get(hashedToken, None) is not None:
+            self.__gitlab_list.pop(hashedToken)
+
+    def __garbage_monitor_worker(self):
+        while self.__worker_should_run_signal:
+            pass
+            # TODO: do time.sleep() here
+
+    def start_garbage_monitor_thread(self):
+        self.__worker_should_run_signal = True
+        self.__garbage_monitor.start()
+
+    def stop_garbage_monitor_thread(self):
+        self.__worker_should_run_signal = False
