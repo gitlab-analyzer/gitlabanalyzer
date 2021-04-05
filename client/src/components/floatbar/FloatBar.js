@@ -36,23 +36,14 @@ function FloatBar() {
     selectUser,
     dataList,
     setDataList,
+    currentConfig,
   } = useAuth();
   useEffect(() => {}, []);
-  const iterDates = [
-    {
-      name: "iter1",
-      start: "20210301 120000",
-      end: "20210320 120000"
-    },
-    {
-      name: "iter2",
-      start: "20210325 120000",
-      end: "20210330 120000"
-    },
-  ]
+
   let dateObj = {}  
-  for(let dateprop of iterDates){
-    dateObj[dateprop.name] = [moment().startOf('month'), moment().endOf('month')]
+  console.log("curr iterations", currentConfig.value.iterations)
+  for(let dateprop of currentConfig.value.iterations){
+    dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
   }
 
   const handleSort = (value) => {
@@ -68,11 +59,6 @@ function FloatBar() {
     }
   }
 
-  // const handleDate = (value) => {
-  //   configSettings.startdate = value[0]
-  //   configSettings.enddate = value[1]
-  //   setDataList(value)
-  // }
   let userData = barData.find(x=>x.name===selectUser)
 
 
