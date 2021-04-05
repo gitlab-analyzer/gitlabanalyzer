@@ -89,6 +89,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
 
   // Set project ID to the users chosen ID
   const syncProjectId = async () => {
+    axios.defaults.withCredentials = true;
     const projectRes = await axios.post(
       `http://localhost:5678/projects/${selectRepo}/sync`,
       {
@@ -98,6 +99,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           'Access-Control-Allow-Origin': '*',
         },
         crossorigin: true,
+        crossDomain: true,
       }
     );
     if (!projectRes.data['response']) {
