@@ -16,7 +16,7 @@ class CodeDiffAnalyzer:
     def get_code_diff_by_id(self, codeDiffId: int) -> list:
         return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
 
-    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> None:
+    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> dict:
 
         info = {
             "lines_added": 0,

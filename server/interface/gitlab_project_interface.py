@@ -1,7 +1,7 @@
 import datetime
 import threading
 from interface.gitlab_interface import GitLab
-from manager.code_diff_temp import CodeDiffAnalyzer
+from manager.code_diff_Analyzer import CodeDiffAnalyzer
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.issue_manager import IssueManager
@@ -267,7 +267,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commits: List[str]) -> Tuple[list, list]:
+    def __get_commit_list_and_authors(self, commits: List[Commit]) -> Tuple[list, list]:
         commitList = []
         authors = set()
         for commit in commits:
