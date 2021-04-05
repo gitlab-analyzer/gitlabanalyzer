@@ -32,10 +32,24 @@ class GitLabAnalyzerManager:
     def __find_gitlab(self, hashedToken: str) -> Union[GitLabAnalyzer]:
         return self.__gitlab_list.get(hashedToken, None)
 
+    def __update_project_list_with_last_synced_time(
+        self, hashedToken: str, projectList: list
+    ) -> None:
+        for project in projectList:
+            isValid, _, _, myProject = self.__validate_token_and_project_state(
+                hashedToken, project["id"]
+            )
+            if isValid:
+                project["last_synced"] = myProject.last_synced
+            else:
+                project["last_synced"] = None
+
     def get_project_list(self, hashedToken: str) -> Tuple[bool, str, list]:
         myGitLab = self.__find_gitlab(hashedToken)
         if myGitLab is not None:
-            return True, "", myGitLab.get_all_gitlab_project_name_and_id()
+            projectList = myGitLab.get_all_gitlab_project_name_and_id()
+            self.__update_project_list_with_last_synced_time(hashedToken, projectList)
+            return True, "", projectList
         else:
             return False, ERROR_CODES["invalidToken"], []
 

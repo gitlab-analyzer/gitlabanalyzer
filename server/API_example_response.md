@@ -60,8 +60,16 @@ Required body:
 {
     "cause": "",
     "projects": [
-        "TestUser H / CMPT373_TestRepoFromProf",
-        "Administrator / Makemake_Mirrored"
+        {
+            "id": 3,
+            "last_synced": "Thu, 01 Apr 2021 22:49:59 GMT",
+            "name": "TestUser H / CMPT373_TestRepoFromProf"
+        },
+        {
+            "id": 2,
+            "last_synced": null,
+            "name": "Administrator / Makemake_Mirrored"
+        }
     ],
     "response": true
 }
