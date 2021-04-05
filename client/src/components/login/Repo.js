@@ -461,7 +461,6 @@ const Repo = ({
   };
 
   const addtoBatchList = (item) => {
-    // Todo
     // Check if included in batchlist, if so, remove
     if (checkBatchList(item)) {
       // Remove
