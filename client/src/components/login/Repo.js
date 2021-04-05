@@ -404,11 +404,7 @@ const Repo = ({
             display: 'flex',
             justifyContent: 'flex-end',
           }}
-        >
-          <Button type="primary" key="batchanalyze">
-            Batch Process
-          </Button>
-        </div>
+        ></div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Checkbox
             indeterminate={indeterminate}
@@ -417,6 +413,9 @@ const Repo = ({
           >
             Select all
           </Checkbox>
+          <Button type="primary" key="batchanalyze">
+            Batch Process
+          </Button>
         </div>
       </>
     );
@@ -482,6 +481,12 @@ const Repo = ({
     }
   };
 
+  const renderProject = (id) => {
+    // setSelectedRepo(id);
+    selectRepo = id;
+    fetchAndRedirect();
+  };
+
   const goRender = (item) => {
     if (item['lastSynced'] === null) {
       return (
@@ -490,7 +495,11 @@ const Repo = ({
         </Button>
       );
     } else {
-      return <Button type="primary">Go</Button>;
+      return (
+        <Button onClick={fetchAndRedirect} type="primary">
+          Go
+        </Button>
+      );
     }
   };
 
