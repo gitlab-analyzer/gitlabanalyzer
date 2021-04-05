@@ -18,7 +18,7 @@ function InitialUserDates() {
     dataList,
     setDataList
   } = useAuth();
-  useEffect(() => {}, []);
+  // useEffect(() => {}, [dataList]);
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
@@ -80,6 +80,7 @@ function InitialUserDates() {
             ranges={{
               Today: [moment().startOf('day'), moment().endOf('day')],
             }}
+            defaultValue={dataList}
             onChange={setDataList}
             showTime
             allowClear={false}

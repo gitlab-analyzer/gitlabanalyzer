@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import LanguagePoints from '../components/config/LanguagePoints';
 import IterationDates from '../components/config/IterationDates';
@@ -6,12 +6,21 @@ import InitialUserDates from '../components/config/InitialUserDates';
 import AnonymousViewing from '../components/config/AnonymousViewing';
 import FooterBar from '../components/FooterBar';
 import { Form, Divider, Row, Col, Button } from 'antd';
+import { useAuth } from '../context/AuthContext'
 
 const ConfigPage = () => {
-
-  // const [form] = Form.useForm();
+  const { 
+    dataList,
+    setDataList
+  } = useAuth();
+  const [form] = Form.useForm();
+  var SavedConfigs = {}
+  useEffect(() => {
+    form.setFieldsValue({date:{dataList}})
+   }, [form, dataList])
   const findValues = (value) => {
     console.log("from form", value)
+    SavedConfigs["default"] = value;
   }
   return (
     <>

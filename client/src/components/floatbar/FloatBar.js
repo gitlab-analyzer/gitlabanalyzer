@@ -68,11 +68,11 @@ function FloatBar() {
     }
   }
 
-  const handleDate = (value) => {
-    configSettings.startdate = value[0]
-    configSettings.enddate = value[1]
-    setDataList(value)
-  }
+  // const handleDate = (value) => {
+  //   configSettings.startdate = value[0]
+  //   configSettings.enddate = value[1]
+  //   setDataList(value)
+  // }
   let userData = barData.find(x=>x.name===selectUser)
 
 
