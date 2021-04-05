@@ -1,38 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import LanguagePoints from '../components/config/LanguagePoints';
 import IterationDates from '../components/config/IterationDates';
 import InitialUserDates from '../components/config/InitialUserDates';
 import AnonymousViewing from '../components/config/AnonymousViewing';
 import FooterBar from '../components/FooterBar';
-import { Form, Divider, Row, Col, Button } from 'antd';
+import { Form, Divider, Row, Col, Button, Input, Modal } from 'antd';
 import { useAuth } from '../context/AuthContext'
 
+var SavedConfigs = {}
 const ConfigPage = () => {
   const { 
     dataList,
-    setDataList
+    setDataList,
+    currentConfig,
+    setCurrentConfig
   } = useAuth();
   const [form] = Form.useForm();
-  var SavedConfigs = {}
+
   useEffect(() => {
     form.setFieldsValue({date:{dataList}})
    }, [form, dataList])
-  const findValues = (value) => {
-    console.log("from form", value)
-    SavedConfigs["default"] = value;
+
+  const handleSave = (value) => {
+    SavedConfigs[value.configname] = value;
+    setCurrentConfig({value});
+    console.log("current config", currentConfig)
   }
+
+  const fillForm = () => {
+    console.log(SavedConfigs["configone"])
+    form.setFieldsValue(
+      {user:"tester 88"}
+    );
+  };
   return (
     <>
       <Header />
       <Form 
-        style={{ padding:'3% 0 0 5%'}}
-        onFinish={findValues}
+        style={{ padding:'3% 3% 0 3%'}}
+        onFinish={handleSave}
       >
-        <h6>User Details</h6>
         <InitialUserDates />
         <Divider />
-        <Row gutter={100}>
+        <Row gutter={120}>
           <Col>
             <IterationDates />
           </Col>
@@ -41,15 +52,23 @@ const ConfigPage = () => {
           </Col>
         </Row>
         <Divider />
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-end"}}>
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"end"}}>
           <AnonymousViewing />
-          <div className="buttonContainer">
-            <Button 
-              size="large" 
-              style={{marginRight:10}}
+          <div className="buttonContainer" style={{display:'flex'}}>
+            <Form.Item
+              name="configname"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input a name.',
+                },
+              ]}
             >
-              Load Config
-            </Button>
+              <Input 
+                style={{marginRight:100}}
+                size="large"
+                />
+            </Form.Item>
             <Button 
               htmlType="submit" 
               size="large" 
@@ -67,5 +86,3 @@ const ConfigPage = () => {
 };
 
 export default ConfigPage;
-
-
