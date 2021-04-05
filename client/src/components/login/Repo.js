@@ -472,6 +472,28 @@ const Repo = ({
     }
   };
 
+  const cachedButton = (item) => {
+    if (item.lastSynced === null) {
+      return (
+        <Tag color={'red'} key={'notcached'}>
+          Not Cached
+        </Tag>
+      );
+    } else {
+      <Tag color={'red'} key={'notcached'}>
+        {item.lastSynced}
+      </Tag>;
+    }
+  };
+
+  const tagRender = (item) => {
+    if (item['lastSynced'] === null) {
+      return 'red';
+    } else {
+      return 'green';
+    }
+  };
+
   if (redirect) {
     return <Redirect to="/summary" />;
   } else {
@@ -487,9 +509,12 @@ const Repo = ({
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Tag color={'green'} key={'cached'}>
-                  Cached
+                <Tag color={tagRender(item)} key={'cached'}>
+                  {item['lastSynced'] === null
+                    ? 'Not Cached'
+                    : item['lastSynced']}
                 </Tag>,
+                // cachedButton(item),
                 <Button
                   onClick={(e) => {
                     handleAnalyze(e, item.id);

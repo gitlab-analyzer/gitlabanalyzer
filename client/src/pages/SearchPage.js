@@ -26,11 +26,13 @@ function SearchPage() {
       setRepo(repoList.data.projects);
 
       const projectsData = repoList.data.projects;
+      console.log('projects data', projectsData);
 
       const projectsList = projectsData.map((project) => {
         return {
           id: project.id,
           name: project.name,
+          lastSynced: project.last_synced,
         };
       });
       setReList([...projectsList]);
