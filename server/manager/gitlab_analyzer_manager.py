@@ -129,28 +129,37 @@ class GitLabAnalyzerManager:
 
         return True, "", myProject.get_project_sync_state()
 
-    def check_project_list_sync_state(
+    def __get_sync_state_list(
         self, hashedToken: str, projectList: list
-    ) -> Tuple[bool, str, dict]:
+    ) -> Tuple[bool, int, dict]:
+        totalProgress = 0
         response = {}
         isAllSuccess = True
-        myGitLab = self.__find_gitlab(hashedToken)
-        if myGitLab is None:
-            return False, ERROR_CODES["invalidToken"], {}
-
         for projectID in projectList:
             myGitLab, myProject = self.__get_project_analyzer_and_project(
                 hashedToken, projectID
             )
-
             if myProject is None:
                 isAllSuccess = False
                 continue
-            response[projectID] = myProject.get_project_sync_state()
+            syncState = myProject.get_project_sync_state()
+            response[projectID] = syncState
+            totalProgress += syncState["syncing_progress"]
+        totalProgress = int((totalProgress / (len(projectList) * 100)) * 100)
+        return isAllSuccess, totalProgress, response
 
+    def check_project_list_sync_state(
+        self, hashedToken: str, projectList: list
+    ) -> Tuple[bool, str, dict, int]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is None:
+            return False, ERROR_CODES["invalidToken"], {}, 0
+        isAllSuccess, totalProgress, response = self.__get_sync_state_list(
+            hashedToken, projectList
+        )
         if isAllSuccess:
-            return True, "", response
-        return False, ERROR_CODES["partialInvalidProjectID"], response
+            return True, "", response, totalProgress
+        return False, ERROR_CODES["partialInvalidProjectID"], response, totalProgress
 
     def get_project_members(
         self, hashedToken: str, projectID: int
