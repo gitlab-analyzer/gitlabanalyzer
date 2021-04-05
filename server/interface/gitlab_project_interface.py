@@ -90,7 +90,9 @@ class GitLabProject:
             mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(item)
+                    self.__commentsManager.add_comment(
+                        item, mergeRequests[i].author["name"]
+                    )
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
@@ -109,7 +111,9 @@ class GitLabProject:
             # Get comments
             commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
             for item in commit_notes:
-                self.__commentsManager.add_comment(item, commit.short_id)
+                self.__commentsManager.add_comment(
+                    item, commit.author_name, commit.short_id
+                )
         self.__user_list = list(tempUserSet)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -121,7 +125,7 @@ class GitLabProject:
             issue_notes = myGitlab.get_comments_of_issue(issue.iid)
             for item in issue_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(item)
+                    self.__commentsManager.add_comment(item, issue.author["name"])
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
@@ -331,6 +335,48 @@ class GitLabProject:
         for member in memberList:
             memberInfoList.append(member.to_dict())
         return memberInfoList
+
+    # Assumed dictionary passed from frontend:
+    #     Ex. { "MemberA": ["userA_1", "userA_2"],
+    #           "MemberB": ["userB_1", "userB_2", "userB_3"]  }
+    # Parse the dictionary and break down to memberList & userList to call mapping function below
+    def call_map_users_to_members(self, map_dictionary) -> None:
+        memberList = []
+        userList = []
+
+        for key in map_dictionary:
+            memberList.append(key)
+            userList.append(map_dictionary[key])
+
+        self.__map_users_to_members(memberList, userList)
+
+    # memberList: [memberA, memberB]
+    # userList: [[userA_1, userA_2], [userB_1]]
+    def __map_users_to_members(self, memberList, userList) -> None:
+        self.__update_merge_request_manager_after_mapping(memberList, userList)
+        self.__update_commits_manager_after_mapping(memberList, userList)
+
+    def __update_merge_request_manager_after_mapping(
+        self, memberList, userList
+    ) -> None:
+        all_mrs_list = self.__mergeRequestManager.merge_request_list
+        for mr in all_mrs_list:
+            commits_list = mr.related_commits_list
+            for i in range(0, len(commits_list)):
+                commit_authorName = commits_list[i].author_name
+                for user_sublist in range(0, len(userList)):
+                    if commit_authorName in userList[user_sublist]:
+                        mr.related_commits_list[i].author_name = memberList[
+                            user_sublist
+                        ]
+
+    def __update_commits_manager_after_mapping(self, memberList, userList) -> None:
+        all_commits_list = self.__commitsManager.get_commit_list()
+        for i in range(0, len(all_commits_list)):
+            commit_authorName = all_commits_list[i].author_name
+            for user_sublist in range(0, len(userList)):
+                if commit_authorName in userList[user_sublist]:
+                    all_commits_list[i].author_name = memberList[user_sublist]
 
     @property
     def project_id(self) -> int:

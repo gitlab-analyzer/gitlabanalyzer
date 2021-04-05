@@ -24,8 +24,11 @@ class GitLabAnalyzerManager:
     ) -> Tuple[bool, str, str]:
         try:
             myGitLabAnalyzer = GitLabAnalyzer(token, hashedToken, url)
-            self.__gitlab_list[hashedToken] = myGitLabAnalyzer
-            return True, "", myGitLabAnalyzer.username
+            if self.__gitlab_list.get(hashedToken):
+                pass
+            else:
+                self.__gitlab_list[hashedToken] = myGitLabAnalyzer
+                return True, "", myGitLabAnalyzer.username
         except gitlab.exceptions.GitlabAuthenticationError:
             return False, ERROR_CODES["invalidToken"], ""
 
