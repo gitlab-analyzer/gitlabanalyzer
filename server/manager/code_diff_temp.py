@@ -39,40 +39,25 @@ class CodeDiffAnalyzer:
                 # Check for block of comments
                 # -------------------------------------------------
                 if python is False:
-                    if block_code == True and "*/" not in line:
-                        info = self.modify_info_value("comments", info, line[0])
-                        continue
-
-                    if "/*" in line:
-                        if "*/" in line:
-                            info = self.modify_info_value("comments", info, line[0])
-                        else:
-                            info = self.add_block_of_comments(
-                                line, python, info, block_code
-                            )
-                            block_code = True
-                        continue
-
-                    if "*/" in line:
+                    temp = info.copy()
+                    info = self.define_block_of_code(
+                        block_code, "/*", line, info, python
+                    )
+                    if "*/" in line and info == temp:
                         info = self.add_block_of_comments(
                             line, python, info, block_code
                         )
                         block_code = False
                         continue
                 else:
-                    if block_code == True and "'''" not in line:
-                        info = self.modify_info_value("comments", info, line[0])
-                        continue
+                    temp = info.copy()
+                    info = self.define_block_of_code(
+                        block_code, "'''", line, info, python
+                    )
 
-                    if "'''" in line:
-                        if line.count("'''") == 2:
-                            info = self.modify_info_value("comments", info, line[0])
-                        else:
-                            info = self.add_block_of_comments(
-                                line, python, info, block_code
-                            )
-                            block_code = not block_code
-                        continue
+                if info != temp:
+                    block_code = not block_code
+                    continue
                 # -------------------------------------------------
 
                 # Adding to middle of the line instead of to the front or the back
@@ -87,10 +72,13 @@ class CodeDiffAnalyzer:
 
                 # Adding to an exisiting line
                 # -------------------------------------------------
+                temp = info.copy()
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line("+", line, oldLine, info, python)
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line("-", line, oldLine, info, python)
+                if info != temp:
+                    continue
                 # -------------------------------------------------
 
                 # Normal case
@@ -184,6 +172,23 @@ class CodeDiffAnalyzer:
             else:
                 info = self.modify_info_value("lines", info, line[0])
 
+        return info
+
+    def define_block_of_code(
+        self, block_code, signal_block_code, line, info, python
+    ) -> dict:
+        if block_code == True and signal_block_code not in line:
+            info = self.modify_info_value("comments", info, line[0])
+            return info
+
+        if signal_block_code in line:
+            if ("*/" in line and python == False) or (
+                line.count(signal_block_code) == 2 and python == True
+            ):
+                info = self.modify_info_value("comments", info, line[0])
+                return info
+
+        info = self.add_block_of_comments(line, python, info, block_code)
         return info
 
     def add_block_of_comments(self, line, python, info, block_code) -> dict:
