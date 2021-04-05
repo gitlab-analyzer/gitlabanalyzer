@@ -178,18 +178,8 @@ class GitLabProject:
 
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
         for diff in codeDiff:
-<<<<<<< server/interface/gitlab_project_interface.py
-            codeDiffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
-                CodeDiff(diff)
-            )
-
-            for key1, key2 in zip(scoreData.keys(), codeDiffStats.keys()):
-                assert key1 == key2
-                scoreData[key1] += codeDiffStats[key2]
-=======
             for key in scoreData.keys():
                 scoreData[key] += diff[key]
->>>>>>> server/interface/gitlab_project_interface.py
 
         return scoreData
 
@@ -218,25 +208,6 @@ class GitLabProject:
             },
         }
 
-<<<<<<< server/interface/gitlab_project_interface.py
-        codeDiff: list = self.__codeDiffAnalyzer.get_code_diff_by_id(
-            mergeRequest.code_diff_id
-        )
-        for diff in codeDiff:
-            mergeRequestScoreData = self.__codeDiffAnalyzer.get_code_diff_statistic(
-                CodeDiff(diff)
-            )
-            scoreData["mergeRequestScoreData"] = deepcopy(mergeRequestScoreData)
-
-        for commit in mergeRequest.related_commits_list:
-            commitScoreData = self.get_commit_score_data(commit)
-
-            for key1, key2 in zip(
-                scoreData["mergeRequestScoreData"].keys(), commitScoreData.keys()
-            ):
-                assert key1 == key2
-                scoreData["relatedCommitsScoreData"][key1] += commitScoreData[key2]
-=======
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(
             mergeRequest.code_diff_id
         )
@@ -248,7 +219,6 @@ class GitLabProject:
             commitScoreData = self.get_commit_score_data(commit)
             for key in commitScoreData.keys():
                 scoreData["relatedCommitsScoreData"][key] += commitScoreData[key]
->>>>>>> server/interface/gitlab_project_interface.py
 
         return scoreData
 

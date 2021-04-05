@@ -26,22 +26,6 @@ def hash_token(myToken: str):
 @app.route('/auth', methods=['post'])
 def auth():
     myToken = request.form['token']
-<<<<<<< server/app.py
-    myGitLab = GitLab(token=myToken, url=request.form['url'])
-    if myGitLab.authenticate():
-        response = make_response(
-            jsonify({'username': myGitLab.get_username(), 'response': True})
-        )
-        # TODO: This hashed str will be stored in the gitlabAnalyzer class later on
-        response.set_cookie(
-            key="id", value=hashlib.sha256(str.encode(myToken)).hexdigest()
-        )
-        return response
-    else:
-        return jsonify(
-            {'username': '', 'response': False, 'Cause': "Invalid token or url"}
-        )
-=======
     hashedToken = hash_token(myToken)
 
     isSuccess, errorCode, username = gitlab_manager.add_gitlab(
@@ -54,7 +38,6 @@ def auth():
         response.set_cookie(key="id", value=hashedToken)
 
     return response
->>>>>>> server/app.py
 
 
 @app.route('/projects', methods=['get'])
