@@ -43,29 +43,59 @@ const Summary = () => {
 
   const classes = useStyles();
 
-  console.log(notesList)
-  console.log(commitsList)
+  const COMMITS = 1;
+  const MERGE_REQUESTS = 2;
+  const CODE_REVIEWS = 3;
+  const ISSUES = 4;
   
 
-  const countDates = (commitsList) => {
+  const countDates = (list, type) => {
     var result = {},
       i,
       j,
       date,
       rarr = [];
-    for (i = 0; i < commitsList.length; i++) {
-      if (selectUser === commitsList[i].userName) {
-        for (j = 0; j < commitsList[i].commits[0].length; j++) {
+    
+    if (type == COMMITS) {
+    for (i = 0; i < list.length; i++) {
+      if (selectUser === list[i].userName) {
+        for (j = 0; j < list[i].commits[0].length; j++) {
           date = [
-            commitsList[i].commits[0][j].commitedDate.getFullYear(),
-            commitsList[i].commits[0][j].commitedDate.getMonth() +1,
-            commitsList[i].commits[0][j].commitedDate.getDate(),
+            list[i].commits[0][j].commitedDate.getFullYear(),
+            list[i].commits[0][j].commitedDate.getMonth() +1,
+            list[i].commits[0][j].commitedDate.getDate(),
           ].join('-');
           result[date] = result[date] || 0;
           result[date]++;
         }
       }
     }
+    } else if (type == MERGE_REQUESTS) {
+      // TODO: Merge Request logic
+    } else if (type == CODE_REVIEWS) {
+      for(i = 0; i < list.length; i++) {
+        if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
+          date = [list[i].createdDate.getFullYear(),
+          list[i].createdDate.getMonth() + 1,
+          list[i].createdDate.getDate(),
+        ].join('-');
+        result[date] = result[date] || 0;
+        result[date] += list[i].wordCount;
+        }
+      }
+    } else if (type == ISSUES) {
+      for(i = 0; i < list.length; i++) {
+        if (selectUser === list[i].author && list[i].noteableType == "Issue") {
+          date = [list[i].createdDate.getFullYear(),
+          list[i].createdDate.getMonth() + 1,
+          list[i].createdDate.getDate(),
+        ].join('-');
+        result[date] = result[date] || 0;
+        result[date] += list[i].wordCount;
+        }
+      }
+    }
+
     for (i in result) {
       if (result.hasOwnProperty(i)) {
         rarr.push({ date: i, counts: result[i] });
@@ -73,48 +103,7 @@ const Summary = () => {
     }
     return rarr;
   };
-  console.log(notesList)
-  const countCodeReviews = (notesList) => {
-    var result = {}, i, rarr = [],date;
 
-    for(i = 0; i < notesList.length; i++) {
-      if (selectUser === notesList[i].author && (notesList[i].noteableType == "MergeRequest" || notesList[i].noteableType == "Commit")) {
-        date = [notesList[i].createdDate.getFullYear(),
-        notesList[i].createdDate.getMonth() + 1,
-        notesList[i].createdDate.getDate(),
-      ].join('-');
-      result[date] = result[date] || 0;
-      result[date] += notesList[i].wordCount;
-      }
-    }
-    for (i in result) {
-      if (result.hasOwnProperty(i)) {
-        rarr.push({ date: i, counts: result[i] });
-      }
-    }
-    return rarr;
-  }
-
-  const countIssues = (notesList) => {
-    var result = {}, i, rarr = [],date;
-
-    for(i = 0; i < notesList.length; i++) {
-      if (selectUser === notesList[i].author && notesList[i].noteableType == "Issue") {
-        date = [notesList[i].createdDate.getFullYear(),
-        notesList[i].createdDate.getMonth() + 1,
-        notesList[i].createdDate.getDate(),
-      ].join('-');
-      result[date] = result[date] || 0;
-      result[date] += notesList[i].wordCount;
-      }
-    }
-    for (i in result) {
-      if (result.hasOwnProperty(i)) {
-        rarr.push({ date: i, counts: result[i] });
-      }
-    }
-    return rarr;
-  }
 
   const populateDates = (array) => {
     var result = [],
@@ -135,19 +124,20 @@ const Summary = () => {
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser
-  var dailyCommitsArray = countDates(userCommitsList)
+  var dailyCommitsArray = countDates(userCommitsList, COMMITS)
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
-  var dailyMRsArray = countDates(userCommitsList)
+  // Merge Request logic not complete - commits as placeholder
+  var dailyMRsArray = countDates(userCommitsList, COMMITS)
   var mrDatesArray = populateDates(dailyMRsArray)
   var mrCountsArray = populateCounts(dailyMRsArray)
 
-  var dailyCRArray = countCodeReviews(notesList)
+  var dailyCRArray = countDates(notesList, CODE_REVIEWS)
   var CRDatesArray = populateDates(dailyCRArray)
   var CRCountsArray = populateCounts(dailyCRArray)
 
-  var dailyIssuesArray = countIssues(notesList)
+  var dailyIssuesArray = countDates(notesList, ISSUES)
   var issueDatesArray = populateDates(dailyIssuesArray)
   var issueCountsArray = populateCounts(dailyIssuesArray)
 
@@ -182,7 +172,6 @@ const Summary = () => {
     setDateArray(commitDatesArray)
     setCrDateArray(CRDatesArray)
     setIssueDateArray(issueDatesArray)
-    console.log(CRCountsArray)
   }, [selectUser])
 
   const [combinedSeries, setCombinedSeries] = useState([
