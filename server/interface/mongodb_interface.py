@@ -31,6 +31,20 @@ class GitLabDB:
         self.__memberColl = self.__gitLabAnalyzerDB["members"]
         self.__issueColl = self.__gitLabAnalyzerDB["issues"]
 
+    # ********************** MODIFICATION METHODS ****************************************************************************
+    def add_user_config_profile(self, hashedToken: str, newConfigProfile: dict) -> bool:
+        pass
+
+    def delete_user_config_profile(self, hashedToken: str, configName: str) -> bool:
+        pass
+
+    def update_project_config(self, project_id: Union[int, str], newConfigProfile: dict) -> bool:
+        pass
+
+    def update_project_member_map(self, project_id: Union[int, str], newMemberMap: dict) -> bool:
+        pass
+
+
     # ********************** FIND METHODS ************************************************************************************
     @staticmethod
     def __find(coll: Collection, query: dict) -> List[dict]:
@@ -189,12 +203,12 @@ class GitLabDB:
             print("MongoDB_interface: Duplicate batch insert in collection:{}.".format(coll))
             return False
 
-    def insert_one_GLAUser(self, hashedToken: str, config: dict) -> bool:
+    def insert_one_GLAUser(self, hashedToken: str, defaultConfig: dict) -> bool:
         # STUB
         body: dict = {
             '_id': hashedToken,
             'hashed_token': hashedToken,
-            'config': config
+            'config_profiles': defaultConfig
         }
         return self.__insertOne(self.__userColl, body)
 
@@ -376,11 +390,14 @@ DRAFT SCHEMA
 Users Collection: [
 	{
 		hashed_token: (the user's hashed token)
-		config: <user's global config>
+		config_profiles: []
 
         NOTE: config will probably contain info relating to modifications
                 relating to what the user can see on screen PER PROJECT.
                 Ex. Ignored commits, score multipliers, etc.
+
+                MAKE SURE the config dict has a "profile_name" key.
+                Otherwise, it will never be found.
 	}
 ]
 
