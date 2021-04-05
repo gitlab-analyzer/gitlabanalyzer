@@ -13,9 +13,15 @@ import LogOut from '../components/LogOut';
 function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setRepo, mergeRequestList } = useAuth();
-  const [reList, setReList] = useState([]);
-  const [filteredList, setFilteredList] = useState([]);
+  const {
+    user,
+    setRepo,
+    mergeRequestList,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+  } = useAuth();
 
   useEffect(() => {
     const getRepos = async () => {

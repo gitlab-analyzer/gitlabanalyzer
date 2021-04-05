@@ -19,13 +19,7 @@ import axios from 'axios';
 
 /// TODO: Hardcoded because of some weird bug
 let selectRepo = 2;
-const Repo = ({
-  analyzing,
-  setAnalyzing,
-  filteredList,
-  setFilteredList,
-  loading,
-}) => {
+const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const {
     setMembersList,
     setUsersList,
@@ -39,6 +33,13 @@ const Repo = ({
     setSelectedRepo,
     batchList,
     setBatchList,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+    setRepo,
+    value,
+    setValue,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -56,7 +57,7 @@ const Repo = ({
   useEffect(() => {
     console.log(batchList);
     console.log('filtered list:', filteredList);
-  }, [filteredList, selectRepo, batchList]);
+  }, [filteredList, batchList]);
 
   const handleRoute = () => {
     if (
@@ -97,6 +98,7 @@ const Repo = ({
     );
     if (!projectRes.data['response']) {
       console.log('Failed to set project ID!');
+      console.log(projectRes);
       throw new Error('Fetch request failed.');
     }
   };
@@ -125,6 +127,7 @@ const Repo = ({
       return;
     } else {
       setSyncDone(true);
+      updateRepos();
       setAnalyzing(false);
       return;
     }
@@ -361,9 +364,39 @@ const Repo = ({
       await syncProjectId();
       // This is a recursive call that checks the status of syncing process every 5000 milliseconds
       await syncProject();
+      // await updateRepos();
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
+    }
+  };
+
+  const updateRepos = async () => {
+    const repoList = await axios.get('http://localhost:5678/projects', {
+      withCredentials: true,
+    });
+    setRepo(repoList.data.projects);
+
+    const projectsData = repoList.data.projects;
+    console.log('update Repos', projectsData);
+
+    const projectsList = projectsData.map((project) => {
+      return {
+        id: project.id,
+        name: project.name,
+        lastSynced: project.last_synced,
+      };
+    });
+    setReList([...projectsList]);
+
+    if (value === '') {
+      setFilteredList(reList);
+    } else {
+      setFilteredList(
+        reList.filter((repo) =>
+          repo['name'].toLowerCase().includes(value.toLowerCase())
+        )
+      );
     }
   };
 
@@ -483,7 +516,8 @@ const Repo = ({
   };
 
   const renderProject = (id) => {
-    // setSelectedRepo(id);
+    setSelectedRepo(id);
+    selectRepo = id;
     fetchAndRedirect();
   };
 
@@ -496,7 +530,12 @@ const Repo = ({
       );
     } else {
       return (
-        <Button onClick={fetchAndRedirect} type="primary">
+        <Button
+          onClick={() => {
+            renderProject(item.id);
+          }}
+          type="primary"
+        >
           Go
         </Button>
       );
@@ -510,7 +549,6 @@ const Repo = ({
   } else {
     return (
       <div>
-        {redirectButton()}
         {batchButton()}
         <List
           style={{ marginTop: '20px' }}
