@@ -57,6 +57,10 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   useEffect(() => {
     console.log(batchList);
     console.log('filtered list:', filteredList);
+    console.log(
+      'Time test:',
+      dateToAgoConverter('Mon, 05 Apr 2021 04:14:11 GMT')
+    );
   }, [filteredList, batchList]);
 
   const handleRoute = () => {
@@ -384,7 +388,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       return {
         id: project.id,
         name: project.name,
-        lastSynced: project.last_synced,
+        lastSynced: dateToAgoConverter(project.last_synced),
       };
     });
     setReList([...projectsList]);
@@ -542,7 +546,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
-  const dateToAgoConverter = (date) => {};
+  const dateToAgoConverter = (date) => {
+    if (date === null) {
+      return null;
+    }
+    const dateBefore = new Date(date + '-0700');
+    const dateAfter = new Date();
+
+    return (dateAfter - dateBefore) / (1000 * 60);
+  };
 
   if (redirect) {
     return <Redirect to="/summary" />;
@@ -561,7 +573,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 <Tag color={tagRender(item)} key={'cached'}>
                   {item['lastSynced'] === null
                     ? 'Not Cached'
-                    : item['lastSynced']}
+                    : `Cached: ${Math.round(item['lastSynced'])} min ago`}
                 </Tag>,
                 <Button
                   onClick={(e) => {

@@ -23,6 +23,16 @@ function SearchPage() {
     setFilteredList,
   } = useAuth();
 
+  const dateToAgoConverter = (date) => {
+    if (date === null) {
+      return null;
+    }
+    const dateBefore = new Date(date + '-0700');
+    const dateAfter = new Date();
+
+    return (dateAfter - dateBefore) / (1000 * 60);
+  };
+
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
@@ -38,7 +48,7 @@ function SearchPage() {
         return {
           id: project.id,
           name: project.name,
-          lastSynced: project.last_synced,
+          lastSynced: dateToAgoConverter(project.last_synced),
         };
       });
       setReList([...projectsList]);
