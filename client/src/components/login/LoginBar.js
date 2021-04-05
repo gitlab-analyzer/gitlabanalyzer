@@ -125,6 +125,7 @@ const LoginBar = ({ setRedirect }) => {
           />
           <div style={{ marginBottom: 10, marginTop: 10 }}>
             <Input
+              style={{ width: '500px' }}
               addonBefore={selectBefore}
               addonAfter={selectAfter}
               defaultValue="mysite"

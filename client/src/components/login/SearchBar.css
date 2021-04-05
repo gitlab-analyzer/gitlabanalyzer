@@ -1,14 +1,16 @@
 .main {
   margin: 0 auto;
+  width: 800px;
 }
 
 .bar_container {
   font-family: 'Comfortaa', cursive;
+  width: 800px;
 }
 
 .searchBar {
   margin: 0 auto;
-  max-width: 600px;
+  width: 800px;
 }
 
 .flex {

@@ -36,7 +36,7 @@ const SearchBarComp = ({ reList, setFilteredList }) => {
         <form className="flex" onSubmit={handleSubmit}>
           <Search
             value={value}
-            style={{ width: '650px' }}
+            style={{ width: '800px', margin: '0 auto' }}
             placeholder="Search a repository"
             allowClear
             enterButton="Search"

@@ -472,20 +472,6 @@ const Repo = ({
     }
   };
 
-  const cachedButton = (item) => {
-    if (item.lastSynced === null) {
-      return (
-        <Tag color={'red'} key={'notcached'}>
-          Not Cached
-        </Tag>
-      );
-    } else {
-      <Tag color={'red'} key={'notcached'}>
-        {item.lastSynced}
-      </Tag>;
-    }
-  };
-
   const tagRender = (item) => {
     if (item['lastSynced'] === null) {
       return 'red';
@@ -514,7 +500,6 @@ const Repo = ({
                     ? 'Not Cached'
                     : item['lastSynced']}
                 </Tag>,
-                // cachedButton(item),
                 <Button
                   onClick={(e) => {
                     handleAnalyze(e, item.id);
