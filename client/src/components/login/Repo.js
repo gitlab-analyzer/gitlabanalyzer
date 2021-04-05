@@ -423,6 +423,8 @@ const Repo = ({
     // }
   };
 
+  const setUpdatedRepo = async () => {};
+
   /**
    * Function that is responsible to fetching all data from backend,
    * Parsing and storing in global context for frontend services to use
@@ -480,6 +482,20 @@ const Repo = ({
     }
   };
 
+  const goRender = (item) => {
+    if (item['lastSynced'] === null) {
+      return (
+        <Button type="primary" disabled>
+          Go
+        </Button>
+      );
+    } else {
+      return <Button type="primary">Go</Button>;
+    }
+  };
+
+  const dateToAgoConverter = (date) => {};
+
   if (redirect) {
     return <Redirect to="/summary" />;
   } else {
@@ -508,6 +524,7 @@ const Repo = ({
                 >
                   Analyze
                 </Button>,
+                goRender(item),
                 <Checkbox
                   onClick={() => {
                     addtoBatchList(item);
