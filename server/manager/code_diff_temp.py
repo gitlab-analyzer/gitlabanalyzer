@@ -12,135 +12,241 @@ class CodeDiffAnalyzer:
 
     # TODO: a way to fill the code diff list
 
-    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> dict:
+    # The ID's of the codeDiffs are their index in the list
+    def get_code_diff_by_id(self, codeDiffId: int) -> list:
+        return self.__codeDiffList[codeDiffId] if codeDiffId < self.__listSize else []
+
+    def get_code_diff_statistic(self, codeDiffObject: CodeDiff) -> None:
+
         info = {
-            "lines_added": randint(50, 500),
-            "lines_deleted": randint(50, 500),
-            "comments_added": randint(50, 500),
-            "comments_deleted": randint(50, 500),
-            "blanks_added": randint(50, 500),
-            "blanks_deleted": randint(50, 500),
-            "spacing_changes": randint(50, 500),
-            "syntax_changes": randint(50, 500),
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
         }
+
+        oldLine = " "
+        python = self.check_for_code_type(codeDiffObject)
+        block_code = False
+
+        diffCode = codeDiffObject
+        for line in diffCode.diff.splitlines():
+            if line[0] == '+' or line[0] == '-':
+
+                # Check for block of comments
+                # -------------------------------------------------
+                if python is False:
+                    temp = info.copy()
+                    info = self.define_block_of_code(
+                        block_code, "/*", line, info, python
+                    )
+                    if "*/" in line and info == temp:
+                        info = self.add_block_of_comments(
+                            line, python, info, block_code
+                        )
+                        block_code = False
+                        continue
+                else:
+                    temp = info.copy()
+                    info = self.define_block_of_code(
+                        block_code, "'''", line, info, python
+                    )
+
+                if info != temp:
+                    block_code = not block_code
+                    continue
+                # -------------------------------------------------
+
+                # Adding to middle of the line instead of to the front or the back
+                # -------------------------------------------------
+                if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
+                    temp = info.copy()
+                    info = self.add_one_char_middle(line, oldLine, info, python)
+                    if temp != info:
+                        info = self.modify_info_value("lines", info, oldLine[0], -1)
+                        continue
+                # -------------------------------------------------
+
+                # Adding to an exisiting line
+                # -------------------------------------------------
+                temp = info.copy()
+                if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
+                    info = self.add_to_existing_line("+", line, oldLine, info, python)
+                if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
+                    info = self.add_to_existing_line("-", line, oldLine, info, python)
+                if info != temp:
+                    continue
+                # -------------------------------------------------
+
+                # Normal case
+                # -------------------------------------------------
+                info = self.add_normal_line_of_code(info, line, python)
+                oldLine = line
+                # -------------------------------------------------
+
         return info
 
-    def modify_to_a_new_line(
-        self,
-        newLine,
-        deleteLine,
-        newCommentLine,
-        deleteCommentLine,
-        newBlank,
-        deleteBlank,
-        spacing,
-        syntax,
-        line,
-        python,
-    ) -> None:
-
-        if line == '+':
-            newBlank = newBlank + 1
-            return
-        if line == '-':
-            deleteBlank = deleteBlank + 1
-            return
-
-        if self.check_for_spacing_or_comment(
-            line[0:1], newCommentLine, deleteCommentLine, spacing, line[1:], python
-        ):
-            return
-
-        if line[0:1] == '+':
-            newLine = newLine + 1
-            if python is False:
-                if "{" == line[1:] or "}" == line[1:]:
-                    syntax = syntax + 1
-                    newLine = newLine - 1
-            if python is True:
-                if ":" == line[1:]:
-                    syntax = syntax + 1
-                    newLine = newLine - 1
-
-        if line[0:1] == '-':
-            deleteLine = deleteLine + 1
-            if python is False:
-                if "{" == line[1:] or "}" == line[1:]:
-                    syntax = syntax + 1
-                    deleteLine = deleteLine - 1
-            if python is True:
-                if ":" == line[1:]:
-                    syntax = syntax + 1
-                    deleteLine = deleteLine - 1
-
-    def check_for_spacing_or_comment(
-        self, signal, newCommentLine, deleteCommentLine, spacing, str, python
-    ) -> bool:
-
-        for i in str:
-            if i == " ":
-                continue
-            elif i == "#" and python is True:
-                if signal == '+':
-                    newCommentLine = newCommentLine + 1
-                else:
-                    deleteCommentLine = deleteCommentLine + 1
-                return True
-            elif i == "//" and python is False:
-                if signal == '+':
-                    newCommentLine = newCommentLine + 1
-                else:
-                    deleteCommentLine = deleteCommentLine + 1
-                return True
-            else:
-                break
-        if str.isspace():
-            spacing = spacing + 1
-            return True
-
-        return False
-
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> None:
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> bool:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
-        found = re.search('\.(.+?)$', fileName).group(1)
-        if found == 'py':
-            python = True
+        found = re.search('\.(.+?)$', fileName)
+        if found is not None:
+            if found.group(1) == 'py':
+                return True
+        return False
 
-    def check_middle_syntax_addition(self, line, oldLine, syntax, python) -> bool:
+    def add_normal_line_of_code(self, info, line, python) -> dict:
+
+        if len(line) == 1:
+            info = self.modify_info_value("blanks", info, line)
+            return info
+
+        temp = info.copy()
+        info = self.check_for_spacing_syntax_or_comment(
+            line[0:1], info, line[1:], python
+        )
+        if info != temp:
+            return info
+
+        info = self.modify_info_value("lines", info, line[0])
+        return info
+
+    def check_for_spacing_syntax_or_comment(self, signal, info, str, python) -> dict:
+
+        isSyntax = False
+        syntaxStr = {"{", "}", ";", "(", ")"}
+
+        if str.isspace():
+            info["spacing_changes"] = info["spacing_changes"] + 1
+            return info
+
+        for i in range(0, len(str)):
+            if python:
+                if str[i] == ':' or str[i] == "(" or str[i] == ")":
+                    isSyntax = True
+                    continue
+                if str[i] == "#" and isSyntax is False:
+                    info = self.modify_info_value("comments", info, signal)
+                    return info
+            else:
+                if str[i] in syntaxStr:
+                    isSyntax = True
+                    continue
+                if str[i : i + 2] == '//' and isSyntax is False:
+                    info = self.modify_info_value("comments", info, signal)
+                    return info
+            if str[i] != " ":
+                info = self.modify_info_value("lines", info, signal)
+                return info
+
+        if isSyntax:
+            info["syntax_changes"] = info["syntax_changes"] + 1
+        return info
+
+    def add_one_char_middle(self, line, oldLine, info, python) -> dict:
         temp = 0
+        syntaxStr = {"{", "}", ";", "(", ")"}
 
         if len(line) > len(oldLine):
             length = len(oldLine)
-            lastChar = line[len(line)]
         else:
             length = len(line)
-            lastChar = oldLine[len(oldLine)]
 
-        for i in range(1, length):
+        for i in range(0, length - 1):
             if oldLine[i] != line[i]:
                 temp = i
                 break
-        if temp != 0:
-            if python:
-                if oldLine[temp] == ":" or line[temp] == ":":
-                    syntax = syntax + 1
-                    return True
-            else:
-                if oldLine[temp] == "{" or oldLine[temp] == "}":
-                    syntax = syntax + 1
-                    return True
-                if line[temp] == "{" or line[temp] == "}":
-                    syntax = syntax + 1
-                    return True
-        if temp == 0:
-            if python:
-                if lastChar == ":" or lastChar == ":":
-                    syntax = syntax + 1
-                    return True
-            else:
-                if lastChar == "{" or lastChar == "}":
-                    syntax = syntax + 1
-                    return True
 
-        return False
+        if temp != 0:
+            if oldLine[temp] == " " or line[temp] == " ":
+                info["spacing_changes"] = info["spacing_changes"] + 1
+            elif oldLine[temp] == ":" or line[temp] == ":":
+                if python:
+                    info["syntax_changes"] = info["syntax_changes"] + 1
+            elif oldLine[temp] in syntaxStr or oldLine[temp] in syntaxStr:
+                if python is False:
+                    info["syntax_changes"] = info["syntax_changes"] + 1
+            else:
+                info = self.modify_info_value("lines", info, line[0])
+
+        return info
+
+    def define_block_of_code(
+        self, block_code, signal_block_code, line, info, python
+    ) -> dict:
+        if block_code == True and signal_block_code not in line:
+            info = self.modify_info_value("comments", info, line[0])
+            return info
+
+        if signal_block_code in line:
+            if ("*/" in line and python == False) or (
+                line.count(signal_block_code) == 2 and python == True
+            ):
+                info = self.modify_info_value("comments", info, line[0])
+                return info
+
+        info = self.add_block_of_comments(line, python, info, block_code)
+        return info
+
+    def add_block_of_comments(self, line, python, info, block_code) -> dict:
+        temp = 0
+        for i in range(0, len(line)):
+            if python is False:
+                if line[i : i + 2] == "/*" or line[i : i + 2] == "*/":
+                    temp = i
+            else:
+                if line[i : i + 3] == "'''":
+                    temp = i
+
+        if python is False:
+            if line[temp : temp + 2] == "/*":
+                info = self.check_block_code_cases(
+                    line[1:temp], line[temp + 2 :], info, line, python
+                )
+            if line[temp - 2 : temp] == "*/":
+                info = self.check_block_code_cases(
+                    line[temp + 2 :], line[1:temp], info, line, python
+                )
+        else:
+            if block_code:
+                info = self.check_block_code_cases(
+                    line[temp + 3 :], line[1:temp], info, line, python
+                )
+            else:
+                info = self.check_block_code_cases(
+                    line[1:temp], line[temp + 3 :], info, line, python
+                )
+        return info
+
+    def check_block_code_cases(self, strFront, strBack, info, line, python) -> dict:
+        if (
+            (strFront.isspace() or strFront == "")
+            and strBack != ""
+            and strBack.isspace() is False
+        ):
+            info = self.modify_info_value("comments", info, line[0])
+        elif (
+            strFront.isspace() or strFront == "" and strBack.isspace() or strBack == ""
+        ):
+            info["syntax_changes"] = info["syntax_changes"] + 1
+        else:
+            info = self.add_normal_line_of_code(info, line[0] + strFront, python)
+        return info
+
+    def add_to_existing_line(self, signal, line, oldLine, info, python) -> dict:
+        if oldLine != " " and line[1:] != oldLine[1:]:
+            info = self.modify_info_value("lines", info, oldLine[0], -1)
+            tempLine = signal + oldLine[1:].replace(line[1:], '')
+            info = self.add_normal_line_of_code(info, tempLine, python)
+        return info
+
+    def modify_info_value(self, info_name, info, signal, amount=1) -> dict:
+        if signal == '+':
+            info[info_name + "_added"] = info[info_name + "_added"] + amount
+        if signal == '-':
+            info[info_name + "_deleted"] = info[info_name + "_deleted"] + amount
+        return info
