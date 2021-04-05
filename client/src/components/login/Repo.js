@@ -17,7 +17,8 @@ import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
-let selectRepo = null;
+/// TODO: Hardcoded because of some weird bug
+let selectRepo = 2;
 const Repo = ({
   analyzing,
   setAnalyzing,
@@ -483,7 +484,6 @@ const Repo = ({
 
   const renderProject = (id) => {
     // setSelectedRepo(id);
-    selectRepo = id;
     fetchAndRedirect();
   };
 
