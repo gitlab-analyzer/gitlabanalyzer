@@ -147,8 +147,7 @@ def get_merge_requests_for_users(projectID):
     )
 
     return jsonify(
-        {'merge_request_users_list': value,
-            "response": isSuccess, 'cause': errorCode}
+        {'merge_request_users_list': value, "response": isSuccess, 'cause': errorCode}
     )
 
 
