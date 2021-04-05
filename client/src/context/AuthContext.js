@@ -20,6 +20,7 @@ const AuthProvider = (props) => {
   const [floatScores, setFloatScores] = useState('');
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [batchList, setBatchList] = useState([]);
+  const [currentConfig, setCurrentConfig] = useState({});
 
   const authContextValue = {
     user,
@@ -56,6 +57,8 @@ const AuthProvider = (props) => {
     setSelectedRepo,
     batchList,
     setBatchList,
+    currentConfig,
+    setCurrentConfig,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

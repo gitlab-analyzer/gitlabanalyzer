@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
-import { configSettings } from '../login/Repo';
 import { useAuth } from '../../context/AuthContext';
 
 
@@ -18,13 +17,17 @@ function InitialUserDates() {
     dataList,
     setDataList
   } = useAuth();
-  // useEffect(() => {}, [dataList]);
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
   );
   return (
     <div>
+      <h6
+        style={{ paddingBottom:10 }}
+      >
+        User Details
+      </h6>
       <Form.Item
         label="User"
         name="user"
@@ -43,7 +46,7 @@ function InitialUserDates() {
           }
           onChange={(value) => 
             {
-              setSelectUser(selectMembersList[value])
+              setSelectUser(value)
             }
           }
           showSearch
@@ -51,13 +54,13 @@ function InitialUserDates() {
           {(anon && (
             <>
               {anonList.map((Detail, index) => {
-                return <Option value={index}>{Detail}</Option>;
+                return <Option value={Detail}>{Detail}</Option>;
               })}
             </>
           )) || (
             <>
               {selectMembersList.map((Detail, index) => {
-                return <Option value={index}>{Detail}</Option>;
+                return <Option value={Detail}>{Detail}</Option>;
               })}
             </>
           )}

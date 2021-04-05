@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
-import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
 import EveryoneScore, { ScoreCalculator, barData, FillBarData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
-import moment from 'moment';
 
 import './FloatBar.css';
-
-var IterationDates = configSettings.iteration;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -41,7 +37,6 @@ function FloatBar() {
   useEffect(() => {}, []);
 
   let dateObj = {}  
-  console.log("curr iterations", currentConfig.value.iterations)
   for(let dateprop of currentConfig.value.iterations){
     dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
   }
