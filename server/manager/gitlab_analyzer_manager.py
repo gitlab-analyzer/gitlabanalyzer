@@ -28,7 +28,7 @@ class GitLabAnalyzerManager:
                 pass
             else:
                 self.__gitlab_list[hashedToken] = myGitLabAnalyzer
-                return True, "", myGitLabAnalyzer.username
+            return True, "", myGitLabAnalyzer.username
         except gitlab.exceptions.GitlabAuthenticationError:
             return False, ERROR_CODES["invalidToken"], ""
 
