@@ -3,5 +3,9 @@
 }
 
 .selectUser {
-    margin-top: 10px;
+    padding-top:10px;
+}
+
+.bgwhite {
+    background-color: white;
 }

@@ -12,14 +12,22 @@ class CommentManager:
     def get_comment_list(self) -> list:
         return self.__commentList
 
-    def add_comment(self, comment: gitlab, sha=None) -> None:
+    def add_comment(self, comment: gitlab, notable_author: str, sha=None) -> None:
         if sha is None:
-            self.__commentList.append(Comment(commentForIssueMR=comment))
+            self.__commentList.append(
+                Comment(commentForIssueMR=comment, author_of_notable=notable_author)
+            )
         else:  # sha is not None
-            self.__commentList.append(Comment(commentForCommit=comment, commitSha=sha))
+            self.__commentList.append(
+                Comment(
+                    commentForCommit=comment,
+                    author_of_notable=notable_author,
+                    commitSha=sha,
+                )
+            )
 
     # Get list of Comments in certain (ex. Issue iid / Merge Request iid / Commit sha)
-    def get_comments_by_noteableId(self, noteableID) -> Union[List[Comment], None]:
+    def get_comments_by_noteableId(self, noteableID) -> List[Comment]:
         listNoteableID = []
         for comment in self.__commentList:
             if comment.noteable_id == noteableID:
@@ -27,14 +35,14 @@ class CommentManager:
         return listNoteableID
 
     # Get list of Comments written by certain user
-    def get_comments_by_userID(self, userID) -> Union[List[Comment], None]:
-        listUserID = []
+    def get_comments_by_user_name(self, member_name) -> List[Comment]:
+        list_by_user_name = []
         for comment in self.__commentList:
-            if comment.author == userID:
-                listUserID.append(comment)
-        return listUserID
+            if comment.author == member_name:
+                list_by_user_name.append(comment)
+        return list_by_user_name
 
-    def get_comments_by_range(self, startDate, endDate) -> Union[List[Comment], None]:
+    def get_comments_by_range(self, startDate, endDate) -> List[Comment]:
         listTimeRange = []
 
         start = parser.parse(startDate)
@@ -48,7 +56,7 @@ class CommentManager:
     # noteableType could be either "MergeRequest" / "Issue" / "Commit"
     def get_comments_by_noteable_types(
         self, noteableType, providedList=None
-    ) -> Union[List[Comment], None]:
+    ) -> List[Comment]:
         listComments = []
         if (
             providedList is not None

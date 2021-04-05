@@ -48,7 +48,10 @@ class BarGraph extends React.Component {
             }
           },
           xaxis: {
-            categories: ['Jan', 'Feb'],
+            type: 'datetime',
+            categories: ["2021-3-1", "2021-3-2", 
+            "2021-3-3", "2021-3-4","2021-3-5","2021-3-6", "2021-3-7",
+            "2021-3-8", "2021-3-9","2021-3-10","2021-3-11", "2021-3-12"],
           },
           fill: {
             type: 'solid',
@@ -59,12 +62,10 @@ class BarGraph extends React.Component {
     }
 
     render() {
-      console.log(this.props)
-
       return (
-  <div id="chart">
-<Chart options={this.state.options} series={this.props.series} type="bar" height={200} />
-</div>
+        <div id="chart">
+          <Chart options={this.state.options} series={this.props.series} type="bar" height={200} />
+        </div>
       );
     }
   }

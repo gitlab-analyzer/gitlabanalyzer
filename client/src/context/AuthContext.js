@@ -6,9 +6,18 @@ const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
   const [repo, setRepo] = useState(null);
   const [incorrect, setIncorrect] = useState(false);
-  const [selectUser, setSelectUser] = useState('@everyone');
-  const [overview, setOverview] = useState([]);
+  const [selectUser, setSelectUser] = useState('');
   const [commitsList, setCommitsList] = useState([]);
+  const [membersList, setMembersList] = useState([]);
+  const [usersList, setUsersList] = useState([]);
+  const [notesList, setNotesList] = useState([]);
+  const [mergeRequestList, setMergeRequestList] = useState({});
+  const [commentsList, setCommentsList] = useState({});
+  const [selectMembersList, setSelectMembersList] = useState([]);
+  const [overviewScore, setOverviewScore] = useState({});
+  const [dataList, setDataList] = useState([]);
+  const [anon, setAnon] = useState('');
+  const [floatScores, setFloatScores] = useState('');
 
   const authContextValue = {
     user,
@@ -19,10 +28,28 @@ const AuthProvider = (props) => {
     setIncorrect,
     selectUser,
     setSelectUser,
-    overview,
-    setOverview,
     commitsList,
     setCommitsList,
+    membersList,
+    setMembersList,
+    usersList,
+    setUsersList,
+    notesList,
+    setNotesList,
+    mergeRequestList,
+    setMergeRequestList,
+    commentsList,
+    setCommentsList,
+    selectMembersList,
+    setSelectMembersList,
+    overviewScore,
+    setOverviewScore,
+    anon,
+    setAnon,
+    floatScores,
+    setFloatScores,
+    dataList,
+    setDataList,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

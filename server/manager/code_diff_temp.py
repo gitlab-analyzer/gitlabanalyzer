@@ -1,4 +1,5 @@
 import re
+from random import random, randint
 from typing import Union, Optional, List
 from model.code_diff import *
 import gitlab

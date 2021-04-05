@@ -6,14 +6,13 @@
 
 <h4 align="center">A web application for analyzing <a href="https://gitlab.com/gitlab-org/gitlab" target="_blank">GitLab</a> repositories. Built for Simon Fraser University course CMPT 373.</h4>
 
-## Demo (Iteration 1)
-👉 Watch it <a href="https://drive.google.com/file/d/18iEGWiYWicCjd1soPNFKauMuo1m2qhgz/view">here</a>.
+## Demo (Iteration 2)
 
 👉 Try it <a href="http://142.58.22.167:6789/">here</a>.
 <br>
 
 <h1 align="center">
-  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/demogitlab.png" width="900">
+  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/iteration2ss.png" width="900">
 </h1>
 
 
@@ -36,7 +35,17 @@ Iteration 1:
 - [ ] Issues & Reviews
 - [ ] Config
 
-Iteration 2:
+**Iteration 2:**
+- [x] Score Calculation 💯
+- [x] Merge Requests & Commit Ignoring
+- [x] Refactored Overview graphs
+- [x] Issues & Reviews
+- [x] Initial Config & App Config
+- [x] Search Repo
+- [x] <a href="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/blob/master/server/API_example_response.md#api-example-response " target="_blank">REST API v2 Finished!</a> 🚀
+- [x] Batch Processing (UI Only)
+- [ ] Code Diff Page
+- [ ] Export Reports
 
 Iteration 3:
 
@@ -53,5 +62,5 @@ This software uses the following open source packages:
 
 ## License
 
-MIT
+<a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank">AGPL v3.0</a>
 

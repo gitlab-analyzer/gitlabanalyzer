@@ -1,95 +1,148 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
+import React, { useEffect } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
-import EveryoneScore from './EveryoneScore.js';
-import Data from './FloatBarData.json';
-import moment from 'moment';
-import Settings from "./Settings.json"
+import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
+import { configSettings } from '../login/Repo.js';
+import { useAuth } from '../../context/AuthContext';
+import EveryoneScore, { ScoreCalculator, barData, FillBarData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import ScoreCalculator from './ScoreCalculator';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import Grid from '@material-ui/core/Grid';
+import moment from 'moment';
 
-import "./FloatBar.css";
+import './FloatBar.css';
 
-var FloatBarData = Data.users;
-var Dates = Settings.dates;
+var IterationDates = configSettings.iteration;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const copySuccessful =() =>{
+const copySuccessful = () => {
   notification.open({
     message: 'Copy Successful!',
-    icon: <CheckCircleOutlined style={{ color: '#00D100' }}/>,
+    icon: <CheckCircleOutlined style={{ color: '#00D100' }} />,
     duration: 1,
   });
 };
 
 function FloatBar() {
-  const [sortType, setSortType] = React.useState('');
+  const [ sortType, setSortType ] = React.useState('alpha');
   
+  const {
+    membersList,
+    usersList,
+    commitsList,
+    notesList,
+    mergeRequestList,
+    commentsList,
+    selectUser,
+    dataList,
+    setDataList,
+  } = useAuth();
+  useEffect(() => {}, []);
+
+  const handleSort = (value) => {
+    setSortType(value)
+    if (value === "alpha"){
+      barData.sort((a,b) => (a.name > b.name) ? 1 : -1)
+    }
+    else if (value === "low"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) > ScoreCalculator(b.name)) ? 1 : -1)
+    }
+    else if (value === "high"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) < ScoreCalculator(b.name)) ? 1 : -1)     
+    }
+  }
+
+  const handleDate = (value) => {
+    configSettings.startdate = value[0]
+    configSettings.enddate = value[1]
+    setDataList(value)
+  }
+  let userData = barData.find(x=>x.name===selectUser)
+
+
   return (
-    <div className="floatbar-container">
-      <div className="floatbaralign">
-        <EveryoneScore />
+    <>
+      <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
+      <div className="floatbar-container">
+        <div className="floatbaralign">
+          <EveryoneScore />
+        </div>
+        <div className="floatbar-functions">
+          <Grid
+            container
+            className="functionGrid"
+            spacing={2}
+            direction="column"
+            alignItems="flex-end"
+          >
+            <Grid item xs={12}>
+              <div className="daterange">
+                <RangePicker 
+                  defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
+                  format="YYYY/MM/DD hh:mm:ss"
+                  allowClear={false}
+                  onChange={handleDate}
+                  ranges={{
+                    Today: [moment().startOf('day'), moment().endOf('day')],
+                    'Iteration 1': [
+                      moment(IterationDates.iter1start), 
+                      moment(IterationDates.iter1end)
+                    ],
+                    'Iteration 2': [
+                      moment(IterationDates.iter2start), 
+                      moment(IterationDates.iter2end)
+                    ],
+                    'Iteration 3': [
+                      moment(IterationDates.iter2start), 
+                      moment(IterationDates.iter3end)
+                    ],
+                  }}
+                  showTime
+                />
+              </div>
+            </Grid>
+            <Grid item xs={12}>
+              <div className="selectSort">
+                <Select
+                  placeholder="Sort"
+                  style={{ width: 150 }}
+                  onChange={handleSort}
+                  defaultValue="alpha"
+                >
+                  <Option value="alpha">Alphabetical</Option>
+                  <Option value="low">Low to High</Option>
+                  <Option value="high">High to Low</Option>
+                </Select>
+              </div>
+            </Grid>
+            <Grid item xs={12}>
+                <CopyToClipboard
+                  format={'text/plain'}
+                  text={ (userData &&
+                    (
+                      String(ScoreCalculator(userData.name).toFixed(0)) + '\t' +
+                      userData.commits + '\t' +
+                      userData.code + '\t' +
+                      userData.issue
+                    )) || (
+                      '0\t0\t0\t0'
+                    )
+                  }
+                >
+                  <Button 
+                    style={{ width: 150 }} 
+                    onClick={copySuccessful}
+                  >
+                    Copy
+                    <CopyOutlined className="copyicon" />
+                  </Button>
+                </CopyToClipboard>
+              {/* )} */}
+            </Grid>
+          </Grid>
+        </div>
       </div>
-      <div className="floatbar-functions">
-        <Grid
-          container
-          className="sth"
-          spacing={2}
-          direction="column"
-          alignItems="flex-end"
-        >
-          <Grid item xs={12}>
-            <div className="daterange">
-              <RangePicker 
-                defaultValue={[null, moment()]}
-                format="YYYY/MM/DD hh:mm:ss"
-                ranges={{
-                  Today: [moment(), moment()],
-                  'Iteration 1': [moment(Dates[0].startdate), moment(Dates[0].enddate)],
-                  'Iteration 2': [moment(Dates[1].startdate), moment(Dates[1].enddate)],
-                  'Iteration 3': [moment(Dates[2].startdate), moment(Dates[2].enddate)],
-                }}
-                showTime
-              />
-            </div>
-          </Grid>
-          <Grid item xs={12}>
-            <div className="selectSort">
-              <Select 
-                placeholder = "Sort" 
-                style={{ width: 150 }} 
-                onChange={value => setSortType(value)}
-              >
-                <Option value="Alphabetical">Alphabetical</Option>
-                <Option value="Low to High">Low to High</Option>
-                <Option value="High to Low">High to Low</Option>
-              </Select>
-            </div>
-          </Grid>
-          <Grid item xs={12}>
-            <CopyToClipboard
-              format = {"text/plain"}
-              text = {                
-                "\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n"+
-                JSON.stringify(FloatBarData).replaceAll('},{', '\r\n')
-                  .replace(/[,]/g,'\t')
-                  .replace(/[[{}"\]]/g, "")
-                  .replace(/[^\n\t]+(?=):/g, "")                
-              }              
-            >
-              <Button style={{ width: 150 }} onClick={copySuccessful}>
-                Copy
-                <CopyOutlined className="copyicon" />
-              </Button>              
-            </CopyToClipboard>
-          </Grid>
-        </Grid>
-      </div>
-    </div>
+    </>
   );
 }
 
