@@ -1,47 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router';
+import { Alert, Spin } from 'antd';
+import axios from 'axios';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import SearchBar from '../components/login/SearchBar';
-import { Alert, Spin } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import Repo from '../components/login/Repo';
-import axios from 'axios';
-import { Redirect } from 'react-router';
 import LogOut from '../components/LogOut';
 
 function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setRepo } = useAuth();
+  const { user, setRepo, mergeRequestList } = useAuth();
   const [reList, setReList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/projects');
+      const repoList = await axios.get('http://localhost:5678/projects', {
+        withCredentials: true,
+      });
       setRepo(repoList.data.projects);
-      setReList([
-        ...repoList.data.projects,
-        'Admin / Polaris GitLab 373',
-        'Admin / Alpha C GitLab 373',
-        'Admin / Sirius GitLab 373',
-        'Admin / Rigel GitLab 373',
-        'Admin / Vega GitLab 373',
-        'Admin / Antares Github 276',
-        'Admin / Pleiades Github 276',
-      ]);
-      setFilteredList([
-        ...repoList.data.projects,
-        'Admin / Polaris GitLab 373',
-        'Admin / Alpha C GitLab 373',
-        'Admin / Sirius GitLab 373',
-        'Admin / Rigel GitLab 373',
-        'Admin / Vega GitLab 373',
-        'Admin / Antares Github 276',
-        'Admin / Pleiades Github 276',
-      ]);
+
+      const projectsData = repoList.data.projects;
+      console.log('projects data', projectsData);
+
+      const projectsList = projectsData.map((project) => {
+        return {
+          id: project.id,
+          name: project.name,
+          lastSynced: project.last_synced,
+        };
+      });
+      setReList([...projectsList]);
+      setFilteredList([...projectsList]);
       setLoading(false);
     };
     getRepos();
