@@ -101,7 +101,7 @@ Required body:
 Note:
 - Only valid projectIDs' status will be included in the response. 
 The example above shows a call to project `2` and `5` (Project `5` does not exist)
-- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_id"` in the request body
+- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_list"` in the request body
 
 Example javascript ajax call:
 ```javascript
@@ -171,7 +171,7 @@ Example javascript ajax call:
 Note:
 - Only valid projectIDs' status will be included in the response. 
 The example above shows a call to project `2` and `5` (Project `5` does not exist)
-- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_id"` in the request body
+- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_list"` in the request body
 
 Example javascript ajax call:
 ```javascript
