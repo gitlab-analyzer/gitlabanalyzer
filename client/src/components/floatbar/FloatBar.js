@@ -14,7 +14,7 @@ const { RangePicker } = DatePicker;
 const copySuccessful = () => {
   notification.open({
     message: 'Copy Successful!',
-    icon: <CheckCircleOutlined style={{ color: '#00D100' }} />,
+    icon: <CheckCircleOutlined style={{ color: '#00d100' }} />,
     duration: 1,
   });
 };
@@ -37,8 +37,8 @@ function FloatBar() {
   useEffect(() => {}, []);
 
   let dateObj = {}
-  if (currentConfig.value && currentConfig.value.iterations) {
-    for(let dateprop of currentConfig.value.iterations){
+  if (currentConfig && currentConfig.iterations) {
+    for(let dateprop of currentConfig.iterations){
       dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
     }
   }
