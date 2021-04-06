@@ -10,6 +10,7 @@ import {
   Drawer,
   notification,
   Form,
+  Popover,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
@@ -50,6 +51,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
+  const [selectVal, setSelectVal] = useState(false);
   const history = useHistory();
 
   const plainOptions = ['Apple', 'Pear', 'Orange'];
@@ -57,11 +59,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   useEffect(() => {
     console.log(batchList);
     console.log('filtered list:', filteredList);
-    console.log(
-      'Time test:',
-      dateToAgoConverter('Mon, 05 Apr 2021 04:14:11 GMT')
-    );
-  }, [filteredList, batchList]);
+  }, [filteredList, batchList, reList, selectVal]);
 
   const handleRoute = () => {
     if (
@@ -377,6 +375,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
+  const includedInBatchList = (project) => {
+    for (let included in batchList) {
+      if (project.id === included.id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const updateRepos = async () => {
     const repoList = await axios.get('http://localhost:5678/projects', {
       withCredentials: true,
@@ -391,6 +398,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         id: project.id,
         name: project.name,
         lastSynced: dateToAgoConverter(project.last_synced),
+        batched: includedInBatchList(project),
       };
     });
     setReList([...projectsList]);
@@ -420,6 +428,35 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCheckAll(e.target.checked);
   };
 
+  const letsBatchEm = () => {
+    console.log('Batching!');
+  };
+
+  const batchProcessButton = () => {
+    const content = (
+      <div>
+        <p style={{ fontFamily: 'Arial' }}>
+          Please Checkmark the repos you would like to Batch Process
+        </p>
+      </div>
+    );
+    if (batchList.length > 0) {
+      return (
+        <Button onClick={letsBatchEm} type="primary" key="batchanalyze">
+          Batch Process
+        </Button>
+      );
+    } else {
+      return (
+        <Popover content={content} title="Batch List Missing">
+          <Button disabled type="primary" key="batchanalyze">
+            Batch Process
+          </Button>
+        </Popover>
+      );
+    }
+  };
+
   // This component renders the batch processing button, select all (checkmarks)
   // and also displays the progress bar
   const batchButton = () => {
@@ -445,24 +482,33 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             justifyContent: 'flex-end',
           }}
         ></div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Checkbox
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {/* <Checkbox
             indeterminate={indeterminate}
             onChange={onCheckAllChange}
             checked={checkAll}
           >
             Select all
-          </Checkbox>
-          <Button type="primary" key="batchanalyze">
-            Batch Process
+          </Checkbox> */}
+          <Button
+            onClick={selectAll}
+            style={{ marginRight: '10px' }}
+            type="primary"
+            ghost
+          >
+            {selectVal ? 'Deselect all' : 'Select All'}
           </Button>
+          {batchProcessButton()}
         </div>
       </>
     );
     // }
   };
-
-  const setUpdatedRepo = async () => {};
 
   /**
    * Function that is responsible to fetching all data from backend,
@@ -486,19 +532,33 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
-  const redirectButton = () => {
-    if (syncDone) {
-      return <Button onClick={fetchAndRedirect}>Redirect</Button>;
-    } else {
-      return null;
-    }
-  };
-
   const checkBatchList = (item) => {
     let isInArray = batchList.find((el) => {
       return el.id === item.id;
     });
     return isInArray;
+  };
+
+  const updateFilteredList = (item) => {
+    setFilteredList(
+      filteredList.map((project) => {
+        if (project.id !== item.id) {
+          return project;
+        } else {
+          return { ...project, batched: !project.batched };
+        }
+      })
+    );
+
+    setReList(
+      reList.map((project) => {
+        if (project.id !== item.id) {
+          return project;
+        } else {
+          return { ...project, batched: !project.batched };
+        }
+      })
+    );
   };
 
   const addtoBatchList = (item) => {
@@ -507,8 +567,10 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       // Remove
       let newList = batchList.filter((batch) => batch.id !== item.id);
       setBatchList([...newList]);
+      updateFilteredList(item);
     } else {
       // If not, add to batchlist
+      updateFilteredList(item);
       setBatchList([...batchList, item]);
     }
   };
@@ -545,6 +607,40 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           Go
         </Button>
       );
+    }
+  };
+
+  const selectAll = () => {
+    if (!selectVal) {
+      setSelectVal(true);
+      setFilteredList(
+        filteredList.map((project) => {
+          if (project.batched) {
+            return project;
+          } else {
+            return {
+              ...project,
+              batched: true,
+            };
+          }
+        })
+      );
+      setBatchList(filteredList);
+    } else {
+      setSelectVal(false);
+      setFilteredList(
+        filteredList.map((project) => {
+          if (!project.batched) {
+            return project;
+          } else {
+            return {
+              ...project,
+              batched: false,
+            };
+          }
+        })
+      );
+      setBatchList([]);
     }
   };
 
@@ -587,6 +683,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 </Button>,
                 goRender(item),
                 <Checkbox
+                  checked={item.batched}
                   onClick={() => {
                     addtoBatchList(item);
                   }}

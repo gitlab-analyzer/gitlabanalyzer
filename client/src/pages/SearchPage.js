@@ -21,6 +21,7 @@ function SearchPage() {
     setReList,
     filteredList,
     setFilteredList,
+    batchList,
   } = useAuth();
 
   const dateToAgoConverter = (date) => {
@@ -31,6 +32,15 @@ function SearchPage() {
     const dateAfter = new Date();
 
     return (dateAfter - dateBefore) / (1000 * 60);
+  };
+
+  const includedInBatchList = (project) => {
+    for (let included in batchList) {
+      if (project.id === included.id) {
+        return true;
+      }
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -49,6 +59,7 @@ function SearchPage() {
           id: project.id,
           name: project.name,
           lastSynced: dateToAgoConverter(project.last_synced),
+          batched: includedInBatchList(project),
         };
       });
       setReList([...projectsList]);
