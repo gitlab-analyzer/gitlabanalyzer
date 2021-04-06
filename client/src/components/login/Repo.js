@@ -137,12 +137,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
-  const syncBatch = async () => {
-    const syncStatus = await axios.get(
-      `http://localhost:5678/projects/batch/state`
-    );
-  };
-
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
@@ -434,6 +428,30 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCheckAll(e.target.checked);
   };
 
+  const syncBatch = async () => {
+    const batchStatus = await axios.get(
+      `http://localhost:5678/projects/sync/batch/state`,
+      {
+        withCredentials: true,
+      }
+    );
+    fetchErrorChecker(batchStatus.data['response'], 'batch');
+    console.log(batchStatus.data['totalProgress']);
+    const numberStat = batchStatus.data['totalProgress'];
+    setSyncPercent(parseInt(numberStat));
+    if (batchStatus.data['totalProgress'] !== '100') {
+      setTimeout(async function repeat() {
+        syncBatch();
+      }, 5000);
+      return;
+    } else {
+      setSyncDone(true);
+      updateRepos();
+      setAnalyzing(false);
+      return;
+    }
+  };
+
   // const handleAnalyze = async (e, id) => {
   //   try {
   //     setAnalyzing(true);
@@ -447,36 +465,44 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   //   }
   // };
 
+  const syncBatchers = async () => {
+    let batchArray = [];
+
+    for (let item in batchList) {
+      batchArray.push(item.id);
+    }
+
+    let payload = JSON.stringify({
+      project_list: [2, 3],
+    });
+
+    axios.defaults.withCredentials = true;
+    const batchRes = await axios.post(
+      `http://localhost:5678/projects/sync/batch`,
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
+      }
+    );
+    if (!batchRes.data['response']) {
+      console.log('Failed to set project ID!');
+      console.log(batchRes);
+      throw new Error('Fetch request failed.');
+    }
+  };
+
   const letsBatchEm = async () => {
     try {
       console.log('Batching!');
       setAnalyzing(true);
-      let batchArray = [];
-      for (let project in batchList) {
-        batchArray.push(project.id);
-      }
-
-      axios.defaults.withCredentials = true;
-      const batchRes = await axios.post(
-        `http://localhost:5678/projects/sync/batch`,
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          crossorigin: true,
-          crossDomain: true,
-          data: {
-            project_id: [2, 3],
-          },
-        }
-      );
-      if (!batchRes.data['response']) {
-        console.log('Failed to set project ID!');
-        console.log(batchRes);
-        throw new Error('Fetch request failed.');
-      }
+      await syncBatchers();
+      await syncBatch();
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
