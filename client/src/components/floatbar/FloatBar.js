@@ -36,10 +36,13 @@ function FloatBar() {
   } = useAuth();
   useEffect(() => {}, []);
 
-  let dateObj = {}  
-  for(let dateprop of currentConfig.value.iterations){
-    dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
+  let dateObj = {}
+  if (currentConfig.value) {
+    for(let dateprop of currentConfig.value.iterations){
+      dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
+    }
   }
+
 
   const handleSort = (value) => {
     setSortType(value)
