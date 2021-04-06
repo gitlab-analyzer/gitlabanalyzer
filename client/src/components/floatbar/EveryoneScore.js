@@ -42,8 +42,8 @@ const EveryoneScore = () => {
       let num = 0;
       if (notesList !== 0) {
         for (let [nkey, nvalue] of Object.entries(notesList)) {
-          if (nvalue['ignore'] || 
-            ((nvalue['createdDate'] < new Date(dataList[0])) || 
+          if (nvalue['ignore'] ||
+            (dataList[0]==null || ((nvalue['createdDate'] < new Date(dataList[0]))) ||
             (nvalue['createdDate'] > new Date(dataList[1])))) 
           {
             continue;

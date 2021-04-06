@@ -37,7 +37,7 @@ function FloatBar() {
   useEffect(() => {}, []);
 
   let dateObj = {}
-  if (currentConfig.value) {
+  if (currentConfig.value && currentConfig.value.iterations) {
     for(let dateprop of currentConfig.value.iterations){
       dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
     }

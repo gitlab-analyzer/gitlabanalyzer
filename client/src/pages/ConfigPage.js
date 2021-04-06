@@ -8,7 +8,7 @@ import FooterBar from '../components/FooterBar';
 import { Form, Divider, Row, Col, Button, Input, Modal } from 'antd';
 import { useAuth } from '../context/AuthContext'
 
-var SavedConfigs = {}
+let SavedConfigs = {}
 const ConfigPage = () => {
   const { 
     dataList,
@@ -26,12 +26,12 @@ const ConfigPage = () => {
     SavedConfigs[value.configname] = value;
     setCurrentConfig({value});
     console.log("current config", currentConfig)
+    setDataList(value.date)
   }
 
   const fillForm = () => {
-    console.log(SavedConfigs["configone"])
     form.setFieldsValue(
-      {user:"tester 88"}
+        SavedConfigs["1"],
     );
   };
   return (
@@ -77,7 +77,6 @@ const ConfigPage = () => {
               Save As
             </Button>
           </div>
-
         </div>
       </Form>         
       <FooterBar />

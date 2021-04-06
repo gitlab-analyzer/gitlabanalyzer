@@ -26,46 +26,8 @@ function InitialUserDates() {
       <h6
         style={{ paddingBottom:10 }}
       >
-        User Details
+        Current Date Range
       </h6>
-      <Form.Item
-        label="User"
-        name="user"
-        initialValue={(selectUser && selectUser)}
-        rules={[
-          {
-            required: true,
-            message: 'Please choose a User.',
-          },
-        ]}
-      >
-        <Select
-          style={{ width: 200 }}
-          defaultValue={
-            (selectUser || (setSelectUser(selectMembersList[0])))
-          }
-          onChange={(value) => 
-            {
-              setSelectUser(value)
-            }
-          }
-          showSearch
-        >
-          {(anon && (
-            <>
-              {anonList.map((Detail, index) => {
-                return <Option value={Detail}>{Detail}</Option>;
-              })}
-            </>
-          )) || (
-            <>
-              {selectMembersList.map((Detail, index) => {
-                return <Option value={Detail}>{Detail}</Option>;
-              })}
-            </>
-          )}
-        </Select>
-      </Form.Item>
       <Form.Item
         label="Dates"
         name="date"
@@ -84,7 +46,7 @@ function InitialUserDates() {
               Today: [moment().startOf('day'), moment().endOf('day')],
             }}
             defaultValue={dataList}
-            onChange={setDataList}
+            // onChange={setDataList}
             showTime
             allowClear={false}
             renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}

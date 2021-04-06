@@ -8,7 +8,7 @@ function LanguagePoints() {
       <h6 
         style={{ paddingBottom:10 }}
       >
-        Language Points
+        Extension Points
       </h6>
       <Row>
         <Col>
