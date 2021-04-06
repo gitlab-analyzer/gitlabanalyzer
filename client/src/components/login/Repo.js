@@ -137,6 +137,12 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
+  const syncBatch = async () => {
+    const syncStatus = await axios.get(
+      `http://localhost:5678/projects/batch/state`
+    );
+  };
+
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
@@ -428,8 +434,53 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCheckAll(e.target.checked);
   };
 
-  const letsBatchEm = () => {
-    console.log('Batching!');
+  // const handleAnalyze = async (e, id) => {
+  //   try {
+  //     setAnalyzing(true);
+  //     setSelectedRepo(id);
+  //     selectRepo = id;
+  //     await syncProjectId();
+  //     await syncProject();
+  //   } catch (error) {
+  //     setAnalyzing(false);
+  //     console.log(error);
+  //   }
+  // };
+
+  const letsBatchEm = async () => {
+    try {
+      console.log('Batching!');
+      setAnalyzing(true);
+      let batchArray = [];
+      for (let project in batchList) {
+        batchArray.push(project.id);
+      }
+
+      axios.defaults.withCredentials = true;
+      const batchRes = await axios.post(
+        `http://localhost:5678/projects/sync/batch`,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          crossorigin: true,
+          crossDomain: true,
+          data: {
+            project_id: [2, 3],
+          },
+        }
+      );
+      if (!batchRes.data['response']) {
+        console.log('Failed to set project ID!');
+        console.log(batchRes);
+        throw new Error('Fetch request failed.');
+      }
+    } catch (error) {
+      setAnalyzing(false);
+      console.log(error);
+    }
   };
 
   const batchProcessButton = () => {
@@ -488,13 +539,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             justifyContent: 'flex-end',
           }}
         >
-          {/* <Checkbox
-            indeterminate={indeterminate}
-            onChange={onCheckAllChange}
-            checked={checkAll}
-          >
-            Select all
-          </Checkbox> */}
           <Button
             onClick={selectAll}
             style={{ marginRight: '10px' }}
