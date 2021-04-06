@@ -14,7 +14,11 @@ import {
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
-import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  CloseCircleOutlined,
+  SettingOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
@@ -59,7 +63,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   useEffect(() => {
     console.log(batchList);
     console.log('filtered list:', filteredList);
-  }, [filteredList, batchList, reList, selectVal]);
+  }, [filteredList, batchList, reList, selectVal, selectedRepo]);
 
   const handleRoute = () => {
     if (
@@ -452,19 +456,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
-  // const handleAnalyze = async (e, id) => {
-  //   try {
-  //     setAnalyzing(true);
-  //     setSelectedRepo(id);
-  //     selectRepo = id;
-  //     await syncProjectId();
-  //     await syncProject();
-  //   } catch (error) {
-  //     setAnalyzing(false);
-  //     console.log(error);
-  //   }
-  // };
-
   const syncBatchers = async () => {
     let batchArray = [];
 
@@ -646,10 +637,24 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   };
 
   const tagRender = (item) => {
-    if (item['lastSynced'] === null) {
-      return 'red';
+    if (analyzing && selectedRepo === item.id) {
+      return (
+        <Tag icon={<SyncOutlined spin />} color="processing" key={'cached'}>
+          Analyzing
+        </Tag>
+      );
+    } else if (item['lastSynced'] === null) {
+      return (
+        <Tag color={'red'} key={'cached'}>
+          Not Cached
+        </Tag>
+      );
     } else {
-      return 'green';
+      return (
+        <Tag color={'green'} key={'cached'}>
+          Cached: {Math.round(item['lastSynced'])} min ago
+        </Tag>
+      );
     }
   };
 
@@ -738,11 +743,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Tag color={tagRender(item)} key={'cached'}>
-                  {item['lastSynced'] === null
-                    ? 'Not Cached'
-                    : `Cached: ${Math.round(item['lastSynced'])} min ago`}
-                </Tag>,
+                tagRender(item),
                 <Button
                   onClick={(e) => {
                     handleAnalyze(e, item.id);
