@@ -76,7 +76,6 @@ const TablePage = () => {
     }
 
   // Table updates based on state of this
-  console.log(notesList)
   var rows = populateTable(notesList)
 
   return (
@@ -85,7 +84,7 @@ const TablePage = () => {
       <div className="open-sans">
         <Grid container className={classes.grid}>
           <Grid item xs={9}>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} elevation={0}>
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
@@ -122,7 +121,7 @@ const TablePage = () => {
               </Table>
             </TableContainer>
           </Grid>
-          <Grid item xs={3} style={{ textAlign: 'center' }} component={Paper}>
+          <Grid item xs={3} style={{ textAlign: 'center' }} component={Paper} elevation={0}>
             <FilterMenu />
           </Grid>
         </Grid>
