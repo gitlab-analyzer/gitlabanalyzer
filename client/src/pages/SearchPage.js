@@ -9,8 +9,10 @@ import SearchBar from '../components/login/SearchBar';
 import { useAuth } from '../context/AuthContext';
 import Repo from '../components/login/Repo';
 import LogOut from '../components/LogOut';
+import Header from '../components/Header';
+import FooterBar from '../components/FooterBar';
 
-function SearchPage() {
+const SearchPage = ({ insideApp }) => {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const {
@@ -99,7 +101,30 @@ function SearchPage() {
     }
   };
 
-  if (user) {
+  if (user && insideApp) {
+    return (
+      <>
+        <Header />
+        <div style={{ marginTop: '30px' }}>
+          <SearchBar
+            reList={reList}
+            setLoading={setLoading}
+            setFilteredList={setFilteredList}
+            filteredList={filteredList}
+          />
+        </div>
+        <Repo
+          setAnalyzing={setAnalyzing}
+          loading={loading}
+          analyzing={analyzing}
+          filteredList={filteredList}
+          setFilteredList={setFilteredList}
+        />
+        <div style={{ marginTop: '30px', marginBottom: '30px' }}></div>
+        <FooterBar />
+      </>
+    );
+  } else if (user) {
     return (
       <div className="main_container">
         <div className="rightalign">
@@ -131,6 +156,6 @@ function SearchPage() {
   } else {
     return <Redirect to="/" />;
   }
-}
+};
 
 export default SearchPage;
