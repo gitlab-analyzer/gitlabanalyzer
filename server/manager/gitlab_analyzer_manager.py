@@ -29,19 +29,33 @@ class GitLabAnalyzerManager:
     def __hour_to_seconds(self, hours: int) -> int:
         return hours * 60 * 60
 
+    def __update_last_access_time(self, hashedToken: str) -> None:
+        myGitLabAnalyzer: GitLabAnalyzer = self.__gitlab_list.get(hashedToken, None)
+        if myGitLabAnalyzer is not None:
+            myGitLabAnalyzer.last_time_access = datetime.datetime.now()
+
     # authenticate and add the gitlab instance on success. If success, it will also return username
     def add_gitlab(
         self, token: str, hashedToken: str, url: str
     ) -> Tuple[bool, str, str]:
         try:
             myGitLabAnalyzer = GitLabAnalyzer(token, hashedToken, url)
-            self.__gitlab_list[hashedToken] = myGitLabAnalyzer
+            self.__gitlab_list_lock.acquire()
+            if self.__gitlab_list.get(hashedToken, None) is None:
+                self.__gitlab_list[hashedToken] = myGitLabAnalyzer
+            else:
+                self.__update_last_access_time(hashedToken)
+            self.__gitlab_list_lock.release()
             return True, "", myGitLabAnalyzer.username
         except gitlab.exceptions.GitlabAuthenticationError:
             return False, ERROR_CODES["invalidToken"], ""
 
-    def __find_gitlab(self, hashedToken: str) -> Union[GitLabAnalyzer]:
-        return self.__gitlab_list.get(hashedToken, None)
+    def __find_gitlab(self, hashedToken: str) -> Union[GitLabAnalyzer, None]:
+        self.__gitlab_list_lock.acquire()
+        myGitLab: GitLabAnalyzer = self.__gitlab_list.get(hashedToken, None)
+        self.__update_last_access_time(hashedToken)
+        self.__gitlab_list_lock.release()
+        return myGitLab
 
     def __update_project_list_with_last_synced_time(
         self, hashedToken: str, projectList: list
@@ -272,8 +286,10 @@ class GitLabAnalyzerManager:
         return isValid, errorCode, commentList
 
     def __delete_GitLab_instance(self, hashedToken: str):
+        self.__gitlab_list_lock.acquire()
         if self.__gitlab_list.get(hashedToken, None) is not None:
             self.__gitlab_list.pop(hashedToken)
+        self.__gitlab_list_lock.release()
 
     def __garbage_monitor_worker(self, lock: threading.Lock):
         while self.__worker_should_run_signal:

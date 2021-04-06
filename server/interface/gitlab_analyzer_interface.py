@@ -63,6 +63,10 @@ class GitLabAnalyzer:
     def last_time_access(self):
         return self.__last_time_access
 
+    @last_time_access.setter
+    def last_time_access(self, myTime: datetime) -> None:
+        self.__user_token_hashed = myTime
+
     @user_token.setter
     def user_token(self, hashed_token: str) -> None:
         self.__user_token_hashed = hashed_token
