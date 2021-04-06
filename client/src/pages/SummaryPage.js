@@ -50,11 +50,10 @@ const Summary = () => {
   
 
   const countDates = (list, type) => {
-    var result = {},
-      i,
-      j,
-      date,
-      rarr = [];
+    var result = {};
+    var i, j;
+    var date;
+    var rarr = [];
     
     if (type == COMMITS) {
     for (i = 0; i < list.length; i++) {
@@ -106,8 +105,8 @@ const Summary = () => {
 
 
   const populateDates = (array) => {
-    var result = [],
-      i;
+    var result = [];
+    var i;
     for (i in array) {
       result.push(array[i].date);
     }
@@ -115,12 +114,12 @@ const Summary = () => {
   };
 
   const populateCounts = (array) => {
-    var newArray = [],
-      i;
+    var result = [];
+    var i;
     for (i in array) {
-      newArray.push(array[i].counts);
+      result.push(array[i].counts);
     }
-    return newArray.reverse();
+    return result.reverse();
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser

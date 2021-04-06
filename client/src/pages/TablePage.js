@@ -55,7 +55,8 @@ const TablePage = () => {
   const classes = useStyles();
 
   const populateTable = (notes) => {
-    var i,j, result = [];
+    var i;
+    var result = [];
     var type, date;
     for (i = 0; i < notes.length; i++) {
       if (selectUser === notes[i].author) {
