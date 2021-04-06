@@ -105,7 +105,7 @@ The example above shows a call to project `2` and `5` (Project `5` does not exis
 
 Example javascript ajax call:
 ```javascript
-  var dict = {username : "username" , password:"password"};
+  var dict = {project_list: [2,3]};
 
   $.ajax({
       type: "POST", 
@@ -175,7 +175,7 @@ The example above shows a call to project `2` and `5` (Project `5` does not exis
 
 Example javascript ajax call:
 ```javascript
-  var dict = {username : "username" , password:"password"};
+  var dict = {project_list: [2,3]};
 
   $.ajax({
       type: "POST", 
