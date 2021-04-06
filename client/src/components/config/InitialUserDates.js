@@ -1,62 +1,38 @@
 import React, { useEffect } from 'react';
 import { Select, DatePicker, Form } from 'antd';
 import moment from 'moment';
-import { configSettings } from '../login/Repo';
 import { useAuth } from '../../context/AuthContext';
+
 
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
 
 function InitialUserDates() {
-  const { selectMembersList, selectUser, setSelectUser, anon } = useAuth();
-  useEffect(() => {}, [setSelectUser]);
+  const { 
+    selectMembersList, 
+    selectUser, 
+    setSelectUser, 
+    anon, 
+    dataList,
+    setDataList
+  } = useAuth();
   let anonList = Array.from(
     selectMembersList,
     (x) => `user${selectMembersList.indexOf(x)}`
   );
   return (
     <div>
-      <Form.Item
-        label="User"
-        name="user"
-        rules={[
-          {
-            required: true,
-            message: 'Please choose a User.',
-          },
-        ]}
+      <h6
+        style={{ paddingBottom:10 }}
       >
-        <Select
-          style={{ width: 200 }}
-          defaultValue={
-            (selectUser || (setSelectUser(selectMembersList[0])))
-          }
-          onChange={(value) => 
-            {
-              setSelectUser(selectMembersList[value])
-            }
-          }
-          showSearch
-        >
-          {(anon && (
-            <>
-              {anonList.map((Detail, index) => {
-                return <Option value={index}>{Detail}</Option>;
-              })}
-            </>
-          )) || (
-            <>
-              {selectMembersList.map((Detail, index) => {
-                return <Option value={index}>{Detail}</Option>;
-              })}
-            </>
-          )}
-        </Select>
-      </Form.Item>
+        Current Date Range
+      </h6>
       <Form.Item
         label="Dates"
         name="date"
+        initialValue={dataList}
+        
         rules={[
           {
             required: true,
@@ -64,27 +40,17 @@ function InitialUserDates() {
           },
         ]}
       >
-        <div className="daterange">
           <RangePicker
             format="YYYY/MM/DD hh:mm:ss"
             ranges={{
               Today: [moment().startOf('day'), moment().endOf('day')],
             }}
+            defaultValue={dataList}
+            // onChange={setDataList}
             showTime
             allowClear={false}
-            defaultValue={
-              configSettings.enddate && [
-                moment(configSettings.startdate),
-                moment(configSettings.enddate),
-              ]
-            }
-            onChange={(value) => {
-              configSettings.startdate = value[0].format();
-              configSettings.enddate = value[1].format();
-            }}
             renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}
           />
-        </div>
       </Form.Item>
     </div>
   );

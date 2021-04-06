@@ -1,93 +1,77 @@
 import React from 'react';
-import { DatePicker, Form } from 'antd';
-import { configSettings } from '../login/Repo';
-import moment from 'moment';
+import { DatePicker, Form, Space, Input, Button } from 'antd';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { RangePicker } = DatePicker;
 
 function IterationDates() {
-  const DateErrorMsg = 'Please input a Date Range.';
   return (
     <div>
-      <h6>Iteration Duration</h6>
-      <Form.Item
-        label="Iteration 1"
-        name="iter1"
-        rules={[
-          {
-            required: true,
-            message: DateErrorMsg,
-          },
-        ]}
+      <h6 
+        style={{paddingBottom:10}}
       >
-        <RangePicker
-          format="YYYY/MM/DD hh:mm:ss"
-          showTime
-          allowClear={false}
-          defaultValue={
-            configSettings.iteration.iter1end && [
-              moment(configSettings.iteration.iter1start),
-              moment(configSettings.iteration.iter1end),
-            ]
-          }
-          onChange={(value) => {
-            configSettings.iteration.iter1start = value[0].format();
-            configSettings.iteration.iter1end = value[1].format();
-          }}
-        />
-      </Form.Item>
-      <Form.Item
-        label="Iteration 2"
-        name="iter2"
-        rules={[
-          {
-            required: true,
-            message: DateErrorMsg,
-          },
-        ]}
-      >
-        <RangePicker
-          format="YYYY/MM/DD hh:mm:ss"
-          showTime
-          allowClear={false}
-          defaultValue={
-            configSettings.iteration.iter2end && [
-              moment(configSettings.iteration.iter2start),
-              moment(configSettings.iteration.iter2end),
-            ]
-          }
-          onChange={(value) => {
-            configSettings.iteration.iter2start = value[0].format();
-            configSettings.iteration.iter2end = value[1].format();
-          }}
-        />
-      </Form.Item>
-      <Form.Item
-        label="Iteration 3"
-        name="iter3"
-        rules={[
-          {
-            required: true,
-            message: DateErrorMsg,
-          },
-        ]}
-      >
-        <RangePicker
-          format="YYYY/MM/DD hh:mm:ss"
-          showTime
-          allowClear={false}
-          defaultValue={
-            configSettings.iteration.iter3end && [
-              moment(configSettings.iteration.iter3start),
-              moment(configSettings.iteration.iter3end),
-            ]
-          }
-          onChange={(value) => {
-            configSettings.iteration.iter3start = value[0].format();
-            configSettings.iteration.iter3end = value[1].format();
-          }}
-        />
-      </Form.Item>
+        Iteration Duration
+      </h6>
+      
+      <Form.List name="iterations">
+        {(fields, {add, remove}) => (
+          <div style={{width:600}}>
+            {fields.map((field, index) => (
+              <Space 
+                key={field.key} 
+                style={{ 
+                  display:'flex', 
+                  marginBottom:8 
+                }}
+                align="baseline"
+              >
+                <Form.Item
+                  {...field}
+                  name={[field.name, 'itername']}
+                  fieldKey={[field.fieldKey, 'itername']}
+                  rules={[{ 
+                    required:true, 
+                    message: 'Missing Iteration Name'
+                  }]}
+                >
+                  <Input 
+                    placeholder="Iteration Name" 
+                  />
+                </Form.Item>
+                <p>:</p>
+                <Form.Item
+                  {...field}
+                  name={[field.name, 'iterdates']}
+                  fieldKey={[field.fieldKey, 'iterdate']}
+                  rules={[{ 
+                    required: true, 
+                    message: 'Missing Dates'
+                  }]}
+                >
+                  <RangePicker
+                    format="YYYY/MM/DD hh:mm:ss"
+                    showTime
+                  />
+                </Form.Item>
+                <CloseOutlined 
+                  style={{ color:'red' }}
+                  onClick={() => remove(field.name)}
+                />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button 
+                type="dashed"
+                onClick={() => add()}
+                icon={<PlusOutlined />}
+                block
+              >
+                Add Iteration
+              </Button>
+            </Form.Item>
+          </div>
+        )}
+      </Form.List>
     </div>
   );
 }

@@ -12,11 +12,13 @@ import {
   Form,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
+/// TODO: Hardcoded because of some weird bug
+let selectRepo = 2;
 const Repo = ({
   analyzing,
   setAnalyzing,
@@ -33,6 +35,10 @@ const Repo = ({
     setCommentsList,
     setSelectMembersList,
     setSelectUser,
+    selectedRepo,
+    setSelectedRepo,
+    batchList,
+    setBatchList,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -41,12 +47,16 @@ const Repo = ({
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkedList, setCheckedList] = useState([]);
   const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
-
+  const [syncDone, setSyncDone] = useState(false);
+  const [syncPercent, setSyncPercent] = useState(0);
   const history = useHistory();
 
   const plainOptions = ['Apple', 'Pear', 'Orange'];
 
-  useEffect(() => {}, [filteredList]);
+  useEffect(() => {
+    console.log(batchList);
+    console.log('filtered list:', filteredList);
+  }, [filteredList, selectRepo, batchList]);
 
   const handleRoute = () => {
     if (
@@ -73,19 +83,16 @@ const Repo = ({
   };
 
   // Set project ID to the users chosen ID
-  // Currently it is hard coded to 2 since no other projects exist
-  const setProjectId = async () => {
+  const syncProjectId = async () => {
     const projectRes = await axios.post(
-      'http://localhost:5678/projects/set',
-      {},
+      `http://localhost:5678/projects/${selectRepo}/sync`,
       {
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
         },
-        params: {
-          projectID: 2,
-        },
+        crossorigin: true,
       }
     );
     if (!projectRes.data['response']) {
@@ -94,10 +101,42 @@ const Repo = ({
     }
   };
 
+  /**
+   * Fetch sync status with an interval of 5,000 milliseconds until it is 100% synced.
+   * Upon syncing, it will update syncDone state to reveal redirect button.
+   */
+  const syncProject = async () => {
+    const syncStatus = await axios.get(
+      `http://localhost:5678/projects/${selectRepo}/sync/state`,
+      {
+        withCredentials: true,
+      }
+    );
+    fetchErrorChecker(syncStatus.data['response'], 'sync');
+    console.log(syncStatus.data['status'].is_syncing);
+    const numberStat = syncStatus.data['status'].syncing_progress;
+    console.log(numberStat);
+    setSyncPercent(parseInt(numberStat));
+    console.log('syncDone: ', syncDone);
+    if (syncStatus.data['status'].is_syncing) {
+      setTimeout(async function repeat() {
+        syncProject();
+      }, 5000);
+      return;
+    } else {
+      setSyncDone(true);
+      setAnalyzing(false);
+      return;
+    }
+  };
+
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
-      'http://localhost:5678/projects/2/members'
+      `http://localhost:5678/projects/${selectRepo}/members`,
+      {
+        withCredentials: true,
+      }
     );
 
     fetchErrorChecker(membersRes.data['response'], 'members');
@@ -114,7 +153,12 @@ const Repo = ({
 
   // Function for fetching users list data
   const fetchUsers = async () => {
-    const usersRes = await axios.get('http://localhost:5678/projects/2/users');
+    const usersRes = await axios.get(
+      `http://localhost:5678/projects/${selectRepo}/users`,
+      {
+        withCredentials: true,
+      }
+    );
 
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
@@ -123,7 +167,10 @@ const Repo = ({
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
-      'http://localhost:5678/projects/2/commit/user/all'
+      `http://localhost:5678/projects/${selectRepo}/commit/user/all`,
+      {
+        withCredentials: true,
+      }
     );
     fetchErrorChecker(commitsRes.data['response'], 'commits');
 
@@ -151,7 +198,10 @@ const Repo = ({
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
-      'http://localhost:5678/projects/2/merge_request/user/all'
+      `http://localhost:5678/projects/${selectRepo}/merge_request/user/all`,
+      {
+        withCredentials: true,
+      }
     );
     // console.log(mergeRequestRes.data['merge_request_users_list']);
 
@@ -168,6 +218,7 @@ const Repo = ({
           weightedScore: 0,
         };
         // Loop through object item
+        console.log(mrList[user]);
         for (let author of mrList[user]) {
           let tempCommits = {};
           for (let commit of author.commit_list) {
@@ -228,7 +279,10 @@ const Repo = ({
   // Function for fetching, parsing, and storing notes list data
   const fetchNotes = async () => {
     const notesRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/all'
+      `http://localhost:5678/projects/${selectRepo}/comments/all`,
+      {
+        withCredentials: true,
+      }
     );
 
     fetchErrorChecker(notesRes.data['response'], 'notes');
@@ -255,7 +309,10 @@ const Repo = ({
   // Function for fetching, parsing, and storing comments list data
   const fetchComments = async () => {
     const commentsRes = await axios.get(
-      'http://localhost:5678/projects/2/comments/user/all'
+      `http://localhost:5678/projects/${selectRepo}/comments/user/all`,
+      {
+        withCredentials: true,
+      }
     );
     fetchErrorChecker(commentsRes.data['response'], 'comments');
     const generateTempComments = () => {
@@ -294,28 +351,16 @@ const Repo = ({
    * for analysis
    * Parses all fetched data and store them in global context state
    */
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (e, id) => {
     try {
       setAnalyzing(true);
-
-      /**
-       * This setProjectIs() is important, it is needed for iteration 3, but this process calls
-       * an API in the backend that currently takes a long time (2+ minutes).
-       * This call is disabled for the demo on Monday.
-       */
-
-      await fetchMembers();
-
-      await setProjectId();
-
-      await fetchUsers();
-      await fetchCommits();
-      await fetchMergeRequests();
-      await fetchNotes();
-      await fetchComments();
-
-      setAnalyzing(false);
-      setRedirect(true);
+      // Set project ID in context api
+      setSelectedRepo(id);
+      selectRepo = id;
+      // This sets the project ID to be analyzed and initiates syncing process
+      await syncProjectId();
+      // This is a recursive call that checks the status of syncing process every 5000 milliseconds
+      await syncProject();
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
@@ -339,51 +384,133 @@ const Repo = ({
   // This component renders the batch processing button, select all (checkmarks)
   // and also displays the progress bar
   const batchButton = () => {
-    if (loading || analyzing) {
+    // if (loading || analyzing) {
+    //   return null;
+    // } else {
+    return (
+      <>
+        <Progress
+          style={{ marginTop: '10px' }}
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={syncPercent}
+          status="active"
+        />
+        <div
+          style={{
+            marginTop: '20px',
+            marginBottom: '20px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        ></div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Checkbox
+            indeterminate={indeterminate}
+            onChange={onCheckAllChange}
+            checked={checkAll}
+          >
+            Select all
+          </Checkbox>
+          <Button type="primary" key="batchanalyze">
+            Batch Process
+          </Button>
+        </div>
+      </>
+    );
+    // }
+  };
+
+  const setUpdatedRepo = async () => {};
+
+  /**
+   * Function that is responsible to fetching all data from backend,
+   * Parsing and storing in global context for frontend services to use
+   * This function is lightweight, as most of the time consuming work has been done
+   * in the backend during handelAnazlye() call.
+   */
+  const fetchAndRedirect = async () => {
+    try {
+      // Fetches Member list
+      await fetchMembers();
+      await fetchUsers();
+      await fetchCommits();
+      await fetchMergeRequests();
+      await fetchNotes();
+      await fetchComments();
+      setRedirect(true);
+    } catch (error) {
+      setAnalyzing(false);
+      console.log(error);
+    }
+  };
+
+  const redirectButton = () => {
+    if (syncDone) {
+      return <Button onClick={fetchAndRedirect}>Redirect</Button>;
+    } else {
       return null;
+    }
+  };
+
+  const checkBatchList = (item) => {
+    let isInArray = batchList.find((el) => {
+      return el.id === item.id;
+    });
+    return isInArray;
+  };
+
+  const addtoBatchList = (item) => {
+    // Check if included in batchlist, if so, remove
+    if (checkBatchList(item)) {
+      // Remove
+      let newList = batchList.filter((batch) => batch.id !== item.id);
+      setBatchList([...newList]);
+    } else {
+      // If not, add to batchlist
+      setBatchList([...batchList, item]);
+    }
+  };
+
+  const tagRender = (item) => {
+    if (item['lastSynced'] === null) {
+      return 'red';
+    } else {
+      return 'green';
+    }
+  };
+
+  const renderProject = (id) => {
+    // setSelectedRepo(id);
+    fetchAndRedirect();
+  };
+
+  const goRender = (item) => {
+    if (item['lastSynced'] === null) {
+      return (
+        <Button type="primary" disabled>
+          Go
+        </Button>
+      );
     } else {
       return (
-        <>
-          <Progress
-            style={{ marginTop: '10px' }}
-            strokeColor={{
-              from: '#108ee9',
-              to: '#87d068',
-            }}
-            percent={20.0}
-            status="active"
-          />
-          <div
-            style={{
-              marginTop: '20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button type="primary" key="batchanalyze">
-              Batch Process
-            </Button>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Checkbox
-              indeterminate={indeterminate}
-              onChange={onCheckAllChange}
-              checked={checkAll}
-            >
-              Select all
-            </Checkbox>
-          </div>
-        </>
+        <Button onClick={fetchAndRedirect} type="primary">
+          Go
+        </Button>
       );
     }
   };
+
+  const dateToAgoConverter = (date) => {};
 
   if (redirect) {
     return <Redirect to="/summary" />;
   } else {
     return (
       <div>
+        {redirectButton()}
         {batchButton()}
         <List
           style={{ marginTop: '20px' }}
@@ -393,13 +520,27 @@ const Repo = ({
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Tag color={'green'} key={'cached'}>
-                  Cached
+                <Tag color={tagRender(item)} key={'cached'}>
+                  {item['lastSynced'] === null
+                    ? 'Not Cached'
+                    : item['lastSynced']}
                 </Tag>,
-                <Button onClick={handleAnalyze} key="analyze">
+                <Button
+                  onClick={(e) => {
+                    handleAnalyze(e, item.id);
+                  }}
+                  key="analyze"
+                >
                   Analyze
                 </Button>,
-                <Checkbox>Batch</Checkbox>,
+                goRender(item),
+                <Checkbox
+                  onClick={() => {
+                    addtoBatchList(item);
+                  }}
+                >
+                  Batch
+                </Checkbox>,
                 <SettingOutlined onClick={handleDrawer} />,
               ]}
             >
@@ -410,8 +551,7 @@ const Repo = ({
                     src="https://cdn4.iconfinder.com/data/icons/logos-and-brands-1/512/144_Gitlab_logo_logos-512.png"
                   />
                 }
-                title={item}
-                description="Web app for GitLab Analyzer"
+                title={item.name}
               />
             </List.Item>
           )}
