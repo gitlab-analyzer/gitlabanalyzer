@@ -30,6 +30,7 @@ const Summary = () => {
     commitsList,
     mergeRequestList,
     notesList,
+    dataList,
   } = useAuth();
   const [startDate, setStartDate] = useState('March 1, 2021');
   const [endDate, setEndDate] = useState('March 12, 2021');
@@ -47,7 +48,31 @@ const Summary = () => {
   const MERGE_REQUESTS = 2;
   const CODE_REVIEWS = 3;
   const ISSUES = 4;
-  
+
+  // Filters all lists containing commits, MRs, code reviews, and issues
+  console.log(commitsList)
+  const filterLists = (list, dates, type) => {
+    var result = []
+    // Will give an error if unchecked
+    if(dataList.length !== 0) {
+
+      if(type == COMMITS) {
+        if (dates[0]._d < dates[1]._d) {
+          console.log('true')
+        }
+      } else if (type == MERGE_REQUESTS) {
+
+      } else if (type == CODE_REVIEWS) {
+
+      } else if (type == ISSUES) {
+
+      }
+    }
+    return result;
+  }
+
+  var filteredCommits = filterLists(userCommitsList, dataList, COMMITS)
+  console.log(filteredCommits)
 
   const countDates = (list, type) => {
     var result = {};
