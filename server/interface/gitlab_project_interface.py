@@ -91,7 +91,9 @@ class GitLabProject:
             mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
-                    newComment = self.__commentsManager.add_comment(item, mergeRequests[i].author["name"])
+                    newComment = self.__commentsManager.add_comment(
+                        item, mergeRequests[i].author["name"]
+                    )
                     newMR.add_comment(newComment.noteable_iid)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -173,7 +175,7 @@ class GitLabProject:
             "blanks_added": 0,
             "blanks_deleted": 0,
             "spacing_changes": 0,
-            "syntax_changes": 0
+            "syntax_changes": 0,
         }
 
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
@@ -194,7 +196,7 @@ class GitLabProject:
                 "blanks_added": 0,
                 "blanks_deleted": 0,
                 "spacing_changes": 0,
-                "syntax_changes": 0
+                "syntax_changes": 0,
             },
             "relatedCommitsScoreData": {
                 "lines_added": 0,

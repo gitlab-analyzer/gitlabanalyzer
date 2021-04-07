@@ -1,5 +1,6 @@
 from typing import List
 
+
 class CodeDiffManager:
     def __init__(self):
         self.__code_diff_list: List[List[dict]] = []

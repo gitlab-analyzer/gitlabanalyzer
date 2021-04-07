@@ -14,10 +14,11 @@ from model.member import Member
 from model.issue import Issue
 from model.project import Project
 
+
 class GitLabDB:
     CursorTimeOutMS = 5000
 
-    def __init__(self, addr: str = 'localhost', port: int = 27017) -> None:
+    def __init__(self, addr: str = "localhost", port: int = 27017) -> None:
         self.__client = MongoClient(addr, port)
 
         self.__gitLabAnalyzerDB = self.__client["GitLabAnalyzer"]
@@ -35,23 +36,39 @@ class GitLabDB:
     """
         CONFIG PROFILE DICTS MUST CONTAIN A "profile_name" KEY
     """
+
     def add_user_config_profile(self, hashedToken: str, newConfigProfile: dict) -> bool:
-        assert("profile_name" in newConfigProfile.keys() and newConfigProfile["profile_name"] != "")
-        result: UpdateResult = self.__userColl.update_one({"_id": hashedToken}, {"$push": {"config_profiles": newConfigProfile}})
+        assert (
+            "profile_name" in newConfigProfile.keys()
+            and newConfigProfile["profile_name"] != ""
+        )
+        result: UpdateResult = self.__userColl.update_one(
+            {"_id": hashedToken}, {"$push": {"config_profiles": newConfigProfile}}
+        )
         return result.acknowledged
 
     def delete_user_config_profile(self, hashedToken: str, configName: str) -> bool:
-        result: UpdateResult = self.__userColl.update_one({"_id": hashedToken}, {"$pull": {"config_profiles.profile_name": configName}})
+        result: UpdateResult = self.__userColl.update_one(
+            {"_id": hashedToken},
+            {"$pull": {"config_profiles.profile_name": configName}},
+        )
         return result.acknowledged
 
-    def update_project_config(self, project_id: Union[int, str], newConfigProfile: dict) -> bool:
-        result: UpdateResult = self.__projectColl.update_one({"_id": project_id}, {"config": newConfigProfile})
+    def update_project_config(
+        self, project_id: Union[int, str], newConfigProfile: dict
+    ) -> bool:
+        result: UpdateResult = self.__projectColl.update_one(
+            {"_id": project_id}, {"config": newConfigProfile}
+        )
         return result.acknowledged
 
-    def update_project_member_map(self, project_id: Union[int, str], newMemberMap: dict) -> bool:
-        result: UpdateResult = self.__projectColl.update_one({"_id": project_id}, {"member_map": newMemberMap})
+    def update_project_member_map(
+        self, project_id: Union[int, str], newMemberMap: dict
+    ) -> bool:
+        result: UpdateResult = self.__projectColl.update_one(
+            {"_id": project_id}, {"member_map": newMemberMap}
+        )
         return result.acknowledged
-
 
     # ********************** FIND METHODS ************************************************************************************
     @staticmethod
@@ -61,7 +78,11 @@ class GitLabDB:
             # NOTE: For large results, program may freeze here
             return list(cursor)
         except ExecutionTimeout:
-            print("MongoDB_interface: Find Operation Timed Out for collection:{}. query={}".format(coll, query))
+            print(
+                "MongoDB_interface: Find Operation Timed Out for collection:{}. query={}".format(
+                    coll, query
+                )
+            )
             return list()
 
     @staticmethod
@@ -69,7 +90,11 @@ class GitLabDB:
         try:
             return coll.find_one(filter=query, max_time_ms=GitLabDB.CursorTimeOutMS)
         except ExecutionTimeout:
-            print("MongoDB_interface: FindOne Operation Timed Out for collection:{}. query={}".format(coll, query))
+            print(
+                "MongoDB_interface: FindOne Operation Timed Out for collection:{}. query={}".format(
+                    coll, query
+                )
+            )
             return dict()
 
     def find_one_user(self, hashed_token: str) -> dict:
@@ -77,67 +102,72 @@ class GitLabDB:
 
     def find_one_project(self, project_id: Union[int, str]) -> dict:
         return self.__findOne(self.__projectColl, {"project_id": project_id})
-    
+
     def find_one_MR(self, project_id: Union[int, str], mr_id: int) -> dict:
-        query: dict = {
-            "project_id": project_id,
-            "mr_id": mr_id
-        }
+        query: dict = {"project_id": project_id, "mr_id": mr_id}
         return self.__findOne(self.__mergeRequestColl, query)
 
     # NOTE: MUST TEST
-    def find_MRs_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
+    def find_MRs_in_project(
+        self,
+        project_id: Union[int, str],
+        start_date: datetime = datetime.min,
+        end_date: datetime = datetime.max,
+    ) -> List[dict]:
         query: dict = {
-            "project_id": project_id, 
+            "project_id": project_id,
             "$and": [
                 {"merged_date": {"$gte": start_date}},
-                {"merged_date": {"$lte": end_date}}
-            ]
+                {"merged_date": {"$lte": end_date}},
+            ],
         }
         return self.__find(self.__mergeRequestColl, query)
 
     def find_one_commit(self, project_id: Union[int, str], commit_id: int) -> dict:
-        query: dict = {
-            "project_id": project_id,
-            "commit_id": commit_id
-        }
+        query: dict = {"project_id": project_id, "commit_id": commit_id}
         return self.__findOne(self.__commitColl, query)
 
-    def find_many_commits(self, project_id: Union[int, str], commit_ids: List[int]) -> dict:
+    def find_many_commits(
+        self, project_id: Union[int, str], commit_ids: List[int]
+    ) -> dict:
         if len(commit_ids) == 0:
             return list()
-        
+
         query: dict = {
             "project_id": project_id,
-            "$or": [{"commit_id": id for id in commit_ids}]
+            "$or": [{"commit_id": id for id in commit_ids}],
         }
         return self.__find(self.__commitColl, query)
 
     # NOTE: MUST TEST
-    def find_commits_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
+    def find_commits_in_project(
+        self,
+        project_id: Union[int, str],
+        start_date: datetime = datetime.min,
+        end_date: datetime = datetime.max,
+    ) -> List[dict]:
         query: dict = {
             "project_id": project_id,
             "$and": [
                 {"commit_date": {"$gte": start_date}},
-                {"commit_date": {"$lte": end_date}}
-            ]
+                {"commit_date": {"$lte": end_date}},
+            ],
         }
         return self.__find(self.__commitColl, query)
 
     def find_one_codeDiff(self, project_id: Union[int, str], artif_id: int) -> dict:
-        query: dict = {
-            "project_id": project_id,
-            "artif_id": artif_id
-        }
+        query: dict = {"project_id": project_id, "artif_id": artif_id}
         return self.__findOne(self.__codeDiffColl, query)
 
-    def find_many_codeDiffs(self, project_id: Union[int, str], artif_ids: List[int]) -> List[dict]:
+    def find_many_codeDiffs(
+        self, project_id: Union[int, str], artif_ids: List[int]
+    ) -> List[dict]:
         if len(artif_ids) == 0:
             return list()
 
         query: dict = {
             "project_id": project_id,
-            "$or": [{"artif_id": id} for id in artif_ids]
+            "$or": [{"artif_id": id} for id in artif_ids],
         }
         return self.__find(self.__codeDiffColl, query)
 
@@ -145,26 +175,43 @@ class GitLabDB:
         return self.__find(self.__codeDiffColl, {"project_id": project_id})
 
     # NOTE: MUST TEST
-    def find_codeDiffs_in_MR(self, project_id: Union[int, str], mr_id: int) -> List[dict]:
+    def find_codeDiffs_in_MR(
+        self, project_id: Union[int, str], mr_id: int
+    ) -> List[dict]:
         mr: dict = self.find_one_MR(project_id, mr_id)
         if not mr:
             return list()
 
-        commits: List[dict] = self.find_many_commits(project_id, mr['related_commit_ids'])
-        codeDiffIds: List[int] = [commit['code_diff_id'] for commit in commits]
+        commits: List[dict] = self.find_many_commits(
+            project_id, mr["related_commit_ids"]
+        )
+        codeDiffIds: List[int] = [commit["code_diff_id"] for commit in commits]
         return self.find_many_codeDiffs(project_id, codeDiffIds)
 
     # NOTE: PRIMARY KEY (project_id, noteable_type, noteable_iid (ObjectId if commit comment))
     def find_MR_comments_in_project(self, project_id: Union[int, str]) -> List[dict]:
-        return self.__find(self.__commentColl, {"project_id": project_id, "noteable_type": "MergeRequest"})
+        return self.__find(
+            self.__commentColl,
+            {"project_id": project_id, "noteable_type": "MergeRequest"},
+        )
 
-    def find_commit_comments_in_project(self, project_id: Union[int, str]) -> List[dict]:
-        return self.__find(self.__commentColl, {"project_id": project_id, "noteable_type": "Commit"})
+    def find_commit_comments_in_project(
+        self, project_id: Union[int, str]
+    ) -> List[dict]:
+        return self.__find(
+            self.__commentColl, {"project_id": project_id, "noteable_type": "Commit"}
+        )
 
-    def find_issue_comments_in_projects(self, project_id: Union[int, str]) -> List[dict]:
-        return self.__find(self.__commentColl, {"project_id": project_id, "noteable_type": "Issue"})
+    def find_issue_comments_in_projects(
+        self, project_id: Union[int, str]
+    ) -> List[dict]:
+        return self.__find(
+            self.__commentColl, {"project_id": project_id, "noteable_type": "Issue"}
+        )
 
-    def find_comments_in_MR(self, project_id: Union[int, str], mr_id: int) -> List[dict]:
+    def find_comments_in_MR(
+        self, project_id: Union[int, str], mr_id: int
+    ) -> List[dict]:
         mr: dict = self.find_one_MR(project_id, mr_id)
         if not mr:
             return list()
@@ -172,7 +219,9 @@ class GitLabDB:
         query: dict = {
             "project_id": project_id,
             "noteable_type": "MergeRequest",
-            "$or": [{"noteable_iid": comment_iid} for comment_iid in mr['comment_iid_list']]
+            "$or": [
+                {"noteable_iid": comment_iid} for comment_iid in mr["comment_iid_list"]
+            ],
         }
         return self.__find(self.__commentColl, query)
 
@@ -185,32 +234,40 @@ class GitLabDB:
 
     # TODO: Issues
     def find_one_issue(self, project_id: Union[int, str], issue_id: int) -> dict:
-        return self.__findOne(self.__issueColl, {"project_id": project_id, "issue_id": issue_id})
+        return self.__findOne(
+            self.__issueColl, {"project_id": project_id, "issue_id": issue_id}
+        )
 
-    def find_many_issues(self, project_id: Union[int, str], issue_ids: List[int]) -> List[dict]:
+    def find_many_issues(
+        self, project_id: Union[int, str], issue_ids: List[int]
+    ) -> List[dict]:
         query: dict = {
             "project_id": project_id,
-            "$or": [{"issue_id": issue_id} for issue_id in issue_ids]
+            "$or": [{"issue_id": issue_id} for issue_id in issue_ids],
         }
         return self.__find(self.__issueColl, query)
-    
+
     # NOTE: MUST TEST
-    def find_issues_in_project(self, project_id: Union[int, str], start_date: datetime = datetime.min, end_date: datetime = datetime.max) -> List[dict]:
+    def find_issues_in_project(
+        self,
+        project_id: Union[int, str],
+        start_date: datetime = datetime.min,
+        end_date: datetime = datetime.max,
+    ) -> List[dict]:
         query: dict = {
             "project_id": project_id,
             "$and": [
                 {"created_date": {"$gte": start_date}},
-                {"created_date": {"$lte": end_date}}
-            ]
+                {"created_date": {"$lte": end_date}},
+            ],
         }
         return self.__find(self.__issueColl, query)
-    
+
     def find_issue_of_MR(self, project_id: Union[int, str], mr_id: int) -> dict:
         mr: dict = self.find_one_MR(project_id, mr_id)
         if not mr:
             return dict()
-        return self.__findOne(self.__issueColl, {'issue_id': mr['issue_id']})
-
+        return self.__findOne(self.__issueColl, {"issue_id": mr["issue_id"]})
 
     # ********************** INSERT METHODS *****************************************************************************************
     @staticmethod
@@ -219,44 +276,55 @@ class GitLabDB:
             result: InsertOneResult = coll.insert_one(body)
             return result.acknowledged
         except DuplicateKeyError:
-            print("MongoDB_interface: Duplicate insert in collection:{}. body:{}".format(coll, body))
+            print(
+                "MongoDB_interface: Duplicate insert in collection:{}. body:{}".format(
+                    coll, body
+                )
+            )
             return False
-    
+
     @staticmethod
     def __insertMany(coll: Collection, body: List[dict]) -> bool:
         try:
             result: InsertManyResult = coll.insert_many(body)
             return result.acknowledged
         except DuplicateKeyError:
-            print("MongoDB_interface: Duplicate batch insert in collection:{}.".format(coll))
+            print(
+                "MongoDB_interface: Duplicate batch insert in collection:{}.".format(
+                    coll
+                )
+            )
             return False
 
     def insert_one_GLAUser(self, hashedToken: str, defaultConfig: dict) -> bool:
         # STUB
         body: dict = {
-            '_id': hashedToken,
-            'hashed_token': hashedToken,
-            'config_profiles': defaultConfig
+            "_id": hashedToken,
+            "hashed_token": hashedToken,
+            "config_profiles": defaultConfig,
         }
         return self.__insertOne(self.__userColl, body)
 
-    def insert_one_project(self, project: Project, projectConfig: dict, memberMap: dict) -> bool:
+    def insert_one_project(
+        self, project: Project, projectConfig: dict, memberMap: dict
+    ) -> bool:
         body: dict = {
-            '_id': project.project_id,
-            'project_id': project.project_id,
-            'name': project.name,
-            'path': project.path,
-            'namespace': {
-                'name': project.namespace,
-                'path': project.path_namespace
-            },
-            'last_cached_date': datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0).isoformat(),
-            'config': projectConfig,
-            'member_map': memberMap
+            "_id": project.project_id,
+            "project_id": project.project_id,
+            "name": project.name,
+            "path": project.path,
+            "namespace": {"name": project.namespace, "path": project.path_namespace},
+            "last_cached_date": datetime.utcnow()
+            .replace(tzinfo=timezone.utc, microsecond=0)
+            .isoformat(),
+            "config": projectConfig,
+            "member_map": memberMap,
         }
         return self.__insertOne(self.__projectColl, body)
 
-    def insert_many_MRs(self, project_id: Union[int, str], mergeRequestList: List[MergeRequest]) -> bool:
+    def insert_many_MRs(
+        self, project_id: Union[int, str], mergeRequestList: List[MergeRequest]
+    ) -> bool:
         body: List[dict] = []
 
         for mr in mergeRequestList:
@@ -265,20 +333,26 @@ class GitLabDB:
             for commit in mr.related_commits_list:
                 contributors.add(commit.author_name)
                 relatedCommitIDs.append(commit.id)
-            
-            body.append({
-                'mr_id': mr.id,
-                'project_id': project_id,
-                'issue_id': mr.__related_issue_iid,
-                'code_diff_id': mr.code_diff_id,
-                'merged_date': isoparse(mr.merged_date) if mr.merged_date is not None else None,
-                'contributors': list(contributors),
-                'related_commit_ids': list(relatedCommitIDs),
-                'comment_iid_list': mr.comment_iid_list
-            })
+
+            body.append(
+                {
+                    "mr_id": mr.id,
+                    "project_id": project_id,
+                    "issue_id": mr.__related_issue_iid,
+                    "code_diff_id": mr.code_diff_id,
+                    "merged_date": isoparse(mr.merged_date)
+                    if mr.merged_date is not None
+                    else None,
+                    "contributors": list(contributors),
+                    "related_commit_ids": list(relatedCommitIDs),
+                    "comment_iid_list": mr.comment_iid_list,
+                }
+            )
         return self.__insertMany(self.__mergeRequestColl, body)
-    
-    def insert_one_MR(self, project_id: Union[int, str], mergeRequest: MergeRequest) -> bool:
+
+    def insert_one_MR(
+        self, project_id: Union[int, str], mergeRequest: MergeRequest
+    ) -> bool:
         contributors: set = set()
         relatedCommitIDs: list = []
         for commit in mergeRequest.related_commits_list:
@@ -287,83 +361,95 @@ class GitLabDB:
 
         body: dict = {
             "_id": (mergeRequest.id, project_id),
-            'mr_id': mergeRequest.id,
-            'project_id': project_id,
-            'issue_id': mergeRequest.__related_issue_iid,
-            'code_diff_id': mergeRequest.code_diff_id,
-            'merged_date': isoparse(mergeRequest.merged_date) if mergeRequest.merged_date is not None else None,
-            'contributors': list(contributors),
-            'related_commit_ids': list(relatedCommitIDs),
-            'comment_iid_list': mergeRequest.comment_iid_list
+            "mr_id": mergeRequest.id,
+            "project_id": project_id,
+            "issue_id": mergeRequest.__related_issue_iid,
+            "code_diff_id": mergeRequest.code_diff_id,
+            "merged_date": isoparse(mergeRequest.merged_date)
+            if mergeRequest.merged_date is not None
+            else None,
+            "contributors": list(contributors),
+            "related_commit_ids": list(relatedCommitIDs),
+            "comment_iid_list": mergeRequest.comment_iid_list,
         }
         return self.__insertOne(self.__mergeRequestColl, body)
 
     # precondition: all commits in the list belongs to the same mergeRequest.
     #   if they are all master commits, put None for mergeRequestID.
-    def insert_many_commits(self, project_id: Union[int, str], mergeRequestID, commitList: List[Commit]) -> bool:
+    def insert_many_commits(
+        self, project_id: Union[int, str], mergeRequestID, commitList: List[Commit]
+    ) -> bool:
         body: List[dict] = []
         for commit in commitList:
-            body.append({
-                'commit_id': commit.id,
-                'project_id': project_id,
-                'mr_id': mergeRequestID,
-                'author': commit.author_name,
-                'commit_date': commit.committed_date,
-                'code_diff_id': commit.code_diff_id
-            })
+            body.append(
+                {
+                    "commit_id": commit.id,
+                    "project_id": project_id,
+                    "mr_id": mergeRequestID,
+                    "author": commit.author_name,
+                    "commit_date": commit.committed_date,
+                    "code_diff_id": commit.code_diff_id,
+                }
+            )
         return self.__insertMany(self.__commitColl, body)
 
     # if the commit is a commit on the master branch, put None for mergeRequestID
-    def insert_one_commit(self, project_id: Union[int, str], mergeRequestID, commit: Commit) -> bool:
+    def insert_one_commit(
+        self, project_id: Union[int, str], mergeRequestID, commit: Commit
+    ) -> bool:
         body: dict = {
             "_id": (commit.id, project_id),
-            'commit_id': commit.id,
-            'project_id': project_id,
-            'mr_id': mergeRequestID,
-            'author': commit.author_name,
-            'commiter': commit.committer_name,
-            'commit_date': commit.committed_date,
-            'code_diff_id': commit.code_diff_id
+            "commit_id": commit.id,
+            "project_id": project_id,
+            "mr_id": mergeRequestID,
+            "author": commit.author_name,
+            "commiter": commit.committer_name,
+            "commit_date": commit.committed_date,
+            "code_diff_id": commit.code_diff_id,
         }
         return self.__insertOne(self.__codeDiffColl, body)
 
     # precondition: the list of codeDiffs are in the order how they are stored in codeDiffManager
-    def insert_many_codeDiffs(self, project_id: Union[int, str], codeDiffList: List[List[dict]]) -> bool:
+    def insert_many_codeDiffs(
+        self, project_id: Union[int, str], codeDiffList: List[List[dict]]
+    ) -> bool:
         body: List[dict] = []
         for index, codeDiff in zip(range(len(codeDiffList)), codeDiffList):
-            body.append({
-                "project_id": project_id,
-                "artif_id": index,
-                "diffs": codeDiff
-            })
+            body.append(
+                {"project_id": project_id, "artif_id": index, "diffs": codeDiff}
+            )
         return self.__insertMany(self.__codeDiffColl, body)
 
-    def insert_one_codeDiff(self, project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]) -> bool:
+    def insert_one_codeDiff(
+        self, project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]
+    ) -> bool:
         body: dict = {
             "_id": (codeDiffID, project_id),
             "project_id": project_id,
             "artif_id": codeDiffID,
-            "diffs": codeDiff
+            "diffs": codeDiff,
         }
         return self.__insertOne(self.__codeDiffColl, body)
 
     # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS
-    def insert_many_comments(self, project_id: Union[int, str], commentList: List[Comment]) -> bool:
+    def insert_many_comments(
+        self, project_id: Union[int, str], commentList: List[Comment]
+    ) -> bool:
         body: List[dict] = []
         for comment in commentList:
             body.append(
                 {
                     "_id": (comment.noteable_iid, comment.noteable_type, project_id),
-                    "project_id": project_id
+                    "project_id": project_id,
                 }.update(comment.to_dict())
             )
         return self.__insertMany(self.__commentColl, body)
 
-    # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS    
+    # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS
     def insert_one_comment(self, project_id: Union[int, str], comment: Comment) -> bool:
         body: dict = {
             "_id": (comment.noteable_iid, comment.noteable_type, project_id),
-            "project_id": project_id
+            "project_id": project_id,
         }.update(comment.to_dict())
         result: InsertOneResult = self.__commentColl.insert_one(body)
         return result.acknowledged
@@ -371,14 +457,16 @@ class GitLabDB:
     def insert_many_members(self, memberList: List[Member]) -> bool:
         body: List[dict] = []
         for member in memberList:
-            body.append({
-                "_id": member.id,
-                "member_id": member.id,
-                "username": member.username,
-                "name": member.name,
-                "state": member.state,
-                "access_level": member.access_level
-            })
+            body.append(
+                {
+                    "_id": member.id,
+                    "member_id": member.id,
+                    "username": member.username,
+                    "name": member.name,
+                    "state": member.state,
+                    "access_level": member.access_level,
+                }
+            )
         return self.__insertMany(self.__memberColl, body)
 
     def insert_one_member(self, member: Member) -> bool:
@@ -388,7 +476,7 @@ class GitLabDB:
             "username": member.username,
             "name": member.name,
             "state": member.state,
-            "access_level": member.access_level
+            "access_level": member.access_level,
         }
         return self.__insertOne(self.__memberColl, body)
 
@@ -405,16 +493,15 @@ class GitLabDB:
         body.update(issue.to_dict())
         return self.__insertOne(self.__issueColl, body)
 
-
     # ******************* GETTERS AND SETTERS **********************
     @property
     def collections(self) -> List[str]:
         return self.__gitLabAnalyzerDB.list_collection_names()
-        
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # root:pass@mangodb
-    testDB = GitLabDB('localhost', 27017)
+    testDB = GitLabDB("localhost", 27017)
 
     userObj = {"name": "John", "repoInfo": "this is a test"}
 
