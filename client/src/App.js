@@ -17,22 +17,22 @@ import NewPage from './pages/NewPage';
 function App() {
   return (
     <Router>
-      <div>
+      <div style={{ backgroundColor: '#fff' }}>
         <Switch>
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
           <Route path="/reposearch" component={SearchPage} />
-          <Container maxWidth="lg">
+          <Container style={{ backgroundColor: '#fff' }} maxWidth="lg">
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />
             <Route path="/table" component={TablePage} />
             <Route path="/batch" component={BatchPage} />
             <Route path="/config" component={ConfigPage} />
             <Route path="/codediff" component={CodeDiff} />
-            <Route path="/newpage" component={NewPage} />
           </Container>
         </Switch>
       </div>
+      <Route path="/newpage" component={NewPage} />
     </Router>
   );
 }

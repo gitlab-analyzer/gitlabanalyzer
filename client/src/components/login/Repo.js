@@ -275,7 +275,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           };
         }
       }
-      // console.log(tempMR);
+      console.log('tempMR', tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());

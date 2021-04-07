@@ -60,7 +60,7 @@ const CodeDiff = () => {
   useEffect(() => {
     const getData = async () => {
       const codeRes = await axios.get(
-        'http://localhost:5678/projects/2/code_diff/8'
+        'http://localhost:5678/projects/2/code_diff/417'
       );
       console.log('data', codeRes.data.code_diff_list);
       await setCodeDiff(codeRes.data.code_diff_list);
