@@ -11,6 +11,7 @@ import SearchPage from './pages/SearchPage';
 import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
 import ConfigPage from './pages/ConfigPage';
+import CodeDiffDetail from "./components/code_diff_detail/CodeDiffDetail";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/table" component={TablePage} />
             <Route path="/batch" component={BatchPage} />
             <Route path="/config" component={ConfigPage} />
+            <Route path="/code_diff_detail" component={CodeDiffDetail} />
           </Container>
         </Switch>
       </div>
