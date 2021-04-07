@@ -120,11 +120,8 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       }
     );
     fetchErrorChecker(syncStatus.data['response'], 'sync');
-    console.log(syncStatus.data['status'].is_syncing);
     const numberStat = syncStatus.data['status'].syncing_progress;
-    console.log(numberStat);
     setSyncPercent(parseInt(numberStat));
-    console.log('syncDone: ', syncDone);
     if (syncStatus.data['status'].is_syncing) {
       setTimeout(async function repeat() {
         syncProject();
@@ -392,7 +389,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setRepo(repoList.data.projects);
 
     const projectsData = repoList.data.projects;
-    console.log('update Repos', projectsData);
 
     const projectsList = projectsData.map((project) => {
       return {
@@ -427,7 +423,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     let batchArray = [];
 
     for (let item in batchList) {
-      console.log(item);
       batchArray.push(item.id);
     }
 
@@ -451,7 +446,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       }
     );
     fetchErrorChecker(batchStatus.data['response'], 'batch');
-    console.log(batchStatus.data['totalProgress']);
     const numberStat = batchStatus.data['totalProgress'];
     setSyncPercent(parseInt(numberStat));
     if (batchStatus.data['totalProgress'] !== '100') {
@@ -493,17 +487,14 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         crossDomain: true,
       }
     );
-    console.log('batchRes:', batchRes);
     if (!batchRes.data['response']) {
       console.log('Failed to set project ID!');
-      console.log(batchRes);
       throw new Error('Fetch request failed.');
     }
   };
 
   const letsBatchEm = async () => {
     try {
-      console.log('Batching!');
       setAnalyzing(true);
       await syncBatchers();
       await syncBatch();
@@ -541,9 +532,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   // This component renders the batch processing button, select all (checkmarks)
   // and also displays the progress bar
   const batchButton = () => {
-    // if (loading || analyzing) {
-    //   return null;
-    // } else {
     return (
       <>
         <Progress
@@ -581,7 +569,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         </div>
       </>
     );
-    // }
   };
 
   /**
