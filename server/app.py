@@ -202,10 +202,17 @@ def stop_garbage_collector():
 @app.route('/config/garbage_monitor/check_period', methods=['get', 'post'])
 def change_garbage_collector_check_period():
     if request.method == "get":
-        return jsonify({
-            "response": True, 'cause': "", "check_period": gitlab_manager.get_garbage_monitor_check_period()})
+        return jsonify(
+            {
+                "response": True,
+                'cause': "",
+                "check_period": gitlab_manager.get_garbage_monitor_check_period(),
+            }
+        )
     elif request.method == "post":
-        gitlab_manager.change_worker_check_period(request.form.get("check_period", None))
+        gitlab_manager.change_worker_check_period(
+            request.form.get("check_period", None)
+        )
 
     return jsonify({"response": True, 'cause': ""})
 

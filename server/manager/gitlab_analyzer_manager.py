@@ -16,12 +16,17 @@ ERROR_CODES = {
 
 
 class GitLabAnalyzerManager:
-    def __init__(self, maximum_exist_time=datetime.timedelta(hours=6), worker_check_period_hours: int = 6):
+    def __init__(
+        self,
+        maximum_exist_time=datetime.timedelta(hours=6),
+        worker_check_period_hours: int = 6,
+    ):
         self.__gitlab_list: dict = {}
         self.__gitlab_list_lock = threading.Lock()
         self.__worker_should_run_signal: bool = False
         self.__garbage_monitor = threading.Thread(
-            target=self.__garbage_monitor_worker, args=(self.__gitlab_list_lock,))
+            target=self.__garbage_monitor_worker, args=(self.__gitlab_list_lock,)
+        )
         self.__maximum_exist_time: datetime = maximum_exist_time
         self.__worker_check_period = self.__hour_to_seconds(worker_check_period_hours)
 
@@ -295,7 +300,10 @@ class GitLabAnalyzerManager:
             lock.acquire()
             gitLabUser: GitLabAnalyzer
             for key, gitLabUser in self.__gitlab_list:
-                if datetime.datetime.now() - gitLabUser.last_time_access > self.__maximum_exist_time:
+                if (
+                    datetime.datetime.now() - gitLabUser.last_time_access
+                    > self.__maximum_exist_time
+                ):
                     self.__gitlab_list.pop(key)
             lock.release()
             time.sleep(self.__worker_check_period)
