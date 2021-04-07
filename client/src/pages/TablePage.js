@@ -70,7 +70,7 @@ const TablePage = () => {
           notes[i].createdDate.getMonth() +1,
           notes[i].createdDate.getDate(),
         ].join('-');
-        result.push(createData(date, notes[i].wordCount, notes[i].body, "author", type))
+        result.push(createData(date, notes[i].wordCount, notes[i].body, notes[i].ownership, type))
         }
       }
       return result;

@@ -300,6 +300,8 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
       noteableType: note.noteable_type,
+      owner_of_noteable: note.owner_of_noteable,
+      ownership: note.ownership,
       wordCount: note.word_count,
       // Frontend defined variables Start --------------------------
       // Initial score calculation
@@ -335,6 +337,8 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             noteableIid: comment.noteable_iid,
             noteableType: comment.noteable_type,
             wordCount: comment.word_count,
+            owner_of_noteable: comment.owner_of_noteable,
+            ownership: comment.ownership,
             // Frontend defined variables Start --------------------------
             // Initial score calculation
             score: 0,
