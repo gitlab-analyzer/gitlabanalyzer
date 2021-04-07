@@ -83,7 +83,7 @@ def get_state(projectID: int):
     return jsonify({'status': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/sync/batch/state', methods=['get'])
+@app.route('/projects/sync/batch/state', methods=['post'])
 def get_state_for_multiple_project():
     (
         isSuccess,

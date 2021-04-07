@@ -6,9 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 const { Search } = Input;
 
 const SearchBarComp = ({ reList, setFilteredList }) => {
-  const [value, setValue] = useState('');
-
-  const { user } = useAuth();
+  const { user, value, setValue } = useAuth();
 
   useEffect(() => {
     if (value === '') {

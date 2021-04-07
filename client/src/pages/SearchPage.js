@@ -9,13 +9,41 @@ import SearchBar from '../components/login/SearchBar';
 import { useAuth } from '../context/AuthContext';
 import Repo from '../components/login/Repo';
 import LogOut from '../components/LogOut';
+import Header from '../components/Header';
+import FooterBar from '../components/FooterBar';
 
-function SearchPage() {
+const SearchPage = ({ insideApp }) => {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setRepo, mergeRequestList } = useAuth();
-  const [reList, setReList] = useState([]);
-  const [filteredList, setFilteredList] = useState([]);
+  const {
+    user,
+    setRepo,
+    mergeRequestList,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+    batchList,
+  } = useAuth();
+
+  const dateToAgoConverter = (date) => {
+    if (date === null) {
+      return null;
+    }
+    const dateBefore = new Date(date + '-0700');
+    const dateAfter = new Date();
+
+    return (dateAfter - dateBefore) / (1000 * 60);
+  };
+
+  const includedInBatchList = (project) => {
+    for (let included in batchList) {
+      if (project.id === included.id) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   useEffect(() => {
     const getRepos = async () => {
@@ -32,7 +60,8 @@ function SearchPage() {
         return {
           id: project.id,
           name: project.name,
-          lastSynced: project.last_synced,
+          lastSynced: dateToAgoConverter(project.last_synced),
+          batched: includedInBatchList(project),
         };
       });
       setReList([...projectsList]);
@@ -72,7 +101,30 @@ function SearchPage() {
     }
   };
 
-  if (user) {
+  if (user && insideApp) {
+    return (
+      <>
+        <Header />
+        <div style={{ marginTop: '30px' }}>
+          <SearchBar
+            reList={reList}
+            setLoading={setLoading}
+            setFilteredList={setFilteredList}
+            filteredList={filteredList}
+          />
+        </div>
+        <Repo
+          setAnalyzing={setAnalyzing}
+          loading={loading}
+          analyzing={analyzing}
+          filteredList={filteredList}
+          setFilteredList={setFilteredList}
+        />
+        <div style={{ marginTop: '30px', marginBottom: '30px' }}></div>
+        <FooterBar />
+      </>
+    );
+  } else if (user) {
     return (
       <div className="main_container">
         <div className="rightalign">
@@ -104,6 +156,6 @@ function SearchPage() {
   } else {
     return <Redirect to="/" />;
   }
-}
+};
 
 export default SearchPage;

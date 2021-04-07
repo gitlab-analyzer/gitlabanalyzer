@@ -21,6 +21,9 @@ const AuthProvider = (props) => {
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [batchList, setBatchList] = useState([]);
   const [currentConfig, setCurrentConfig] = useState({});
+  const [reList, setReList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
+  const [value, setValue] = useState('');
 
   const authContextValue = {
     user,
@@ -59,6 +62,12 @@ const AuthProvider = (props) => {
     setBatchList,
     currentConfig,
     setCurrentConfig,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+    value,
+    setValue,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
