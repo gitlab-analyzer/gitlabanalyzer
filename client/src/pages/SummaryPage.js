@@ -51,12 +51,21 @@ const Summary = () => {
 
   // Filters all lists containing commits, MRs, code reviews, and issues
   console.log(commitsList)
+  console.log(dataList)
   const filterLists = (list, dates, type) => {
-    var result = []
+    var result = [];
+    var i, j;
     // Will give an error if unchecked
     if(dataList.length !== 0) {
 
       if(type == COMMITS) {
+        for(i = 0; i < list.length; i++) {
+          for(j = 0; j < list[i].commits[0].length; j++) {
+            if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
+              console.log("true 1")
+            }
+          }
+        }
         if (dates[0]._d < dates[1]._d) {
           console.log('true')
         }
@@ -74,7 +83,7 @@ const Summary = () => {
   var filteredCommits = filterLists(userCommitsList, dataList, COMMITS)
   console.log(filteredCommits)
 
-  const countDates = (list, type) => {
+  const countDates = (list, type, dates) => {
     var result = {};
     var i, j;
     var date;
@@ -84,13 +93,27 @@ const Summary = () => {
     for (i = 0; i < list.length; i++) {
       if (selectUser === list[i].userName) {
         for (j = 0; j < list[i].commits[0].length; j++) {
-          date = [
-            list[i].commits[0][j].commitedDate.getFullYear(),
-            list[i].commits[0][j].commitedDate.getMonth() +1,
-            list[i].commits[0][j].commitedDate.getDate(),
-          ].join('-');
-          result[date] = result[date] || 0;
-          result[date]++;
+          if(dataList.length !== 0) {
+            // Case when float bar dates are selected
+            if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
+              date = [
+                list[i].commits[0][j].commitedDate.getFullYear(),
+                list[i].commits[0][j].commitedDate.getMonth() +1,
+                list[i].commits[0][j].commitedDate.getDate(),
+              ].join('-');
+              result[date] = result[date] || 0;
+              result[date]++;
+            }
+          } else {
+            // No float bar dates seleceted
+            date = [
+              list[i].commits[0][j].commitedDate.getFullYear(),
+              list[i].commits[0][j].commitedDate.getMonth() +1,
+              list[i].commits[0][j].commitedDate.getDate(),
+            ].join('-');
+            result[date] = result[date] || 0;
+            result[date]++;
+          }
         }
       }
     }
@@ -148,20 +171,20 @@ const Summary = () => {
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser
-  var dailyCommitsArray = countDates(userCommitsList, COMMITS)
+  var dailyCommitsArray = countDates(userCommitsList, COMMITS, dataList)
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
   // Merge Request logic not complete - commits as placeholder
-  var dailyMRsArray = countDates(userCommitsList, COMMITS)
+  var dailyMRsArray = countDates(userCommitsList, COMMITS, dataList)
   var mrDatesArray = populateDates(dailyMRsArray)
   var mrCountsArray = populateCounts(dailyMRsArray)
 
-  var dailyCRArray = countDates(notesList, CODE_REVIEWS)
+  var dailyCRArray = countDates(notesList, CODE_REVIEWS, dataList)
   var CRDatesArray = populateDates(dailyCRArray)
   var CRCountsArray = populateCounts(dailyCRArray)
 
-  var dailyIssuesArray = countDates(notesList, ISSUES)
+  var dailyIssuesArray = countDates(notesList, ISSUES, dataList)
   var issueDatesArray = populateDates(dailyIssuesArray)
   var issueCountsArray = populateCounts(dailyIssuesArray)
 
@@ -196,7 +219,7 @@ const Summary = () => {
     setDateArray(commitDatesArray)
     setCrDateArray(CRDatesArray)
     setIssueDateArray(issueDatesArray)
-  }, [selectUser])
+  }, [selectUser, dataList])
 
   const [combinedSeries, setCombinedSeries] = useState([
     {
