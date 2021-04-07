@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import LanguagePoints from '../components/config/LanguagePoints';
 import IterationDates from '../components/config/IterationDates';
 import InitialUserDates from '../components/config/InitialUserDates';
 import AnonymousViewing from '../components/config/AnonymousViewing';
 import FooterBar from '../components/FooterBar';
-import {Form, Divider, Row, Col, Button, Input, Modal, notification} from 'antd';
+import {Form, Divider, Row, Col, Button, Input, notification, Select} from 'antd';
 import { useAuth } from '../context/AuthContext'
-import moment from 'moment';
-import {CheckCircleOutlined} from "@ant-design/icons";
+import {SaveOutlined} from "@ant-design/icons";
+
+const { Option } = Select;
 
 let SavedConfigs = {}
 const ConfigPage = () => {
@@ -27,25 +28,23 @@ const ConfigPage = () => {
     setDataList(value.date);
   }
 
-  const fillForm = () => {
-    console.log("Add Saved Config", SavedConfigs["1"])
+  const fillForm = (value) => {
+    setCurrentConfig(SavedConfigs[value]);
+    setDataList(SavedConfigs[value].date);
     form.setFieldsValue(
-        // SavedConfigs["1"],
-        {date: [moment().startOf("month"), moment().endOf("month")]}
+      SavedConfigs[value]
     );
   };
   const saveSuccessful = () => {
     console.log('in save config', currentConfig)
-    console.log(typeof currentConfig.configname)
     notification.open({
-
       message: 'Saved Config',
-      icon: <CheckCircleOutlined style={{ color: '#00d100' }} />,
+      icon: <SaveOutlined style={{ color: '#00d100' }} />,
       duration: 1.5,
     });
   };
+
   useEffect(() => {
-    // form.setFieldsValue({date:{dataList}})
     console.log(dataList);
   }, [dataList]);
   return (
@@ -56,11 +55,26 @@ const ConfigPage = () => {
         onFinish={handleSave}
         form={form}
       >
-        <Button
-          onClick={fillForm}
+        <Select
+            style={{
+              width:429,
+              display:"flex",
+              marginRight:"-3%",
+              marginTop: "-3%",
+              right:0,
+              float:"right"
+            }}
+            showSearch
+            allowClear
+            onSelect={fillForm}
+            placeholder="Load Config File"
         >
-          Fill Form
-        </Button>
+          {Object.keys(SavedConfigs).map(function(key, object) {
+            return (
+                <Option value={key}>{key}</Option>
+            );
+          })}
+        </Select>
         <InitialUserDates />
         <Divider />
         <Row gutter={120}>
@@ -72,9 +86,18 @@ const ConfigPage = () => {
           </Col>
         </Row>
         <Divider />
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"end"}}>
+        <div
+          style={{
+            display:"flex",
+            justifyContent:"space-between",
+            alignItems:"end"
+          }}
+        >
           <AnonymousViewing />
-          <div className="buttonContainer" style={{ display:'flex' }}>
+          <div
+            className="buttonContainer"
+            style={{ display:'flex' }}
+          >
             <Form.Item
               name="configname"
               rules={[
@@ -85,7 +108,7 @@ const ConfigPage = () => {
               ]}
             >
               <Input 
-                style={{marginRight:100}}
+                style={{ marginRight:100 }}
                 size="large"
                 />
             </Form.Item>
