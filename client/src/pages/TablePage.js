@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import {React, useState, useEffect} from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Button } from 'antd';
+import { Button } from 'antd'
 
 import FilterMenu from '../components/table/FilterMenu';
 import SelectUser from '../components/SelectUser';
@@ -43,39 +43,41 @@ const useStyles = makeStyles({
   },
 });
 
+
+
 function createData(date, wordcount, comment, ownership, type) {
   return { date, wordcount, comment, ownership, type };
 }
 
-const rows = [
-  createData('2021-03-13', '4', 'Admin comment on code', 'Own', 'Code Review'),
-  createData('2021-03-13', '3', 'Admin comment 3', 'Other', 'Issue'),
-  createData('2021-03-13', '3', 'another admin comment', 'Own', 'Issue'),
-  createData(
-    '2021-03-08',
-    '6',
-    'There is a merge conflict, interesting.',
-    'Other',
-    'Issue'
-  ),
-];
 
 const TablePage = () => {
-  const { selectUser, setSelectUser, notesList, setNotesList } = useAuth();
-  const [tableNotesList, setTableNotesList] = useState(notesList);
+  const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
   const classes = useStyles();
 
-  console.log(tableNotesList);
+  const populateTable = (notes) => {
+    var i;
+    var result = [];
+    var type, date;
+    for (i = 0; i < notes.length; i++) {
+      if (selectUser === notes[i].author) {
+        if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+          type = "Code Review"
+        } else {
+          type = "Issue"
+        }
+        date = [
+          notes[i].createdDate.getFullYear(),
+          notes[i].createdDate.getMonth() +1,
+          notes[i].createdDate.getDate(),
+        ].join('-');
+        result.push(createData(date, notes[i].wordCount, notes[i].body, "author", type))
+        }
+      }
+      return result;
+    }
 
-  // TODO: display data
-  // const dataRows = [];
-  // tableNotesList.forEach((item, i) => {
-  //   console.log(item[i])
-  //   console.log()
-  //   if(item[i].author == selectUser){
-  //    dataRows.push(createData(item[i].createdDate, item[i].wordCount, item[i].body, "N/A", "N/A"));
-  //   }
-  // });
+  // Table updates based on state of this
+  var rows = populateTable(notesList)
 
   return (
     <>
@@ -83,7 +85,7 @@ const TablePage = () => {
       <div className="open-sans">
         <Grid container className={classes.grid}>
           <Grid item xs={9}>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} elevation={0}>
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
@@ -120,7 +122,7 @@ const TablePage = () => {
               </Table>
             </TableContainer>
           </Grid>
-          <Grid item xs={3} style={{ textAlign: 'center' }} component={Paper}>
+          <Grid item xs={3} style={{ textAlign: 'center' }} component={Paper} elevation={0}>
             <FilterMenu />
           </Grid>
         </Grid>

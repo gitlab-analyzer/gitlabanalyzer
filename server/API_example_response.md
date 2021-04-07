@@ -1,64 +1,197 @@
 ## API Example Response
-- [GET /auth](#authentication)
-- [GET /projects](#get-a-list-of-projects)
-- [POST /projects/set?projectID=id](#set-the-current-project-to-projectid)
-- [GET /projects/<int:<i></i>projectID>/members](#get-all-the-members-in-the-project)
-- [GET /projects/<int:<i></i>projectID>/users](#get-all-the-users-in-the-project)
-- [GET /projects/<int:<i></i>projectID>/commit](#get-all-commits-in-that-project)
-- [GET /projects/<int:<i></i>projectID>/commit/user/all](#get-all-the-commits-sorted-in-users)
-- [GET /projects/<int:<i></i>projectID>/merge_request/all](#get-all-the-merge-request-in-that-project)
-- [GET /projects/<int:<i></i>projectID>/merge_request/user/all](#get-all-the-merge-request-sorted-in-users)
-- [GET /projects/<int:<i></i>projectID>/code_diff/<int:<i></i>codeDiffID>](#get-a-specific-code-diff)
-- [GET /projects/<int:<i></i>projectID>/comments/all](#get-all-comments-in-that-project)
-- [GET /projects/<int:<i></i>projectID>/comments/user/all](#get-all-comments-sorted-in-users)
+- [Authentication](#authentication)
+    - `POST /auth`
+- [Get all accessible projects](#get-a-list-of-projects)
+    - `GET /projects`
+- [Start syncing the project](#set-the-current-project-to-projectid)
+    - `POST /projects/<int:projectID>/sync`
+- [Sync a list of projects(batch processing)](#sync-a-list-of-projectsbatch-processing)
+    - `POST /projects/sync/batch`
+- [Get project syncing state](#get-project-syncing-state)
+    - `GET /projects/<int:projectID>/sync/state`
+- [Get a list of projects' syncing state](#get-a-list-of-projects-syncing-statebatch-processing)
+    - `GET /projects/sync/batch/state`
+- [Get all the members in the repo](#get-all-the-members-in-the-project)
+    - `GET /projects/<int:projectID>/members`
+- [Get all the committers' name](#get-all-the-users-in-the-project)
+    - `GET /projects/<int:projectID>/users`
+- [Get all the commit in that project](#get-all-commits-in-that-project)
+    - `GET /projects/<int:projectID>/commit`
+- [Get all the commits sorted in users](#get-all-the-commits-sorted-in-users)
+    - `GET /projects/<int:projectID>/commit/user/all`
+- [Get all the merge requests in the project](#get-all-the-merge-request-in-that-project)
+    - `GET /projects/<int:projectID>/merge_request/all`
+- [Get all the merge Request sorted in users](#get-all-the-merge-request-sorted-in-users)
+    - `GET /projects/<int:projectID>/merge_request/user/all`
+- [Get code diff based on codeDiffID](#get-a-specific-code-diff)
+    - `GET /projects/<int:projectID>/code_diff/<int:codeDiffID>`
+- [Get all the comments in the project](#get-all-comments-in-that-project)
+    - `GET /projects/<int:projectID>/comments/all`
+- [Get all the comments sorted in users](#get-all-comments-sorted-in-users)
+    - `GET /projects/<int:projectID>/comments/user/all`
+
+#### Note
+All the API calls will contain two variables, `response` and `cause`
+- `response` will indicate if the request runs successfully
+  - `True` means the request runs successfully
+  - `False` means an error has occurred
+- `cause` will indicate the error when response is `false`
+
 
 ### Authentication
-#### `GET /auth`
+#### `POST /auth`
 ```json
 {
+    "cause": "",
     "response": true,
-    "username": "fanghaof"
-}
-
-{
-    "Cause": "Invalid token or url",
-    "response": false,
-    "username": ""
+    "username": "Administrator"
 }
 ```
+
+Required body:
+- Token (String)
+- GitLab URL (String)
+
 [Go back to API list](#api-example-response)
 
 ### Get a list of projects
 #### `GET /projects`
 ```json
 {
-    "response": true,
+    "cause": "",
     "projects": [
-        "fanghaof / 373_c",
-        "373-2021-1-Makemake / GitLabAnalyzer",
-    ]
+        {
+            "id": 3,
+            "last_synced": "Thu, 01 Apr 2021 22:49:59 GMT",
+            "name": "TestUser H / CMPT373_TestRepoFromProf"
+        },
+        {
+            "id": 2,
+            "last_synced": null,
+            "name": "Administrator / Makemake_Mirrored"
+        }
+    ],
+    "response": true
 }
 ```
 [Go back to API list](#api-example-response)
 
 ### Set the current project to projectID
-#### `POST /projects/set?projectID=id`
+#### `POST /projects/<int:projectID>/sync`
 ```json
 {
+    "cause": "",
     "response": true
 }
+```
+[Go back to API list](#api-example-response)
 
+### Sync a list of projects(batch processing)
+#### `POST /projects/sync/batch`
+```json
 {
-    "Cause": "Error, invalid projectID.",
-    "response": false
+    "cause": "Some project IDs are invalid or they are already syncing",
+    "response": false,
+    "status": {
+        "2": true,
+        "5": false
+    }
 }
 ```
+Note:
+- Only valid projectIDs' status will be included in the response. 
+The example above shows a call to project `2` and `5` (Project `5` does not exist)
+- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_list"` in the request body
+
+Example javascript ajax call:
+```javascript
+  var dict = {project_list: [2,3]};
+
+  $.ajax({
+      type: "POST", 
+      url: "http://127.0.0.1:5000/", //localhost Flask
+      data : JSON.stringify(dict),
+      contentType: "application/json",
+  });
+```
+
+[Go back to API list](#api-example-response)
+
+### Get project syncing state
+#### `GET /projects/<int:projectID>/sync/state`
+```json
+{
+    "cause": "",
+    "status": {
+        "is_syncing": false,
+        "last_synced": "Sat, 27 Mar 2021 17:57:38 GMT",
+        "projectID": 2,
+        "syncing_progress": 100,
+        "syncing_state": "Synced"
+    },
+    "response": true
+}
+```
+**syncing_state (string)** possible values:
+- `[Syncing data from remote..., Analyzing..., Synced]`
+
+**syncing_progress (int)**:
+- A percentage value shows the progress of syncing (0 - 100)
+
+**last_synced** date format:
+- "Wed, 17 Mar 2021 22:38:05 GMT"
+
+[Go back to API list](#api-example-response)
+
+### Get a list of projects' syncing state(batch processing)
+#### `GET /projects/sync/batch/state`
+```json
+{
+    "cause": "",
+    "response": true,
+    "status": {
+        "2": {
+            "is_syncing": true,
+            "last_synced": null,
+            "projectID": 2,
+            "syncing_progress": 14,
+            "syncing_state": "Syncing data from remote..."
+        },
+        "3": {
+            "is_syncing": true,
+            "last_synced": null,
+            "projectID": 3,
+            "syncing_progress": 42,
+            "syncing_state": "Syncing data from remote..."
+        }
+    },
+    "totalProgress": 28
+}
+```
+Note:
+- Only valid projectIDs' status will be included in the response. 
+The example above shows a call to project `2` and `5` (Project `5` does not exist)
+- This call need a list of projectIDs (Example: `[1,2]`) of key `"project_list"` in the request body
+
+Example javascript ajax call:
+```javascript
+  var dict = {project_list: [2,3]};
+
+  $.ajax({
+      type: "POST", 
+      url: "http://127.0.0.1:5000/", //localhost Flask
+      data : JSON.stringify(dict),
+      contentType: "application/json",
+  });
+```
+
 [Go back to API list](#api-example-response)
 
 ### Get all the members in the project
 #### `GET /projects/<int:projectID>/members`
 ```json
 {
+    "cause": "",
     "members": [
         {
             "access_level": 40,
@@ -73,13 +206,6 @@
             "name": "Joseph Test",
             "state": "active",
             "username": "makemaketest5"
-        },
-        {
-            "access_level": 40,
-            "id": 7,
-            "name": "tester 88",
-            "state": "active",
-            "username": "Tester88"
         }
     ],
     "response": true
@@ -91,26 +217,24 @@
 #### `GET /projects/<int:projectID>/users`
 ```json
 {
+    "cause": "",
     "users": [
-        "Joseph Test",
+        "Thomas Min",
+        "jaddiet",
         "TestUser H",
         "HenryPC",
-        "Andrew",
         "Henry Fang",
-        "fanghaof",
-        "Joshua Li Guo",
-        "jaddiet",
-        "springbro294",
         "xtran",
-        "Thomas Min",
-        "jiwonj"
+        "Administrator",
+        "Joshua Li Guo",
+        "fanghaof",
+        "Andrew",
+        "tester 88",
+        "jiwonj",
+        "Joseph Test",
+        "springbro294"
     ],
     "response": true
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
 }
 ```
 [Go back to API list](#api-example-response)
@@ -119,6 +243,7 @@
 #### `GET /projects/<int:projectID>/commit`
 ```json
 {
+    "cause": "",
     "commit_list": [
         {
             "author_name": "Joseph Test",
@@ -170,6 +295,7 @@
 #### `GET /projects/<int:projectID>/commit/user/all`
 ```json
 {
+    "cause": "",
     "commit_list": [
         {
             "commits": [
@@ -244,11 +370,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -256,6 +377,7 @@
 #### `GET /projects/<int:projectID>/merge_request/all`
 ```json
 {
+    "cause": "",
     "merge_request_list": [
         {
             "author": {
@@ -388,11 +510,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -400,6 +517,7 @@
 #### `GET /projects/<int:projectID>/merge_request/user/all`
 ```json
 {
+    "cause": "",
     "merge_request_users_list": {
         "Joseph Test": [
             {
@@ -570,11 +688,6 @@
     },
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -582,6 +695,7 @@
 #### `GET /projects/<int:projectID>/code_diff/<int:codeDiffID>`
 ```json
 {
+    "cause": "",
     "code_diff_list": [
         {
             "a_mode": "0",
@@ -606,11 +720,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -618,6 +727,7 @@
 #### `GET /projects/<int:projectID>/comments/all`
 ```json
 {
+    "cause": "",
     "notes": [
         {
             "author": "TestUser H",
@@ -642,11 +752,6 @@
     ],
     "response": true
 }
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
-}
 ```
 [Go back to API list](#api-example-response)
 
@@ -654,6 +759,7 @@
 #### `GET /projects/<int:projectID>/comments/user/all`
 ```json
 {
+    "cause": "",
     "notes": {
         "Joseph Test": [
             {
@@ -691,11 +797,6 @@
         ]
     },
     "response": true
-}
-
-{
-    "Cause": "Error, invalid projectID.",
-    "response": false
 }
 ```
 [Go back to API list](#api-example-response)

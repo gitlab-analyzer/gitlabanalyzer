@@ -14,10 +14,8 @@ const usercolours = [
   '#ab3ca6',
 ];
 export var barData = [];
-var scoreData = [];
 
 export function ScoreCalculator(username) {
-  // <GatherData />
   let TotalScore;
   for (let i = 0; i < barData.length; i++) {
     let data = barData[i];
@@ -34,68 +32,87 @@ export function ScoreCalculator(username) {
 }
 
 const EveryoneScore = () => {
-  const { notesList, mergeRequestList, setFloatScores } = useAuth();
+  const { notesList, mergeRequestList, setFloatScores, dataList, selectUser, anon } = useAuth();
 
   useEffect(() => {
-    barData = [];
-    var subscore = {};
-    if (notesList !== 0) {
-      for (let [nkey, nvalue] of Object.entries(notesList)) {
-        if (nvalue['ignore']) {
-          continue;
-        }
-        if (nvalue['author'] in subscore) {
-          subscore[nvalue['author']] += nvalue['score'];
-        } else {
-          subscore[nvalue['author']] = nvalue['score'];
-        }
-      }
-    }
-
-    if (mergeRequestList !== 0) {
-      for (let [user, uservalue] of Object.entries(mergeRequestList)) {
-        let commitScore = 0;
-        let linesAdded = 0;
-        let linesDeleted = 0;
-        let syntaxChanged = 0;
-        for (let [key, value] of Object.entries(uservalue['mr'])) {
-          if (value['ignore']) {
+    async function updateData() {
+      barData = [];
+      var subscore = {};
+      let ignore = false;
+      let num = 0;
+      if (notesList !== 0) {
+        for (let [nkey, nvalue] of Object.entries(notesList)) {
+          if (nvalue['ignore'] ||
+            (dataList[0]==null || ((nvalue['createdDate'] < new Date(dataList[0]))) ||
+            (nvalue['createdDate'] > new Date(dataList[1])))) 
+          {
             continue;
           }
-          for (let [k, v] of Object.entries(value['commitList'])) {
-            if (v['ignore']) {
+          if (nvalue['author'] in subscore) {
+            subscore[nvalue['author']] += nvalue['score'];
+          } else {
+            subscore[nvalue['author']] = nvalue['score'];
+          }
+        }
+      }
+      if (mergeRequestList !== 0) {
+        for (let [user, uservalue] of Object.entries(mergeRequestList)) {
+          let commitScore = 0;
+          let linesAdded = 0;
+          let linesDeleted = 0;
+          let syntaxChanged = 0;
+          for (let [key, value] of Object.entries(uservalue['mr'])) {
+            if (value['ignore']) {
               continue;
             }
-            commitScore += v['score'];
+            for (let [k, v] of Object.entries(value['commitList'])) {
+              if (v['ignore']) {
+                ignore = true
+                continue;
+              }
+              if (
+                (v['comittedDate'] < new Date(dataList[0])) || 
+                (v['comittedDate'] > new Date(dataList[1]))
+              ) {
+                ignore = true
+                continue;
+              }
+              commitScore += v['score'];
+            }
+            for (let [keylines, valuelines] of Object.entries(
+              value['lineCounts']
+            )) {
+              if (!ignore) {
+                linesAdded += value['lineCounts']['lines_added'];
+                linesDeleted += value['lineCounts']['lines_deleted'];
+                syntaxChanged += value['lineCounts']['syntax_changes'];
+              }
+            }
+            ignore = false
           }
-          for (let [keylines, valuelines] of Object.entries(
-            value['lineCounts']
-          )) {
-            linesAdded += value['lineCounts']['lines_added'];
-            linesDeleted += value['lineCounts']['lines_deleted'];
-            syntaxChanged += value['lineCounts']['syntax_changes'];
+          if (!subscore[user]) {
+            subscore[user] = 0;
           }
+          barData.push({
+            name: user,
+            id: num++,
+            commits: commitScore.toFixed(0),
+            code: linesAdded,
+            deleted: linesDeleted,
+            syntax: syntaxChanged,
+            issue: subscore[user],
+          });
         }
-        if (!subscore[user]) {
-          subscore[user] = 0;
-        }
-        barData.push({
-          name: user,
-          commits: commitScore.toFixed(0),
-          code: linesAdded,
-          deleted: linesDeleted,
-          syntax: syntaxChanged,
-          issue: subscore[user],
-        });
       }
+      await setFloatScores([...barData]);  
     }
-    setFloatScores([...barData]);
-  }, [mergeRequestList]);
+    updateData();
+  }, [mergeRequestList, dataList, selectUser]);
 
+  useEffect(() => {}, [barData]);
   const scrollRef = HorizontalScroll();
   return (
     <div className="floatbarContainer">
-      {/* <GatherData /> */}
       <div className="floatbarLabels">
         <div className="scoreLabel">weighted score</div>
         <div className="remainingLabels">
@@ -109,8 +126,13 @@ const EveryoneScore = () => {
           {barData.map((Detail, index) => {
             return (
               <div className="scoreArray">
-                <div className="user" style={{ color: usercolours[index] }}>
-                  @{Detail.name}
+                <div style={{ color: usercolours[Detail.id] }}>
+                  {
+                    (anon && "User"+(Detail.id)) || 
+                    (
+                      (Detail.name)
+                    )
+                  }
                 </div>
                 <div className="userScore">
                   {ScoreCalculator(Detail.name).toFixed(0)}

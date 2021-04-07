@@ -6,9 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 const { Search } = Input;
 
 const SearchBarComp = ({ reList, setFilteredList }) => {
-  const [value, setValue] = useState('');
-
-  const { user } = useAuth();
+  const { user, value, setValue } = useAuth();
 
   useEffect(() => {
     if (value === '') {
@@ -16,11 +14,11 @@ const SearchBarComp = ({ reList, setFilteredList }) => {
     } else {
       setFilteredList(
         reList.filter((repo) =>
-          repo.toLowerCase().includes(value.toLowerCase())
+          repo['name'].toLowerCase().includes(value.toLowerCase())
         )
       );
     }
-  }, [value]);
+  }, [value, reList]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,7 +34,7 @@ const SearchBarComp = ({ reList, setFilteredList }) => {
         <form className="flex" onSubmit={handleSubmit}>
           <Search
             value={value}
-            style={{ width: '650px' }}
+            style={{ width: '800px', margin: '0 auto' }}
             placeholder="Search a repository"
             allowClear
             enterButton="Search"

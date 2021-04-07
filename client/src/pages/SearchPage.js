@@ -1,47 +1,71 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router';
+import { Alert, Spin } from 'antd';
+import axios from 'axios';
 import '../App.css';
 import '../Shared.css';
 import Logo from '../components/Logo';
 import SearchBar from '../components/login/SearchBar';
-import { Alert, Spin } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import Repo from '../components/login/Repo';
-import axios from 'axios';
-import { Redirect } from 'react-router';
 import LogOut from '../components/LogOut';
+import Header from '../components/Header';
+import FooterBar from '../components/FooterBar';
 
-function SearchPage() {
+const SearchPage = ({ insideApp }) => {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const { user, setRepo } = useAuth();
-  const [reList, setReList] = useState([]);
-  const [filteredList, setFilteredList] = useState([]);
+  const {
+    user,
+    setRepo,
+    mergeRequestList,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+    batchList,
+  } = useAuth();
+
+  const dateToAgoConverter = (date) => {
+    if (date === null) {
+      return null;
+    }
+    const dateBefore = new Date(date + '-0700');
+    const dateAfter = new Date();
+
+    return (dateAfter - dateBefore) / (1000 * 60);
+  };
+
+  const includedInBatchList = (project) => {
+    for (let included in batchList) {
+      if (project.id === included.id) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/projects');
+      const repoList = await axios.get('http://localhost:5678/projects', {
+        withCredentials: true,
+      });
       setRepo(repoList.data.projects);
-      setReList([
-        ...repoList.data.projects,
-        'Admin / Polaris GitLab 373',
-        'Admin / Alpha C GitLab 373',
-        'Admin / Sirius GitLab 373',
-        'Admin / Rigel GitLab 373',
-        'Admin / Vega GitLab 373',
-        'Admin / Antares Github 276',
-        'Admin / Pleiades Github 276',
-      ]);
-      setFilteredList([
-        ...repoList.data.projects,
-        'Admin / Polaris GitLab 373',
-        'Admin / Alpha C GitLab 373',
-        'Admin / Sirius GitLab 373',
-        'Admin / Rigel GitLab 373',
-        'Admin / Vega GitLab 373',
-        'Admin / Antares Github 276',
-        'Admin / Pleiades Github 276',
-      ]);
+
+      const projectsData = repoList.data.projects;
+      console.log('projects data', projectsData);
+
+      const projectsList = projectsData.map((project) => {
+        return {
+          id: project.id,
+          name: project.name,
+          lastSynced: dateToAgoConverter(project.last_synced),
+          batched: includedInBatchList(project),
+        };
+      });
+      setReList([...projectsList]);
+      setFilteredList([...projectsList]);
       setLoading(false);
     };
     getRepos();
@@ -77,7 +101,30 @@ function SearchPage() {
     }
   };
 
-  if (user) {
+  if (user && insideApp) {
+    return (
+      <>
+        <Header />
+        <div style={{ marginTop: '30px' }}>
+          <SearchBar
+            reList={reList}
+            setLoading={setLoading}
+            setFilteredList={setFilteredList}
+            filteredList={filteredList}
+          />
+        </div>
+        <Repo
+          setAnalyzing={setAnalyzing}
+          loading={loading}
+          analyzing={analyzing}
+          filteredList={filteredList}
+          setFilteredList={setFilteredList}
+        />
+        <div style={{ marginTop: '30px', marginBottom: '30px' }}></div>
+        <FooterBar />
+      </>
+    );
+  } else if (user) {
     return (
       <div className="main_container">
         <div className="rightalign">
@@ -109,6 +156,6 @@ function SearchPage() {
   } else {
     return <Redirect to="/" />;
   }
-}
+};
 
 export default SearchPage;

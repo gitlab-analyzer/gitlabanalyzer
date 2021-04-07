@@ -15,8 +15,15 @@ const AuthProvider = (props) => {
   const [commentsList, setCommentsList] = useState({});
   const [selectMembersList, setSelectMembersList] = useState([]);
   const [overviewScore, setOverviewScore] = useState({});
+  const [dataList, setDataList] = useState([]);
   const [anon, setAnon] = useState('');
   const [floatScores, setFloatScores] = useState('');
+  const [selectedRepo, setSelectedRepo] = useState(null);
+  const [batchList, setBatchList] = useState([]);
+  const [currentConfig, setCurrentConfig] = useState({});
+  const [reList, setReList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
+  const [value, setValue] = useState('');
 
   const authContextValue = {
     user,
@@ -47,6 +54,20 @@ const AuthProvider = (props) => {
     setAnon,
     floatScores,
     setFloatScores,
+    dataList,
+    setDataList,
+    selectedRepo,
+    setSelectedRepo,
+    batchList,
+    setBatchList,
+    currentConfig,
+    setCurrentConfig,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+    value,
+    setValue,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

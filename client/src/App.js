@@ -1,5 +1,4 @@
 import React from 'react';
-import Config from './components/Config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from '@material-ui/core';

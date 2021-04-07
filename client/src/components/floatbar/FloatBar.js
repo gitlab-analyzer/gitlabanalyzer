@@ -1,17 +1,20 @@
 import React, { useEffect } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
-import { CheckCircleOutlined, CopyOutlined } from '@ant-design/icons';
-import { configSettings } from '../login/Repo.js';
+import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/AuthContext';
+<<<<<<< HEAD
 import EveryoneScore, { ScoreCalculator, barData } from './EveryoneScore.js';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
+=======
+import EveryoneScore, { ScoreCalculator, barData, FillBarData } from './EveryoneScore.js';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Grid from '@material-ui/core/Grid';
+>>>>>>> master
 
 import './FloatBar.css';
-
-var IterationDates = configSettings.iteration;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -19,13 +22,14 @@ const { RangePicker } = DatePicker;
 const copySuccessful = () => {
   notification.open({
     message: 'Copy Successful!',
-    icon: <CheckCircleOutlined style={{ color: '#00D100' }} />,
+    icon: <CheckCircleOutlined style={{ color: '#00d100' }} />,
     duration: 1,
   });
 };
 
 function FloatBar() {
-  const [sortType, setSortType] = React.useState('');
+  const [ sortType, setSortType ] = React.useState('alpha');
+  
   const {
     membersList,
     usersList,
@@ -33,15 +37,40 @@ function FloatBar() {
     notesList,
     mergeRequestList,
     commentsList,
+    selectUser,
+    dataList,
+    setDataList,
+    currentConfig,
   } = useAuth();
   useEffect(() => {}, []);
 
+  let dateObj = {}
+  if (currentConfig && currentConfig.iterations) {
+    for(let dateprop of currentConfig.iterations){
+      dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
+    }
+  }
+
+
+  const handleSort = (value) => {
+    setSortType(value)
+    if (value === "alpha"){
+      barData.sort((a,b) => (a.name > b.name) ? 1 : -1)
+    }
+    else if (value === "low"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) > ScoreCalculator(b.name)) ? 1 : -1)
+    }
+    else if (value === "high"){
+      barData.sort((a,b) => (ScoreCalculator(a.name) < ScoreCalculator(b.name)) ? 1 : -1)     
+    }
+  }
+
+  let userData = barData.find(x=>x.name===selectUser)
+
+
   return (
-    <>
-      <div
-        className="floatbar-header"
-        style={{ height: 10, backgroundColor: 'white' }}
-      />
+    <listitem>
+      <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
       <div className="floatbar-container">
         <div className="floatbaralign">
           <EveryoneScore />
@@ -56,27 +85,11 @@ function FloatBar() {
           >
             <Grid item xs={12}>
               <div className="daterange">
-                <RangePicker
-                  defaultValue={[
-                    moment(configSettings.startdate),
-                    moment(configSettings.enddate),
-                  ]}
+                <RangePicker 
+                  defaultValue={dataList}
+                  onChange={setDataList}
                   format="YYYY/MM/DD hh:mm:ss"
-                  ranges={{
-                    Today: [moment().startOf('day'), moment().endOf('day')],
-                    'Iteration 1': [
-                      moment(IterationDates.iter1start),
-                      moment(IterationDates.iter1end),
-                    ],
-                    'Iteration 2': [
-                      moment(IterationDates.iter2start),
-                      moment(IterationDates.iter2end),
-                    ],
-                    'Iteration 3': [
-                      moment(IterationDates.iter2start),
-                      moment(IterationDates.iter3end),
-                    ],
-                  }}
+                  ranges={dateObj}
                   showTime
                 />
               </div>
@@ -86,53 +99,43 @@ function FloatBar() {
                 <Select
                   placeholder="Sort"
                   style={{ width: 150 }}
-                  onChange={(value) => setSortType(value)}
+                  onChange={handleSort}
+                  defaultValue="alpha"
                 >
-                  <Option value="Alphabetical">Alphabetical</Option>
-                  <Option value="Low to High">Low to High</Option>
-                  <Option value="High to Low">High to Low</Option>
+                  <Option value="alpha">Alphabetical</Option>
+                  <Option value="low">Low to High</Option>
+                  <Option value="high">High to Low</Option>
                 </Select>
               </div>
             </Grid>
             <Grid item xs={12}>
-              {/* {console.log(barData)} */}
-              <CopyToClipboard
-                format={'text/plain'}
-                text={
-                  '\tWeighted Score\tNumber of Commits\tLines of Code\tIssues & Reviews\n' +
-                  renderToStaticMarkup(
-                    <div>
-                      {/* {console.log(barData)} */}
-                      {barData.map((Detail) => {
-                        return (
-                          <div>
-                            <div>{Detail.name}</div>
-                            <div>{ScoreCalculator(Detail.name).toFixed(0)}</div>
-                            <div>{Detail.commits}</div>
-                            <div>{Detail.code}</div>
-                            <div>{Detail.issue}</div>
-                            {/* <br/> */}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )
-                    .replaceAll('</div><div><div>', '\n')
-                    .replaceAll('</div><div>', '\t')
-                    .replaceAll('</div>', '')
-                    .replaceAll('<div>', '')
-                }
-              >
-                <Button style={{ width: 150 }} onClick={copySuccessful}>
-                  Copy
-                  <CopyOutlined className="copyicon" />
-                </Button>
-              </CopyToClipboard>
+                <CopyToClipboard
+                  format={'text/plain'}
+                  text={ (userData &&
+                    (
+                      String(ScoreCalculator(userData.name).toFixed(0)) + '\t' +
+                      userData.commits + '\t' +
+                      userData.code + '\t' +
+                      userData.issue
+                    )) || (
+                      '0\t0\t0\t0'
+                    )
+                  }
+                >
+                  <Button 
+                    style={{ width: 150 }} 
+                    onClick={copySuccessful}
+                  >
+                    Copy
+                    <CopyOutlined className="copyicon" />
+                  </Button>
+                </CopyToClipboard>
+              {/* )} */}
             </Grid>
           </Grid>
         </div>
       </div>
-    </>
+    </listitem>
   );
 }
 
