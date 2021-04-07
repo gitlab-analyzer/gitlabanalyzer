@@ -14,6 +14,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import CommitPage from '../pages/CommitPage';
 import CodeDiff from '../pages/CodeDiff';
 import { Container } from '@material-ui/core';
+import { useAuth } from '../context/AuthContext';
 
 const drawerWidth = 1240;
 
@@ -78,22 +79,24 @@ export default function PersistentDrawerRight() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const { codeDrawer, setCodeDrawer } = useAuth();
 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    // setOpen(false);
+    setCodeDrawer(false);
   };
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
+      {/* <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: codeDrawer,
         })}
       >
         <Toolbar>
@@ -105,15 +108,15 @@ export default function PersistentDrawerRight() {
             aria-label="open drawer"
             edge="end"
             onClick={handleDrawerOpen}
-            className={clsx(open && classes.hide)}
+            className={clsx(codeDrawer && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <main
         className={clsx(classes.content, {
-          [classes.contentShift]: open,
+          [classes.contentShift]: codeDrawer,
         })}
         style={{ backgroundColor: '#fff' }}
       >
@@ -127,7 +130,7 @@ export default function PersistentDrawerRight() {
         className={classes.drawer}
         variant="persistent"
         anchor="right"
-        open={open}
+        open={codeDrawer}
         classes={{
           paper: classes.drawerPaper,
         }}

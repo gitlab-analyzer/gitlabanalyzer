@@ -25,6 +25,7 @@ const AuthProvider = (props) => {
   const [filteredList, setFilteredList] = useState([]);
   const [value, setValue] = useState('');
   const [codeDiffId, setCodeDiffId] = useState('');
+  const [codeDrawer, setCodeDrawer] = useState(false);
 
   const authContextValue = {
     user,
@@ -71,6 +72,8 @@ const AuthProvider = (props) => {
     setValue,
     codeDiffId,
     setCodeDiffId,
+    codeDrawer,
+    setCodeDrawer,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

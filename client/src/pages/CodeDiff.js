@@ -5,6 +5,7 @@ import { CloudDownloadOutlined, FileExcelOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import 'react-diff-view/style/index.css';
 import './styles.css';
+import { useAuth } from '../context/AuthContext';
 
 const Appdiff = ({ diffText }) => {
   const [collapse, setCollapse] = useState(false);
@@ -52,15 +53,17 @@ const Appdiff = ({ diffText }) => {
   return <div className="ubuntu">{files.map(renderFile)}</div>;
 };
 
-const CodeDiff = () => {
+const CodeDiff = ({ codeId }) => {
   const [codeDiff, setCodeDiff] = useState([]);
   const [codeFiles, setCodeFiles] = useState([]);
   const [showFiles, setShowFiles] = useState(false);
 
+  const { setCodeDiffId, codeDiffId } = useAuth();
+
   useEffect(() => {
     const getData = async () => {
       const codeRes = await axios.get(
-        'http://localhost:5678/projects/2/code_diff/417'
+        `http://localhost:5678/projects/2/code_diff/${codeDiffId}`
       );
       console.log('data', codeRes.data.code_diff_list);
       await setCodeDiff(codeRes.data.code_diff_list);
@@ -68,7 +71,7 @@ const CodeDiff = () => {
       setCodeFiles(files);
     };
     getData();
-  }, []);
+  }, [codeDiffId]);
 
   const data = [
     'README.md',
@@ -146,7 +149,14 @@ const CodeDiff = () => {
   // const wow = hey + codeDiff[0].diff;
 
   return (
-    <div style={{ marginTop: '10px', fontFamily: 'Ubuntu Mono' }}>
+    <div
+      style={{
+        marginLeft: '10px',
+        marginRight: '10px',
+        marginTop: '10px',
+        fontFamily: 'Ubuntu Mono',
+      }}
+    >
       {/* <Appdiff diffText={wow} /> */}
       {fileChanges()}
       {showFiles ? fileList() : null}

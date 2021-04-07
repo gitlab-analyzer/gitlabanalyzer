@@ -12,7 +12,7 @@ const CommitPage = () => {
       <div>
         <CommitBar />
       </div>
-      <CodeDiff />
+      {/* <CodeDiff /> */}
       <FooterBar />
     </>
   );

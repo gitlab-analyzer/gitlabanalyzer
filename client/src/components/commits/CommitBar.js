@@ -29,9 +29,15 @@ const CommitBar = () => {
     mergeRequestList,
     setMergeRequestList,
     selectUser,
+    codeDiffId,
+    setCodeDiffId,
+    codeDrawer,
+    setCodeDrawer,
   } = useAuth();
 
-  useEffect(() => {}, [selectUser]);
+  useEffect(() => {
+    console.log('codeDiff: ', codeDiffId);
+  }, [selectUser, codeDiffId]);
 
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
   // if not, Mar 14 2020 @ 8:30pm
@@ -176,6 +182,7 @@ const CommitBar = () => {
         commitssum: commitTotalScore.toFixed(1),
         createdAt: dateFormatter(value['createdDate']),
         commitsList: commitsData,
+        codeDiffId: value['codeDiffId'],
       });
     }
   }
@@ -336,13 +343,27 @@ const CommitBar = () => {
     {
       title: 'Action',
       key: 'operation',
-      render: () => (
-        <Button type="primary" onClick={showDrawer} icon={<CodeFilled />}>
+      render: (text, record) => (
+        <Button
+          type="primary"
+          onClick={() => {
+            handleSetCodeDiff(text, record);
+          }}
+          icon={<CodeFilled />}
+        >
           Expand
         </Button>
       ),
     },
   ];
+
+  const handleSetCodeDiff = (text, record) => {
+    console.log('handle code diff');
+    console.log(text);
+    console.log(record);
+    setCodeDiffId(record['codeDiffId']);
+    setCodeDrawer(true);
+  };
 
   const ignoreCommit = (commitId, relatedMr, value) => {
     const newMergeRequestState = {
