@@ -1,0 +1,17 @@
+.wrapper {
+    position:fixed;
+    top:50%;
+    left:50%;
+}
+
+.score_body {
+    font-size: x-small;
+    margin: 0;
+    padding: 0;
+    line-height: 10px;
+    text-align: left;
+}
+
+.tab {
+    tab-size: 8;
+}
