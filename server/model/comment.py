@@ -3,6 +3,8 @@ from typing import Union, Optional
 import gitlab
 import re
 
+from bson import ObjectId
+
 """
 For comments from Issue / Merge Request:
 * id => id of the comment itself. None if comment is on "Commit"
@@ -24,11 +26,11 @@ For comments from Commit:
 class Comment(DataObject):
     def __init__(
         self,
-        commentForIssueMR: gitlab = None,
-        commentForCommit: gitlab = None,
-        commitSha: str = None,
+        commentForIssueMR: gitlab,
+        commentForCommit: gitlab,
+        commitSha: str,
     ) -> None:
-        if commentForIssueMR is not None:  # comment of MergeRequest/Issue
+        if commentForIssueMR:  # comment of MergeRequest/Issue
             self.__author: int = commentForIssueMR.author["name"]
             self.__body: str = commentForIssueMR.body
             self.__created_date: str = commentForIssueMR.created_at
@@ -39,7 +41,7 @@ class Comment(DataObject):
             self.__noteable_iid: Optional[int] = commentForIssueMR.noteable_iid
             self.__id: Optional[int] = commentForIssueMR.id
             self.__word_count = len(re.findall(r'\w+', self.__body))
-        else:  # comment of Commit
+        elif commentForCommit and commitSha:  # comment of Commit
             self.__author: int = commentForCommit.author["name"]
             self.__body: str = commentForCommit.note
             self.__created_date: str = (
@@ -47,9 +49,11 @@ class Comment(DataObject):
             )  # datetime in ISO 8601 format
             self.__noteable_id: Union[int, str] = commitSha
             self.__noteable_type: str = "Commit"
-            self.__noteable_iid: Optional[int] = None
+            self.__noteable_iid: Optional[int] = ObjectId()
             self.__id: Optional[int] = None
             self.__word_count = len(re.findall(r'\w+', self.__body))
+        else:
+            raise TypeError("Comment constructor parameters cannot all be None.")
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()

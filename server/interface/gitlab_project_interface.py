@@ -84,14 +84,15 @@ class GitLabProject:
             state="all"
         )
         for i in range(0, len(mergeRequests)):
-            self.__mergeRequestManager.add_merge_request(
+            newMR = self.__mergeRequestManager.add_merge_request(
                 mergeRequests[i], commitsForMR[i]
             )
             # Get comments
             mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(item)
+                    newComment = self.__commentsManager.add_comment(item)
+                    newMR.add_comment(newComment.noteable_iid)
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
