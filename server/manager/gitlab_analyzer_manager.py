@@ -24,7 +24,6 @@ class GitLabAnalyzerManager:
             target=self.__garbage_monitor_worker, args=(self.__gitlab_list_lock,))
         self.__maximum_exist_time: datetime = maximum_exist_time
         self.__worker_check_period = self.__hour_to_seconds(worker_check_period_hours)
-        # TODO: add lock to all functions that access self.__gitlab_list
 
     def __hour_to_seconds(self, hours: int) -> int:
         return hours * 60 * 60
@@ -285,13 +284,13 @@ class GitLabAnalyzerManager:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
 
-    def __delete_GitLab_instance(self, hashedToken: str):
+    def __delete_GitLab_instance(self, hashedToken: str) -> None:
         self.__gitlab_list_lock.acquire()
         if self.__gitlab_list.get(hashedToken, None) is not None:
             self.__gitlab_list.pop(hashedToken)
         self.__gitlab_list_lock.release()
 
-    def __garbage_monitor_worker(self, lock: threading.Lock):
+    def __garbage_monitor_worker(self, lock: threading.Lock) -> None:
         while self.__worker_should_run_signal:
             lock.acquire()
             gitLabUser: GitLabAnalyzer
@@ -301,12 +300,15 @@ class GitLabAnalyzerManager:
             lock.release()
             time.sleep(self.__worker_check_period)
 
-    def start_garbage_monitor_thread(self):
+    def start_garbage_monitor_thread(self) -> None:
         self.__worker_should_run_signal = True
         self.__garbage_monitor.start()
 
-    def stop_garbage_monitor_thread(self):
+    def stop_garbage_monitor_thread(self) -> None:
         self.__worker_should_run_signal = False
 
-    def change_worker_check_period(self, hours: int):
+    def change_worker_check_period(self, hours: int) -> None:
         self.__worker_check_period = self.__hour_to_seconds(hours)
+
+    def get_garbage_monitor_check_period(self) -> int:
+        return self.__worker_check_period

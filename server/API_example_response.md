@@ -10,7 +10,7 @@
 - [Get project syncing state](#get-project-syncing-state)
     - `GET /projects/<int:projectID>/sync/state`
 - [Get a list of projects' syncing state](#get-a-list-of-projects-syncing-statebatch-processing)
-    - `GET /projects/sync/batch/state`
+    - `POST /projects/sync/batch/state`
 - [Get all the members in the repo](#get-all-the-members-in-the-project)
     - `GET /projects/<int:projectID>/members`
 - [Get all the committers' name](#get-all-the-users-in-the-project)
@@ -29,6 +29,15 @@
     - `GET /projects/<int:projectID>/comments/all`
 - [Get all the comments sorted in users](#get-all-comments-sorted-in-users)
     - `GET /projects/<int:projectID>/comments/user/all`
+- [Start garbage collector](#start-garbage-collector)
+    - `POST /config/garbage_monitor/start`
+- [Stop garbage collector](#stop-garbage-collector)
+    - `POST /config/garbage_monitor/stop`
+- [Get garbage collector check period](#get-garbage-collector-check-period)
+    - `GET /config/garbage_monitor/check_period`
+- [Change garbage collector check period](#change-garbage-collector-check-period)
+    - `POST /config/garbage_monitor/check_period`
+
 
 #### Note
 All the API calls will contain two variables, `response` and `cause`
@@ -144,7 +153,7 @@ Example javascript ajax call:
 [Go back to API list](#api-example-response)
 
 ### Get a list of projects' syncing state(batch processing)
-#### `GET /projects/sync/batch/state`
+#### `POST /projects/sync/batch/state`
 ```json
 {
     "cause": "",
@@ -799,4 +808,24 @@ Example javascript ajax call:
     "response": true
 }
 ```
+[Go back to API list](#api-example-response)
+
+### Start garbage collector
+#### `POST /config/garbage_monitor/start`
+[Go back to API list](#api-example-response)
+
+### Stop garbage collector
+#### `POST /config/garbage_monitor/stop`
+[Go back to API list](#api-example-response)
+
+### Get garbage collector check period
+#### `GET /config/garbage_monitor/check_period`
+[Go back to API list](#api-example-response)
+
+### Change garbage collector check period
+#### `POST /config/garbage_monitor/check_period`
+
+Variables needed in `form-data`
+- `check_period`(int): The garbage monitor will check every `check_period` **hours**
+
 [Go back to API list](#api-example-response)
