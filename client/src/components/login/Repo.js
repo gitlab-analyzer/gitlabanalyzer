@@ -48,22 +48,19 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
-  const [checkAll, setCheckAll] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [indeterminate, setIndeterminate] = useState(true);
-  const [checkedList, setCheckedList] = useState([]);
-  const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
   const [selectVal, setSelectVal] = useState(false);
   const history = useHistory();
 
-  const plainOptions = ['Apple', 'Pear', 'Orange'];
-
-  useEffect(() => {
-    console.log(batchList);
-    console.log('filtered list:', filteredList);
-  }, [filteredList, batchList, reList, selectVal, selectedRepo]);
+  useEffect(() => {}, [
+    filteredList,
+    batchList,
+    reList,
+    selectVal,
+    selectedRepo,
+  ]);
 
   const handleRoute = () => {
     if (
@@ -426,17 +423,31 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setVisible(false);
   };
 
-  const onCheckAllChange = (e) => {
-    setCheckedList(e.target.checked ? plainOptions : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
-  };
-
   const syncBatch = async () => {
-    const batchStatus = await axios.get(
+    let batchArray = [];
+
+    for (let item in batchList) {
+      console.log(item);
+      batchArray.push(item.id);
+    }
+
+    // To Fix, batchArray should be used here instead
+    let payload = JSON.stringify({
+      project_list: [2, 3],
+    });
+
+    const batchStatus = await axios.post(
       `http://localhost:5678/projects/sync/batch/state`,
+      payload,
       {
         withCredentials: true,
+
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
       }
     );
     fetchErrorChecker(batchStatus.data['response'], 'batch');
@@ -463,6 +474,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       batchArray.push(item.id);
     }
 
+    // To Fix, batchArray should be used here instead
     let payload = JSON.stringify({
       project_list: [2, 3],
     });
@@ -481,6 +493,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         crossDomain: true,
       }
     );
+    console.log('batchRes:', batchRes);
     if (!batchRes.data['response']) {
       console.log('Failed to set project ID!');
       console.log(batchRes);
