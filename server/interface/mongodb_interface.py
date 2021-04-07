@@ -31,18 +31,26 @@ class GitLabDB:
         self.__memberColl = self.__gitLabAnalyzerDB["members"]
         self.__issueColl = self.__gitLabAnalyzerDB["issues"]
 
-    # ********************** MODIFICATION METHODS ****************************************************************************
+    # ********************** CONFIG AND MAP METHODS ****************************************************************************
+    """
+        CONFIG PROFILE DICTS MUST CONTAIN A "profile_name" KEY
+    """
     def add_user_config_profile(self, hashedToken: str, newConfigProfile: dict) -> bool:
-        pass
+        assert("profile_name" in newConfigProfile.keys() and newConfigProfile["profile_name"] != "")
+        result: UpdateResult = self.__userColl.update_one({"_id": hashedToken}, {"$push": {"config_profiles": newConfigProfile}})
+        return result.acknowledged
 
     def delete_user_config_profile(self, hashedToken: str, configName: str) -> bool:
-        pass
+        result: UpdateResult = self.__userColl.update_one({"_id": hashedToken}, {"$pull": {"config_profiles.profile_name": configName}})
+        return result.acknowledged
 
     def update_project_config(self, project_id: Union[int, str], newConfigProfile: dict) -> bool:
-        pass
+        result: UpdateResult = self.__projectColl.update_one({"_id": project_id}, {"config": newConfigProfile})
+        return result.acknowledged
 
     def update_project_member_map(self, project_id: Union[int, str], newMemberMap: dict) -> bool:
-        pass
+        result: UpdateResult = self.__projectColl.update_one({"_id": project_id}, {"member_map": newMemberMap})
+        return result.acknowledged
 
 
     # ********************** FIND METHODS ************************************************************************************
@@ -68,7 +76,7 @@ class GitLabDB:
         return self.__findOne(self.__userColl, {"hashed_token": hashed_token})
 
     def find_one_project(self, project_id: Union[int, str]) -> dict:
-        return self.__findOne(self.__projectColl, {"projectid": project_id})
+        return self.__findOne(self.__projectColl, {"project_id": project_id})
     
     def find_one_MR(self, project_id: Union[int, str], mr_id: int) -> dict:
         query: dict = {
@@ -146,7 +154,27 @@ class GitLabDB:
         codeDiffIds: List[int] = [commit['code_diff_id'] for commit in commits]
         return self.find_many_codeDiffs(project_id, codeDiffIds)
 
-    # TODO: Comments. PROBLEM: What is a Comment's primary key(s)?
+    # NOTE: PRIMARY KEY (project_id, noteable_type, noteable_iid (ObjectId if commit comment))
+    def find_MR_comments_in_project(self, project_id: Union[int, str]) -> List[dict]:
+        return self.__find(self.__commentColl, {"project_id": project_id, "noteable_type": "MergeRequest"})
+
+    def find_commit_comments_in_project(self, project_id: Union[int, str]) -> List[dict]:
+        return self.__find(self.__commentColl, {"project_id": project_id, "noteable_type": "Commit"})
+
+    def find_issue_comments_in_projects(self, project_id: Union[int, str]) -> List[dict]:
+        return self.__find(self.__commentColl, {"project_id": project_id, "noteable_type": "Issue"})
+
+    def find_comments_in_MR(self, project_id: Union[int, str], mr_id: int) -> List[dict]:
+        mr: dict = self.find_one_MR(project_id, mr_id)
+        if not mr:
+            return list()
+
+        query: dict = {
+            "project_id": project_id,
+            "noteable_type": "MergeRequest",
+            "$or": [{"noteable_iid": comment_iid} for comment_iid in mr['comment_iid_list']]
+        }
+        return self.__find(self.__commentColl, query)
 
     def find_one_member(self, member_id: int) -> dict:
         return self.__findOne(self.__memberColl, {"id": member_id})
@@ -245,7 +273,8 @@ class GitLabDB:
                 'code_diff_id': mr.code_diff_id,
                 'merged_date': isoparse(mr.merged_date) if mr.merged_date is not None else None,
                 'contributors': list(contributors),
-                'related_commit_ids': list(relatedCommitIDs)
+                'related_commit_ids': list(relatedCommitIDs),
+                'comment_iid_list': mr.comment_iid_list
             })
         return self.__insertMany(self.__mergeRequestColl, body)
     
@@ -264,7 +293,8 @@ class GitLabDB:
             'code_diff_id': mergeRequest.code_diff_id,
             'merged_date': isoparse(mergeRequest.merged_date) if mergeRequest.merged_date is not None else None,
             'contributors': list(contributors),
-            'related_commit_ids': list(relatedCommitIDs)
+            'related_commit_ids': list(relatedCommitIDs),
+            'comment_iid_list': mergeRequest.comment_iid_list
         }
         return self.__insertOne(self.__mergeRequestColl, body)
 
@@ -302,7 +332,7 @@ class GitLabDB:
         body: List[dict] = []
         for index, codeDiff in zip(range(len(codeDiffList)), codeDiffList):
             body.append({
-                "projectid": project_id,
+                "project_id": project_id,
                 "artif_id": index,
                 "diffs": codeDiff
             })
@@ -311,7 +341,7 @@ class GitLabDB:
     def insert_one_codeDiff(self, project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]) -> bool:
         body: dict = {
             "_id": (codeDiffID, project_id),
-            "projectid": project_id,
+            "project_id": project_id,
             "artif_id": codeDiffID,
             "diffs": codeDiff
         }
@@ -321,13 +351,20 @@ class GitLabDB:
     def insert_many_comments(self, project_id: Union[int, str], commentList: List[Comment]) -> bool:
         body: List[dict] = []
         for comment in commentList:
-            body.append({"project": project_id}.update(comment.to_dict))
+            body.append(
+                {
+                    "_id": (comment.noteable_iid, comment.noteable_type, project_id),
+                    "project_id": project_id
+                }.update(comment.to_dict())
+            )
         return self.__insertMany(self.__commentColl, body)
 
     # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS    
     def insert_one_comment(self, project_id: Union[int, str], comment: Comment) -> bool:
-        body: dict = {"projectid": project_id}
-        body.update(comment.to_dict())
+        body: dict = {
+            "_id": (comment.noteable_iid, comment.noteable_type, project_id),
+            "project_id": project_id
+        }.update(comment.to_dict())
         result: InsertOneResult = self.__commentColl.insert_one(body)
         return result.acknowledged
 
