@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
-import { configSettings } from '../login/Repo.js';
 import { useAuth } from '../../context/AuthContext';
 import EveryoneScore, { ScoreCalculator, barData, FillBarData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
-import moment from 'moment';
 
 import './FloatBar.css';
-
-var IterationDates = configSettings.iteration;
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -18,7 +14,7 @@ const { RangePicker } = DatePicker;
 const copySuccessful = () => {
   notification.open({
     message: 'Copy Successful!',
-    icon: <CheckCircleOutlined style={{ color: '#00D100' }} />,
+    icon: <CheckCircleOutlined style={{ color: '#00d100' }} />,
     duration: 1,
   });
 };
@@ -36,8 +32,17 @@ function FloatBar() {
     selectUser,
     dataList,
     setDataList,
+    currentConfig,
   } = useAuth();
   useEffect(() => {}, []);
+
+  let dateObj = {}
+  if (currentConfig && currentConfig.iterations) {
+    for(let dateprop of currentConfig.iterations){
+      dateObj[dateprop.itername] = [dateprop.iterdates[0], dateprop.iterdates[1]]
+    }
+  }
+
 
   const handleSort = (value) => {
     setSortType(value)
@@ -52,16 +57,11 @@ function FloatBar() {
     }
   }
 
-  const handleDate = (value) => {
-    configSettings.startdate = value[0]
-    configSettings.enddate = value[1]
-    setDataList(value)
-  }
   let userData = barData.find(x=>x.name===selectUser)
 
 
   return (
-    <>
+    <listitem>
       <div className="floatbar-header" style={{height:10, backgroundColor:'white'}} />
       <div className="floatbar-container">
         <div className="floatbaralign">
@@ -78,25 +78,10 @@ function FloatBar() {
             <Grid item xs={12}>
               <div className="daterange">
                 <RangePicker 
-                  defaultValue={[moment(configSettings.startdate), moment(configSettings.enddate)]}
+                  defaultValue={dataList}
+                  onChange={setDataList}
                   format="YYYY/MM/DD hh:mm:ss"
-                  allowClear={false}
-                  onChange={handleDate}
-                  ranges={{
-                    Today: [moment().startOf('day'), moment().endOf('day')],
-                    'Iteration 1': [
-                      moment(IterationDates.iter1start), 
-                      moment(IterationDates.iter1end)
-                    ],
-                    'Iteration 2': [
-                      moment(IterationDates.iter2start), 
-                      moment(IterationDates.iter2end)
-                    ],
-                    'Iteration 3': [
-                      moment(IterationDates.iter2start), 
-                      moment(IterationDates.iter3end)
-                    ],
-                  }}
+                  ranges={dateObj}
                   showTime
                 />
               </div>
@@ -142,7 +127,7 @@ function FloatBar() {
           </Grid>
         </div>
       </div>
-    </>
+    </listitem>
   );
 }
 

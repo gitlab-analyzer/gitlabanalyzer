@@ -12,11 +12,11 @@ class CommentManager:
     def get_comment_list(self) -> list:
         return self.__commentList
 
-    def add_comment(self, comment: gitlab, sha=None) -> Comment:
+    def add_comment(self, comment: gitlab, notable_author: str, sha=None) -> Comment:
         if sha is None:
-            newComment = Comment(comment, None, "")
+            newComment = Comment(comment, None, notable_author, "")
         else:  # sha is not None
-            newComment = Comment(None, comment, sha)
+            newComment = Comment(None, comment, notable_author, sha)
         self.__commentList.append(newComment)
         return newComment
 

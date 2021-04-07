@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts'
+import apexchart from "apexcharts"
 
 // adapted from: https://apexcharts.com/react-chart-demos/column-charts/stacked/
 
@@ -21,6 +22,7 @@ class BarGraph extends React.Component {
             dashArray: 0,      
         },
           chart: {
+            id: this.props.id,
             toolbar: {
               show: false
             },
@@ -48,10 +50,7 @@ class BarGraph extends React.Component {
             }
           },
           xaxis: {
-            type: 'datetime',
-            categories: ["2021-3-1", "2021-3-2", 
-            "2021-3-3", "2021-3-4","2021-3-5","2021-3-6", "2021-3-7",
-            "2021-3-8", "2021-3-9","2021-3-10","2021-3-11", "2021-3-12"],
+            categories: this.props.xlabel
           },
           fill: {
             type: 'solid',
@@ -60,6 +59,18 @@ class BarGraph extends React.Component {
         },
       };
     }
+
+    componentDidUpdate() {
+      // Update the series and xaxis
+      var chartID = this.props.id.toString()
+      apexchart.exec(chartID, "updateOptions", {
+        series: this.props.series,
+        xaxis: {
+          categories: this.props.xlabel
+        }
+      });
+    }
+
 
     render() {
       return (

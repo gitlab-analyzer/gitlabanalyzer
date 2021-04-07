@@ -6,7 +6,6 @@ import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import StackedBarGraph from '../components/summary/StackedBar';
-import SelectUser from '../components/SelectUser';
 import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
 
@@ -28,11 +27,9 @@ const useStyles = makeStyles((theme) => ({
 const Summary = () => {
   const {
     selectUser,
-    setSelectUser,
     commitsList,
-    setCommitsList,
     mergeRequestList,
-    setMergeRequestList,
+    notesList,
   } = useAuth();
   const [startDate, setStartDate] = useState('March 1, 2021');
   const [endDate, setEndDate] = useState('March 12, 2021');
@@ -42,28 +39,62 @@ const Summary = () => {
   const [textRender, setTextRender] = useState('Number');
 
   const [userCommitsList, setUserCommitsList] = useState(commitsList);
+  const [userMRList, setUserMRList] = useState(mergeRequestList)
 
   const classes = useStyles();
 
-  const countDates = (commitsList) => {
-    var result = {},
-      i,
-      j,
-      date,
-      rarr = [];
-    for (i = 0; i < commitsList.length; i++) {
-      if (selectUser === commitsList[i].userName) {
-        for (j = 0; j < commitsList[i].commits[0].length; j++) {
+  const COMMITS = 1;
+  const MERGE_REQUESTS = 2;
+  const CODE_REVIEWS = 3;
+  const ISSUES = 4;
+  
+
+  const countDates = (list, type) => {
+    var result = {};
+    var i, j;
+    var date;
+    var rarr = [];
+    
+    if (type == COMMITS) {
+    for (i = 0; i < list.length; i++) {
+      if (selectUser === list[i].userName) {
+        for (j = 0; j < list[i].commits[0].length; j++) {
           date = [
-            commitsList[i].commits[0][j].commitedDate.getFullYear(),
-            commitsList[i].commits[0][j].commitedDate.getMonth(),
-            commitsList[i].commits[0][j].commitedDate.getDate(),
+            list[i].commits[0][j].commitedDate.getFullYear(),
+            list[i].commits[0][j].commitedDate.getMonth() +1,
+            list[i].commits[0][j].commitedDate.getDate(),
           ].join('-');
           result[date] = result[date] || 0;
           result[date]++;
         }
       }
     }
+    } else if (type == MERGE_REQUESTS) {
+      // TODO: Merge Request logic
+    } else if (type == CODE_REVIEWS) {
+      for(i = 0; i < list.length; i++) {
+        if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
+          date = [list[i].createdDate.getFullYear(),
+          list[i].createdDate.getMonth() + 1,
+          list[i].createdDate.getDate(),
+        ].join('-');
+        result[date] = result[date] || 0;
+        result[date] += list[i].wordCount;
+        }
+      }
+    } else if (type == ISSUES) {
+      for(i = 0; i < list.length; i++) {
+        if (selectUser === list[i].author && list[i].noteableType == "Issue") {
+          date = [list[i].createdDate.getFullYear(),
+          list[i].createdDate.getMonth() + 1,
+          list[i].createdDate.getDate(),
+        ].join('-');
+        result[date] = result[date] || 0;
+        result[date] += list[i].wordCount;
+        }
+      }
+    }
+
     for (i in result) {
       if (result.hasOwnProperty(i)) {
         rarr.push({ date: i, counts: result[i] });
@@ -72,9 +103,10 @@ const Summary = () => {
     return rarr;
   };
 
+
   const populateDates = (array) => {
-    var result = [],
-      i;
+    var result = [];
+    var i;
     for (i in array) {
       result.push(array[i].date);
     }
@@ -82,92 +114,87 @@ const Summary = () => {
   };
 
   const populateCounts = (array) => {
-    var newArray = [],
-      i;
+    var result = [];
+    var i;
     for (i in array) {
-      newArray.push(array[i].counts);
+      result.push(array[i].counts);
     }
-    return newArray.reverse();
+    return result.reverse();
   };
 
-  // const [dailyArray, setDailyArray] = useState(countDates(userCommitsList))
-  // const [datesArray, setDatesArray] = useState(populateDates(dailyArray))
-  // const [countsArray, setCountsArray] = useState(populateCounts(dailyArray))
+  // Computations for graph data - fine to leave this here since it will be updated on selectUser
+  var dailyCommitsArray = countDates(userCommitsList, COMMITS)
+  var commitDatesArray = populateDates(dailyCommitsArray)
+  var commitCountsArray = populateCounts(dailyCommitsArray)
 
-  // TODO: display data correctly
-  // useEffect(() => {
-  //   console.log("test" + selectUser)
-  //   setDailyArray(countDates(userCommitsList))
-  //   setDatesArray(populateDates(dailyArray))
-  //   setCountsArray(populateCounts(dailyArray))
-  //   setCombinedSeries([
-  //     {
-  //       name: 'Merge Requests',
-  //       data: data2,
-  //     },
-  //     {
-  //       name: 'Commits',
-  //       data: countsArray,
-  //     },
-  //   ])
-  //   console.log(dailyArray)
-  //   console.log(datesArray)
-  //   console.log(countsArray)
-  // }, [selectUser])
+  // Merge Request logic not complete - commits as placeholder
+  var dailyMRsArray = countDates(userCommitsList, COMMITS)
+  var mrDatesArray = populateDates(dailyMRsArray)
+  var mrCountsArray = populateCounts(dailyMRsArray)
 
-  // will be replaced once we find out how to get data from backend
-  const data = [10, 20, 45, 33, 11, 2, 55, 3, 11, 43, 11, 66, 32, 21];
+  var dailyCRArray = countDates(notesList, CODE_REVIEWS)
+  var CRDatesArray = populateDates(dailyCRArray)
+  var CRCountsArray = populateCounts(dailyCRArray)
 
-  const data2 = [5, 5, 4, 2, 7, 10, 5, 11, 1, 15, 10, 10, 5, 2];
+  var dailyIssuesArray = countDates(notesList, ISSUES)
+  var issueDatesArray = populateDates(dailyIssuesArray)
+  var issueCountsArray = populateCounts(dailyIssuesArray)
 
-  const data3 = [
-    10,
-    44,
-    55,
-    41,
-    43,
-    0,
-    30,
-    10,
-    10,
-    10,
-    44,
-    44,
-    55,
-    41,
-    67,
-    22,
-    10,
-    44,
-    44,
-    55,
-    41,
-    55,
-    41,
-  ];
+  // will need dates based on snapshot taken from context
+  const [dateArray, setDateArray] = useState(commitDatesArray);
+  const [crDateArray, setCrDateArray] = useState(CRDatesArray);
+  const [issueDateArray, setIssueDateArray] = useState(issueDatesArray);
+
+  useEffect(() => {
+    setCombinedSeries([
+      {
+        name: 'Merge Requests',
+        data: mrCountsArray,
+      },
+      {
+        name: 'Commits',
+        data: commitCountsArray,
+      },
+    ])
+    setCrSeries([
+      {
+        name: 'CR Words',
+        data: CRCountsArray,
+      }
+    ])
+    setIssueSeries([
+      {
+      name: 'Issue Words',
+      data: issueCountsArray,
+      }
+    ])
+    setDateArray(commitDatesArray)
+    setCrDateArray(CRDatesArray)
+    setIssueDateArray(issueDatesArray)
+  }, [selectUser])
 
   const [combinedSeries, setCombinedSeries] = useState([
     {
       name: 'Merge Requests',
-      data: data2,
+      data: [],
     },
     {
       name: 'Commits',
-      data: data,
+      data: [],
     },
   ]);
 
   const [crSeries, setCrSeries] = useState([
     {
       name: 'Code Review Words',
-      data: data,
+      data: [],
     },
   ]);
 
   const [issueSeries, setIssueSeries] = useState([
     {
       name: 'Issue Words',
-      data: data,
+      data: [],
     },
   ]);
 
@@ -176,10 +203,10 @@ const Summary = () => {
       setCombinedDropdown('Number');
       setCombinedSeries([
         {
-          data: data,
+          data: mrCountsArray,
         },
         {
-          data: data2,
+          data: commitCountsArray,
         },
       ]);
       setTextRender('Number');
@@ -187,10 +214,10 @@ const Summary = () => {
       setCombinedDropdown('Score');
       setCombinedSeries([
         {
-          data: data3,
+          data: [],
         },
         {
-          data: data,
+          data: [],
         },
       ]);
       setTextRender('Score');
@@ -198,21 +225,21 @@ const Summary = () => {
       setCrDropdown('All');
       setCrSeries([
         {
-          data: data,
+          data: CRCountsArray,
         },
       ]);
     } else if (e.key === 'crOwn') {
       setCrDropdown('Own');
       setCrSeries([
         {
-          data: data2,
+          data: [],
         },
       ]);
     } else if (e.key === 'crOthers') {
       setCrDropdown('Others');
       setCrSeries([
         {
-          data: data3,
+          data: [],
         },
       ]);
     }
@@ -243,7 +270,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} />
+          <StackedBarGraph series={combinedSeries} xlabel={commitDatesArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
@@ -259,7 +286,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} />
+          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={CRDatesArray} id={2}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
@@ -279,6 +306,8 @@ const Summary = () => {
             series={issueSeries}
             colors={'#d4d8f8'}
             stroke={'#7F87CF'}
+            xlabel={issueDatesArray}
+            id={3}
           />
         </Grid>
         <Grid item xs={2}></Grid>

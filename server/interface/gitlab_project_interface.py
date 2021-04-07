@@ -3,7 +3,7 @@ from model.project import Project
 import threading
 
 from interface.gitlab_interface import GitLab
-from manager.code_diff_temp import CodeDiffAnalyzer
+from manager.code_diff_Analyzer import CodeDiffAnalyzer
 from manager.comment_manager import CommentManager
 from manager.commit_manager import CommitManager
 from manager.issue_manager import IssueManager
@@ -91,7 +91,7 @@ class GitLabProject:
             mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
-                    newComment = self.__commentsManager.add_comment(item)
+                    newComment = self.__commentsManager.add_comment(item, mergeRequests[i].author["name"])
                     newMR.add_comment(newComment.noteable_iid)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -111,7 +111,9 @@ class GitLabProject:
             # Get comments
             commit_notes = myGitlab.get_comments_of_commit(commit.short_id)
             for item in commit_notes:
-                self.__commentsManager.add_comment(item, commit.short_id)
+                self.__commentsManager.add_comment(
+                    item, commit.author_name, commit.short_id
+                )
         self.__user_list = list(tempUserSet)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -123,7 +125,7 @@ class GitLabProject:
             issue_notes = myGitlab.get_comments_of_issue(issue.iid)
             for item in issue_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(item)
+                    self.__commentsManager.add_comment(item, issue.author["name"])
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_code_diff_manager(self, myGitlab: GitLab) -> None:
@@ -194,7 +196,16 @@ class GitLabProject:
                 "spacing_changes": 0,
                 "syntax_changes": 0
             },
-            "relatedCommitsScoreData": {},
+            "relatedCommitsScoreData": {
+                "lines_added": 0,
+                "lines_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "blanks_added": 0,
+                "blanks_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0,
+            },
         }
 
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(
@@ -213,7 +224,7 @@ class GitLabProject:
 
     def __analyze_master_commits_code_diff(self) -> None:
         self.__syncing_state = "Analyzing commits"
-        for commit in self.commits_manager.get_commit_list():
+        for commit in self.__commitsManager.get_commit_list():
             commit.line_counts = self.get_commit_score_data(commit)
         self.__syncing_progress = self.__syncing_progress + 1
 
@@ -230,7 +241,7 @@ class GitLabProject:
 
     def __get_members_and_user_names(self) -> list:
         member_and_user_list: set = set()
-        for member in self.member_manager.get_member_list():
+        for member in self.__membersManager.get_member_list():
             member_and_user_list.add(member.username)
         for user in self.__user_list:
             member_and_user_list.add(user)
@@ -256,7 +267,7 @@ class GitLabProject:
                     break
         return commitListsForAllUsers
 
-    def __get_commit_list_and_authors(self, commits: List[str]) -> Tuple[list]:
+    def __get_commit_list_and_authors(self, commits: List[Commit]) -> Tuple[list, list]:
         commitList = []
         authors = set()
         for commit in commits:
@@ -325,6 +336,48 @@ class GitLabProject:
             memberInfoList.append(member.to_dict())
         return memberInfoList
 
+    # Assumed dictionary passed from frontend:
+    #     Ex. { "MemberA": ["userA_1", "userA_2"],
+    #           "MemberB": ["userB_1", "userB_2", "userB_3"]  }
+    # Parse the dictionary and break down to memberList & userList to call mapping function below
+    def call_map_users_to_members(self, map_dictionary) -> None:
+        memberList = []
+        userList = []
+
+        for key in map_dictionary:
+            memberList.append(key)
+            userList.append(map_dictionary[key])
+
+        self.__map_users_to_members(memberList, userList)
+
+    # memberList: [memberA, memberB]
+    # userList: [[userA_1, userA_2], [userB_1]]
+    def __map_users_to_members(self, memberList, userList) -> None:
+        self.__update_merge_request_manager_after_mapping(memberList, userList)
+        self.__update_commits_manager_after_mapping(memberList, userList)
+
+    def __update_merge_request_manager_after_mapping(
+        self, memberList, userList
+    ) -> None:
+        all_mrs_list = self.__mergeRequestManager.merge_request_list
+        for mr in all_mrs_list:
+            commits_list = mr.related_commits_list
+            for i in range(0, len(commits_list)):
+                commit_authorName = commits_list[i].author_name
+                for user_sublist in range(0, len(userList)):
+                    if commit_authorName in userList[user_sublist]:
+                        mr.related_commits_list[i].author_name = memberList[
+                            user_sublist
+                        ]
+
+    def __update_commits_manager_after_mapping(self, memberList, userList) -> None:
+        all_commits_list = self.__commitsManager.get_commit_list()
+        for i in range(0, len(all_commits_list)):
+            commit_authorName = all_commits_list[i].author_name
+            for user_sublist in range(0, len(userList)):
+                if commit_authorName in userList[user_sublist]:
+                    all_commits_list[i].author_name = memberList[user_sublist]
+
     @property
     def project(self) -> Project:
         return self.__project
@@ -341,17 +394,10 @@ class GitLabProject:
     def user_list(self) -> list:
         return self.__user_list
 
-    # TODO: Need to be removed in the future
     @property
-    def merge_request_manager(self) -> MergeRequestManager:
-        return self.__mergeRequestManager
+    def is_syncing(self):
+        return self.__is_syncing
 
-    # TODO: Need to be removed in the future
     @property
-    def commits_manager(self) -> CommitManager:
-        return self.__commitsManager
-
-    # TODO: Need to be removed in the future
-    @property
-    def member_manager(self) -> MemberManager:
-        return self.__membersManager
+    def last_synced(self):
+        return self.__last_synced
