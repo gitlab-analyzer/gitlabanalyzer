@@ -48,6 +48,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     value,
     setValue,
     setCurrentConfig,
+    setDataList,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -90,6 +91,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     // .catch((errorInfo) => {});
     console.log('inhandlesubmit',value)
     setCurrentConfig(value);
+    setDataList(value.date);
 
   };
 
