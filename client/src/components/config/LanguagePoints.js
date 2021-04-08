@@ -59,7 +59,8 @@ function LanguagePoints() {
                   <Button 
                     type="dashed"
                     onClick={() => add()}
-                    icon={<PlusOutlined />}
+                    style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}
+                    icon={<PlusOutlined style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                     block
                   >
                     Add Language
