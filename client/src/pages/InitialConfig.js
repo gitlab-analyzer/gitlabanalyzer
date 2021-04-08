@@ -16,7 +16,6 @@ function InitialConfig() {
       <Divider />
       <IterationDates />
       <Divider />
-      {/*<AnonymousViewing />*/}
       <div>
         <h6>Turn on Anonymous Viewing: </h6>
         <Form.Item

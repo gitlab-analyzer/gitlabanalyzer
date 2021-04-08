@@ -28,7 +28,6 @@ const ConfigPage = () => {
   }, []);
 
   const handleSave = (value) => {
-    console.log(value)
     SavedConfigs[value.configname] = value;
     setCurrentConfig(value);
     setDataList(value.date);
@@ -44,7 +43,6 @@ const ConfigPage = () => {
     setCurrentConfig(SavedConfigs[value]);
     setDataList(SavedConfigs[value].date);
     setAnon(SavedConfigs[value].anon)
-    console.log('fill value', SavedConfigs[value])
     form.setFieldsValue(
       SavedConfigs[value]
     );

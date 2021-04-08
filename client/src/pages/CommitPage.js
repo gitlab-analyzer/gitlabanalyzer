@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CommitBar from '../components/commits/CommitBar';
 import SelectUser from '../components/SelectUser';
 import './CommitsPage.css';
@@ -8,7 +8,7 @@ import FooterBar from '../components/FooterBar';
 import Drawer from 'rc-drawer';
 
 const CommitPage = () => {
-  const [top, setTop] = React.useState();
+  const [top, setTop] = useState();
   return (
     <>
       <Header />

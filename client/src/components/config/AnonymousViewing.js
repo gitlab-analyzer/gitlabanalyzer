@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Form } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 
 function AnonymousViewing(prop) {
   const { anon, setAnon } = useAuth();
-  React.useEffect(()=>{
-
-  },[]);
+    useEffect(()=>{},[]);
   return (
     <div>
       <h6>Turn on Anonymous Viewing: </h6>

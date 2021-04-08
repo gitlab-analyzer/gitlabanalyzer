@@ -424,8 +424,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
-  const handleDrawer = async () => {
-    await fetchMembers();
+  const handleDrawer = () => {
     setVisible(true);
   };
   const onClose = () => {
