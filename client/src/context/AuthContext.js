@@ -24,6 +24,7 @@ const AuthProvider = (props) => {
   const [reList, setReList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [value, setValue] = useState('');
+  const [finishedConfig, setFinishedConfig] = useState(false);
 
   const authContextValue = {
     user,
@@ -68,6 +69,8 @@ const AuthProvider = (props) => {
     setFilteredList,
     value,
     setValue,
+    finishedConfig,
+    setFinishedConfig,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
