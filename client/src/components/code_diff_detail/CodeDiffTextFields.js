@@ -2,7 +2,7 @@ import React from 'react';
 import './CodeDiffDetail.css'
 
 const CodeDiffTextField = (lineCounts, multiplier, finalScore) => {
-    const headers = ["", "Multiplier", "Score"]
+    const headers = ["", "Line counts", "Multiplier", "Score"]
 
     const getTableHeader = (headers) => {
         return headers.map((headers, index) => {
@@ -16,7 +16,8 @@ const CodeDiffTextField = (lineCounts, multiplier, finalScore) => {
             return (
                 <tr key={index}>
                     <th>{keys.replace("_", " ")}: &emsp;</th>
-                    <th>{lineCounts[keys]} x {multiplier[keys]}</th>
+                    <th>{lineCounts[keys]}</th>
+                    <th>x {multiplier[keys]}</th>
                     <th>= {lineCounts[keys]*multiplier[keys]}</th>
                 </tr>
             )
