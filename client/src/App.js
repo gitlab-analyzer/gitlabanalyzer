@@ -11,7 +11,7 @@ import SearchPage from './pages/SearchPage';
 import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
 import ConfigPage from './pages/ConfigPage';
-import CodeDiffDetail from "./components/code_diff_detail/CodeDiffDetail";
+import CodeDiffDetail from './components/code_diff_detail/CodeDiffDetail';
 
 function App() {
   return (
