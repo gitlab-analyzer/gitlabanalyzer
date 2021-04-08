@@ -32,8 +32,6 @@ const Summary = () => {
     notesList,
     dataList,
   } = useAuth();
-  const [startDate, setStartDate] = useState('March 1, 2021');
-  const [endDate, setEndDate] = useState('March 12, 2021');
 
   const [combinedDropdown, setCombinedDropdown] = useState('Number');
   const [crDropdown, setCrDropdown] = useState('All');
@@ -49,40 +47,6 @@ const Summary = () => {
   const CODE_REVIEWS = 3;
   const ISSUES = 4;
 
-  // Filters all lists containing commits, MRs, code reviews, and issues
-  console.log(commitsList)
-  console.log(dataList)
-  const filterLists = (list, dates, type) => {
-    var result = [];
-    var i, j;
-    // Will give an error if unchecked
-    if(dataList.length !== 0) {
-
-      if(type == COMMITS) {
-        for(i = 0; i < list.length; i++) {
-          for(j = 0; j < list[i].commits[0].length; j++) {
-            if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
-              console.log("true 1")
-            }
-          }
-        }
-        if (dates[0]._d < dates[1]._d) {
-          console.log('true')
-        }
-      } else if (type == MERGE_REQUESTS) {
-
-      } else if (type == CODE_REVIEWS) {
-
-      } else if (type == ISSUES) {
-
-      }
-    }
-    return result;
-  }
-
-  var filteredCommits = filterLists(userCommitsList, dataList, COMMITS)
-  console.log(filteredCommits)
-
   const countDates = (list, type, dates) => {
     var result = {};
     var i, j;
@@ -93,7 +57,7 @@ const Summary = () => {
     for (i = 0; i < list.length; i++) {
       if (selectUser === list[i].userName) {
         for (j = 0; j < list[i].commits[0].length; j++) {
-          if(dataList.length !== 0) {
+          if(dates.length !== 0) {
             // Case when float bar dates are selected
             if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
               date = [
@@ -121,24 +85,46 @@ const Summary = () => {
       // TODO: Merge Request logic
     } else if (type == CODE_REVIEWS) {
       for(i = 0; i < list.length; i++) {
-        if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
-          date = [list[i].createdDate.getFullYear(),
-          list[i].createdDate.getMonth() + 1,
-          list[i].createdDate.getDate(),
-        ].join('-');
-        result[date] = result[date] || 0;
-        result[date] += list[i].wordCount;
+          if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
+            if (dates.length !== 0) {
+              if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
+                date = [list[i].createdDate.getFullYear(),
+                        list[i].createdDate.getMonth() + 1,
+                        list[i].createdDate.getDate(),
+                      ].join('-');
+                      result[date] = result[date] || 0;
+                      result[date] += list[i].wordCount;
+              }
+            } else {
+              date = [list[i].createdDate.getFullYear(),
+                        list[i].createdDate.getMonth() + 1,
+                        list[i].createdDate.getDate(),
+                      ].join('-');
+                      result[date] = result[date] || 0;
+                      result[date] += list[i].wordCount;
+            }
+          }
         }
-      }
     } else if (type == ISSUES) {
       for(i = 0; i < list.length; i++) {
         if (selectUser === list[i].author && list[i].noteableType == "Issue") {
-          date = [list[i].createdDate.getFullYear(),
-          list[i].createdDate.getMonth() + 1,
-          list[i].createdDate.getDate(),
-        ].join('-');
-        result[date] = result[date] || 0;
-        result[date] += list[i].wordCount;
+          if (dates.length !== 0) {
+            if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
+              date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+            }
+          } else {
+            date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+          }
         }
       }
     }
@@ -314,7 +300,7 @@ const Summary = () => {
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <b>
-            Merge Request & Commit {textRender} from {startDate} - {endDate}
+            Merge Request & Commit {textRender}
           </b>
         </Grid>
         <Grid item xs={10}>
@@ -330,7 +316,7 @@ const Summary = () => {
         </Grid>
         <Grid item xs={12}>
           <b>
-            Code Review Word Count from {startDate} to {endDate}
+            Code Review Word Count
           </b>
         </Grid>
         <Grid item xs={10}>
@@ -346,7 +332,7 @@ const Summary = () => {
         </Grid>
         <Grid item xs={12}>
           <b>
-            Issue Word Count from {startDate} to {endDate}
+            Issue Word Count
           </b>
         </Grid>
         <Grid item xs={10}>
