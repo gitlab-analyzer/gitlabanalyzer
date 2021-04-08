@@ -24,7 +24,6 @@ const ConfigPage = () => {
   const handleSave = (value) => {
     SavedConfigs[value.configname] = value;
     setCurrentConfig(value);
-    console.log(currentConfig)
     setDataList(value.date);
 
       notification.open({
