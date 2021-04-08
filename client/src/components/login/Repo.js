@@ -11,7 +11,6 @@ import {
   notification,
   Form,
   Popover,
-  Tooltip,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
@@ -20,7 +19,6 @@ import {
   CloseCircleOutlined,
   SettingOutlined,
   SyncOutlined,
-  SettingTwoTone,
 } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
@@ -50,6 +48,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setValue,
     setCurrentConfig,
     setDataList,
+    setFinishedConfig,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -85,9 +84,11 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   };
 
   const handleSubmit = (value) => {
+    setVisible(false);
     setCurrentConfig(value);
     setDataList(value.date);
     SavedConfigs['default'] = value;
+    setFinishedConfig(true);
   };
 
   // General error handling function for fetch requests
@@ -562,7 +563,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             display: 'flex',
             justifyContent: 'flex-end',
           }}
-        ></div>
+        />
         <div
           style={{
             display: 'flex',
@@ -785,7 +786,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 >
                   Batch
                 </Checkbox>,
-                // <SettingOutlined onClick={handleDrawer} />,
               ]}
             >
               <List.Item.Meta
@@ -806,7 +806,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           closable={false}
           onClose={onClose}
           visible={visible}
-          title="Global Configuration"
+          title="GLOBAL CONFIGURATION"
           footer={
             <div
               style={{

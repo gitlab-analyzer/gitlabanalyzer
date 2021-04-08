@@ -15,7 +15,7 @@ function LanguagePoints() {
           <Form.List name="language">
             {(fields, {add, remove}) => (
               <div style={{width:300}}>
-                {fields.map((field, index) => (
+                {fields.map((field) => (
                   <Space 
                     key={field.key} 
                     style={{ 
