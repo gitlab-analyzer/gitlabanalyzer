@@ -1,3 +1,4 @@
+import datetime
 from copy import deepcopy
 
 import gitlab
@@ -12,6 +13,7 @@ class GitLabAnalyzer:
         self.__project_list: List[GitLabProject] = []
         self.__gitlab: GitLab = GitLab(user_token, url)
         self.__user_token_hashed: str = user_token_hashed  # hashed
+        self.__last_time_access: datetime = datetime.datetime.now()
         if self.__gitlab.authenticate():
             self.__username: str = self.__gitlab.get_username()  # related to user_token
             self.__update_project_list()
@@ -56,6 +58,14 @@ class GitLabAnalyzer:
     @property
     def username(self):
         return self.__username
+
+    @property
+    def last_time_access(self):
+        return self.__last_time_access
+
+    @last_time_access.setter
+    def last_time_access(self, myTime: datetime) -> None:
+        self.__user_token_hashed = myTime
 
     @user_token.setter
     def user_token(self, hashed_token: str) -> None:
