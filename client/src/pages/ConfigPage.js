@@ -10,8 +10,7 @@ import { useAuth } from '../context/AuthContext'
 import {SaveOutlined} from "@ant-design/icons";
 
 const { Option } = Select;
-
-let SavedConfigs = {}
+export var SavedConfigs = {};
 const ConfigPage = () => {
   const { 
     dataList,
@@ -20,6 +19,12 @@ const ConfigPage = () => {
     setCurrentConfig
   } = useAuth();
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue(
+        currentConfig
+    );
+  }, []);
 
   const handleSave = (value) => {
     SavedConfigs[value.configname] = value;
