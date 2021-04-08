@@ -16,7 +16,7 @@ const AuthProvider = (props) => {
   const [selectMembersList, setSelectMembersList] = useState([]);
   const [overviewScore, setOverviewScore] = useState({});
   const [dataList, setDataList] = useState([]);
-  const [anon, setAnon] = useState('');
+  const [anon, setAnon] = useState(false);
   const [floatScores, setFloatScores] = useState('');
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [batchList, setBatchList] = useState([]);

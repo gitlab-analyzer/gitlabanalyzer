@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'antd';
+import { Switch, Form } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 
 function AnonymousViewing() {
@@ -7,7 +7,12 @@ function AnonymousViewing() {
   return (
     <div>
       <h6>Turn on Anonymous Viewing: </h6>
-      <Switch defaultChecked={anon} onChange={(checked) => setAnon(checked)} />
+        <Form.Item
+          name="anon"
+          initialValue={anon}
+        >
+          <Switch defaultChecked={anon} onChange={(checked) => setAnon(checked)} />
+        </Form.Item>
     </div>
   );
 }
