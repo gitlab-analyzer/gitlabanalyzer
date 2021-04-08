@@ -11,6 +11,7 @@ import {
   notification,
   Form,
   Popover,
+  Tooltip,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
@@ -18,6 +19,7 @@ import {
   CloseCircleOutlined,
   SettingOutlined,
   SyncOutlined,
+  SettingTwoTone,
 } from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
@@ -45,6 +47,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setRepo,
     value,
     setValue,
+    setCurrentConfig,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -53,6 +56,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const [syncPercent, setSyncPercent] = useState(0);
   const [selectVal, setSelectVal] = useState(false);
   const history = useHistory();
+  const [form] = Form.useForm();
 
   useEffect(() => {}, [
     filteredList,
@@ -76,6 +80,17 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         duration: 1,
       });
     }
+  };
+
+  const handleSubmit = (value) => {
+    // form.validateFields()
+    //   .then((values) => {
+    //     console.log("form values", values);
+    //   })
+    // .catch((errorInfo) => {});
+    console.log('inhandlesubmit',value)
+    setCurrentConfig(value);
+
   };
 
   // General error handling function for fetch requests
@@ -555,8 +570,26 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
+            alignItems:"center"
           }}
         >
+          <Popover content="Global Configuration">
+            {/*<Button*/}
+            {/*    // style={{ marginRight:10, marginTop:20, float:"right", width:125 }}*/}
+            {/*    style={{marginRight:10}}*/}
+            {/*    icon={<SettingTwoTone />}*/}
+            {/*    type="default"*/}
+            {/*    shape="circle"*/}
+            {/*    ghost*/}
+            {/*/>*/}
+            <SettingOutlined
+              height="100px"
+
+              style={{marginRight:10, fontSize:20, color:"#1890ff"}}
+              onClick={handleDrawer}
+            />
+
+          </Popover>
           <Button
             onClick={selectAll}
             style={{ marginRight: '10px' }}
@@ -761,7 +794,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 >
                   Batch
                 </Checkbox>,
-                <SettingOutlined onClick={handleDrawer} />,
+                // <SettingOutlined onClick={handleDrawer} />,
               ]}
             >
               <List.Item.Meta
@@ -778,11 +811,11 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         />
         <Drawer
           placement="right"
-          width={500}
+          width="600px"
           closable={false}
           onClose={onClose}
           visible={visible}
-          title="Initial Configuration"
+          title="Global Configuration"
           footer={
             <div
               style={{
@@ -792,13 +825,18 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               <Button style={{ marginRight: 10 }} onClick={onClose}>
                 Close
               </Button>
-              <Button type="primary" htmlType="submit" onClick={handleRoute}>
+              <Button type="primary" onClick={form.submit}>
                 Save
               </Button>
             </div>
           }
         >
-          <Form layout="vertical">
+          <Form
+            form={form}
+            layout="vertical"
+            name="globalconfig"
+            onFinish={handleSubmit}
+          >
             <InitialConfig />
           </Form>
         </Drawer>

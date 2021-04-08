@@ -6,18 +6,17 @@ import InitialUserDates from '../components/config/InitialUserDates';
 import AnonymousViewing from '../components/config/AnonymousViewing';
 
 function InitialConfig() {
-    return (        
-        <Form 
-            layout="vertical"
-        >
-                <InitialUserDates />
-                <Divider />
-                <LanguagePoints />
-                <Divider />
-                <IterationDates />
-                <Divider />
-                <AnonymousViewing />
-        </Form>
+    return (
+        <div>
+            <InitialUserDates />
+            <Divider />
+            <LanguagePoints />
+            <Divider />
+            <IterationDates style={{width:500}}/>
+            <Divider />
+            <AnonymousViewing />
+
+        </div>
     );
 }
 export default InitialConfig;
