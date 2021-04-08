@@ -1,5 +1,5 @@
 import React from 'react';
-import './CodeDuffDetauk.css'
+import './CodeDiffDetail.css'
 
 const CodeDiffTextField = (lineCounts, multiplier, finalScore) => {
     const headers = ["", "Multiplier", "Score"]
