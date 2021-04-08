@@ -54,6 +54,53 @@ const TablePage = () => {
   const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
   const classes = useStyles();
 
+  // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
+  // if not, Mar 14 2020 @ 8:30pm
+  const dateFormatter = (dateObject) => {
+    let today = new Date();
+    let ampm = '';
+    let thisYear = today.getFullYear();
+    let months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    let month = dateObject.getMonth();
+    let day = dateObject.getDate();
+    let year = dateObject.getFullYear();
+    let hour = dateObject.getHours();
+    let minute = dateObject.getMinutes();
+
+    if (hour === 0) {
+      hour = 12;
+      ampm = 'am';
+    } else if (hour >= 13) {
+      hour -= 12;
+      ampm = 'pm';
+    } else {
+      ampm = 'am';
+    }
+
+    if (minute < 10) {
+      minute = '0' + minute;
+    }
+
+    if (thisYear === year) {
+      return `${months[month]} ${day} @ ${hour}:${minute}${ampm}`;
+    } else {
+      return `${months[month]} ${year} ${day} @ ${hour}:${minute}${ampm}`;
+    }
+  };
+
   const populateTable = (notes) => {
     var i;
     var result = [];
@@ -65,12 +112,7 @@ const TablePage = () => {
         } else {
           type = "Issue"
         }
-        date = [
-          notes[i].createdDate.getFullYear(),
-          notes[i].createdDate.getMonth() +1,
-          notes[i].createdDate.getDate(),
-        ].join('-');
-        result.push(createData(date, notes[i].wordCount, notes[i].body, notes[i].ownership, type))
+        result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
         }
       }
       return result;
@@ -89,7 +131,7 @@ const TablePage = () => {
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>Date</StyledTableCell>
+                    <StyledTableCell style={{ width: '20%' }}>Date</StyledTableCell>
                     <StyledTableCell align="right">Word Count</StyledTableCell>
                     <StyledTableCell style={{ width: '50%' }} align="left">
                       Comment
