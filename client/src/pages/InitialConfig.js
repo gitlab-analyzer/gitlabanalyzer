@@ -12,7 +12,7 @@ function InitialConfig() {
             <Divider />
             <LanguagePoints />
             <Divider />
-            <IterationDates style={{width:500}}/>
+            <IterationDates />
             <Divider />
             <AnonymousViewing />
 

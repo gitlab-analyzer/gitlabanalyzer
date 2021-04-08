@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
+import { SavedConfigs } from '../../pages/ConfigPage';
 import {
   CloseCircleOutlined,
   SettingOutlined,
@@ -84,15 +85,9 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   };
 
   const handleSubmit = (value) => {
-    // form.validateFields()
-    //   .then((values) => {
-    //     console.log("form values", values);
-    //   })
-    // .catch((errorInfo) => {});
-    console.log('inhandlesubmit',value)
     setCurrentConfig(value);
     setDataList(value.date);
-
+    SavedConfigs['default'] = value;
   };
 
   // General error handling function for fetch requests
@@ -576,21 +571,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           }}
         >
           <Popover content="Global Configuration">
-            {/*<Button*/}
-            {/*    // style={{ marginRight:10, marginTop:20, float:"right", width:125 }}*/}
-            {/*    style={{marginRight:10}}*/}
-            {/*    icon={<SettingTwoTone />}*/}
-            {/*    type="default"*/}
-            {/*    shape="circle"*/}
-            {/*    ghost*/}
-            {/*/>*/}
             <SettingOutlined
               height="100px"
-
-              style={{marginRight:10, fontSize:20, color:"#1890ff"}}
+              style={{
+                marginRight:10,
+                fontSize:20,
+                color:"#1890ff"
+              }}
               onClick={handleDrawer}
             />
-
           </Popover>
           <Button
             onClick={selectAll}
@@ -836,7 +825,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           <Form
             form={form}
             layout="vertical"
-            name="globalconfig"
             onFinish={handleSubmit}
           >
             <InitialConfig />
