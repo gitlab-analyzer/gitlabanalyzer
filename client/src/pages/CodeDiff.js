@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { parseDiff, Diff, Hunk, Decoration } from 'react-diff-view';
-import { Checkbox, List, Button } from 'antd';
+import { PageHeader, Descriptions, Checkbox, List, Button } from 'antd';
 import { CloudDownloadOutlined, FileExcelOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import 'react-diff-view/style/index.css';
@@ -32,6 +32,8 @@ const Appdiff = ({ diffText }) => {
       >
         {oldPath === newPath ? oldPath : `${oldPath} -> ${newPath}`}
         <div>
+          <Button style={{ marginRight: '10px' }}>Score: 800</Button>
+          <Button style={{ marginRight: '10px' }}>Score Breakdown</Button>
           <Checkbox>Ignore</Checkbox>
           <Checkbox onChange={handleCollapse}>Collapse</Checkbox>
         </div>
@@ -81,6 +83,38 @@ const CodeDiff = ({ codeId }) => {
     'src/line-by-line-printer.js',
     'test/side-by-side.js',
   ];
+
+  const codeDiffHeader = () => {
+    return (
+      <div className="site-page-header-ghost-wrapper">
+        <PageHeader
+          ghost={false}
+          onBack={() => window.history.back()}
+          title="Title"
+          subTitle="This is a subtitle"
+          extra={[
+            <Button key="1" type="primary">
+              File Changes
+            </Button>,
+          ]}
+        >
+          <Descriptions size="small" column={3}>
+            <Descriptions.Item label="Created by">Lili Qu</Descriptions.Item>
+            <Descriptions.Item label="Association">
+              <a>421421</a>
+            </Descriptions.Item>
+            <Descriptions.Item label="Created On">2017-01-10</Descriptions.Item>
+            <Descriptions.Item label="Last Changed">
+              2017-10-10
+            </Descriptions.Item>
+            <Descriptions.Item label="Remarks">
+              Gonghu Road, Xihu District, Hangzhou, Zhejiang, China
+            </Descriptions.Item>
+          </Descriptions>
+        </PageHeader>
+      </div>
+    );
+  };
 
   const fileChanges = () => {
     return (
@@ -158,6 +192,7 @@ const CodeDiff = ({ codeId }) => {
       }}
     >
       {/* <Appdiff diffText={wow} /> */}
+      {codeDiffHeader()}
       {fileChanges()}
       {showFiles ? fileList() : null}
       {codeDiff ? mapDiff : null}
