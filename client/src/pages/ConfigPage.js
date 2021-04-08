@@ -3,23 +3,29 @@ import Header from '../components/Header';
 import LanguagePoints from '../components/config/LanguagePoints';
 import IterationDates from '../components/config/IterationDates';
 import InitialUserDates from '../components/config/InitialUserDates';
-import AnonymousViewing from '../components/config/AnonymousViewing';
 import FooterBar from '../components/FooterBar';
-import {Form, Divider, Row, Col, Button, Input, notification, Select} from 'antd';
+import {Form, Divider, Row, Col, Button, Input, notification, Select, Switch} from 'antd';
 import { useAuth } from '../context/AuthContext'
 import {SaveOutlined} from "@ant-design/icons";
 
 const { Option } = Select;
-
-let SavedConfigs = {}
+export var SavedConfigs = {};
 const ConfigPage = () => {
   const { 
     dataList,
     setDataList,
     currentConfig,
-    setCurrentConfig
+    setCurrentConfig,
+    anon,
+    setAnon
   } = useAuth();
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue(
+        currentConfig
+    );
+  }, []);
 
   const handleSave = (value) => {
     SavedConfigs[value.configname] = value;
@@ -36,6 +42,7 @@ const ConfigPage = () => {
   const fillForm = (value) => {
     setCurrentConfig(SavedConfigs[value]);
     setDataList(SavedConfigs[value].date);
+    setAnon(SavedConfigs[value].anon)
     form.setFieldsValue(
       SavedConfigs[value]
     );
@@ -50,22 +57,22 @@ const ConfigPage = () => {
         form={form}
       >
         <Select
-            style={{
-              width:429,
-              display:"flex",
-              marginRight:"-3%",
-              marginTop: "-3%",
-              right:0,
-              float:"right"
-            }}
-            showSearch
-            allowClear
-            onSelect={fillForm}
-            placeholder="Load Config File"
+          style={{
+            width:429,
+            display:"flex",
+            marginRight:"-3%",
+            marginTop: "-3%",
+            right:0,
+            float:"right"
+          }}
+          showSearch
+          allowClear
+          onSelect={fillForm}
+          placeholder="Load Config File"
         >
-          {Object.keys(SavedConfigs).map(function(key, object) {
+          {Object.keys(SavedConfigs).map(function(key) {
             return (
-                <Option value={key}>{key}</Option>
+              <Option value={key}>{key}</Option>
             );
           })}
         </Select>
@@ -87,7 +94,16 @@ const ConfigPage = () => {
             alignItems:"end"
           }}
         >
-          <AnonymousViewing />
+          <div>
+            <h6>Turn on Anonymous Viewing: </h6>
+            <Form.Item
+              name="anon"
+              initialValue={anon}
+              valuePropName="checked"
+            >
+              <Switch onChange={setAnon} />
+            </Form.Item>
+          </div>
           <div
             className="buttonContainer"
             style={{ display:'flex' }}
@@ -106,7 +122,7 @@ const ConfigPage = () => {
                 size="large"
                 />
             </Form.Item>
-            <Button 
+            <Button
               htmlType="submit" 
               size="large" 
               type="primary"

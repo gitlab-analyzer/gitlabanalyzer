@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
 import { CheckCircleOutlined, CopyOutlined, ScanOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/AuthContext';
@@ -20,7 +20,7 @@ const copySuccessful = () => {
 };
 
 function FloatBar() {
-  const [ sortType, setSortType ] = React.useState('alpha');
+  const [ sortType, setSortType ] = useState('alpha');
   
   const {
     membersList,
