@@ -3,8 +3,8 @@ import {Popover, Button} from 'antd'
 import './CodeDuffDetauk.css'
 import CodeDiffTextFields from "./CodeDiffTextFields";
 
-const CodeDiffDetail = (props) => {
-    const exampleScoreDetail = {
+const CodeDiffDetail = () => {
+    const scoreDetail = {
         "lines_added": 0,
         "lines_deleted": 0,
         "comments_added": 2,
@@ -15,7 +15,7 @@ const CodeDiffDetail = (props) => {
         "syntax_changes": 8
     };
 
-    const exampleMultiplier = {
+    const multiplier = {
         "lines_added": 0.1,
         "lines_deleted": 0.2,
         "comments_added": 2.5,
@@ -26,9 +26,10 @@ const CodeDiffDetail = (props) => {
         "syntax_changes": 8
     };
 
+    const finalScore = 1000;
     return (
         <div className="wrapper">
-            <Popover content={CodeDiffTextFields(exampleScoreDetail, exampleMultiplier)} title={"Score Breakdown"} trigger={"click"}>
+            <Popover content={CodeDiffTextFields(scoreDetail,multiplier, finalScore)} title={"Score Breakdown"} trigger={"click"}>
                 <Button type={"primary"} name={Button} className={Button}>Score Detail</Button>
             </Popover>
         </div>

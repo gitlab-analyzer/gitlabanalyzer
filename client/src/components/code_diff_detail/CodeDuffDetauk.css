@@ -10,8 +10,15 @@
     padding: 0;
     line-height: 10px;
     text-align: left;
+    font-weight: 300;
 }
 
 .tab {
     tab-size: 8;
+}
+
+.final_score {
+    margin-top: 8px;
+    font-size: small;
+    font-weight: 700;
 }
