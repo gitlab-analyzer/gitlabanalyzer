@@ -26,6 +26,12 @@ const ConfigPage = () => {
     setCurrentConfig(value);
     console.log(currentConfig)
     setDataList(value.date);
+
+      notification.open({
+        message: 'Saved Config',
+        icon: <SaveOutlined style={{ color: '#00d100' }} />,
+        duration: 1.5,
+    });
   }
 
   const fillForm = (value) => {
@@ -35,18 +41,7 @@ const ConfigPage = () => {
       SavedConfigs[value]
     );
   };
-  const saveSuccessful = () => {
-    console.log('in save config', currentConfig)
-    notification.open({
-      message: 'Saved Config',
-      icon: <SaveOutlined style={{ color: '#00d100' }} />,
-      duration: 1.5,
-    });
-  };
 
-  useEffect(() => {
-    console.log(dataList);
-  }, [dataList]);
   return (
     <>
       <Header />
@@ -116,7 +111,6 @@ const ConfigPage = () => {
               htmlType="submit" 
               size="large" 
               type="primary"
-              onClick={saveSuccessful}
             >
               Save As
             </Button>
