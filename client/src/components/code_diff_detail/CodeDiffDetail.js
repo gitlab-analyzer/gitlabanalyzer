@@ -3,7 +3,7 @@ import {Popover, Button} from 'antd'
 import './CodeDiffDetail.css'
 import CodeDiffTextFields from "./CodeDiffTextFields";
 
-const CodeDiffDetail = (scoreDetail,multiplier, finalScore) => {
+const CodeDiffDetail = (scoreDetail, multiplier, finalScore) => {
     return (
         <div>
             <Popover content={CodeDiffTextFields(scoreDetail,multiplier, finalScore)} title={"Score Breakdown"} trigger={"click"}>
