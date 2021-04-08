@@ -10,22 +10,21 @@ import {
   Drawer,
   notification,
   Form,
+  Popover,
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
-import { CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  CloseCircleOutlined,
+  SettingOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 import InitialConfig from '../../pages/InitialConfig';
 import axios from 'axios';
 
 /// TODO: Hardcoded because of some weird bug
 let selectRepo = 2;
-const Repo = ({
-  analyzing,
-  setAnalyzing,
-  filteredList,
-  setFilteredList,
-  loading,
-}) => {
+const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const {
     setMembersList,
     setUsersList,
@@ -39,24 +38,29 @@ const Repo = ({
     setSelectedRepo,
     batchList,
     setBatchList,
+    reList,
+    setReList,
+    filteredList,
+    setFilteredList,
+    setRepo,
+    value,
+    setValue,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
-  const [checkAll, setCheckAll] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [indeterminate, setIndeterminate] = useState(true);
-  const [checkedList, setCheckedList] = useState([]);
-  const [fetchStatus, setFetchStatus] = useState(['members', 'users']);
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
+  const [selectVal, setSelectVal] = useState(false);
   const history = useHistory();
 
-  const plainOptions = ['Apple', 'Pear', 'Orange'];
-
-  useEffect(() => {
-    console.log(batchList);
-    console.log('filtered list:', filteredList);
-  }, [filteredList, selectRepo, batchList]);
+  useEffect(() => {}, [
+    filteredList,
+    batchList,
+    reList,
+    selectVal,
+    selectedRepo,
+  ]);
 
   const handleRoute = () => {
     if (
@@ -84,6 +88,7 @@ const Repo = ({
 
   // Set project ID to the users chosen ID
   const syncProjectId = async () => {
+    axios.defaults.withCredentials = true;
     const projectRes = await axios.post(
       `http://localhost:5678/projects/${selectRepo}/sync`,
       {
@@ -93,10 +98,12 @@ const Repo = ({
           'Access-Control-Allow-Origin': '*',
         },
         crossorigin: true,
+        crossDomain: true,
       }
     );
     if (!projectRes.data['response']) {
       console.log('Failed to set project ID!');
+      console.log(projectRes);
       throw new Error('Fetch request failed.');
     }
   };
@@ -113,11 +120,8 @@ const Repo = ({
       }
     );
     fetchErrorChecker(syncStatus.data['response'], 'sync');
-    console.log(syncStatus.data['status'].is_syncing);
     const numberStat = syncStatus.data['status'].syncing_progress;
-    console.log(numberStat);
     setSyncPercent(parseInt(numberStat));
-    console.log('syncDone: ', syncDone);
     if (syncStatus.data['status'].is_syncing) {
       setTimeout(async function repeat() {
         syncProject();
@@ -125,6 +129,7 @@ const Repo = ({
       return;
     } else {
       setSyncDone(true);
+      updateRepos();
       setAnalyzing(false);
       return;
     }
@@ -295,6 +300,8 @@ const Repo = ({
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
       noteableType: note.noteable_type,
+      owner_of_noteable: note.owner_of_noteable,
+      ownership: note.ownership,
       wordCount: note.word_count,
       // Frontend defined variables Start --------------------------
       // Initial score calculation
@@ -330,6 +337,8 @@ const Repo = ({
             noteableIid: comment.noteable_iid,
             noteableType: comment.noteable_type,
             wordCount: comment.word_count,
+            owner_of_noteable: comment.owner_of_noteable,
+            ownership: comment.ownership,
             // Frontend defined variables Start --------------------------
             // Initial score calculation
             score: 0,
@@ -361,9 +370,48 @@ const Repo = ({
       await syncProjectId();
       // This is a recursive call that checks the status of syncing process every 5000 milliseconds
       await syncProject();
+      // await updateRepos();
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
+    }
+  };
+
+  const includedInBatchList = (project) => {
+    for (let included in batchList) {
+      if (project.id === included.id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const updateRepos = async () => {
+    const repoList = await axios.get('http://localhost:5678/projects', {
+      withCredentials: true,
+    });
+    setRepo(repoList.data.projects);
+
+    const projectsData = repoList.data.projects;
+
+    const projectsList = projectsData.map((project) => {
+      return {
+        id: project.id,
+        name: project.name,
+        lastSynced: dateToAgoConverter(project.last_synced),
+        batched: includedInBatchList(project),
+      };
+    });
+    setReList([...projectsList]);
+
+    if (value === '') {
+      setFilteredList(reList);
+    } else {
+      setFilteredList(
+        reList.filter((repo) =>
+          repo['name'].toLowerCase().includes(value.toLowerCase())
+        )
+      );
     }
   };
 
@@ -375,18 +423,119 @@ const Repo = ({
     setVisible(false);
   };
 
-  const onCheckAllChange = (e) => {
-    setCheckedList(e.target.checked ? plainOptions : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
+  const syncBatch = async () => {
+    let batchArray = [];
+
+    for (let item in batchList) {
+      batchArray.push(item.id);
+    }
+
+    // To Fix, batchArray should be used here instead
+    let payload = JSON.stringify({
+      project_list: [2, 3],
+    });
+
+    const batchStatus = await axios.post(
+      `http://localhost:5678/projects/sync/batch/state`,
+      payload,
+      {
+        withCredentials: true,
+
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
+      }
+    );
+    fetchErrorChecker(batchStatus.data['response'], 'batch');
+    const numberStat = batchStatus.data['totalProgress'];
+    setSyncPercent(parseInt(numberStat));
+    if (batchStatus.data['totalProgress'] !== '100') {
+      setTimeout(async function repeat() {
+        syncBatch();
+      }, 5000);
+      return;
+    } else {
+      setSyncDone(true);
+      updateRepos();
+      setAnalyzing(false);
+      return;
+    }
+  };
+
+  const syncBatchers = async () => {
+    let batchArray = [];
+
+    for (let item in batchList) {
+      batchArray.push(item.id);
+    }
+
+    // To Fix, batchArray should be used here instead
+    let payload = JSON.stringify({
+      project_list: [2, 3],
+    });
+
+    axios.defaults.withCredentials = true;
+    const batchRes = await axios.post(
+      `http://localhost:5678/projects/sync/batch`,
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
+      }
+    );
+    if (!batchRes.data['response']) {
+      console.log('Failed to set project ID!');
+      throw new Error('Fetch request failed.');
+    }
+  };
+
+  const letsBatchEm = async () => {
+    try {
+      setAnalyzing(true);
+      await syncBatchers();
+      await syncBatch();
+    } catch (error) {
+      setAnalyzing(false);
+      console.log(error);
+    }
+  };
+
+  const batchProcessButton = () => {
+    const content = (
+      <div>
+        <p style={{ fontFamily: 'Arial' }}>
+          Please Checkmark the repos you would like to Batch Process
+        </p>
+      </div>
+    );
+    if (batchList.length > 0) {
+      return (
+        <Button onClick={letsBatchEm} type="primary" key="batchanalyze">
+          Batch Process
+        </Button>
+      );
+    } else {
+      return (
+        <Popover content={content} title="Batch List Missing">
+          <Button disabled type="primary" key="batchanalyze">
+            Batch Process
+          </Button>
+        </Popover>
+      );
+    }
   };
 
   // This component renders the batch processing button, select all (checkmarks)
   // and also displays the progress bar
   const batchButton = () => {
-    // if (loading || analyzing) {
-    //   return null;
-    // } else {
     return (
       <>
         <Progress
@@ -406,24 +555,25 @@ const Repo = ({
             justifyContent: 'flex-end',
           }}
         ></div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Checkbox
-            indeterminate={indeterminate}
-            onChange={onCheckAllChange}
-            checked={checkAll}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Button
+            onClick={selectAll}
+            style={{ marginRight: '10px' }}
+            type="primary"
+            ghost
           >
-            Select all
-          </Checkbox>
-          <Button type="primary" key="batchanalyze">
-            Batch Process
+            {selectVal ? 'Deselect all' : 'Select All'}
           </Button>
+          {batchProcessButton()}
         </div>
       </>
     );
-    // }
   };
-
-  const setUpdatedRepo = async () => {};
 
   /**
    * Function that is responsible to fetching all data from backend,
@@ -447,19 +597,33 @@ const Repo = ({
     }
   };
 
-  const redirectButton = () => {
-    if (syncDone) {
-      return <Button onClick={fetchAndRedirect}>Redirect</Button>;
-    } else {
-      return null;
-    }
-  };
-
   const checkBatchList = (item) => {
     let isInArray = batchList.find((el) => {
       return el.id === item.id;
     });
     return isInArray;
+  };
+
+  const updateFilteredList = (item) => {
+    setFilteredList(
+      filteredList.map((project) => {
+        if (project.id !== item.id) {
+          return project;
+        } else {
+          return { ...project, batched: !project.batched };
+        }
+      })
+    );
+
+    setReList(
+      reList.map((project) => {
+        if (project.id !== item.id) {
+          return project;
+        } else {
+          return { ...project, batched: !project.batched };
+        }
+      })
+    );
   };
 
   const addtoBatchList = (item) => {
@@ -468,22 +632,39 @@ const Repo = ({
       // Remove
       let newList = batchList.filter((batch) => batch.id !== item.id);
       setBatchList([...newList]);
+      updateFilteredList(item);
     } else {
       // If not, add to batchlist
+      updateFilteredList(item);
       setBatchList([...batchList, item]);
     }
   };
 
   const tagRender = (item) => {
-    if (item['lastSynced'] === null) {
-      return 'red';
+    if (analyzing && selectedRepo === item.id) {
+      return (
+        <Tag icon={<SyncOutlined spin />} color="processing" key={'cached'}>
+          Analyzing
+        </Tag>
+      );
+    } else if (item['lastSynced'] === null) {
+      return (
+        <Tag color={'red'} key={'cached'}>
+          Not Cached
+        </Tag>
+      );
     } else {
-      return 'green';
+      return (
+        <Tag color={'green'} key={'cached'}>
+          Cached: {Math.round(item['lastSynced'])} min ago
+        </Tag>
+      );
     }
   };
 
   const renderProject = (id) => {
-    // setSelectedRepo(id);
+    setSelectedRepo(id);
+    selectRepo = id;
     fetchAndRedirect();
   };
 
@@ -496,21 +677,67 @@ const Repo = ({
       );
     } else {
       return (
-        <Button onClick={fetchAndRedirect} type="primary">
+        <Button
+          onClick={() => {
+            renderProject(item.id);
+          }}
+          type="primary"
+        >
           Go
         </Button>
       );
     }
   };
 
-  const dateToAgoConverter = (date) => {};
+  const selectAll = () => {
+    if (!selectVal) {
+      setSelectVal(true);
+      setFilteredList(
+        filteredList.map((project) => {
+          if (project.batched) {
+            return project;
+          } else {
+            return {
+              ...project,
+              batched: true,
+            };
+          }
+        })
+      );
+      setBatchList(filteredList);
+    } else {
+      setSelectVal(false);
+      setFilteredList(
+        filteredList.map((project) => {
+          if (!project.batched) {
+            return project;
+          } else {
+            return {
+              ...project,
+              batched: false,
+            };
+          }
+        })
+      );
+      setBatchList([]);
+    }
+  };
+
+  const dateToAgoConverter = (date) => {
+    if (date === null) {
+      return null;
+    }
+    const dateBefore = new Date(date + '-0700');
+    const dateAfter = new Date();
+
+    return (dateAfter - dateBefore) / (1000 * 60);
+  };
 
   if (redirect) {
     return <Redirect to="/summary" />;
   } else {
     return (
       <div>
-        {redirectButton()}
         {batchButton()}
         <List
           style={{ marginTop: '20px' }}
@@ -520,11 +747,7 @@ const Repo = ({
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Tag color={tagRender(item)} key={'cached'}>
-                  {item['lastSynced'] === null
-                    ? 'Not Cached'
-                    : item['lastSynced']}
-                </Tag>,
+                tagRender(item),
                 <Button
                   onClick={(e) => {
                     handleAnalyze(e, item.id);
@@ -535,6 +758,7 @@ const Repo = ({
                 </Button>,
                 goRender(item),
                 <Checkbox
+                  checked={item.batched}
                   onClick={() => {
                     addtoBatchList(item);
                   }}

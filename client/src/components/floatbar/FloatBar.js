@@ -78,6 +78,7 @@ function FloatBar() {
             <Grid item xs={12}>
               <div className="daterange">
                 <RangePicker 
+                  allowClear={false}
                   defaultValue={dataList}
                   onChange={setDataList}
                   format="YYYY/MM/DD hh:mm:ss"

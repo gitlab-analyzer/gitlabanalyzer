@@ -30,9 +30,8 @@ const Summary = () => {
     commitsList,
     mergeRequestList,
     notesList,
+    dataList,
   } = useAuth();
-  const [startDate, setStartDate] = useState('March 1, 2021');
-  const [endDate, setEndDate] = useState('March 12, 2021');
 
   const [combinedDropdown, setCombinedDropdown] = useState('Number');
   const [crDropdown, setCrDropdown] = useState('All');
@@ -47,9 +46,8 @@ const Summary = () => {
   const MERGE_REQUESTS = 2;
   const CODE_REVIEWS = 3;
   const ISSUES = 4;
-  
 
-  const countDates = (list, type) => {
+  const countDates = (list, type, dates) => {
     var result = {};
     var i, j;
     var date;
@@ -59,13 +57,27 @@ const Summary = () => {
     for (i = 0; i < list.length; i++) {
       if (selectUser === list[i].userName) {
         for (j = 0; j < list[i].commits[0].length; j++) {
-          date = [
-            list[i].commits[0][j].commitedDate.getFullYear(),
-            list[i].commits[0][j].commitedDate.getMonth() +1,
-            list[i].commits[0][j].commitedDate.getDate(),
-          ].join('-');
-          result[date] = result[date] || 0;
-          result[date]++;
+          if(dates.length !== 0) {
+            // Case when float bar dates are selected
+            if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
+              date = [
+                list[i].commits[0][j].commitedDate.getFullYear(),
+                list[i].commits[0][j].commitedDate.getMonth() +1,
+                list[i].commits[0][j].commitedDate.getDate(),
+              ].join('-');
+              result[date] = result[date] || 0;
+              result[date]++;
+            }
+          } else {
+            // No float bar dates seleceted
+            date = [
+              list[i].commits[0][j].commitedDate.getFullYear(),
+              list[i].commits[0][j].commitedDate.getMonth() +1,
+              list[i].commits[0][j].commitedDate.getDate(),
+            ].join('-');
+            result[date] = result[date] || 0;
+            result[date]++;
+          }
         }
       }
     }
@@ -73,24 +85,46 @@ const Summary = () => {
       // TODO: Merge Request logic
     } else if (type == CODE_REVIEWS) {
       for(i = 0; i < list.length; i++) {
-        if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
-          date = [list[i].createdDate.getFullYear(),
-          list[i].createdDate.getMonth() + 1,
-          list[i].createdDate.getDate(),
-        ].join('-');
-        result[date] = result[date] || 0;
-        result[date] += list[i].wordCount;
+          if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
+            if (dates.length !== 0) {
+              if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
+                date = [list[i].createdDate.getFullYear(),
+                        list[i].createdDate.getMonth() + 1,
+                        list[i].createdDate.getDate(),
+                      ].join('-');
+                      result[date] = result[date] || 0;
+                      result[date] += list[i].wordCount;
+              }
+            } else {
+              date = [list[i].createdDate.getFullYear(),
+                        list[i].createdDate.getMonth() + 1,
+                        list[i].createdDate.getDate(),
+                      ].join('-');
+                      result[date] = result[date] || 0;
+                      result[date] += list[i].wordCount;
+            }
+          }
         }
-      }
     } else if (type == ISSUES) {
       for(i = 0; i < list.length; i++) {
         if (selectUser === list[i].author && list[i].noteableType == "Issue") {
-          date = [list[i].createdDate.getFullYear(),
-          list[i].createdDate.getMonth() + 1,
-          list[i].createdDate.getDate(),
-        ].join('-');
-        result[date] = result[date] || 0;
-        result[date] += list[i].wordCount;
+          if (dates.length !== 0) {
+            if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
+              date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+            }
+          } else {
+            date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+          }
         }
       }
     }
@@ -123,20 +157,20 @@ const Summary = () => {
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser
-  var dailyCommitsArray = countDates(userCommitsList, COMMITS)
+  var dailyCommitsArray = countDates(userCommitsList, COMMITS, dataList)
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
   // Merge Request logic not complete - commits as placeholder
-  var dailyMRsArray = countDates(userCommitsList, COMMITS)
+  var dailyMRsArray = countDates(userCommitsList, COMMITS, dataList)
   var mrDatesArray = populateDates(dailyMRsArray)
   var mrCountsArray = populateCounts(dailyMRsArray)
 
-  var dailyCRArray = countDates(notesList, CODE_REVIEWS)
+  var dailyCRArray = countDates(notesList, CODE_REVIEWS, dataList)
   var CRDatesArray = populateDates(dailyCRArray)
   var CRCountsArray = populateCounts(dailyCRArray)
 
-  var dailyIssuesArray = countDates(notesList, ISSUES)
+  var dailyIssuesArray = countDates(notesList, ISSUES, dataList)
   var issueDatesArray = populateDates(dailyIssuesArray)
   var issueCountsArray = populateCounts(dailyIssuesArray)
 
@@ -171,7 +205,7 @@ const Summary = () => {
     setDateArray(commitDatesArray)
     setCrDateArray(CRDatesArray)
     setIssueDateArray(issueDatesArray)
-  }, [selectUser])
+  }, [selectUser, dataList])
 
   const [combinedSeries, setCombinedSeries] = useState([
     {
@@ -266,7 +300,7 @@ const Summary = () => {
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <b>
-            Merge Request & Commit {textRender} from {startDate} - {endDate}
+            Merge Request & Commit {textRender}
           </b>
         </Grid>
         <Grid item xs={10}>
@@ -282,7 +316,7 @@ const Summary = () => {
         </Grid>
         <Grid item xs={12}>
           <b>
-            Code Review Word Count from {startDate} to {endDate}
+            Code Review Word Count
           </b>
         </Grid>
         <Grid item xs={10}>
@@ -298,7 +332,7 @@ const Summary = () => {
         </Grid>
         <Grid item xs={12}>
           <b>
-            Issue Word Count from {startDate} to {endDate}
+            Issue Word Count
           </b>
         </Grid>
         <Grid item xs={10}>
