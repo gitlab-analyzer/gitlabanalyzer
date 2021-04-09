@@ -189,6 +189,15 @@ def get_notes_for_all_users(projectID):
     return jsonify({'notes': value, "response": isSuccess, 'cause': errorCode})
 
 
+@app.route('/projects/<int:projectID>/map', methods=['post'])
+def map_users(projectID):
+    isSuccess, errorCode = gitlab_manager.map_users(
+        request.cookies.get("id", ""), projectID, get_request(request, "user_map")
+    )
+
+    return jsonify({"response": isSuccess, 'cause': errorCode})
+
+
 if __name__ == '__main__':
     gitlab_manager = GitLabAnalyzerManager()
     app.run(host='0.0.0.0', port=5678)

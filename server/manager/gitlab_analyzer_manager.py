@@ -262,3 +262,13 @@ class GitLabAnalyzerManager:
         if isValid:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
+
+    def map_users(
+        self, hashedToken: str, projectID: int, userMapDict: dict
+    ) -> Tuple[bool, str]:
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
+            hashedToken, projectID
+        )
+        if isValid:
+            myProject.call_map_users_to_members(userMapDict)
+        return isValid, errorCode
