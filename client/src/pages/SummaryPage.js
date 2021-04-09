@@ -50,6 +50,9 @@ const Summary = () => {
   const CODE_REVIEWS_OWN = 5;
   const CODE_REVIEWS_OTHERS = 6;
 
+  console.log(mergeRequestList)
+  console.log(commitsList)
+
   const countDates = (list, type, dates) => {
     var result = {};
     var i, j;
@@ -86,6 +89,31 @@ const Summary = () => {
     }
     } else if (type == MERGE_REQUESTS) {
       // TODO: Merge Request logic
+      for(i in list) {
+        if(i === selectUser) {
+          for(i in list[selectUser].mr){
+            if(dates.length !== 0) {
+              if((dates[0]._d <= list[selectUser].mr[i].createdDate) && (list[selectUser].mr[i].createdDate <= dates[1]._d)){
+                  date = [
+                    list[selectUser].mr[i].createdDate.getFullYear(),
+                    list[selectUser].mr[i].createdDate.getMonth() +1,
+                    list[selectUser].mr[i].createdDate.getDate(),
+                  ].join('-');
+                  result[date] = result[date] || 0;
+                  result[date]++;
+              }
+            } else {
+              date = [
+                list[selectUser].mr[i].createdDate.getFullYear(),
+                list[selectUser].mr[i].createdDate.getMonth() +1,
+                list[selectUser].mr[i].createdDate.getDate(),
+              ].join('-');
+              result[date] = result[date] || 0;
+              result[date]++;
+            }
+          }
+        }
+      }
     } else if (type == CODE_REVIEWS) {
       for(i = 0; i < list.length; i++) {
           if (selectUser === list[i].author && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
@@ -209,7 +237,7 @@ const Summary = () => {
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
   // Merge Request logic not complete - commits as placeholder
-  var dailyMRsArray = countDates(userCommitsList, COMMITS, dataList)
+  var dailyMRsArray = countDates(mergeRequestList, MERGE_REQUESTS, dataList)
   var mrDatesArray = populateDates(dailyMRsArray)
   var mrCountsArray = populateCounts(dailyMRsArray)
 
