@@ -1,5 +1,7 @@
 import datetime
 import threading
+from copy import deepcopy
+
 from interface.gitlab_interface import GitLab
 from manager.code_diff_Analyzer import CodeDiffAnalyzer
 from manager.comment_manager import CommentManager
@@ -232,7 +234,17 @@ class GitLabProject:
         self.__syncing_state = "Analyzing commits"
         for commit in self.__commitsManager.get_commit_list():
             commit.line_counts = self.get_commit_score_data(commit)
+            commit.code_diff_detail = self.__get_code_diff_detail(
+                self.__codeDiffManager.get_code_diff(commit.code_diff_id)
+            )
         self.__syncing_progress = self.__syncing_progress + 1
+
+    def __get_code_diff_detail(self, myCodeDiffList: list) -> list:
+        codeDiff: dict
+        CodeDiffList = deepcopy(myCodeDiffList)
+        for codeDiff in CodeDiffList:
+            codeDiff.pop("diff")
+        return CodeDiffList
 
     def __analyze_merge_requests_code_diff(self) -> None:
         self.__syncing_state = "Analyzing merge requests"
@@ -241,6 +253,9 @@ class GitLabProject:
             mr.line_counts = self.get_merge_request_score_data(mr)[
                 "mergeRequestScoreData"
             ]
+            mr.code_diff_detail = self.__get_code_diff_detail(
+                self.__codeDiffManager.get_code_diff(mr.code_diff_id)
+            )
             for commit in mr.related_commits_list:
                 commit.line_counts = self.get_commit_score_data(commit)
         self.__syncing_progress = self.__syncing_progress + 1
