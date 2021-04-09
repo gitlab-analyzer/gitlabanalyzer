@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import { React } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,10 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Button } from 'antd'
 
 import FilterMenu from '../components/table/FilterMenu';
-import SelectUser from '../components/SelectUser';
 import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
 
@@ -58,10 +56,8 @@ function createData(date, wordcount, comment, ownership, type) {
 
 
 const TablePage = () => {
-  const { selectUser, setSelectUser, notesList, setNotesList, dataList} = useAuth()
+  const { selectUser, notesList, dataList} = useAuth()
   const classes = useStyles();
-
-  console.log(notesList)
 
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
   // if not, Mar 14 2020 @ 8:30pm
