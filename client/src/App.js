@@ -12,6 +12,9 @@ import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
 import ConfigPage from './pages/ConfigPage';
 
+import UserMap from './components/UserMap';
+import UserMapPage from './pages/UserMapPage';
+
 function App() {
   return (
     <Router>
@@ -26,6 +29,7 @@ function App() {
             <Route path="/table" component={TablePage} />
             <Route path="/batch" component={BatchPage} />
             <Route path="/config" component={ConfigPage} />
+            <Route path="/usermap" component={UserMapPage} />
           </Container>
         </Switch>
       </div>
