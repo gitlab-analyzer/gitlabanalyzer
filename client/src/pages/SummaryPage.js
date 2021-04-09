@@ -234,8 +234,6 @@ const Summary = () => {
   const [crDateArray, setCrDateArray] = useState(CRDatesArray);
   const [issueDateArray, setIssueDateArray] = useState(issueDatesArray);
 
-  const [dropdownState, setDropdownState] = useState('All')
-
   useEffect(() => {
     setCombinedSeries([
       {
@@ -261,14 +259,14 @@ const Summary = () => {
     ])
     setDateArray(commitDatesArray)
 
-    if(dropdownState === 'All') {
+    if(crDropdown === 'All') {
       setCrDateArray(CRDatesArray)
-    } else if (dropdownState === 'Own') {
+    } else if (crDropdown === 'Own') {
       setCrDateArray(CROwnDatesArray)
-    } else {
+    } else if (crDropdown === 'Other'){
       setCrDateArray(CROtherDatesArray)
     }
-    
+
     setIssueDateArray(issueDatesArray)
   }, [selectUser, dataList])
 
