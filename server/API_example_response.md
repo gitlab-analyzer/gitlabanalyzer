@@ -8,7 +8,7 @@
 - [Sync a list of projects(batch processing)](#sync-a-list-of-projectsbatch-processing)
     - `POST /projects/sync/batch`
 - [Get project syncing state](#get-project-syncing-state)
-    - `GET /projects/<int:projectID>/sync/state`
+    - `POST /projects/<int:projectID>/sync/state`
 - [Get a list of projects' syncing state](#get-a-list-of-projects-syncing-statebatch-processing)
     - `POST /projects/sync/batch/state`
 - [Get all the members in the repo](#get-all-the-members-in-the-project)
@@ -127,7 +127,7 @@ Example javascript ajax call:
 [Go back to API list](#api-example-response)
 
 ### Get project syncing state
-#### `GET /projects/<int:projectID>/sync/state`
+#### `POST /projects/<int:projectID>/sync/state`
 ```json
 {
     "cause": "",

@@ -223,6 +223,17 @@ class GitLabAnalyzerManager:
             commitList = myProject.get_commit_list_on_master()
         return isValid, errorCode, commitList
 
+    def get_project_master_direct_commits_by_user(
+            self, hashedToken: str, projectID: int
+    ) -> Tuple[bool, str, dict]:
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
+            hashedToken, projectID
+        )
+        commitList: dict = {}
+        if isValid:
+            commitList = myProject.get_direct_commit_list_on_master_all_user()
+        return isValid, errorCode, commitList
+
     def get_project_all_commits_by_user(
         self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, list]:

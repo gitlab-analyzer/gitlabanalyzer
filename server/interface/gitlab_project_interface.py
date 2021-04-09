@@ -26,6 +26,7 @@ class GitLabProject:
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
         self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
+        self.__uniqueMasterCommitManager: CommitManager = CommitManager()
         self.__projectID: int = projectID
         self.__projectName: str = projectName
         self.__is_syncing: bool = False
@@ -105,6 +106,9 @@ class GitLabProject:
         commitList: list = myGitlab.get_commit_list_for_project()
         tempUserSet: set = set()
         for commit in commitList:
+            # Detect if there is associated MR with it
+            if len(commit.merge_requests()) == 0:
+                self.__uniqueMasterCommitManager.add_commit(commit)
             # Get all git users, set will only store unique values
             tempUserSet.add(commit.author_name)
             self.__commitsManager.add_commit(commit)
@@ -266,6 +270,15 @@ class GitLabProject:
                     user["commits"].append(commit.to_dict())
                     break
         return commitListsForAllUsers
+
+    def get_direct_commit_list_on_master_all_user(self) -> dict:
+        commitList: dict = {}
+
+        for commit in self.__uniqueMasterCommitManager.get_commit_list():
+            if commitList.get(commit.author_name, None) is None:
+                commitList[commit.author_name] = []
+            commitList[commit.author_name].append(commit.to_dict())
+        return commitList
 
     def __get_commit_list_and_authors(self, commits: List[Commit]) -> Tuple[list, list]:
         commitList = []

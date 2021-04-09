@@ -135,6 +135,15 @@ def get_commits_for_users(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
+@app.route('/projects/<int:projectID>/commit/master/direct/user/all', methods=['get'])
+def get_unique_master_commits_for_users(projectID):
+    isSuccess, errorCode, value = gitlab_manager.get_project_master_direct_commits_by_user(
+        request.cookies.get("id", ""), projectID
+    )
+
+    return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
+
+
 @app.route('/projects/<int:projectID>/merge_request/user/all', methods=['get'])
 def get_merge_requests_for_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_merge_request_by_user(
