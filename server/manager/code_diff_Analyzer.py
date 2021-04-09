@@ -187,9 +187,8 @@ class CodeDiffAnalyzer:
                 line.count(signal_block_code) == 2 and python == True
             ):
                 info = self.modify_info_value("comments", info, line[0])
-                return info
-
-        info = self.add_block_of_comments(line, python, info, block_code)
+            else:
+                info = self.add_block_of_comments(line, python, info, block_code)
         return info
 
     def add_block_of_comments(self, line, python, info, block_code) -> dict:
