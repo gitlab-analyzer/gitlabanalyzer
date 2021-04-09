@@ -406,11 +406,16 @@ const Summary = () => {
         </Grid>
         <Grid item xs={12}>
           <b>
-            Code Review Word Count
+            Code Review Word Count ({crDropdown})
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={crDateArray} id={2}/>
+          <BarGraph 
+          series={crSeries} 
+          colors={'#f8f0d4'} 
+          stroke={'#CBB97B'} 
+          xlabel={crDateArray} 
+          id={2}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

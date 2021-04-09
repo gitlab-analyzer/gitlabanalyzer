@@ -56,7 +56,11 @@ function createData(date, wordcount, comment, ownership, type) {
 
 
 const TablePage = () => {
-  const { selectUser, notesList, dataList} = useAuth()
+  const { 
+    selectUser, 
+    notesList, 
+    dataList
+  } = useAuth()
   const classes = useStyles();
 
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
@@ -127,7 +131,12 @@ const TablePage = () => {
           } else {
             type = "Issue"
           }
-          result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
+          result.push(
+            createData(dateFormatter(notes[i].createdDate), 
+            notes[i].wordCount, 
+            notes[i].body, 
+            notes[i].ownership, 
+            type))
         }
       }
     }
