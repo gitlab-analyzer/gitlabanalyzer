@@ -35,9 +35,9 @@ class Project(DataObject):
     def __init__(self, gitlab_project: gl_Project) -> None:
         self.__project_id: int = gitlab_project.id
         self.__name: str = gitlab_project.name
-        self.__namespace: str = gitlab_project.namespace.name
+        self.__namespace: str = gitlab_project.namespace['name']
         self.__path: str = gitlab_project.path
-        self.__path_namespace = gitlab_project.namespace.path
+        self.__path_namespace = gitlab_project.namespace['path']
         self.__web_url: str = gitlab_project.web_url
 
         self.__visibility: str = gitlab_project.visibility
@@ -46,7 +46,7 @@ class Project(DataObject):
         self.__created_date: str = gitlab_project.created_at
         self.__updated_date: str = gitlab_project.last_activity_at
 
-        self.__owner_id: int = gitlab_project.owner.id
+        self.__owner_id: int = gitlab_project.owner['id']
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
