@@ -13,6 +13,34 @@ The solution for now is to modify the code so it take 2 strings instead of 2 fie
 class TestCodeDiff(unittest.TestCase):
     
     #Test with not python file
+    def test_add_a_blank_line(self):
+        diff = "+\n"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 1,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    def test_delete_a_blank_line(self):
+        diff = "-\n"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 1,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
     def test_add_a_line(self):
         diff = "+ if(1+2==3)\n"
         info = {

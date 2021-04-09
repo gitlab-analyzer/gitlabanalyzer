@@ -141,7 +141,6 @@ class CodeDiffAnalyzer:
                     info = self.modify_info_value("comments", info, signal)
                     return info
             if str[i] != " ":
-                info = self.modify_info_value("lines", info, signal)
                 return info
 
         if isSyntax:
