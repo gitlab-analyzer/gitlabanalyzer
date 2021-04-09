@@ -167,5 +167,47 @@ class TestCodeDiff(unittest.TestCase):
         }
         self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
 
+    def test_change_at_end_of_line(self):
+        diff = "- if ((1+2)==3) {cout << \"this is correct\";}\n+ if ((1+2)==3) \n"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 1,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    def test_change_at_start_of_line(self):
+        diff = "-{cout << \"this is correct\";}\n+ if ((1+2)==3) {cout << \"this is correct\";}\n"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+    
+    def test_change_syntax_at_end_of_line(self):
+        diff = "- if ((1+2==3)\n+ if ((1+2==3) "
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
 if __name__ == '__main__':
     unittest.main()

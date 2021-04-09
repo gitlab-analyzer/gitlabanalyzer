@@ -162,6 +162,7 @@ class GitLabProject:
                 CodeDiff(diff)
             )
             diff.update(diffStats)
+            diff["file_type"] = self.__codeDiffAnalyzer.check_for_code_type(CodeDiff(diff))
 
     def get_commit_score_data(self, commit: Commit) -> dict:
         # TODO: CHANGE
