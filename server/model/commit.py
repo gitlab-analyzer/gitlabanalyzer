@@ -23,6 +23,7 @@ class Commit(DataObject):
         )  # datetime in ISO 8601 format
         self.__line_counts: dict = {}
         self.__direct_to_master: bool = direct_to_master
+        self.__code_diff_detail: dict = {}
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
@@ -68,6 +69,10 @@ class Commit(DataObject):
     def direct_to_master(self) -> bool:
         return self.__direct_to_master
 
+    @property
+    def code_diff_detail(self) -> dict:
+        return self.code_diff_detail
+
     # Setter
     @code_diff_id.setter
     def code_diff_id(self, codeDiffID: int) -> None:
@@ -84,3 +89,7 @@ class Commit(DataObject):
     @direct_to_master.setter
     def direct_to_master(self, directly_to_master: bool) -> None:
         self.__direct_to_master = directly_to_master
+
+    @code_diff_detail.setter
+    def code_diff_detail(self, codeDiffDetail) -> None:
+        self.__code_diff_id = codeDiffDetail
