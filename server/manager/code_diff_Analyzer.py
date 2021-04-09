@@ -39,8 +39,8 @@ class CodeDiffAnalyzer:
 
                 # Check for block of comments
                 # -------------------------------------------------
+                temp = info.copy()
                 if python is False:
-                    temp = info.copy()
                     info = self.define_block_of_code(
                         block_code, "/*", line, info, python
                     )
@@ -49,22 +49,19 @@ class CodeDiffAnalyzer:
                             line, python, info, block_code
                         )
                         block_code = False
-                        continue
                 else:
-                    temp = info.copy()
                     info = self.define_block_of_code(
                         block_code, "'''", line, info, python
                     )
-
                 if info != temp:
-                    block_code = not block_code
+                    if "/*" in line or "'''" in line:
+                        block_code = not block_code
                     continue
                 # -------------------------------------------------
 
                 # Adding to middle of the line instead of to the front or the back
                 # -------------------------------------------------
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                    temp = info.copy()
                     info = self.add_one_char_middle(line, oldLine, info, python)
                     if temp != info:
                         info = self.modify_info_value("lines", info, oldLine[0], -1)
@@ -73,7 +70,6 @@ class CodeDiffAnalyzer:
 
                 # Adding to an exisiting line
                 # -------------------------------------------------
-                temp = info.copy()
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line("+", line, oldLine, info, python)
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
@@ -167,7 +163,7 @@ class CodeDiffAnalyzer:
             elif oldLine[temp] == ":" or line[temp] == ":":
                 if python:
                     info["syntax_changes"] = info["syntax_changes"] + 1
-            elif oldLine[temp] in syntaxStr or oldLine[temp] in syntaxStr:
+            elif oldLine[temp] in syntaxStr or line[temp] in syntaxStr:
                 if python is False:
                     info["syntax_changes"] = info["syntax_changes"] + 1
             else:
