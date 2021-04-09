@@ -15,7 +15,7 @@ function LanguagePoints() {
           <Form.List name="language">
             {(fields, {add, remove}) => (
               <div style={{width:300}}>
-                {fields.map((field, index) => (
+                {fields.map((field) => (
                   <Space 
                     key={field.key} 
                     style={{ 
@@ -59,7 +59,8 @@ function LanguagePoints() {
                   <Button 
                     type="dashed"
                     onClick={() => add()}
-                    icon={<PlusOutlined />}
+                    style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}
+                    icon={<PlusOutlined style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                     block
                   >
                     Add Language

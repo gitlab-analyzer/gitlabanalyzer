@@ -13,6 +13,7 @@ import TablePage from './pages/TablePage';
 import ConfigPage from './pages/ConfigPage';
 import CodeDiff from './pages/CodeDiff';
 import NewPage from './pages/NewPage';
+import CodeDiffDetail from './components/code_diff_detail/CodeDiffDetail';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/batch" component={BatchPage} />
             <Route path="/config" component={ConfigPage} />
             <Route path="/codediff" component={CodeDiff} />
+            <Route path="/code_diff_detail" component={CodeDiffDetail} />
           </Container>
         </Switch>
       </div>

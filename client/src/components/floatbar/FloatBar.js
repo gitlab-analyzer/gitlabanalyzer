@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select, Button, DatePicker, notification } from 'antd';
 import {
   CheckCircleOutlined,
@@ -28,7 +28,7 @@ const copySuccessful = () => {
 };
 
 function FloatBar() {
-  const [sortType, setSortType] = React.useState('alpha');
+  const [sortType, setSortType] = useState('alpha');
 
   const {
     membersList,
@@ -92,6 +92,7 @@ function FloatBar() {
             <Grid item xs={12}>
               <div className="daterange">
                 <RangePicker
+                  allowClear={false}
                   defaultValue={dataList}
                   onChange={setDataList}
                   format="YYYY/MM/DD hh:mm:ss"

@@ -1,8 +1,9 @@
+import datetime
 import threading
+import time
 from typing import Union, Tuple
 
 import gitlab
-
 from interface.gitlab_analyzer_interface import GitLabAnalyzer
 from interface.gitlab_project_interface import GitLabProject
 
@@ -15,8 +16,27 @@ ERROR_CODES = {
 
 
 class GitLabAnalyzerManager:
-    def __init__(self):
+    def __init__(
+        self,
+        maximum_exist_time=datetime.timedelta(hours=6),
+        worker_check_period_hours: int = 6,
+    ):
         self.__gitlab_list: dict = {}
+        self.__gitlab_list_lock = threading.Lock()
+        self.__worker_should_run_signal: bool = False
+        self.__garbage_monitor = threading.Thread(
+            target=self.__garbage_monitor_worker, args=(self.__gitlab_list_lock,)
+        )
+        self.__maximum_exist_time: datetime = maximum_exist_time
+        self.__worker_check_period = self.__hour_to_seconds(worker_check_period_hours)
+
+    def __hour_to_seconds(self, hours: int) -> int:
+        return hours * 60 * 60
+
+    def __update_last_access_time(self, hashedToken: str) -> None:
+        myGitLabAnalyzer: GitLabAnalyzer = self.__gitlab_list.get(hashedToken, None)
+        if myGitLabAnalyzer is not None:
+            myGitLabAnalyzer.last_time_access = datetime.datetime.now()
 
     # authenticate and add the gitlab instance on success. If success, it will also return username
     def add_gitlab(
@@ -24,16 +44,22 @@ class GitLabAnalyzerManager:
     ) -> Tuple[bool, str, str]:
         try:
             myGitLabAnalyzer = GitLabAnalyzer(token, hashedToken, url)
-            if self.__gitlab_list.get(hashedToken):
-                pass
-            else:
+            self.__gitlab_list_lock.acquire()
+            if self.__gitlab_list.get(hashedToken, None) is None:
                 self.__gitlab_list[hashedToken] = myGitLabAnalyzer
+            else:
+                self.__update_last_access_time(hashedToken)
+            self.__gitlab_list_lock.release()
             return True, "", myGitLabAnalyzer.username
         except gitlab.exceptions.GitlabAuthenticationError:
             return False, ERROR_CODES["invalidToken"], ""
 
-    def __find_gitlab(self, hashedToken: str) -> Union[GitLabAnalyzer]:
-        return self.__gitlab_list.get(hashedToken, None)
+    def __find_gitlab(self, hashedToken: str) -> Union[GitLabAnalyzer, None]:
+        self.__gitlab_list_lock.acquire()
+        myGitLab: GitLabAnalyzer = self.__gitlab_list.get(hashedToken, None)
+        self.__update_last_access_time(hashedToken)
+        self.__gitlab_list_lock.release()
+        return myGitLab
 
     def __update_project_list_with_last_synced_time(
         self, hashedToken: str, projectList: list
@@ -262,3 +288,35 @@ class GitLabAnalyzerManager:
         if isValid:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
+
+    def __delete_GitLab_instance(self, hashedToken: str) -> None:
+        self.__gitlab_list_lock.acquire()
+        if self.__gitlab_list.get(hashedToken, None) is not None:
+            self.__gitlab_list.pop(hashedToken)
+        self.__gitlab_list_lock.release()
+
+    def __garbage_monitor_worker(self, lock: threading.Lock) -> None:
+        while self.__worker_should_run_signal:
+            lock.acquire()
+            gitLabUser: GitLabAnalyzer
+            for key, gitLabUser in self.__gitlab_list:
+                if (
+                    datetime.datetime.now() - gitLabUser.last_time_access
+                    > self.__maximum_exist_time
+                ):
+                    self.__gitlab_list.pop(key)
+            lock.release()
+            time.sleep(self.__worker_check_period)
+
+    def start_garbage_monitor_thread(self) -> None:
+        self.__worker_should_run_signal = True
+        self.__garbage_monitor.start()
+
+    def stop_garbage_monitor_thread(self) -> None:
+        self.__worker_should_run_signal = False
+
+    def change_worker_check_period(self, hours: int) -> None:
+        self.__worker_check_period = self.__hour_to_seconds(hours)
+
+    def get_garbage_monitor_check_period(self) -> int:
+        return self.__worker_check_period

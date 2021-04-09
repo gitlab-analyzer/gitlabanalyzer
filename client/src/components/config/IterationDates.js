@@ -15,7 +15,7 @@ function IterationDates() {
       
       <Form.List name="iterations">
         {(fields, {add, remove}) => (
-          <div style={{width:600}}>
+          <div style={{width:"550px"}}>
             {fields.map((field, index) => (
               <Space 
                 key={field.key} 
@@ -63,7 +63,8 @@ function IterationDates() {
               <Button 
                 type="dashed"
                 onClick={() => add()}
-                icon={<PlusOutlined />}
+                style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}
+                icon={<PlusOutlined style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                 block
               >
                 Add Iteration
