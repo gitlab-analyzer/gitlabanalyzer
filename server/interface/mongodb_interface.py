@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Optional, Union
 from datetime import datetime, timezone
 from dateutil.parser import isoparse
 
@@ -189,25 +189,27 @@ class GitLabDB:
         return self.find_many_codeDiffs(project_id, codeDiffIds)
 
     # NOTE: PRIMARY KEY (project_id, noteable_type, noteable_iid (ObjectId if commit comment))
-    def find_MR_comments_in_project(self, project_id: Union[int, str]) -> List[dict]:
-        return self.__find(
-            self.__commentColl,
-            {"project_id": project_id, "noteable_type": "MergeRequest"},
-        )
-
-    def find_commit_comments_in_project(
-        self, project_id: Union[int, str]
+    # The notable types are:
+    #   MergeRequest
+    #   Commit
+    #   Issue
+    def find_comments_in_project(
+        self,
+        project_id: Union[int, str],
+        noteable_type: Optional[str],
+        start_date: datetime = datetime.min,
+        end_date: datetime = datetime.max,
     ) -> List[dict]:
-        return self.__find(
-            self.__commentColl, {"project_id": project_id, "noteable_type": "Commit"}
-        )
-
-    def find_issue_comments_in_projects(
-        self, project_id: Union[int, str]
-    ) -> List[dict]:
-        return self.__find(
-            self.__commentColl, {"project_id": project_id, "noteable_type": "Issue"}
-        )
+        query: dict = {
+            "project_id": project_id,
+            "$and": [
+                {"created_date": {"$gte": start_date}},
+                {"created_date": {"$lte": end_date}},
+            ],
+        }
+        if noteable_type is not None:
+            query["noteable_type"] = noteable_type
+        return self.__find(self.__commentColl, query)
 
     def find_comments_in_MR(
         self, project_id: Union[int, str], mr_id: int
@@ -232,7 +234,6 @@ class GitLabDB:
         query: dict = {"$or": [{"id": id} for id in member_ids]}
         return self.__find(self.__memberColl, query)
 
-    # TODO: Issues
     def find_one_issue(self, project_id: Union[int, str], issue_id: int) -> dict:
         return self.__findOne(
             self.__issueColl, {"project_id": project_id, "issue_id": issue_id}
@@ -308,7 +309,103 @@ class GitLabDB:
     def insert_one_project(
         self, project: Project, projectConfig: dict, memberMap: dict
     ) -> bool:
-        body: dict = {
+        body: dict = self.__project_to_bson(project, projectConfig, memberMap)
+        return self.__insertOne(self.__projectColl, body)
+
+    def insert_many_MRs(
+        self, project_id: Union[int, str], mergeRequestList: List[MergeRequest]
+    ) -> bool:
+        body: List[dict] = []
+
+        for mr in mergeRequestList:
+            body.append(self.__MR_to_bson(project_id, mr))
+
+        return self.__insertMany(self.__mergeRequestColl, body)
+
+    def insert_one_MR(
+        self, project_id: Union[int, str], mergeRequest: MergeRequest
+    ) -> bool:
+        body: dict = self.__MR_to_bson(project_id, mergeRequest)
+        return self.__insertOne(self.__mergeRequestColl, body)
+
+    # NOTE precondition: all commits in the list belongs to the same mergeRequest.
+    #   if they are all master commits, put None for mergeRequestID.
+    def insert_many_commits(
+        self,
+        project_id: Union[int, str],
+        commitList: List[Commit],
+        mergeRequestID: Optional[int] = None,
+    ) -> bool:
+        body: List[dict] = []
+        for commit in commitList:
+            body.append(self.__commit_to_bson(project_id, commit, mergeRequestID))
+        return self.__insertMany(self.__commitColl, body)
+
+    # NOTE: if the commit is a commit on the master branch, put None for mergeRequestID
+    def insert_one_commit(
+        self,
+        project_id: Union[int, str],
+        commit: Commit,
+        mergeRequestID: Optional[int] = None,
+    ) -> bool:
+        body: dict = self.__commit_to_bson(project_id, commit, mergeRequestID)
+        return self.__insertOne(self.__codeDiffColl, body)
+
+    # NOTE: precondition: the list of codeDiffs are in the order how they are stored in codeDiffManager
+    def insert_many_codeDiffs(
+        self, project_id: Union[int, str], codeDiffList: List[List[dict]]
+    ) -> bool:
+        body: List[dict] = []
+        for index, codeDiff in zip(range(len(codeDiffList)), codeDiffList):
+            body.append(self.__codediff_to_bson(project_id, index, codeDiff))
+        return self.__insertMany(self.__codeDiffColl, body)
+
+    def insert_one_codeDiff(
+        self, project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]
+    ) -> bool:
+        body: dict = self.__codediff_to_bson(project_id, codeDiffID, codeDiff)
+        return self.__insertOne(self.__codeDiffColl, body)
+
+    # NOTE: PRIMARY KEY (project_id, noteable_type, noteable_iid (ObjectId if commit comment))
+    def insert_many_comments(
+        self, project_id: Union[int, str], commentList: List[Comment]
+    ) -> bool:
+        body: List[dict] = []
+        for comment in commentList:
+            body.append(self.__comment_to_bson(project_id, comment))
+        return self.__insertMany(self.__commentColl, body)
+
+    # NOTE: PRIMARY KEY (project_id, noteable_type, noteable_iid (ObjectId if commit comment))
+    def insert_one_comment(self, project_id: Union[int, str], comment: Comment) -> bool:
+        body: dict = self.__comment_to_bson(project_id, comment)
+        return self.__insertOne(self.__commentColl, body)
+
+    def insert_many_members(self, memberList: List[Member]) -> bool:
+        body: List[dict] = []
+        for member in memberList:
+            body.append(self.__member_to_bson(member))
+        return self.__insertMany(self.__memberColl, body)
+
+    def insert_one_member(self, member: Member) -> bool:
+        body: dict = self.__member_to_bson(member)
+        return self.__insertOne(self.__memberColl, body)
+
+    def insert_many_issues(self, issueList: List[Issue]) -> bool:
+        body: List[dict] = []
+        for issue in issueList:
+            body.append(self.__issue_to_bson(issue))
+        return self.__insertMany(self.__issueColl, body)
+
+    def insert_one_issue(self, issue: Issue) -> bool:
+        body: dict = self.__issue_to_bson(issue)
+        return self.__insertOne(self.__issueColl, body)
+
+    # ******************* TYPE CONVERTERS **************************
+    @staticmethod
+    def __project_to_bson(
+        project: Project, projectConfig: dict, memberMap: dict
+    ) -> dict:
+        return {
             "_id": project.project_id,
             "project_id": project.project_id,
             "name": project.name,
@@ -320,46 +417,16 @@ class GitLabDB:
             "config": projectConfig,
             "member_map": memberMap,
         }
-        return self.__insertOne(self.__projectColl, body)
 
-    def insert_many_MRs(
-        self, project_id: Union[int, str], mergeRequestList: List[MergeRequest]
-    ) -> bool:
-        body: List[dict] = []
-
-        for mr in mergeRequestList:
-            contributors: set = set()
-            relatedCommitIDs: list = []
-            for commit in mr.related_commits_list:
-                contributors.add(commit.author_name)
-                relatedCommitIDs.append(commit.id)
-
-            body.append(
-                {
-                    "mr_id": mr.id,
-                    "project_id": project_id,
-                    "issue_id": mr.__related_issue_iid,
-                    "code_diff_id": mr.code_diff_id,
-                    "merged_date": isoparse(mr.merged_date)
-                    if mr.merged_date is not None
-                    else None,
-                    "contributors": list(contributors),
-                    "related_commit_ids": list(relatedCommitIDs),
-                    "comment_iid_list": mr.comment_iid_list,
-                }
-            )
-        return self.__insertMany(self.__mergeRequestColl, body)
-
-    def insert_one_MR(
-        self, project_id: Union[int, str], mergeRequest: MergeRequest
-    ) -> bool:
+    @staticmethod
+    def __MR_to_bson(project_id: Union[int, str], mergeRequest: MergeRequest) -> dict:
         contributors: set = set()
         relatedCommitIDs: list = []
         for commit in mergeRequest.related_commits_list:
             contributors.add(commit.author_name)
             relatedCommitIDs.append(commit.id)
 
-        body: dict = {
+        return {
             "_id": (mergeRequest.id, project_id),
             "mr_id": mergeRequest.id,
             "project_id": project_id,
@@ -372,32 +439,14 @@ class GitLabDB:
             "related_commit_ids": list(relatedCommitIDs),
             "comment_iid_list": mergeRequest.comment_iid_list,
         }
-        return self.__insertOne(self.__mergeRequestColl, body)
 
-    # precondition: all commits in the list belongs to the same mergeRequest.
-    #   if they are all master commits, put None for mergeRequestID.
-    def insert_many_commits(
-        self, project_id: Union[int, str], mergeRequestID, commitList: List[Commit]
-    ) -> bool:
-        body: List[dict] = []
-        for commit in commitList:
-            body.append(
-                {
-                    "commit_id": commit.id,
-                    "project_id": project_id,
-                    "mr_id": mergeRequestID,
-                    "author": commit.author_name,
-                    "commit_date": commit.committed_date,
-                    "code_diff_id": commit.code_diff_id,
-                }
-            )
-        return self.__insertMany(self.__commitColl, body)
-
-    # if the commit is a commit on the master branch, put None for mergeRequestID
-    def insert_one_commit(
-        self, project_id: Union[int, str], mergeRequestID, commit: Commit
-    ) -> bool:
-        body: dict = {
+    @staticmethod
+    def __commit_to_bson(
+        project_id: Union[int, str],
+        commit: Commit,
+        mergeRequestID: Optional[int] = None,
+    ) -> dict:
+        return {
             "_id": (commit.id, project_id),
             "commit_id": commit.id,
             "project_id": project_id,
@@ -407,70 +456,28 @@ class GitLabDB:
             "commit_date": commit.committed_date,
             "code_diff_id": commit.code_diff_id,
         }
-        return self.__insertOne(self.__codeDiffColl, body)
 
-    # precondition: the list of codeDiffs are in the order how they are stored in codeDiffManager
-    def insert_many_codeDiffs(
-        self, project_id: Union[int, str], codeDiffList: List[List[dict]]
-    ) -> bool:
-        body: List[dict] = []
-        for index, codeDiff in zip(range(len(codeDiffList)), codeDiffList):
-            body.append(
-                {"project_id": project_id, "artif_id": index, "diffs": codeDiff}
-            )
-        return self.__insertMany(self.__codeDiffColl, body)
-
-    def insert_one_codeDiff(
-        self, project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]
-    ) -> bool:
-        body: dict = {
+    @staticmethod
+    def __codediff_to_bson(
+        project_id: Union[int, str], codeDiffID: int, codeDiff: List[dict]
+    ) -> dict:
+        return {
             "_id": (codeDiffID, project_id),
             "project_id": project_id,
             "artif_id": codeDiffID,
             "diffs": codeDiff,
         }
-        return self.__insertOne(self.__codeDiffColl, body)
 
-    # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS
-    def insert_many_comments(
-        self, project_id: Union[int, str], commentList: List[Comment]
-    ) -> bool:
-        body: List[dict] = []
-        for comment in commentList:
-            body.append(
-                {
-                    "_id": (comment.noteable_iid, comment.noteable_type, project_id),
-                    "project_id": project_id,
-                }.update(comment.to_dict())
-            )
-        return self.__insertMany(self.__commentColl, body)
-
-    # NOTE: PROBLEM WITH WHAT PRIMARY KEY IS
-    def insert_one_comment(self, project_id: Union[int, str], comment: Comment) -> bool:
-        body: dict = {
+    @staticmethod
+    def __comment_to_bson(project_id: Union[int, str], comment: Comment) -> dict:
+        return {
             "_id": (comment.noteable_iid, comment.noteable_type, project_id),
             "project_id": project_id,
         }.update(comment.to_dict())
-        result: InsertOneResult = self.__commentColl.insert_one(body)
-        return result.acknowledged
 
-    def insert_many_members(self, memberList: List[Member]) -> bool:
-        body: List[dict] = []
-        for member in memberList:
-            body.append(
-                {
-                    "_id": member.id,
-                    "member_id": member.id,
-                    "username": member.username,
-                    "name": member.name,
-                    "state": member.state,
-                    "access_level": member.access_level,
-                }
-            )
-        return self.__insertMany(self.__memberColl, body)
-
-    def insert_one_member(self, member: Member) -> bool:
-        body: dict = {
+    @staticmethod
+    def __member_to_bson(member: Member) -> dict:
+        return {
             "_id": member.id,
             "member_id": member.id,
             "username": member.username,
@@ -478,20 +485,10 @@ class GitLabDB:
             "state": member.state,
             "access_level": member.access_level,
         }
-        return self.__insertOne(self.__memberColl, body)
 
-    def insert_many_issues(self, issueList: List[Issue]) -> bool:
-        body: List[dict] = []
-        for issue in issueList:
-            issueObj = {"_id": (issue.issue_id, issue.project_id)}
-            issueObj.update(issue.to_dict())
-            body.append(issueObj)
-        return self.__insertMany(self.__issueColl, body)
-
-    def insert_one_issue(self, issue: Issue) -> bool:
-        body: dict = {"_id": (issue.issue_id, issue.project_id)}
-        body.update(issue.to_dict())
-        return self.__insertOne(self.__issueColl, body)
+    @staticmethod
+    def __issue_to_bson(issue: Issue):
+        return {"_id": (issue.issue_id, issue.project_id)}.update(issue.to_dict())
 
     # ******************* GETTERS AND SETTERS **********************
     @property
