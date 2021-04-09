@@ -112,7 +112,7 @@ const TablePage = () => {
     var type;
     for (i = 0; i < notes.length; i++) {
       if(dates.length !== 0) {
-        if (selectUser === notes[i].author && (dates[0]._d <= notes[i].createdDate && notes[i].createdDate <= dates[1]._d)) {
+        if ((selectUser === notes[i].author) && (dates[0]._d <= notes[i].createdDate && notes[i].createdDate <= dates[1]._d)) {
           if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
             type = "Code Review"
           } else {

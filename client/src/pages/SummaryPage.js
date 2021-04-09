@@ -112,7 +112,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS) {
       for(i = 0; i < list.length; i++) {
-          if (selectUser === list[i].author && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+          if ((selectUser === list[i].author) && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
             if (dates.length !== 0) {
               if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
                 date = [list[i].createdDate.getFullYear(),
@@ -134,7 +134,7 @@ const Summary = () => {
         }
     } else if (type === ISSUES) {
       for(i = 0; i < list.length; i++) {
-        if (selectUser === list[i].author && list[i].noteableType === "Issue") {
+        if ((selectUser === list[i].author) && (list[i].noteableType === "Issue")) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
@@ -156,7 +156,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS_OWN) {
       for(i = 0; i < list.length; i++) {
-        if (selectUser === list[i].author && list[i].ownership === "Own" && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+        if ((selectUser === list[i].author) && (list[i].ownership === "Own") && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
@@ -178,7 +178,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS_OTHERS) {
       for(i = 0; i < list.length; i++) {
-        if (selectUser === list[i].author && list[i].ownership === "Other" && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+        if ((selectUser === list[i].author) && (list[i].ownership === "Other") && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
