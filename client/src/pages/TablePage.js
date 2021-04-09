@@ -58,8 +58,10 @@ function createData(date, wordcount, comment, ownership, type) {
 
 
 const TablePage = () => {
-  const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
+  const { selectUser, setSelectUser, notesList, setNotesList, dataList} = useAuth()
   const classes = useStyles();
+
+  console.log(notesList)
 
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
   // if not, Mar 14 2020 @ 8:30pm
@@ -108,25 +110,36 @@ const TablePage = () => {
     }
   };
 
-  const populateTable = (notes) => {
+  const populateTable = (notes, dates) => {
     var i;
     var result = [];
-    var type, date;
+    var type;
     for (i = 0; i < notes.length; i++) {
-      if (selectUser === notes[i].author) {
-        if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
-          type = "Code Review"
-        } else {
-          type = "Issue"
+      if(dates.length !== 0) {
+        if (selectUser === notes[i].author && (dates[0]._d <= notes[i].createdDate && notes[i].createdDate <= dates[1]._d)) {
+          if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+            type = "Code Review"
+          } else {
+            type = "Issue"
+          }
+          result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
         }
-        result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
+      } else {
+        if(selectUser === notes[i].author) {
+          if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+            type = "Code Review"
+          } else {
+            type = "Issue"
+          }
+          result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
         }
       }
+    }
       return result;
     }
 
   // Table updates based on state of this
-  var rows = populateTable(notesList)
+  var rows = populateTable(notesList, dataList)
 
   return (
     <>
