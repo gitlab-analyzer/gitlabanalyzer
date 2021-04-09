@@ -19,6 +19,8 @@
     - `GET /projects/<int:projectID>/commit`
 - [Get all the commits sorted in users](#get-all-the-commits-sorted-in-users)
     - `GET /projects/<int:projectID>/commit/user/all`
+- [Get all the commits committed directly on master]
+    - `GET /projects/<int:projectID>/commit/master/direct/user/all`
 - [Get all the merge requests in the project](#get-all-the-merge-request-in-that-project)
     - `GET /projects/<int:projectID>/merge_request/all`
 - [Get all the merge Request sorted in users](#get-all-the-merge-request-sorted-in-users)
@@ -377,6 +379,64 @@ Example javascript ajax call:
             "user_name": "springbro294"
         }
     ],
+    "response": true
+}
+```
+[Go back to API list](#api-example-response)
+
+### Get all the commits committed directly on master
+#### `GET /projects/<int:projectID>/commit/master/direct/user/all`
+```json
+{
+    "cause": "",
+    "commit_list": {
+        "Administrator": [
+            {
+                "author_name": "Administrator",
+                "code_diff_id": 0,
+                "committed_date": "2021-03-14T01:49:26.000+00:00",
+                "committer_name": "Administrator",
+                "direct_to_master": false,
+                "id": "c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6",
+                "line_counts": {
+                    "blanks_added": 0,
+                    "blanks_deleted": 0,
+                    "comments_added": 2,
+                    "comments_deleted": 0,
+                    "lines_added": 0,
+                    "lines_deleted": 0,
+                    "spacing_changes": 0,
+                    "syntax_changes": 1
+                },
+                "short_id": "c67b9155",
+                "title": "Update gitlab_interface_test.py",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6"
+            }
+        ],
+        "Andrew": [
+            {
+                "author_name": "Andrew",
+                "code_diff_id": 384,
+                "committed_date": "2021-02-05T01:31:20.000-08:00",
+                "committer_name": "Andrew",
+                "direct_to_master": false,
+                "id": "1fd1e554ba6414419d8804bb8a3ff99cd11ec21a",
+                "line_counts": {
+                    "blanks_added": 13,
+                    "blanks_deleted": 6,
+                    "comments_added": 0,
+                    "comments_deleted": 4,
+                    "lines_added": 557,
+                    "lines_deleted": 48,
+                    "spacing_changes": 0,
+                    "syntax_changes": 60
+                },
+                "short_id": "1fd1e554",
+                "title": "added simple nav bar and routing",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/1fd1e554ba6414419d8804bb8a3ff99cd11ec21a"
+            }
+        ]
+    },
     "response": true
 }
 ```

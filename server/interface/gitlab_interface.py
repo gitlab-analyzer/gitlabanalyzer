@@ -164,3 +164,9 @@ class GitLab:
 
     def get_commits_code_diff(self, commitShortID: str) -> list:
         return self.__project.commits.get(commitShortID).diff()
+
+    def get_default_branch(self) -> str:
+        branch_list = self.__project.branches.list(all=True)
+        for branch in branch_list:
+            if branch.default:
+                return branch.name
