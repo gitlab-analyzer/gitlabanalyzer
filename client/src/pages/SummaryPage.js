@@ -47,6 +47,9 @@ const Summary = () => {
   const CODE_REVIEWS = 3;
   const ISSUES = 4;
 
+  const CODE_REVIEWS_OWN = 5;
+  const CODE_REVIEWS_OTHERS = 6;
+
   const countDates = (list, type, dates) => {
     var result = {};
     var i, j;
@@ -127,6 +130,50 @@ const Summary = () => {
           }
         }
       }
+    } else if (type == CODE_REVIEWS_OWN) {
+      for(i = 0; i < list.length; i++) {
+        if (selectUser === list[i].author && list[i].ownership == "Own" && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
+          if (dates.length !== 0) {
+            if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
+              date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+            }
+          } else {
+            date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+          }
+        }
+      }
+    } else if (type == CODE_REVIEWS_OTHERS) {
+      for(i = 0; i < list.length; i++) {
+        if (selectUser === list[i].author && list[i].ownership == "Other" && (list[i].noteableType == "MergeRequest" || list[i].noteableType == "Commit")) {
+          if (dates.length !== 0) {
+            if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
+              date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+            }
+          } else {
+            date = [list[i].createdDate.getFullYear(),
+                      list[i].createdDate.getMonth() + 1,
+                      list[i].createdDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    result[date] += list[i].wordCount;
+          }
+        }
+      }
     }
 
     for (i in result) {
@@ -174,10 +221,20 @@ const Summary = () => {
   var issueDatesArray = populateDates(dailyIssuesArray)
   var issueCountsArray = populateCounts(dailyIssuesArray)
 
+  var dailyCROwn = countDates(notesList, CODE_REVIEWS_OWN, dataList)
+  var CROwnDatesArray = populateDates(dailyCROwn)
+  var CROwnCountsArray = populateCounts(dailyCROwn)
+
+  var dailyCROtherArray = countDates(notesList, CODE_REVIEWS_OTHERS, dataList)
+  var CROtherDatesArray = populateDates(dailyCROtherArray)
+  var CROtherCountsArray = populateCounts(dailyCROtherArray)
+
   // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
   const [crDateArray, setCrDateArray] = useState(CRDatesArray);
   const [issueDateArray, setIssueDateArray] = useState(issueDatesArray);
+
+  const [dropdownState, setDropdownState] = useState('All')
 
   useEffect(() => {
     setCombinedSeries([
@@ -203,7 +260,15 @@ const Summary = () => {
       }
     ])
     setDateArray(commitDatesArray)
-    setCrDateArray(CRDatesArray)
+
+    if(dropdownState === 'All') {
+      setCrDateArray(CRDatesArray)
+    } else if (dropdownState === 'Own') {
+      setCrDateArray(CROwnDatesArray)
+    } else {
+      setCrDateArray(CROtherDatesArray)
+    }
+    
     setIssueDateArray(issueDatesArray)
   }, [selectUser, dataList])
 
@@ -262,20 +327,23 @@ const Summary = () => {
           data: CRCountsArray,
         },
       ]);
+      setCrDateArray(CRDatesArray)
     } else if (e.key === 'crOwn') {
       setCrDropdown('Own');
       setCrSeries([
         {
-          data: [],
+          data: CROwnCountsArray,
         },
       ]);
+      setCrDateArray(CROwnDatesArray)
     } else if (e.key === 'crOthers') {
       setCrDropdown('Others');
       setCrSeries([
         {
-          data: [],
+          data: CROtherCountsArray,
         },
       ]);
+      setCrDateArray(CROtherDatesArray)
     }
   };
 
@@ -320,7 +388,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={CRDatesArray} id={2}/>
+          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={crDateArray} id={2}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

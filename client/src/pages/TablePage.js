@@ -27,6 +27,13 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
+const CommentTableCell = withStyles((theme) => ({
+  body: {
+    fontFamily: 'Comfortaa',
+    fontSize: '12px'
+  },
+}))(TableCell);
+
 const useStyles = makeStyles({
   root: {
     margin: '50px',
@@ -149,9 +156,9 @@ const TablePage = () => {
                       <StyledTableCell align="right">
                         {row.wordcount}
                       </StyledTableCell>
-                      <StyledTableCell size="medium" align="left">
+                      <CommentTableCell size="medium" align="left">
                         {row.comment}
-                      </StyledTableCell>
+                      </CommentTableCell>
                       <StyledTableCell align="right">
                         {row.ownership}
                       </StyledTableCell>
