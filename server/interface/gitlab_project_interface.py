@@ -167,7 +167,7 @@ class GitLabProject:
             diffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
                 CodeDiff(diff)
             )
-            diff.update(diffStats)
+            diff["line_counts"] = diffStats
 
     def get_commit_score_data(self, commit: Commit) -> dict:
         # TODO: CHANGE
@@ -185,7 +185,7 @@ class GitLabProject:
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
         for diff in codeDiff:
             for key in scoreData.keys():
-                scoreData[key] += diff[key]
+                scoreData[key] += diff["line_counts"][key]
 
         return scoreData
 
@@ -219,7 +219,7 @@ class GitLabProject:
         )
         for diff in codeDiff:
             for key in scoreData["mergeRequestScoreData"].keys():
-                scoreData["mergeRequestScoreData"][key] += diff[key]
+                scoreData["mergeRequestScoreData"][key] += diff["line_counts"][key]
 
         for commit in mergeRequest.related_commits_list:
             commitScoreData = self.get_commit_score_data(commit)
