@@ -639,7 +639,16 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const tagRender = (item) => {
     if (analyzing && selectedRepo === item.id) {
       return (
-        <Tag icon={<SyncOutlined spin />} color="processing" key={'cached'}>
+        <Tag
+          style={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          icon={<SyncOutlined spin />}
+          color="processing"
+          key={'cached'}
+        >
           Analyzing
         </Tag>
       );
@@ -651,7 +660,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       );
     } else {
       return (
-        <Tag color={'green'} key={'cached'}>
+        <Tag
+          style={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          color={'green'}
+          key={'cached'}
+        >
           Cached: {Math.round(item['lastSynced'])} min ago
         </Tag>
       );
