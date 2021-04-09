@@ -224,7 +224,7 @@ class GitLabAnalyzerManager:
         return isValid, errorCode, commitList
 
     def get_project_master_direct_commits_by_user(
-            self, hashedToken: str, projectID: int
+        self, hashedToken: str, projectID: int
     ) -> Tuple[bool, str, dict]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID

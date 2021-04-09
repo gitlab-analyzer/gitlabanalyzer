@@ -137,7 +137,11 @@ def get_commits_for_users(projectID):
 
 @app.route('/projects/<int:projectID>/commit/master/direct/user/all', methods=['get'])
 def get_unique_master_commits_for_users(projectID):
-    isSuccess, errorCode, value = gitlab_manager.get_project_master_direct_commits_by_user(
+    (
+        isSuccess,
+        errorCode,
+        value,
+    ) = gitlab_manager.get_project_master_direct_commits_by_user(
         request.cookies.get("id", ""), projectID
     )
 

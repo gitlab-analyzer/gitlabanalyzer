@@ -5,10 +5,12 @@ from typing import Union, Optional, List
 
 
 class Commit(DataObject):
-    def __init__(self,
-                 commit: gitlab = None,
-                 codeDiffID: int = -1,
-                 direct_to_master: bool = False) -> None:
+    def __init__(
+        self,
+        commit: gitlab = None,
+        codeDiffID: int = -1,
+        direct_to_master: bool = False,
+    ) -> None:
         self.__id: int = commit.id
         self.__short_id: int = commit.short_id
         self.__title: str = commit.title

@@ -18,7 +18,9 @@ TOTAL_SYNC_STAGES: int = 7
 
 
 class GitLabProject:
-    def __init__(self, projectID: int, projectName: str = "", default_branch: str = "master"):
+    def __init__(
+        self, projectID: int, projectName: str = "", default_branch: str = "master"
+    ):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -286,8 +288,13 @@ class GitLabProject:
     def get_direct_commit_list_on_master_all_user(self) -> dict:
         commitList: dict = {}
         for commit in self.__commitsManager.get_commit_list():
-            if self.__not_merge_commit(commit) and self.__check_if_direct_on_master(commit):
-                if self.__not_merge_commit(commit) and commitList.get(commit.author_name, None) is None:
+            if self.__not_merge_commit(commit) and self.__check_if_direct_on_master(
+                commit
+            ):
+                if (
+                    self.__not_merge_commit(commit)
+                    and commitList.get(commit.author_name, None) is None
+                ):
                     commitList[commit.author_name] = []
                 commitList[commit.author_name].append(commit.to_dict())
         return commitList
