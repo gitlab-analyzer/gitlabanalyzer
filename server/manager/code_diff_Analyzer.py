@@ -206,7 +206,7 @@ class CodeDiffAnalyzer:
                 info = self.check_block_code_cases(
                     line[1:temp], line[temp + 2 :], info, line, python
                 )
-            if line[temp - 2 : temp] == "*/":
+            if line[temp : temp + 2] == "*/":
                 info = self.check_block_code_cases(
                     line[temp + 2 :], line[1:temp], info, line, python
                 )

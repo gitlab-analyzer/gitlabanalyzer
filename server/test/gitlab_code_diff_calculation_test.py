@@ -10,7 +10,7 @@ This however cause us not to be able to create a code diff object to pass to the
 The solution for now is to modify the code so it take 2 strings instead of 2 fields of 1 code diff object when testing
 '''
 
-class TestCodeDiff(unittest.TestCase):
+class code_diff_Analyzer(unittest.TestCase):
     
     #Test with not python file
     def test_add_a_blank_line(self):
@@ -37,6 +37,20 @@ class TestCodeDiff(unittest.TestCase):
             "blanks_added": 0,
             "blanks_deleted": 1,
             "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    def test_spacing_change(self):
+        diff = "- \n"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 1,
             "syntax_changes": 0,
         }
         self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
