@@ -28,7 +28,7 @@ class GitLabAnalyzer:
 
         for project in projectList:
             gitlabProjectInterface = GitLabProject(
-                project.id, project.name_with_namespace
+                project.id, project.name_with_namespace, project.default_branch
             )
             self.__project_list.append(gitlabProjectInterface)
 
