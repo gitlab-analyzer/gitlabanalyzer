@@ -394,7 +394,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} xlabel={dateArray}/>
+          <StackedBarGraph series={combinedSeries} xlabel={commitDatesArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
@@ -410,7 +410,7 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={CRDatesArray} id={2}/>
+          <BarGraph series={crSeries} colors={'#f8f0d4'} stroke={'#CBB97B'} xlabel={crDateArray} id={2}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
