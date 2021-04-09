@@ -30,7 +30,12 @@ class CodeDiffAnalyzer:
         }
 
         oldLine = " "
-        python = self.check_for_code_type(codeDiffObject)
+        fileType = self.check_for_code_type(codeDiffObject)
+
+        python = False
+        if fileType == "py":
+            python = True
+
         block_code = False
 
         diffCode = codeDiffObject
@@ -75,6 +80,7 @@ class CodeDiffAnalyzer:
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line("-", line, oldLine, info, python)
                 if info != temp:
+                    info = self.modify_info_value("lines", info, oldLine[0], -1)
                     continue
                 # -------------------------------------------------
 
@@ -86,14 +92,13 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> bool:
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> str:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
         found = re.search('\.(.+?)$', fileName)
         if found is not None:
-            if found.group(1) == 'py':
-                return True
-        return False
+            return found.group(1)
+        return None
 
     def add_normal_line_of_code(self, info, line, python) -> dict:
 
@@ -234,7 +239,6 @@ class CodeDiffAnalyzer:
 
     def add_to_existing_line(self, signal, line, oldLine, info, python) -> dict:
         if oldLine != " " and line[1:] != oldLine[1:]:
-            info = self.modify_info_value("lines", info, oldLine[0], -1)
             tempLine = signal + oldLine[1:].replace(line[1:], '')
             info = self.add_normal_line_of_code(info, tempLine, python)
         return info
