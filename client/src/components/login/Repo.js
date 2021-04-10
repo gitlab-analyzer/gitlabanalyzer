@@ -236,7 +236,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           weightedScore: 0,
         };
         // Loop through object item
-        console.log(mrList[user]);
         for (let author of mrList[user]) {
           let tempCommits = {};
           for (let commit of author.commit_list) {
@@ -244,6 +243,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               authorName: commit.author_name,
               codeDiffId: commit.code_diff_id,
               comittedDate: new Date(commit.committed_date),
+              codeDiffDetail: { ...commit.code_diff_detail },
               committerName: commit.committer_name,
               id: commit.id,
               relatedMr: author.id,
@@ -258,6 +258,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 commit.line_counts.lines_deleted * 0.1,
               // Flag to ignore this commit
               ignore: false,
+              omitScore: 0,
               // Frontend defined variables End --------------------------
             };
           }
@@ -265,6 +266,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             author: author.author,
             codeDiffId: author.code_diff_id,
             comments: author.comments,
+            codeDiffDetail: { ...author.code_diff_detail },
             commitList: tempCommits,
             createdDate: new Date(author.created_date),
             description: author.description,
@@ -284,11 +286,12 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               author.line_counts.lines_deleted * 0.1,
             // Flag to ignore this MR
             ignore: false,
+            omitScore: 0,
             // Frontend defined variables End --------------------------
           };
         }
       }
-      // console.log(tempMR);
+      console.log('tempMR', tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
