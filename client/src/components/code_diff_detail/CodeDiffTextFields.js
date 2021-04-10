@@ -1,9 +1,8 @@
 import React from 'react';
 import './CodeDiffDetail.css';
 
-const CodeDiffTextField = (lineCounts, multiplier, finalScore) => {
+const CodeDiffTextField = ({ lineCounts, multiplier, finalScore }) => {
   const headers = ['', 'Line counts', 'Multiplier', 'Score'];
-
   const getTableHeader = (headers) => {
     return headers.map((headers, index) => {
       return <th key={index}>{headers}</th>;

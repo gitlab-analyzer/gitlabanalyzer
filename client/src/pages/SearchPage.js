@@ -114,6 +114,7 @@ const SearchPage = ({ insideApp }) => {
           />
         </div>
         <Repo
+          insideApp={insideApp}
           setAnalyzing={setAnalyzing}
           loading={loading}
           analyzing={analyzing}

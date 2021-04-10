@@ -26,7 +26,7 @@ import axios from 'axios';
 
 /// TODO: Hardcoded because of some weird bug
 let selectRepo = 2;
-const Repo = ({ analyzing, setAnalyzing, loading }) => {
+const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   const {
     setMembersList,
     setUsersList,
@@ -577,17 +577,19 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             alignItems: 'center',
           }}
         >
-          <Popover content="Global Configuration">
-            <SettingOutlined
-              height="100px"
-              style={{
-                marginRight: 10,
-                fontSize: 20,
-                color: '#1890ff',
-              }}
-              onClick={handleDrawer}
-            />
-          </Popover>
+          {insideApp ? null : (
+            <Popover content="Global Configuration">
+              <SettingOutlined
+                height="100px"
+                style={{
+                  marginRight: 10,
+                  fontSize: 20,
+                  color: '#1890ff',
+                }}
+                onClick={handleDrawer}
+              />
+            </Popover>
+          )}
           <Button
             onClick={selectAll}
             style={{ marginRight: '10px' }}
@@ -829,14 +831,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             <List.Item
               actions={[
                 tagRender(item),
-                // <Button
-                //   onClick={(e) => {
-                //     handleAnalyze(e, item.id);
-                //   }}
-                //   key="analyze"
-                // >
-                //   Analyze
-                // </Button>,
                 renderAnalyze(item),
                 goRender(item),
                 <Checkbox
