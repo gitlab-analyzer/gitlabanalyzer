@@ -3,39 +3,52 @@ import { Select } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import './UserMap.css';
 
-const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
 
 const MultipleSelect = (props) => {
+    const {
+        usersList,
+        mapList, setMapList,
+    } = useAuth();
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [newSelectedItems, setNewSelectedItems] = useState();
-    const {
-        mapList, setMapList
-    } = useAuth();
-    // const dict = {};
+    // const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
+    const userList = usersList;
+    const dict = [];
+    const [dictionary, setDictionary] = useState({});
     
     function handleChange(value) {
         setSelectedItems(value)
-        console.log(value);
+        // console.log(value);
         // console.log(this.props.currentMember);
         // console.log(props.currentMember)
 
-        var dict = {};
-        dict[props.currentMember] = value
+        // var dict = {};
+        // dict[props.currentMember] = value
+        dict.push({
+            key: props.currentMember,
+            value: value
+        })
         console.log(dict);
-        setMapList({...dict})
-        // setMapList(dict)
 
-        // console.log(mapList)
+        setDictionary({...dictionary, dict})
+        // console.log(dictionary)
+        
+
+        /*
+        setMapList({...dict})
+        setMapList(dict)
+
+        console.log(mapList)
+        */
     }
 
-    
     //const { selectedItems } = this.state;
     const filteredOptions = userList.filter(o => !selectedItems.includes(o));
         return (
           <Select
             mode="multiple"
-            placeholder="Inserted are removed"
+            placeholder="None"
             value={selectedItems}
             onChange={handleChange}
             size="large"
@@ -50,30 +63,15 @@ const MultipleSelect = (props) => {
           </Select>
         );
       
-
-      /*
-    return (
-        <Select 
-            size="large"
-            className="multipleSelection"
-            mode="multiple"
-            allowClear
-            placeholder="None"
-            onChange={handleChange}
-        >
-            {userList}
-        </Select>
-    )
-    */
+    
 }
 
 
 
 
 
-/*
-const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
 
+/*
 class MultipleSelect extends React.Component {
     
   state = {
