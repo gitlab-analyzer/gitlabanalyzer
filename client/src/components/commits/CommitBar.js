@@ -35,9 +35,12 @@ const CommitBar = () => {
     setCodeDrawer,
     codeDiffDetail,
     setCodeDiffDetail,
+    dataList,
   } = useAuth();
 
-  useEffect(() => {}, [selectUser, codeDiffId, codeDiffDetail]);
+  useEffect(() => {
+    console.log('datalist', dataList);
+  }, [selectUser, codeDiffId, codeDiffDetail, dataList]);
 
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
   // if not, Mar 14 2020 @ 8:30pm
@@ -153,7 +156,14 @@ const CommitBar = () => {
     for (let [key, value] of Object.entries(selectedUserMRList['mr'])) {
       const commitsData = [];
       let commitTotalScore = 0;
+      let skip = false;
       for (let [k, v] of Object.entries(value['commitList'])) {
+        if (
+          v['comittedDate'] < new Date(dataList[0]) ||
+          v['comittedDate'] > new Date(dataList[1])
+        ) {
+          continue;
+        }
         commitsData.push({
           key: v['shortId'],
           commitid: (
@@ -171,6 +181,13 @@ const CommitBar = () => {
         commitTotalScore += v['score'];
       }
       commitsOnlyData.push(...commitsData);
+
+      if (
+        value['mergedDate'] < new Date(dataList[0]) ||
+        value['mergedDate'] > new Date(dataList[1])
+      ) {
+        continue;
+      }
       mergeRequestData.push({
         key: value['id'],
         mrid: (

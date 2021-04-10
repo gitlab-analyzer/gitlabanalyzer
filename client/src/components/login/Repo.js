@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import {
+  Popconfirm,
   Tag,
   Button,
   Checkbox,
@@ -56,6 +57,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
   const [selectVal, setSelectVal] = useState(false);
+  const [analyzeConfirm, setAnalyzeConfirm] = useState(false);
   const history = useHistory();
   const [form] = Form.useForm();
 
@@ -731,6 +733,43 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
+  const popMsg = () => {
+    return (
+      <>
+        <div>This Repository has already been synced before,</div>
+        <div>Are you sure you want to re-sync it again?</div>
+      </>
+    );
+  };
+
+  const renderAnalyze = (item) => {
+    if (item['lastSynced'] === null) {
+      return (
+        <Button
+          onClick={(e) => {
+            handleAnalyze(e, item.id);
+          }}
+          key="analyze"
+        >
+          Analyze
+        </Button>
+      );
+    } else {
+      return (
+        <Popconfirm
+          title={popMsg}
+          onConfirm={(e) => {
+            handleAnalyze(e, item.id);
+          }}
+        >
+          <Button ghost type="primary" key="analyze">
+            Analyze
+          </Button>
+        </Popconfirm>
+      );
+    }
+  };
+
   const selectAll = () => {
     if (!selectVal) {
       setSelectVal(true);
@@ -790,14 +829,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             <List.Item
               actions={[
                 tagRender(item),
-                <Button
-                  onClick={(e) => {
-                    handleAnalyze(e, item.id);
-                  }}
-                  key="analyze"
-                >
-                  Analyze
-                </Button>,
+                // <Button
+                //   onClick={(e) => {
+                //     handleAnalyze(e, item.id);
+                //   }}
+                //   key="analyze"
+                // >
+                //   Analyze
+                // </Button>,
+                renderAnalyze(item),
                 goRender(item),
                 <Checkbox
                   checked={item.batched}
