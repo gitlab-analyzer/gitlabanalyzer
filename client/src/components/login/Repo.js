@@ -126,7 +126,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
    * Upon syncing, it will update syncDone state to reveal redirect button.
    */
   const syncProject = async () => {
-    const syncStatus = await axios.get(
+    const syncStatus = await axios.post(
       `http://localhost:5678/projects/${selectRepo}/sync/state`,
       {
         withCredentials: true,
@@ -571,16 +571,16 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
-            alignItems:"center"
+            alignItems: 'center',
           }}
         >
           <Popover content="Global Configuration">
             <SettingOutlined
               height="100px"
               style={{
-                marginRight:10,
-                fontSize:20,
-                color:"#1890ff"
+                marginRight: 10,
+                fontSize: 20,
+                color: '#1890ff',
               }}
               onClick={handleDrawer}
             />
@@ -825,11 +825,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             </div>
           }
         >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleSubmit}
-          >
+          <Form form={form} layout="vertical" onFinish={handleSubmit}>
             <InitialConfig />
           </Form>
         </Drawer>
