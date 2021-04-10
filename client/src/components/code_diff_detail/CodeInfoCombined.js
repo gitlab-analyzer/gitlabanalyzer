@@ -1,6 +1,5 @@
 import React from 'react';
 import CodeDiffTable from './CodeDiffTable';
-import CodeDiffFiles from './CodeDiffFiles';
 
 const CodeInfoCombined = () => {
   return (
@@ -11,7 +10,10 @@ const CodeInfoCombined = () => {
       }}
     >
       <CodeDiffTable />
-      <CodeDiffFiles />
+      <CodeDiffTable
+        singleFile={true}
+        style={{ marginRight: '50px', marginLeft: 'auto' }}
+      />
     </div>
   );
 };

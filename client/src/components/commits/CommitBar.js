@@ -36,6 +36,7 @@ const CommitBar = () => {
     codeDiffDetail,
     setCodeDiffDetail,
     dataList,
+    setSpecificFile,
   } = useAuth();
 
   useEffect(() => {
@@ -379,6 +380,7 @@ const CommitBar = () => {
           type="primary"
           onClick={() => {
             handleSetCodeDiff(text, record);
+            setSpecificFile(null);
           }}
           icon={<CodeFilled />}
         >

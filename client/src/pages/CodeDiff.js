@@ -81,7 +81,7 @@ const CodeDiff = ({ codeId }) => {
   const [breakdown, setBreakdown] = useState({});
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  const { setCodeDiffId, codeDiffId, codeDiffDetail } = useAuth();
+  const { setCodeDiffId, codeDiffId, codeDiffDetail, specificFile } = useAuth();
 
   useEffect(() => {
     const getData = async () => {
@@ -232,12 +232,14 @@ const CodeDiff = ({ codeId }) => {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Tag color="#2db7f5">Overall Score Breakdown</Tag>
-        <Tag
-          style={{ marginLeft: '35em', marginRight: 'auto' }}
-          color="#108ee9"
-        >
-          File Score Breakdowndwjakdjwad
-        </Tag>
+        {specificFile ? (
+          <Tag
+            style={{ marginLeft: '35em', marginRight: 'auto' }}
+            color="#108ee9"
+          >
+            {specificFile['new_path']}
+          </Tag>
+        ) : null}
       </div>
     );
   };
