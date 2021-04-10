@@ -3,7 +3,7 @@ import { Select } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import './UserMap.css';
 
-
+// this version
 const MultipleSelect = (props) => {
     const {
         usersList,
@@ -12,35 +12,34 @@ const MultipleSelect = (props) => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [newSelectedItems, setNewSelectedItems] = useState();
-    // const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
-    const userList = usersList;
+    const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
+    // const userList = usersList;
     const dict = [];
     const [dictionary, setDictionary] = useState({});
     
     function handleChange(value) {
         setSelectedItems(value)
-        // console.log(value);
-        // console.log(this.props.currentMember);
         // console.log(props.currentMember)
 
         // var dict = {};
-        // dict[props.currentMember] = value
-        dict.push({
-            key: props.currentMember,
-            value: value
-        })
+        dict[props.currentMember] = value
         console.log(dict);
 
         setDictionary({...dictionary, dict})
         // console.log(dictionary)
         
+        setMapList(oldList => ({...oldList, dict}));
+        // setMapList({...mapList, dict})
+        // setMapList(dict)
+        // console.log(mapList)
+    }
 
-        /*
-        setMapList({...dict})
-        setMapList(dict)
+    useEffect( () => {
+        console.log("helloooooooo")
+    }, [mapList])
 
-        console.log(mapList)
-        */
+    function addToDictionary() {
+        
     }
 
     //const { selectedItems } = this.state;
@@ -85,6 +84,7 @@ class MultipleSelect extends React.Component {
   };
 
   render() {
+    const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
     const { selectedItems } = this.state;
     const filteredOptions = userList.filter(o => !selectedItems.includes(o));
     return (
@@ -107,6 +107,8 @@ class MultipleSelect extends React.Component {
   }
 }
 */
+
+
 
 export default MultipleSelect
 

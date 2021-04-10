@@ -6,11 +6,6 @@ import MultipleSelect from '../components/MultipleSelect'
 import MembersList from './MembersList'
 
 const { Option } = Select;
-const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters'];
-
-const memberList = ["MemberA", "MemberB", "MemberC", "MemberD", "MemberHello"];
-
-// const [selectedOpt, setSelectedOpt] = useState([]);
 
 /*
 const userList = [];
@@ -18,8 +13,7 @@ for (let i = 0; i < 10; i++) {
   userList.push(<Option key={'User'+i}>{'User'+i}</Option>);
 }
 */
-
-const userList = ["User1", "User2", "User3", "User4", "User5", "User6"]
+// const userList = ["User1", "User2", "User3", "User4", "User5", "User6"]
 
 /*
 class UserMap extends React.Component {    
@@ -126,8 +120,6 @@ const MemberList = ({ list }) => (
 
 // this version!!!
 const UserMap = () => {
-    const selected = []
-
     const {
         membersList,
         setMembersList,
@@ -137,14 +129,16 @@ const UserMap = () => {
         setMergeRequestList,
         commitsList,
         setCommitsList,
-        selectMembersList, setSelectMembersList
+        selectMembersList, setSelectMembersList,
+        mapList, setMapList,
     } = useAuth();
 
-    const userListLength = usersList.length;
-    // const userList = usersList;
-    // const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
+    const userListLength = membersList.length;
+    const userList = usersList;
     // const memberList = membersList;
+    const memberList = ["MemberA", "MemberB", "MemberC", "MemberD", "MemberE"];
 
+    // const memberList = membersList.map((item) => item);
     
     // const MemberList = ({ list }) => (
     //     <ul className="allList">
@@ -160,8 +154,6 @@ const UserMap = () => {
     //                 allowClear
     //                 placeholder="None"
     //                 onChange={handleChange}
-    //                 // onSelect={handleSelect}
-    //                 // onDeselect={handleDeselect}
     //             >
     //                 {userList}
     //             </Select>
@@ -169,7 +161,6 @@ const UserMap = () => {
     //       ))}
     //     </ul>
     // );
-    
     
     const MemberList = ({ list }) => (
         <ul className="allList">
@@ -186,12 +177,37 @@ const UserMap = () => {
 
     const proceedMapping = () => {
         // call backend api
-        // console.log('selected')
-      console.log(membersList.length)
-      console.log(membersList)
-      console.log(usersList.length)
-      console.log(usersList)
+        
+        // console.log(membersList.length)
+        // console.log(membersList)
+        // console.log(usersList.length)
+        // console.log(usersList)
+        
+        console.log(mapList)
     }
+
+    /*
+    return(
+        <div className="MapContainer">
+            <div className="intro">
+                <b1>* { userListLength } committers are not identified as members. Please complete the mapping.</b1>
+                <div className="columnNames">
+                    <p>Member</p>
+                    <p>Committer</p>
+                </div>
+            </div>
+
+            <div className="lists">
+                <MembersList name="memberList" list={memberList} />
+            </div>
+
+            <div className="button">
+                <Button type="primary" onClick={proceedMapping}>Proceed</Button>
+            </div>
+            
+        </div>
+    );
+    */
 
     return(
         <div className="MapContainer">
@@ -204,7 +220,7 @@ const UserMap = () => {
             </div>
 
             <div className="lists">
-                <MemberList name="memberList" list={membersList} />
+                <MembersList list={memberList} />
             </div>
 
             <div className="button">
@@ -216,75 +232,6 @@ const UserMap = () => {
 }
 
 
-
-
-
-
-
-
-
-
-/*
-const UserMap = () => {
-    const {
-        membersList,
-        setMembersList,
-        usersList,
-        setUsersList,
-        mergeRequestList,
-        setMergeRequestList,
-        commitsList,
-        setCommitsList,
-        selectMembersList, setSelectMembersList
-    } = useAuth();
-
-      
-      const MemberList = ({ list }) => (
-        <ul className="allList">
-          {list.map(item => (
-            <li className="innerList" key={item}>
-                <div className="listForMembers">
-                    {item}
-                </div>
-                <MultipleSelect key={item} id={item} currentMember={item}/>
-            </li>
-          ))}
-        </ul>
-    );
-      
-      const proceedMapping = () => {
-          // call backend api
-          // console.log('selected')
-        console.log(mergeRequestList.length)
-        console.log(mergeRequestList)
-        console.log(commitsList.length)
-        console.log(commitsList)
-
-      }
-
-      return(
-        <div className="MapContainer">
-            <div className="intro">
-                <b1>* { userList.length } committers are not identified as members. Please complete the mapping.</b1>
-                <div className="columnNames">
-                    <p>Member</p>
-                    <p>Committer</p>
-                </div>
-            </div>
-
-            <div className="lists">
-                <MemberList name="memberList" list={memberList} />
-            </div>
-
-            <div className="button">
-                <Button type="primary" onClick={proceedMapping}>Proceed</Button>
-            </div>
-            
-        </div>
-        );
-    
-}
-*/
 
 export default UserMap
 
