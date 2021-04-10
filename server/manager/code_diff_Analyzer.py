@@ -169,12 +169,16 @@ class CodeDiffAnalyzer:
 
         if temp != 0:
             if len(line) > len(oldLine):
-                info = self.modify_info_based_on_middle_char_cases(line,line[temp],python,info)
+                info = self.modify_info_based_on_middle_char_cases(
+                    line, line[temp], python, info
+                )
             else:
-                info = self.modify_info_based_on_middle_char_cases(oldLine,oldLine[temp],python,info)
+                info = self.modify_info_based_on_middle_char_cases(
+                    oldLine, oldLine[temp], python, info
+                )
         return info
 
-    def modify_info_based_on_middle_char_cases(self,line,char,python,info) -> dict:
+    def modify_info_based_on_middle_char_cases(self, line, char, python, info) -> dict:
         syntaxStr = {"{", "}", ";", "(", ")"}
         if char == " ":
             info["spacing_changes"] = info["spacing_changes"] + 1
@@ -185,7 +189,7 @@ class CodeDiffAnalyzer:
             if python is False:
                 info["syntax_changes"] = info["syntax_changes"] + 1
         else:
-            info = self.modify_info_value("lines",info,line[0])
+            info = self.modify_info_value("lines", info, line[0])
         return info
 
     def define_block_of_code(
