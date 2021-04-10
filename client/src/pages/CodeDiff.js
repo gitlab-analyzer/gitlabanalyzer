@@ -10,15 +10,18 @@ import CodeInfoCombined from '../components/code_diff_detail/CodeInfoCombined';
 
 const Appdiff = ({ diffText, code }) => {
   const [collapse, setCollapse] = useState(false);
-
   const { setSpecificFile } = useAuth();
   const files = parseDiff(diffText);
+
+  useEffect(() => {
+    console.log('codey', code);
+  }, [collapse]);
 
   const handleCollapse = (e) => {
     setCollapse(!collapse);
   };
 
-  useEffect(() => {}, [collapse]);
+  const scoreCalculator = () => {};
 
   const renderFile = ({
     oldPath,
