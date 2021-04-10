@@ -192,7 +192,7 @@ def get_notes_for_all_users(projectID):
 @app.route('/projects/<int:projectID>/map', methods=['post'])
 def map_users(projectID):
     isSuccess, errorCode = gitlab_manager.map_users(
-        request.cookies.get("id", ""), projectID, get_request(request, "user_map")
+        request.cookies.get("id", ""), projectID, get_request(request, "user_mapping")
     )
 
     return jsonify({"response": isSuccess, 'cause': errorCode})
