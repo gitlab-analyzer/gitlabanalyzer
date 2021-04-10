@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import IndividualScore from './floatbar/IndividualScore';
 import { useAuth } from '../context/AuthContext';
@@ -13,7 +13,7 @@ function SelectUser() {
     selectUser, 
     setSelectUser,
   } = useAuth();
-  React.useEffect(()=>{},[])
+  useEffect(()=>{},[])
 
   return (
     <div 
