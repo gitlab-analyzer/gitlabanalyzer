@@ -258,6 +258,9 @@ class GitLabProject:
             )
             for commit in mr.related_commits_list:
                 commit.line_counts = self.get_commit_score_data(commit)
+                commit.code_diff_detail = self.__get_code_diff_detail(
+                    self.__codeDiffManager.get_code_diff(commit.code_diff_id)
+                )
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __get_members_and_user_names(self) -> list:
