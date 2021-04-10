@@ -10,6 +10,7 @@ class Commit(DataObject):
         self.__short_id: int = commit.short_id
         self.__title: str = commit.title
         self.__author_name: str = commit.author_name
+        self.__org_author: str = commit.author_name
         self.__web_url: str = commit.web_url
         self.__committer_name: str = commit.committer_name
         self.__code_diff_id: int = codeDiffID
@@ -57,6 +58,10 @@ class Commit(DataObject):
     @property
     def line_counts(self) -> dict:
         return self.__line_counts
+
+    @property
+    def org_author(self) -> str:
+        return self.__org_author
 
     # Setter
     @code_diff_id.setter
