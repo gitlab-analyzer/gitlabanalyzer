@@ -22,6 +22,7 @@ class StackedBarGraph extends React.Component {
             dashArray: 0,      
         },
           chart: {
+            fontFamily: 'Comfortaa',
             id: 1,
             toolbar: {
               show: false
