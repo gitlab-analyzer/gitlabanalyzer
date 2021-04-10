@@ -1,15 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { parseDiff, Diff, Hunk, Decoration } from 'react-diff-view';
-import { PageHeader, Descriptions, Checkbox, List, Button } from 'antd';
-import { CloudDownloadOutlined, FileExcelOutlined } from '@ant-design/icons';
+import {
+  Popover,
+  notification,
+  Tag,
+  PageHeader,
+  Descriptions,
+  Checkbox,
+  List,
+  Button,
+} from 'antd';
+import { FileExcelOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import 'react-diff-view/style/index.css';
 import './styles.css';
 import { useAuth } from '../context/AuthContext';
+import CodeDiffTextFields from '../components/code_diff_detail/CodeDiffTextFields';
 
-const Appdiff = ({ diffText }) => {
+const Appdiff = ({ diffText, code }) => {
   const [collapse, setCollapse] = useState(false);
   const files = parseDiff(diffText);
+
+  const multiplier = {
+    lines_added: 1,
+    lines_deleted: 0.1,
+    comments_added: 0,
+    comments_deleted: 0,
+    blanks_added: 0,
+    blanks_deleted: 0,
+    spacing_changes: 0,
+    syntax_changes: 0.1,
+  };
+  const scoreDetail = {
+    lines_added: code['lines_added'],
+    lines_deleted: code['lines_deleted'],
+    comments_added: code['comments_added'],
+    comments_deleted: code['comments_deleted'],
+    blanks_added: code['blanks_added'],
+    blanks_deleted: code['blanks_deleted'],
+    spaced_changes: code['spacing_changes'],
+    syntax_changes: code['syntax_changes'],
+  };
 
   const handleCollapse = (e) => {
     setCollapse(!collapse);
@@ -39,13 +70,18 @@ const Appdiff = ({ diffText }) => {
         </div>
       </header>
       {collapse ? null : (
-        <Diff viewType="unified" diffType={type} hunks={hunks}>
+        <Diff
+          className="ubuntu"
+          viewType="unified"
+          diffType={type}
+          hunks={hunks}
+        >
           {(hunks) =>
             hunks.map((hunk) => [
               <Decoration key={'deco-' + hunk.content}>
                 <div className="hunk-header">{hunk.content}</div>
               </Decoration>,
-              <Hunk key={hunk.content} hunk={hunk} />,
+              <Hunk className="ubuntu" key={hunk.content} hunk={hunk} />,
             ])
           }
         </Diff>
@@ -59,21 +95,22 @@ const CodeDiff = ({ codeId }) => {
   const [codeDiff, setCodeDiff] = useState([]);
   const [codeFiles, setCodeFiles] = useState([]);
   const [showFiles, setShowFiles] = useState(false);
+  const [breakdown, setBreakdown] = useState({});
 
-  const { setCodeDiffId, codeDiffId } = useAuth();
+  const { setCodeDiffId, codeDiffId, codeDiffDetail } = useAuth();
 
   useEffect(() => {
     const getData = async () => {
       const codeRes = await axios.get(
         `http://localhost:5678/projects/2/code_diff/${codeDiffId}`
       );
-      console.log('data', codeRes.data.code_diff_list);
       await setCodeDiff(codeRes.data.code_diff_list);
       const files = codeDiff.map((code) => code.new_path);
       setCodeFiles(files);
     };
     getData();
-  }, [codeDiffId]);
+    console.log('codeDiffDetail', codeDiffDetail);
+  }, [codeDiffId, codeDiffDetail]);
 
   const data = [
     'README.md',
@@ -84,31 +121,80 @@ const CodeDiff = ({ codeId }) => {
     'test/side-by-side.js',
   ];
 
+  const content = (
+    <div>
+      <p>Content</p>
+      <p>Content</p>
+    </div>
+  );
+
+  const tagRenderer = () => {
+    if (codeDiffDetail['type'] === 'mr') {
+      return <Tag color="green">Merge Request</Tag>;
+    } else {
+      return <Tag color="blue">Commit</Tag>;
+    }
+  };
+
+  const ignoreRenderer = () => {
+    if (codeDiffDetail['ignore']) {
+      return <Tag color="red">Ignored</Tag>;
+    } else {
+      return <Tag color="cyan">Included</Tag>;
+    }
+  };
+
+  const openNotification = () => {
+    const args = {
+      message: 'Notification Title',
+      description:
+        'I will never close automatically. This is a purposely very very long description that has many many characters and words.',
+      duration: 0,
+    };
+    notification.open(args);
+  };
+
   const codeDiffHeader = () => {
     return (
       <div className="site-page-header-ghost-wrapper">
         <PageHeader
           ghost={false}
-          onBack={() => window.history.back()}
-          title="Title"
-          subTitle="This is a subtitle"
+          title={codeDiffDetail['branch']}
+          tags={ignoreRenderer()}
+          subTitle={tagRenderer()}
           extra={[
-            <Button key="1" type="primary">
+            <Button
+              onClick={() => {
+                setShowFiles(!showFiles);
+              }}
+              key="1"
+              type="primary"
+            >
               File Changes
             </Button>,
+            <Popover
+              style={{ zIndex: '500', position: 'relative' }}
+              content={content}
+              title="Title"
+            >
+              <Button key="2" type="primary">
+                Score Breakdown
+              </Button>
+            </Popover>,
           ]}
         >
-          <Descriptions size="small" column={3}>
-            <Descriptions.Item label="Created by">Lili Qu</Descriptions.Item>
-            <Descriptions.Item label="Association">
-              <a>421421</a>
+          <Descriptions size="small" column={2}>
+            <Descriptions.Item label="Created by">
+              {codeDiffDetail['createdBy']}
             </Descriptions.Item>
-            <Descriptions.Item label="Created On">2017-01-10</Descriptions.Item>
-            <Descriptions.Item label="Last Changed">
-              2017-10-10
+            <Descriptions.Item label="ID">
+              {codeDiffDetail['mrid']}
             </Descriptions.Item>
-            <Descriptions.Item label="Remarks">
-              Gonghu Road, Xihu District, Hangzhou, Zhejiang, China
+            <Descriptions.Item label="Created On">
+              {codeDiffDetail['createdAt']}
+            </Descriptions.Item>
+            <Descriptions.Item label="Merged Date">
+              {codeDiffDetail['mergedDate']}
             </Descriptions.Item>
           </Descriptions>
         </PageHeader>
@@ -174,13 +260,10 @@ const CodeDiff = ({ codeId }) => {
 
   const mapDiff = codeDiff.map((code) => (
     <>
-      {console.log(code)}
-      <Appdiff diffText={headerGenerator(code)} />
+      <Appdiff diffText={headerGenerator(code)} code={code} />
       {/* <Appdiff diffText={header + code.diff} /> */}
     </>
   ));
-
-  // const wow = hey + codeDiff[0].diff;
 
   return (
     <div
@@ -193,7 +276,6 @@ const CodeDiff = ({ codeId }) => {
     >
       {/* <Appdiff diffText={wow} /> */}
       {codeDiffHeader()}
-      {fileChanges()}
       {showFiles ? fileList() : null}
       {codeDiff ? mapDiff : null}
     </div>

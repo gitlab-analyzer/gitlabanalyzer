@@ -7,3 +7,8 @@
 .open-sans {
   font-family: 'Open Sans', sans-serif;
 }
+
+.minheight {
+  height: 100vh;
+  min-height: 300px;
+}

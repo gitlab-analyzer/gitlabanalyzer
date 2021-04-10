@@ -33,11 +33,11 @@ const CommitBar = () => {
     setCodeDiffId,
     codeDrawer,
     setCodeDrawer,
+    codeDiffDetail,
+    setCodeDiffDetail,
   } = useAuth();
 
-  useEffect(() => {
-    console.log('codeDiff: ', codeDiffId);
-  }, [selectUser, codeDiffId]);
+  useEffect(() => {}, [selectUser, codeDiffId, codeDiffDetail]);
 
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
   // if not, Mar 14 2020 @ 8:30pm
@@ -148,6 +148,7 @@ const CommitBar = () => {
   let commitsOnlyData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
 
+  console.log('Here is What', selectedUserMRList);
   if (selectedUserMRList !== 0) {
     for (let [key, value] of Object.entries(selectedUserMRList['mr'])) {
       const commitsData = [];
@@ -177,10 +178,16 @@ const CommitBar = () => {
             {value['id']}
           </a>
         ),
+        author: value['author'].name,
+        ignore: value['ignore'],
+        lineCounts: {
+          ...value['lineCounts'],
+        },
         branch: value['title'],
         mrdiffscore: value['score'].toFixed(1),
         commitssum: commitTotalScore.toFixed(1),
         createdAt: dateFormatter(value['createdDate']),
+        mergedDate: dateFormatter(value['mergedDate']),
         commitsList: commitsData,
         codeDiffId: value['codeDiffId'],
       });
@@ -259,9 +266,15 @@ const CommitBar = () => {
       title: 'Action',
       dataIndex: 'operation',
       key: 'operation',
-      render: () => (
+      render: (text, record) => (
         <Space size="middle">
-          <Button icon={<CodeOutlined />} onClick={showDrawer}>
+          <Button
+            icon={<CodeOutlined />}
+            onClick={() => {
+              handleSetCodeDiff(text, record);
+            }}
+          >
+            {console.log('record:', record)}
             Diffs
           </Button>
         </Space>
@@ -311,7 +324,8 @@ const CommitBar = () => {
    * Column title for the Merge Requests
    */
   const columns = [
-    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 110 },
+    { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 90 },
+    { title: 'Author', dataIndex: 'author', key: 'author', width: 110 },
     { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', width: 160 },
     { title: 'Title', dataIndex: 'branch', key: 'branch', width: 300 },
     {
@@ -357,11 +371,28 @@ const CommitBar = () => {
     },
   ];
 
+  const generateCodeDiffDetail = (record) => {
+    const codeDetails = {
+      createdBy: record['author'],
+      branch: record['branch'],
+      createdAt: record['createdAt'],
+      mergedDate: record['mergedDate'],
+      ignored: record['ignore'],
+      mrid: record['mrid'],
+      lineCounts: {
+        ...record['lineCounts'],
+      },
+      type: 'mr',
+    };
+    return codeDetails;
+  };
+
   const handleSetCodeDiff = (text, record) => {
     console.log('handle code diff');
     console.log(text);
     console.log(record);
     setCodeDiffId(record['codeDiffId']);
+    setCodeDiffDetail(generateCodeDiffDetail(record));
     setCodeDrawer(true);
   };
 
@@ -428,15 +459,6 @@ const CommitBar = () => {
       ignoreMR(record['key'], record['key'], selected);
     },
     onSelectAll: (selected, selectedRows, changeRows) => {},
-  };
-
-  // Controllers for the Code Diff Drawer
-  const showDrawer = () => {
-    setDrawerVisible(true);
-  };
-
-  const onClose = () => {
-    setDrawerVisible(false);
   };
 
   // Event handler for merge/commit Buttons

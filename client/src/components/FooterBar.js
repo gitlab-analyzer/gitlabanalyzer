@@ -9,6 +9,7 @@ const FooterBar = () => {
     <Footer
       style={{
         marginTop: '50px',
+        marginBottom: '0px',
         textAlign: 'right',
         backgroundColor: '#ecf2f5',
       }}

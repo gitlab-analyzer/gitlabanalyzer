@@ -8,11 +8,13 @@ const CommitPage = () => {
   const [top, setTop] = useState();
   return (
     <>
-      <Header />
-      <div>
-        <CommitBar />
+      <div className="minheight">
+        <Header />
+        <div>
+          <CommitBar />
+        </div>
+        <FooterBar />
       </div>
-      <FooterBar />
     </>
   );
 };

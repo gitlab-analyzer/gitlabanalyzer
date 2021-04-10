@@ -27,6 +27,7 @@ const AuthProvider = (props) => {
   const [codeDiffId, setCodeDiffId] = useState('');
   const [codeDrawer, setCodeDrawer] = useState(false);
   const [finishedConfig, setFinishedConfig] = useState(false);
+  const [codeDiffDetail, setCodeDiffDetail] = useState({});
 
   const authContextValue = {
     user,
@@ -77,6 +78,8 @@ const AuthProvider = (props) => {
     setCodeDrawer,
     finishedConfig,
     setFinishedConfig,
+    codeDiffDetail,
+    setCodeDiffDetail,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
