@@ -204,7 +204,7 @@ const UserMap = () => {
             </div>
 
             <div className="lists">
-                <MemberList name="memberList" list={memberList} />
+                <MemberList name="memberList" list={membersList} />
             </div>
 
             <div className="button">
