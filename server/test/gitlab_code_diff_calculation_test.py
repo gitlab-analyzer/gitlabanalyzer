@@ -10,8 +10,18 @@ This however cause us not to be able to create a code diff object to pass to the
 The solution for now is to modify the code so it take 2 strings instead of 2 fields of 1 code diff object when testing
 '''
 
-class code_diff_Analyzer(unittest.TestCase):
+class CodeDiffAnalyzer(unittest.TestCase):
     
+    #Test recognize file type
+    def test_not_py(self):
+        self.assertTrue(self.check_for_code_type(nameNotPy) != "py")
+
+    def test_empty_file_type(self):
+        self.assertTrue(self.check_for_code_type("") != "py")
+
+    def test_py(self):
+        self.assertTrue(self.check_for_code_type(namePy) == "py")
+
     #Test with not python file
     def test_add_a_blank_line(self):
         diff = "+\n"
@@ -153,6 +163,20 @@ class code_diff_Analyzer(unittest.TestCase):
         }
         self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
 
+    def test_block_of_lines_comment_with_syntax(self):
+        diff = "+   /*    \n+ This is a block of comment \n+ Still block comment\n- delete a comment in a block\n+add more comment\n+add final comment */ if(1+2==3)"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 0,
+            "comments_added": 3,
+            "comments_deleted": 1,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
     def test_syntax_change(self):
         diff = "- {"
         info = {
@@ -178,6 +202,34 @@ class code_diff_Analyzer(unittest.TestCase):
             "blanks_deleted": 0,
             "spacing_changes": 0,
             "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    def test_spacing_change_in_modify_line_middle(self):
+        diff = "- if ((1+2 ==3)\n+ if ((1+2==3)"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 1,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    def test_char_change_in_modify_line_middle(self):
+        diff = "- if ((1+2==21)\n+ if ((1+20==21)"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
         }
         self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
 
@@ -222,6 +274,91 @@ class code_diff_Analyzer(unittest.TestCase):
             "syntax_changes": 0,
         }
         self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    def test_add_a_normal_comment(self):
+        diff = "+  //  This is a comment\n"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,nameNotPy), info)
+
+    #Test with python file
+    def test_python_comment(self):
+        diff = "+  # This is a comment\n"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,namePy), info)
+
+    def test_python_block_of_comment(self):
+        diff = "+  ''' This is a comment ''' \n+print(1+1)"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 0,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,namePy), info)
+
+    def test_python_block_of_lines_comment(self):
+        diff = "+  ''' \n+ A new comment\n+Add one more\n-   delete one\n+final line ''' print(\"done\")\n"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 0,
+            "comments_added": 2,
+            "comments_deleted": 1,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,namePy), info)
+
+    def test_python_add_syntax(self):
+        diff = "- if i == 2 do:\n+ if i == 2 do"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,namePy), info)
+
+    def test_python_add_syntax_middle(self):
+        diff = "- if i == 2 do\n+ if i == 2: do"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,namePy), info)
 
 if __name__ == '__main__':
     unittest.main()

@@ -49,6 +49,10 @@ class CodeDiffAnalyzer:
                     info = self.define_block_of_code(
                         block_code, "/*", line, info, python
                     )
+                    if "/*" in line and "*/" in line:
+                        block_code = False
+                    elif "/*" in line:
+                        block_code = True
                     if "*/" in line and info == temp:
                         info = self.add_block_of_comments(
                             line, python, info, block_code
@@ -58,9 +62,11 @@ class CodeDiffAnalyzer:
                     info = self.define_block_of_code(
                         block_code, "'''", line, info, python
                     )
-                if info != temp:
-                    if "/*" in line or "'''" in line:
+                    if line.count("'''") == 2:
+                        block_code = False
+                    elif "'''" in line:
                         block_code = not block_code
+                if info != temp:
                     continue
                 # -------------------------------------------------
 
@@ -78,7 +84,7 @@ class CodeDiffAnalyzer:
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line("+", line, oldLine, info, python)
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                    info = self.add_to_existing_line("-", line, oldLine, info, python)
+                    info = self.add_to_existing_line("-", oldLine, line, info, python)
                 if info != temp:
                     info = self.modify_info_value("lines", info, oldLine[0], -1)
                     continue
@@ -162,17 +168,24 @@ class CodeDiffAnalyzer:
                 break
 
         if temp != 0:
-            if oldLine[temp] == " " or line[temp] == " ":
-                info["spacing_changes"] = info["spacing_changes"] + 1
-            elif oldLine[temp] == ":" or line[temp] == ":":
-                if python:
-                    info["syntax_changes"] = info["syntax_changes"] + 1
-            elif oldLine[temp] in syntaxStr or line[temp] in syntaxStr:
-                if python is False:
-                    info["syntax_changes"] = info["syntax_changes"] + 1
+            if len(line) > len(oldLine):
+                info = self.modify_info_based_on_middle_char_cases(line,line[temp],python,info)
             else:
-                info = self.modify_info_value("lines", info, line[0])
+                info = self.modify_info_based_on_middle_char_cases(oldLine,oldLine[temp],python,info)
+        return info
 
+    def modify_info_based_on_middle_char_cases(self,line,char,python,info) -> dict:
+        syntaxStr = {"{", "}", ";", "(", ")"}
+        if char == " ":
+            info["spacing_changes"] = info["spacing_changes"] + 1
+        elif char == ":":
+            if python:
+                info["syntax_changes"] = info["syntax_changes"] + 1
+        elif char in syntaxStr:
+            if python is False:
+                info["syntax_changes"] = info["syntax_changes"] + 1
+        else:
+            info = self.modify_info_value("lines",info,line[0])
         return info
 
     def define_block_of_code(
@@ -238,7 +251,7 @@ class CodeDiffAnalyzer:
 
     def add_to_existing_line(self, signal, line, oldLine, info, python) -> dict:
         if oldLine != " " and line[1:] != oldLine[1:]:
-            tempLine = signal + oldLine[1:].replace(line[1:], '')
+            tempLine = signal + line[1:].replace(oldLine[1:], '')
             info = self.add_normal_line_of_code(info, tempLine, python)
         return info
 
