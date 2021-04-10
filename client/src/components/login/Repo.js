@@ -228,7 +228,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     // Generate a temporary merge request list to parse and set to Global Context API
     const generateTempMR = () => {
       const mrList = mergeRequestRes.data['merge_request_users_list'];
-      console.log('mrList', mrList);
       const tempMR = {};
       // Loop through object key
       for (let user in mrList) {
@@ -237,7 +236,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           weightedScore: 0,
         };
         // Loop through object item
-        console.log(mrList[user]);
         for (let author of mrList[user]) {
           let tempCommits = {};
           for (let commit of author.commit_list) {
