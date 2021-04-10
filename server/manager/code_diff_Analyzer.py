@@ -35,7 +35,7 @@ class CodeDiffAnalyzer:
         python = False
         if fileType == "py":
             python = True
-    
+
         block_code = False
 
         diffCode = codeDiffObject
