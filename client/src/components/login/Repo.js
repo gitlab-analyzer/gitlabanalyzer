@@ -304,9 +304,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               webUrl: commit.web_url,
               // Frontend defined variables Start --------------------------
               // Initial score calculation
-              // score:
-              //   commit.line_counts.lines_added +
-              //   commit.line_counts.lines_deleted * 0.1,
               score: mrScore(commit.code_diff_detail, false),
               // Flag to ignore this commit
               ignore: false,
@@ -460,7 +457,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       await syncProjectId();
       // This is a recursive call that checks the status of syncing process every 5000 milliseconds
       await syncProject();
-      // await updateRepos();
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
