@@ -84,18 +84,6 @@ const SearchPage = ({ insideApp }) => {
           </Spin>
         </div>
       );
-    } else if (analyzing && user) {
-      return (
-        <div style={{ margin: '50px' }}>
-          <Spin tip="Analyzing...">
-            <Alert
-              message="Analyzing selected repository"
-              description="Please wait while we analyze your selected repository."
-              type="info"
-            />
-          </Spin>
-        </div>
-      );
     } else {
       return null;
     }

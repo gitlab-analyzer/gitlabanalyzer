@@ -275,7 +275,6 @@ const CommitBar = () => {
       key: 'state',
       render: () => (
         <span>
-          <Badge status="success" color={'blue'} />
           <Tag color="blue">Included</Tag>
         </span>
       ),
@@ -367,7 +366,6 @@ const CommitBar = () => {
 
       render: () => (
         <span>
-          <Badge status="success" />
           <Tag color="green">Merged</Tag>
         </span>
       ),

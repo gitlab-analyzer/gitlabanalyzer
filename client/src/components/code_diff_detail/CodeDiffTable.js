@@ -23,7 +23,6 @@ const CodeDiffTable = ({ singleFile }) => {
       if (!specificFile) {
         return null;
       }
-      console.log('spe', specificFile);
       return {
         lines_added: specificFile['line_counts']['lines_added'],
         lines_deleted: specificFile['line_counts']['lines_deleted'],
@@ -46,7 +45,6 @@ const CodeDiffTable = ({ singleFile }) => {
 
   useEffect(() => {
     if (!singleFile || lineCounts) {
-      console.log('ok', codeDiffDetail);
       const constructDataSource = () => {
         let index = 0;
         let data = [];
@@ -56,7 +54,6 @@ const CodeDiffTable = ({ singleFile }) => {
           object.key = lineName;
           object.name = capitalize(lineName.replace('_', ' '));
           object.lc = lineCounts[lineName];
-          console.log('um', object.lc);
           object.multiplier = 'x ' + multiplier[index].toString();
           object.score = (lineCounts[lineName] * multiplier[index]).toFixed(1);
           score += lineCounts[lineName] * multiplier[index];
@@ -72,19 +69,20 @@ const CodeDiffTable = ({ singleFile }) => {
 
   const columns = [
     {
-      title: '',
+      title: 'Changes made',
       dataIndex: 'name',
       key: 'name',
     },
     {
       title: <Text strong>Line counts</Text>,
       dataIndex: 'lc',
-      align: 'center',
+      align: 'right',
       key: 'age',
     },
     {
       title: 'Multiplier',
       dataIndex: 'multiplier',
+      align: 'right',
       key: 'multiplier',
     },
     {

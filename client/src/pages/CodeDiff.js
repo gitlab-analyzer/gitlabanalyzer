@@ -25,9 +25,7 @@ const Appdiff = ({ diffText, code }) => {
     'syntax_changes',
   ];
 
-  useEffect(() => {
-    console.log('codey', code);
-  }, [collapse]);
+  useEffect(() => {}, [collapse]);
 
   const handleCollapse = (e) => {
     setCollapse(!collapse);
@@ -64,7 +62,6 @@ const Appdiff = ({ diffText, code }) => {
           </Button>
           <Button
             onClick={() => {
-              console.log('code', code);
               setSpecificFile(code);
             }}
             type="primary"
@@ -260,7 +257,7 @@ const CodeDiff = ({ codeId }) => {
         {specificFile ? (
           <Tag
             style={{ marginLeft: '35em', marginRight: 'auto' }}
-            color="#108ee9"
+            color="purple"
           >
             {specificFile['new_path']}
           </Tag>
