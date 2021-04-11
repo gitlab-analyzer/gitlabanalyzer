@@ -7,28 +7,23 @@
   justify-content: space-between;
   margin: 0 30px 0 30px;
   height: auto;
-  /*background-color: red;*/
 }
-.scoreType {
+
+.FileTypeScoreContainer {
   display: flex;
-}
-.scoreNumber {
-}
-.fileContainer {
-  display: flex;
+  margin: 0 30px 0 30px;
+  height: auto;
   flex-direction: column;
   justify-content: space-between;
-  /*background-color: lightblue;*/
 }
-.fileType {
-  padding-left: 10px;
-}
-.fileScoreNumber {
-  float: right;
-  /*background-color: wheat;*/
+
+.fileType,
+.scoreType {
+  font-weight: bolder;
 }
 
 .filesInner {
   display: flex;
   justify-content: space-between;
+  padding-left: 20px;
 }

@@ -1,15 +1,13 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Card, Collapse, Divider } from 'antd';
+import { Collapse, Divider } from 'antd';
 import './DisplayScore.css';
 
 const { Panel } = Collapse;
 
 const DisplayScore = () => {
   const {
-    membersList,
     mergeRequestList,
-    setMergeRequestList,
     selectUser,
   } = useAuth();
 
@@ -28,10 +26,8 @@ const DisplayScore = () => {
           commitvalue['codeDiffDetail']
         )) {
           if (filevalue['file_type'] in fileType) {
-            // fileType[filevalue['file_type']] += 1; /////////////////       filevalue['score'] /////////////////
             fileType[filevalue['file_type']] += filevalue['score'];
           } else {
-            // fileType[filevalue['file_type']] = 1; /////////////////       filevalue['score'] /////////////////
             fileType[filevalue['file_type']] = filevalue['score'];
           }
         }
@@ -70,22 +66,21 @@ const DisplayScore = () => {
             <div className="scoreNumber">{mrScore}</div>
           </div>
           <Divider />
-          <div className="TotalScoreContainer">
-            {/* <div style={{ display: 'flex' }}> */}
-            <div className="scoreType">Each File Type :</div>
+          <div className="FileTypeScoreContainer">
+            <div className="fileType">Each File Type :</div>
             <div className="fileContainer">
               {Object.keys(fileScore).map(function (item) {
-                {
-                  /*{Object.keys(fileScore).forEach(item => {*/
-                }
                 return (
                   <div className="filesInner">
-                    <div>{item}</div>
-                    <div>{fileScore[item]}</div>
+                    <div className="fileName">
+                      {item}
+                    </div>
+                    <div className="fileScore">
+                      {fileScore[item].toFixed(1)}
+                    </div>
                   </div>
                 );
               })}
-              {/* </div> */}
             </div>
           </div>
         </Panel>
