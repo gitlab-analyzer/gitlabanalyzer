@@ -72,7 +72,6 @@ const ConfigPage = () => {
         let score = 0;
         let lines = file['line_counts'];
         let ext = file['file_type'];
-        // console.log()
         index = 0;
         for (let type in lines) {
           score += lines[type] * multiplier[index];
@@ -86,7 +85,6 @@ const ConfigPage = () => {
         } else {
           totalFileType[ext] = score;
         }
-        // console.log('totalFileType', totalFileType);
         totalScore += score;
       }
       return totalScore;
@@ -94,7 +92,6 @@ const ConfigPage = () => {
   };
 
   const recalculateScores = () => {
-    // const mrList = mergeRequestRes.data['merge_request_users_list'];
     if (currentConfig.language) {
       for (let [langkey, langvalue] of Object.entries(currentConfig.language)) {
         lang[langvalue.extname] = langvalue.extpoint;

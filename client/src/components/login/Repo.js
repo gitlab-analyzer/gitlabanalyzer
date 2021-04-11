@@ -236,7 +236,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         let score = 0;
         let lines = file['line_counts'];
         let ext = file['file_type'];
-        // console.log()
         index = 0;
         for (let type in lines) {
           score += lines[type] * multiplier[index];
@@ -250,7 +249,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         } else {
           totalFileType[ext] = score;
         }
-        // console.log('totalFileType', totalFileType);
         totalScore += score;
       }
       return totalScore;
@@ -267,7 +265,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         withCredentials: true,
       }
     );
-    // console.log(mergeRequestRes.data['merge_request_users_list']);
 
     fetchErrorChecker(mergeRequestRes.data['response'], 'merge request');
 
@@ -367,8 +364,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             );
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['ignore'] = false;
           }
-
-          console.log('tempy', tempMR[user].mr[author.id]);
         }
       }
       console.log('tempMR', tempMR);
@@ -445,7 +440,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           tempComments[user]['weightedScore'] = 0;
         }
       }
-      // console.log(tempComments);
       return tempComments;
     };
     setCommentsList(generateTempComments());
