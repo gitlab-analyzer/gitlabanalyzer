@@ -32,9 +32,17 @@ class CodeDiffAnalyzer:
         oldLine = " "
         fileType = self.check_for_code_type(codeDiffObject)
 
+        HTMLfileExtension = {"xml", "htm", "html"}
         python = False
+        HTML = False
+        SQL = False
         if fileType == "py":
             python = True
+        elif fileType == "sql":
+            SQL = True
+        elif fileType in HTMLfileExtension:
+            HTML = True
+            
 
         block_code = False
 
