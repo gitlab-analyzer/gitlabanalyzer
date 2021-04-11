@@ -17,6 +17,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { SavedConfigs } from '../../pages/ConfigPage';
 import {
   CloseCircleOutlined,
+  ConsoleSqlOutlined,
   SettingOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
@@ -214,15 +215,49 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCommitsList([...tempCommits]);
   };
 
-  const calcScore = (codediffdetail) => {
+  const multiplier = [0, 0, 0, 0, 1, 0.2, 0, 0.2];
+  const fields = [
+    'lines_added',
+    'lines_deleted',
+    'comments_added',
+    'comments_deleted',
+    'blanks_added',
+    'blanks_deleted',
+    'spacing_changes',
+    'syntax_changes',
+  ];
+
+  const mrScore = (codediffdetail) => {
+    let index;
+    let totalScore = 0;
+    // maybe move file type
+    let totalFileType = {};
     for (let file of codediffdetail) {
-      console.log(file['line_counts']);
+      let score = 0;
+      let lines = file['line_counts'];
+      let ext = file['file_type'];
+      // console.log()
+      index = 0;
+      for (let type in lines) {
+        score += lines[type] * multiplier[index];
+        index++;
+      }
+      if (ext in lang) {
+        score *= lang[ext];
+      }
+      if (ext in totalFileType) {
+        totalFileType[ext] += score;
+      } else {
+        totalFileType[ext] = score;
+      }
+      console.log('totalFileType', totalFileType);
+      totalScore += score;
     }
-    let score = 0;
-    return 2;
+    return totalScore;
   };
 
   let lang = {};
+
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
@@ -274,7 +309,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               // score:
               //   commit.line_counts.lines_added +
               //   commit.line_counts.lines_deleted * 0.1,
-              score: calcScore(commit.code_diff_detail),
+              score: mrScore(commit.code_diff_detail),
               // Flag to ignore this commit
               ignore: false,
               omitScore: 0,
@@ -303,7 +338,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             // score:
             //   author.line_counts.lines_added +
             //   author.line_counts.lines_deleted * 0.1,
-            score: calcScore(author.code_diff_detail),
+            score: mrScore(author.code_diff_detail),
             // Flag to ignore this MR
             ignore: false,
             omitScore: 0,
