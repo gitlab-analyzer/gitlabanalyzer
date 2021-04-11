@@ -21,8 +21,8 @@ const UserMap = () => {
         mapList, setMapList,
     } = useAuth();
 
-    // const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"]; // fake data
-    const memberList = membersList.map((item) => item.name);    // real data
+    const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"]; // fake data
+    // const memberList = membersList.map((item) => item.name);    // real data
     const userList = usersList.filter(val => !memberList.includes(val));
     
     const MemberList = ({ list }) => (
@@ -38,29 +38,36 @@ const UserMap = () => {
         </ul>
     );
     
+    let mapDictionary = JSON.stringify(mapList);
+    
     const proceedMapping = () => {   
         console.log(mapList)
         console.log(selectedRepo)
+
+        console.log(mapDictionary)
     }
     
     /*
+    
     const proceedMapping = async () => {
         await mapUsers();
     }
 
     // POST call to backend 
     const mapUsers = async () => {
-        axios.defaults.withCredentials = true;
-
-        const projectRes = await axios.post(
-        `http://localhost:5678/projects/${selectedRepo}/map`,
-        {
-            withCredentials: true,
-        }
-        );
+        const userMappingRes = await axios.post(
+            `http://localhost:5678/projects/${selectedRepo}/map`,
+            mapDictionary,
+            {
+                withCredentials: true,
+            }
+            );
     
     };
     */
+
+    // TODO: Call commitsList mergeRequestList again since the data have been changed.
+    
 
     return(
         <div className="MapContainer">
