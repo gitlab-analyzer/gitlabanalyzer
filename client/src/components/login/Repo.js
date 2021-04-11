@@ -316,13 +316,16 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               omitScore: 0,
               // Frontend defined variables End --------------------------
             };
+            // Calculates and embeds a score for each file within a commit
             for (let [k1, v1] of Object.entries(
               tempCommits[commit.short_id]['codeDiffDetail']
             )) {
               tempCommits[commit.short_id]['codeDiffDetail'][k1][
                 'score'
               ] = mrScore(v1, true);
-              console.log('codei', k1, v1);
+              tempCommits[commit.short_id]['codeDiffDetail'][k1][
+                'ignore'
+              ] = false;
             }
           }
           tempMR[user].mr[author.id] = {
@@ -353,6 +356,19 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             omitScore: 0,
             // Frontend defined variables End --------------------------
           };
+
+          // Experimental
+          for (let [k1, v1] of Object.entries(
+            tempMR[user].mr[author.id]['codeDiffDetail']
+          )) {
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['score'] = mrScore(
+              v1,
+              true
+            );
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['ignore'] = false;
+          }
+
+          console.log('tempy', tempMR[user].mr[author.id]);
         }
       }
       console.log('tempMR', tempMR);
