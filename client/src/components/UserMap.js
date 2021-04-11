@@ -133,9 +133,10 @@ const UserMap = () => {
         mapList, setMapList,
     } = useAuth();
 
-    const userListLength = usersList.length;
-    const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"]; // fake data
-    // const memberList = membersList.map((item) => item.name);    // real data
+    // const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"]; // fake data
+    const memberList = membersList.map((item) => item.name);    // real data
+    const userList = usersList.filter(val => !memberList.includes(val));
+    // const userListLength = userList.length;
     
     // const MemberList = ({ list }) => (
     //     <ul className="allList">
@@ -203,7 +204,7 @@ const UserMap = () => {
     return(
         <div className="MapContainer">
             <div className="intro">
-                <b1>* { userListLength } committers are not identified as members. Please complete the mapping.</b1>
+                <b1>* { userList.length } committers are not identified as members. Please complete the mapping.</b1>
                 <div className="columnNames">
                     <p>Member</p>
                     <p>Committer</p>
