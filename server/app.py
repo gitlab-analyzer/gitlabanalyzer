@@ -248,7 +248,9 @@ def add_or_get_config():
         )
     else:
         isSuccess, errorCode = gitlab_manager.update_config(
-            request.cookies.get("id", ""), get_request(request, "name"), get_request(request, "value")
+            request.cookies.get("id", ""),
+            get_request(request, "name"),
+            get_request(request, "value"),
         )
 
     return jsonify({"response": isSuccess, 'cause': errorCode, "configs": value})
