@@ -27,13 +27,7 @@ class GitLabAnalyzer:
         projectList = self.__gitlab.get_project_list()
 
         for project in projectList:
-<<<<<<< HEAD
-            gitlabProjectInterface = GitLabProject(project)
-=======
-            gitlabProjectInterface = GitLabProject(
-                project.id, project.name_with_namespace, project.default_branch
-            )
->>>>>>> master
+            gitlabProjectInterface = GitLabProject(project, project.default_branch)
             self.__project_list.append(gitlabProjectInterface)
 
     def get_gitlab_project_by_id(self, projectID: int) -> Optional[GitLabProject]:
