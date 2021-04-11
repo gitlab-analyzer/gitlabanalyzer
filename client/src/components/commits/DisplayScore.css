@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+.TotalScoreContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 30px 0 30px;
+  height: auto;
+}
+
+.FileTypeScoreContainer {
+  display: flex;
+  margin: 0 30px 0 30px;
+  height: auto;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fileType,
+.scoreType {
+  font-weight: bolder;
+}
+
+.filesInner {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 20px;
+}

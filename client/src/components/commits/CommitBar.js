@@ -15,7 +15,7 @@ import {
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
 import { heatMapDataMR, heatMapDataCommit } from './HeatMapData';
 import { useAuth } from '../../context/AuthContext';
-import { ResponsiveCalendar } from '@nivo/calendar';
+import DisplayScore from './DisplayScore';
 
 /**
  * Used boilerplate from https://ant.design/components/table/
@@ -469,35 +469,7 @@ const CommitBar = () => {
    */
   return (
     <>
-      <div style={{ height: '300px' }}>
-        <ResponsiveCalendar
-          data={heatDataToShow()}
-          from="2021-03-01"
-          to="2021-07-12"
-          emptyColor="#eeeeee"
-          colors={['#c2f0e7', '#97e3d5', '#61cdbb', '#22bfa5']}
-          minValue={0}
-          maxValue={20}
-          margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-          yearSpacing={40}
-          monthSpacing={5}
-          monthBorderColor="#ffffff"
-          dayBorderWidth={2}
-          dayBorderColor="#ffffff"
-          legends={[
-            {
-              anchor: 'bottom-right',
-              direction: 'row',
-              translateY: 36,
-              itemCount: 4,
-              itemWidth: 42,
-              itemHeight: 36,
-              itemsSpacing: 14,
-              itemDirection: 'right-to-left',
-            },
-          ]}
-        />
-      </div>
+      <DisplayScore />
       {mergeCommitButtonBar()}
       {showCommits ? (
         <Table
