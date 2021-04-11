@@ -13,6 +13,18 @@ const Appdiff = ({ diffText, code }) => {
   const { setSpecificFile } = useAuth();
   const files = parseDiff(diffText);
 
+  const multiplier = [1, 0.1, 0, 0, 0, 0, 0, 0.1];
+  const fields = [
+    'lines_added',
+    'lines_deleted',
+    'comments_added',
+    'comments_deleted',
+    'blanks_added',
+    'blanks_deleted',
+    'spacing_changes',
+    'syntax_changes',
+  ];
+
   useEffect(() => {
     console.log('codey', code);
   }, [collapse]);
@@ -21,7 +33,16 @@ const Appdiff = ({ diffText, code }) => {
     setCollapse(!collapse);
   };
 
-  const scoreCalculator = () => {};
+  const scoreCalculator = () => {
+    let score = 0;
+    let index = 0;
+    for (let line of fields) {
+      score += code[line] * multiplier[index];
+      index++;
+    }
+
+    return score;
+  };
 
   const renderFile = ({
     oldPath,
@@ -39,7 +60,7 @@ const Appdiff = ({ diffText, code }) => {
         {oldPath === newPath ? oldPath : `${oldPath} -> ${newPath}`}
         <div>
           <Button type="primary" ghost style={{ marginRight: '10px' }}>
-            Score: 800
+            Score: {scoreCalculator().toFixed(2)}
           </Button>
           <Button
             onClick={() => {
