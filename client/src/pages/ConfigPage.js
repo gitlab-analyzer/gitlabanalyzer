@@ -7,9 +7,11 @@ import FooterBar from '../components/FooterBar';
 import {Form, Divider, Row, Col, Button, Input, notification, Select, Switch} from 'antd';
 import { useAuth } from '../context/AuthContext'
 import {SaveOutlined} from "@ant-design/icons";
+import axios from "axios";
 
 const { Option } = Select;
 export var SavedConfigs = {};
+
 const ConfigPage = () => {
   const { 
     dataList,
@@ -21,6 +23,13 @@ const ConfigPage = () => {
   } = useAuth();
   const [form] = Form.useForm();
 
+  const fetchErrorChecker = (res, dataType) => {
+    if (!res) {
+      console.log(`Failed to retrieve ${dataType} list!`);
+      throw new Error('Fetch request failed.');
+    }
+  };
+
   useEffect(() => {
     form.setFieldsValue(
         currentConfig
@@ -28,7 +37,29 @@ const ConfigPage = () => {
   }, []);
 
   const handleSave = (value) => {
-    SavedConfigs[value.configname] = value;
+    const sendSave = async () => {
+      let configDict ={}
+      configDict["name"] = value.configname;
+      configDict["value"] = value;
+      let currConfig = JSON.stringify({
+        configDict
+      });
+      const configStatus = await axios.post(
+        `http://localhost:5678/config`,
+        currConfig,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          crossorigin: true,
+          crossDomain: true,
+        }
+      );
+      fetchErrorChecker(configStatus.data['response'], 'config');
+    }
+    // SavedConfigs[value.configname] = value;
     setCurrentConfig(value);
     setDataList(value.date);
 
@@ -40,6 +71,15 @@ const ConfigPage = () => {
   }
 
   const fillForm = (value) => {
+    const retrieveConfig = async () => {
+      SavedConfigs = await axios.get(
+        `http://localhost:5678/config`,
+        {
+          withCredentials: true,
+        }
+      );
+    }
+
     setCurrentConfig(SavedConfigs[value]);
     setDataList(SavedConfigs[value].date);
     setAnon(SavedConfigs[value].anon)
