@@ -166,6 +166,7 @@ const CommitBar = () => {
         ) {
           continue;
         }
+        console.log('hola', v);
         commitsData.push({
           key: v['shortId'],
           commitid: (
@@ -174,6 +175,8 @@ const CommitBar = () => {
             </a>
           ),
           relatedMr: v['relatedMr'],
+          comitterName: v['committerName'],
+          codeDiffId: v['codeDiffId'],
           date: dateFormatter(v['comittedDate']),
           score: v['score'].toFixed(1),
           message: v['title'],
@@ -419,7 +422,6 @@ const CommitBar = () => {
 
   const handleSetCodeDiff = (text, record) => {
     console.log('handle code diff');
-    console.log(text);
     console.log(record);
     setCodeDiffId(record['codeDiffId']);
     setCodeDiffDetail(generateCodeDiffDetail(record));
