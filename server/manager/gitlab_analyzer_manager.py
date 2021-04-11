@@ -11,7 +11,7 @@ ERROR_CODES = {
     "invalidToken": "Invalid token",
     "invalidProjectID": "Invalid project ID",
     "projectIsSyncing": "Project is syncing",
-    "partialInvalidProjectID": "Some project IDs are invalid or they are already syncing",
+    "partialInvalidProjectID": "Some project IDs are invalid, or they are already syncing",
 }
 
 

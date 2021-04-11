@@ -39,7 +39,12 @@
     - `GET /config/garbage_monitor/check_period`
 - [Change garbage collector check period](#change-garbage-collector-check-period)
     - `POST /config/garbage_monitor/check_period`
-
+- [Map users](#map-users)
+    - `POST /projects/<int:projectID>/map`
+- [Add user config to server](#add-user-config)
+    - `POST /config`
+- [Get all previously added user configs](#get-all-previously-added-user-configs)
+    - `GET /config`
 
 #### Note
 All the API calls will contain two variables, `response` and `cause`
@@ -47,7 +52,11 @@ All the API calls will contain two variables, `response` and `cause`
   - `True` means the request runs successfully
   - `False` means an error has occurred
 - `cause` will indicate the error when response is `false`
-
+  - possible values in the cause
+    - "Invalid token"
+    - "Invalid project ID"
+    - "Project is syncing"
+    - "Some project IDs are invalid, or they are already syncing"
 
 ### Authentication
 #### `POST /auth`
@@ -252,49 +261,54 @@ Example javascript ajax call:
 
 ### Get all commits in that project
 #### `GET /projects/<int:projectID>/commit`
+Note: Those are commits that show up on the master branch
 ```json
 {
     "cause": "",
     "commit_list": [
         {
-            "author_name": "Joseph Test",
+            "author_name": "Administrator",
+            "code_diff_detail": [
+                {
+                    "a_mode": "100644",
+                    "b_mode": "100644",
+                    "deleted_file": false,
+                    "file_type": "py",
+                    "line_counts": {
+                        "blanks_added": 1,
+                        "blanks_deleted": 0,
+                        "comments_added": 0,
+                        "comments_deleted": 0,
+                        "lines_added": 2,
+                        "lines_deleted": 0,
+                        "spacing_changes": 0,
+                        "syntax_changes": 0
+                    },
+                    "new_file": false,
+                    "new_path": "server/test/gitlab_interface_test.py",
+                    "old_path": "server/test/gitlab_interface_test.py",
+                    "renamed_file": false
+                }
+            ],
             "code_diff_id": 0,
-            "committed_date": "2021-03-11T19:36:18.000+00:00",
-            "committer_name": "Joseph Test",
-            "id": "19fa8676d5ff2c641265104b15c5a25e7581e1be",
+            "committed_date": "2021-03-14T01:49:26.000+00:00",
+            "committer_name": "Administrator",
+            "direct_to_master": false,
+            "id": "c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6",
             "line_counts": {
-                "blanks_added": 659,
-                "blanks_deleted": 290,
-                "comments_added": 746,
-                "comments_deleted": 291,
-                "lines_added": 547,
-                "lines_deleted": 531,
-                "spacing_changes": 785,
-                "syntax_changes": 435
+                "blanks_added": 1,
+                "blanks_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "lines_added": 2,
+                "lines_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0
             },
-            "short_id": "19fa8676",
-            "title": "Merge branch '11-implemented-paxo' into 'master'",
-            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/19fa8676d5ff2c641265104b15c5a25e7581e1be"
-        },
-        {
-            "author_name": "Joseph Test",
-            "code_diff_id": 1,
-            "committed_date": "2021-03-11T11:35:26.000-08:00",
-            "committer_name": "Joseph Test",
-            "id": "5329ea4dde4909776fb8be714715c784c782b6d3",
-            "line_counts": {
-                "blanks_added": 272,
-                "blanks_deleted": 431,
-                "comments_added": 369,
-                "comments_deleted": 428,
-                "lines_added": 198,
-                "lines_deleted": 139,
-                "spacing_changes": 138,
-                "syntax_changes": 292
-            },
-            "short_id": "5329ea4d",
-            "title": "Final revision to wrap up",
-            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/5329ea4dde4909776fb8be714715c784c782b6d3"
+            "org_author": "Administrator",
+            "short_id": "c67b9155",
+            "title": "Update gitlab_interface_test.py",
+            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6"
         }
     ],
     "response": true
@@ -304,6 +318,7 @@ Example javascript ajax call:
 
 ### Get all the commits sorted in users
 #### `GET /projects/<int:projectID>/commit/user/all`
+Note: Those are commits that show up on the master branch
 ```json
 {
     "cause": "",
@@ -311,72 +326,51 @@ Example javascript ajax call:
         {
             "commits": [
                 {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 26,
-                    "committed_date": "2021-03-08T20:41:20.000-08:00",
-                    "committer_name": "Joseph Test",
-                    "id": "b397565caac1d60a718e29cf84a08483650d7ca5",
+                    "author_name": "tester 88",
+                    "code_diff_detail": [
+                        {
+                            "a_mode": "100644",
+                            "b_mode": "100644",
+                            "deleted_file": false,
+                            "file_type": "js",
+                            "line_counts": {
+                                "blanks_added": 0,
+                                "blanks_deleted": 2,
+                                "comments_added": 0,
+                                "comments_deleted": 10,
+                                "lines_added": 0,
+                                "lines_deleted": 0,
+                                "spacing_changes": 0,
+                                "syntax_changes": 0
+                            },
+                            "new_file": false,
+                            "new_path": "client/src/components/Graphs.js",
+                            "old_path": "client/src/components/Graphs.js",
+                            "renamed_file": false
+                        }
+                    ],
+                    "code_diff_id": 15,
+                    "committed_date": "2021-03-12T12:15:47.000+00:00",
+                    "committer_name": "tester 88",
+                    "direct_to_master": false,
+                    "id": "9193cfa1f347a1b2175c32d5a734c95406d160f5",
                     "line_counts": {
-                        "blanks_added": 216,
-                        "blanks_deleted": 401,
-                        "comments_added": 378,
-                        "comments_deleted": 191,
-                        "lines_added": 303,
-                        "lines_deleted": 208,
-                        "spacing_changes": 110,
-                        "syntax_changes": 240
+                        "blanks_added": 0,
+                        "blanks_deleted": 2,
+                        "comments_added": 0,
+                        "comments_deleted": 10,
+                        "lines_added": 0,
+                        "lines_deleted": 0,
+                        "spacing_changes": 0,
+                        "syntax_changes": 0
                     },
-                    "short_id": "b397565c",
-                    "title": "Add another view page",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/b397565caac1d60a718e29cf84a08483650d7ca5"
-                },
-                {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 27,
-                    "committed_date": "2021-03-08T20:39:52.000-08:00",
-                    "committer_name": "Joseph Test",
-                    "id": "9b7ce9ddf3beb125ea858b2a1e6317d266e9eea2",
-                    "line_counts": {
-                        "blanks_added": 251,
-                        "blanks_deleted": 381,
-                        "comments_added": 318,
-                        "comments_deleted": 356,
-                        "lines_added": 187,
-                        "lines_deleted": 54,
-                        "spacing_changes": 227,
-                        "syntax_changes": 365
-                    },
-                    "short_id": "9b7ce9dd",
-                    "title": "Add new overview page",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/9b7ce9ddf3beb125ea858b2a1e6317d266e9eea2"
+                    "org_author": "tester 88",
+                    "short_id": "9193cfa1",
+                    "title": "clean up style",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/9193cfa1f347a1b2175c32d5a734c95406d160f5"
                 }
             ],
-            "user_name": "Joseph Test"
-        },
-        {
-            "commits": [
-                {
-                    "author_name": "springbro294",
-                    "code_diff_id": 330,
-                    "committed_date": "2021-02-10T19:03:49.000+07:00",
-                    "committer_name": "springbro294",
-                    "id": "11d22bd9ce5e164572a3c7b1a165e414b35d3a28",
-                    "line_counts": {
-                        "blanks_added": 480,
-                        "blanks_deleted": 284,
-                        "comments_added": 336,
-                        "comments_deleted": 375,
-                        "lines_added": 315,
-                        "lines_deleted": 398,
-                        "spacing_changes": 119,
-                        "syntax_changes": 306
-                    },
-                    "short_id": "11d22bd9",
-                    "title": "Add commit class",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/11d22bd9ce5e164572a3c7b1a165e414b35d3a28"
-                }
-            ],
-            "user_name": "springbro294"
+            "user_name": "tester 88"
         }
     ],
     "response": true
@@ -386,54 +380,75 @@ Example javascript ajax call:
 
 ### Get all the commits committed directly on master
 #### `GET /projects/<int:projectID>/commit/master/direct/user/all`
+Note: exclude merge requests and commits related in that merge requests on the master branch
 ```json
 {
     "cause": "",
     "commit_list": {
-        "Administrator": [
+        "xtran": [
             {
-                "author_name": "Administrator",
-                "code_diff_id": 0,
-                "committed_date": "2021-03-14T01:49:26.000+00:00",
-                "committer_name": "Administrator",
+                "author_name": "xtran",
+                "code_diff_detail": [
+                    {
+                        "a_mode": "100644",
+                        "b_mode": "100644",
+                        "deleted_file": false,
+                        "file_type": "py",
+                        "line_counts": {
+                            "blanks_added": 0,
+                            "blanks_deleted": 2,
+                            "comments_added": 0,
+                            "comments_deleted": 0,
+                            "lines_added": 0,
+                            "lines_deleted": 0,
+                            "spacing_changes": 0,
+                            "syntax_changes": 0
+                        },
+                        "new_file": false,
+                        "new_path": "server/manager/commit_manager.py",
+                        "old_path": "server/manager/commit_manager.py",
+                        "renamed_file": false
+                    },
+                    {
+                        "a_mode": "100644",
+                        "b_mode": "100644",
+                        "deleted_file": false,
+                        "file_type": "py",
+                        "line_counts": {
+                            "blanks_added": 0,
+                            "blanks_deleted": 1,
+                            "comments_added": 0,
+                            "comments_deleted": 0,
+                            "lines_added": 0,
+                            "lines_deleted": 0,
+                            "spacing_changes": 0,
+                            "syntax_changes": 0
+                        },
+                        "new_file": false,
+                        "new_path": "server/model/commit.py",
+                        "old_path": "server/model/commit.py",
+                        "renamed_file": false
+                    }
+                ],
+                "code_diff_id": 112,
+                "committed_date": "2021-03-03T09:58:53.000+07:00",
+                "committer_name": "xtran",
                 "direct_to_master": false,
-                "id": "c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6",
+                "id": "754e3c75dabcdf824272d6012d619e1c9f7fff91",
                 "line_counts": {
                     "blanks_added": 0,
-                    "blanks_deleted": 0,
-                    "comments_added": 2,
+                    "blanks_deleted": 3,
+                    "comments_added": 0,
                     "comments_deleted": 0,
                     "lines_added": 0,
                     "lines_deleted": 0,
                     "spacing_changes": 0,
-                    "syntax_changes": 1
+                    "syntax_changes": 0
                 },
-                "short_id": "c67b9155",
-                "title": "Update gitlab_interface_test.py",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6"
-            }
-        ],
-        "Andrew": [
-            {
-                "author_name": "Andrew",
-                "code_diff_id": 384,
-                "committed_date": "2021-02-05T01:31:20.000-08:00",
-                "committer_name": "Andrew",
-                "direct_to_master": false,
-                "id": "1fd1e554ba6414419d8804bb8a3ff99cd11ec21a",
-                "line_counts": {
-                    "blanks_added": 13,
-                    "blanks_deleted": 6,
-                    "comments_added": 0,
-                    "comments_deleted": 4,
-                    "lines_added": 557,
-                    "lines_deleted": 48,
-                    "spacing_changes": 0,
-                    "syntax_changes": 60
-                },
-                "short_id": "1fd1e554",
-                "title": "added simple nav bar and routing",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/1fd1e554ba6414419d8804bb8a3ff99cd11ec21a"
+                "org_author": "xtran",
+                "short_id": "754e3c75",
+                "title": "format code to follow PEP8 standard",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/754e3c75dabcdf824272d6012d619e1c9f7fff91"
             }
         ]
     },
@@ -450,131 +465,103 @@ Example javascript ajax call:
     "merge_request_list": [
         {
             "author": {
-                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
-                "id": 6,
-                "name": "Joseph Test",
+                "avatar_url": "https://secure.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+                "id": 1,
+                "name": "Administrator",
                 "state": "active",
-                "username": "makemaketest5",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                "username": "root",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root"
             },
-            "code_diff_id": 392,
+            "code_diff_detail": [
+                {
+                    "a_mode": "0",
+                    "b_mode": "100644",
+                    "deleted_file": false,
+                    "file_type": null,
+                    "line_counts": {
+                        "blanks_added": 1,
+                        "blanks_deleted": 0,
+                        "comments_added": 0,
+                        "comments_deleted": 0,
+                        "lines_added": 8,
+                        "lines_deleted": 0,
+                        "spacing_changes": 0,
+                        "syntax_changes": 0
+                    },
+                    "new_file": true,
+                    "new_path": "iteration 2 is so short",
+                    "old_path": "iteration 2 is so short",
+                    "renamed_file": false
+                }
+            ],
+            "code_diff_id": 411,
             "comments": null,
             "commit_list": [
                 {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 395,
-                    "committed_date": "2021-03-11T19:33:59.000Z",
-                    "committer_name": "Joseph Test",
-                    "id": "9e6744896c0126939dfd5b15e9a79e9112eab8d4",
+                    "author_name": "Administrator",
+                    "code_diff_detail": [
+                        {
+                            "a_mode": "0",
+                            "b_mode": "100644",
+                            "deleted_file": false,
+                            "file_type": null,
+                            "line_counts": {
+                                "blanks_added": 1,
+                                "blanks_deleted": 0,
+                                "comments_added": 0,
+                                "comments_deleted": 0,
+                                "lines_added": 8,
+                                "lines_deleted": 0,
+                                "spacing_changes": 0,
+                                "syntax_changes": 0
+                            },
+                            "new_file": true,
+                            "new_path": "iteration 2 is so short",
+                            "old_path": "iteration 2 is so short",
+                            "renamed_file": false
+                        }
+                    ],
+                    "code_diff_id": 412,
+                    "committed_date": "2021-03-14T01:47:27.000Z",
+                    "committer_name": "Administrator",
+                    "direct_to_master": true,
+                    "id": "cc01e56d9a3dfe76de618db844a0aa19ce204f12",
                     "line_counts": {
-                        "blanks_added": 62,
-                        "blanks_deleted": 239,
-                        "comments_added": 281,
-                        "comments_deleted": 148,
-                        "lines_added": 444,
-                        "lines_deleted": 249,
-                        "spacing_changes": 286,
-                        "syntax_changes": 219
+                        "blanks_added": 1,
+                        "blanks_deleted": 0,
+                        "comments_added": 0,
+                        "comments_deleted": 0,
+                        "lines_added": 8,
+                        "lines_deleted": 0,
+                        "spacing_changes": 0,
+                        "syntax_changes": 0
                     },
-                    "short_id": "9e674489",
-                    "title": "Add logic class for basic paxo procotol",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/9e6744896c0126939dfd5b15e9a79e9112eab8d4"
-                },
-                {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 396,
-                    "committed_date": "2021-03-11T19:30:23.000Z",
-                    "committer_name": "Joseph Test",
-                    "id": "64bf8dd279947d857616317a55f0f45a78a27d0e",
-                    "line_counts": {
-                        "blanks_added": 412,
-                        "blanks_deleted": 111,
-                        "comments_added": 284,
-                        "comments_deleted": 280,
-                        "lines_added": 473,
-                        "lines_deleted": 492,
-                        "spacing_changes": 323,
-                        "syntax_changes": 449
-                    },
-                    "short_id": "64bf8dd2",
-                    "title": "Initial commit to create stubs and getters and setters",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/64bf8dd279947d857616317a55f0f45a78a27d0e"
+                    "org_author": "Administrator",
+                    "short_id": "cc01e56d",
+                    "title": "Update iteration 2 is so short",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/cc01e56d9a3dfe76de618db844a0aa19ce204f12"
                 }
             ],
-            "created_date": "2021-03-11T19:36:08.651Z",
-            "description": "Closes #11",
-            "id": 9,
-            "iid": 9,
+            "created_date": "2021-03-14T01:48:10.139Z",
+            "description": "",
+            "id": 15,
+            "iid": 15,
             "line_counts": {
-                "blanks_added": 134,
-                "blanks_deleted": 159,
-                "comments_added": 261,
-                "comments_deleted": 480,
-                "lines_added": 352,
-                "lines_deleted": 146,
-                "spacing_changes": 460,
-                "syntax_changes": 445
+                "blanks_added": 1,
+                "blanks_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "lines_added": 8,
+                "lines_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0
             },
-            "merged_by": 6,
-            "merged_date": "2021-03-11T19:36:19.943Z",
-            "related_issue_iid": 11,
-            "state": "merged",
-            "title": "Resolve \"Implemented paxo\"",
-            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/9"
-        },
-        {
-            "author": {
-                "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
-                "id": 6,
-                "name": "Joseph Test",
-                "state": "active",
-                "username": "makemaketest5",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
-            },
-            "code_diff_id": 397,
-            "comments": null,
-            "commit_list": [
-                {
-                    "author_name": "Joseph Test",
-                    "code_diff_id": 404,
-                    "committed_date": "2021-03-11T19:21:13.000Z",
-                    "committer_name": "Joseph Test",
-                    "id": "2e94747c4e2cad40752e1637af756e8a684c544d",
-                    "line_counts": {
-                        "blanks_added": 575,
-                        "blanks_deleted": 355,
-                        "comments_added": 546,
-                        "comments_deleted": 577,
-                        "lines_added": 511,
-                        "lines_deleted": 589,
-                        "spacing_changes": 875,
-                        "syntax_changes": 500
-                    },
-                    "short_id": "2e94747c",
-                    "title": "Add query notify class and logic",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/2e94747c4e2cad40752e1637af756e8a684c544d"
-                }
-            ],
-            "created_date": "2021-03-11T19:26:26.371Z",
-            "description": "New features added. This is important branch",
-            "id": 8,
-            "iid": 8,
-            "line_counts": {
-                "blanks_added": 482,
-                "blanks_deleted": 167,
-                "comments_added": 281,
-                "comments_deleted": 207,
-                "lines_added": 246,
-                "lines_deleted": 65,
-                "spacing_changes": 475,
-                "syntax_changes": 243
-            },
-            "merged_by": 6,
-            "merged_date": "2021-03-11T19:26:55.527Z",
+            "merged_by": 1,
+            "merged_date": "2021-03-14T01:48:17.064Z",
             "related_issue_iid": null,
             "state": "merged",
-            "title": "Resolve \"Refactor database orm\"",
-            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/8"
+            "title": "Update iteration 2 is so short",
+            "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/15"
         }
     ],
     "response": true
@@ -588,170 +575,106 @@ Example javascript ajax call:
 {
     "cause": "",
     "merge_request_users_list": {
-        "Joseph Test": [
+        "Administrator": [
             {
                 "author": {
-                    "avatar_url": "https://secure.gravatar.com/avatar/59dc0730d84b7f2352369dea4836d077?s=80&d=identicon",
-                    "id": 6,
-                    "name": "Joseph Test",
+                    "avatar_url": "https://secure.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+                    "id": 1,
+                    "name": "Administrator",
                     "state": "active",
-                    "username": "makemaketest5",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/makemaketest5"
+                    "username": "root",
+                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root"
                 },
-                "code_diff_id": 392,
-                "comments": null,
-                "commit_list": [
+                "code_diff_detail": [
                     {
-                        "author_name": "Joseph Test",
-                        "code_diff_id": 393,
-                        "committed_date": "2021-03-11T19:35:26.000Z",
-                        "committer_name": "Joseph Test",
-                        "id": "5329ea4dde4909776fb8be714715c784c782b6d3",
+                        "a_mode": "0",
+                        "b_mode": "100644",
+                        "deleted_file": false,
+                        "file_type": null,
                         "line_counts": {
-                            "blanks_added": 207,
-                            "blanks_deleted": 183,
-                            "comments_added": 291,
-                            "comments_deleted": 345,
-                            "lines_added": 266,
-                            "lines_deleted": 360,
-                            "spacing_changes": 138,
-                            "syntax_changes": 215
+                            "blanks_added": 1,
+                            "blanks_deleted": 0,
+                            "comments_added": 0,
+                            "comments_deleted": 0,
+                            "lines_added": 8,
+                            "lines_deleted": 0,
+                            "spacing_changes": 0,
+                            "syntax_changes": 0
                         },
-                        "short_id": "5329ea4d",
-                        "title": "Final revision to wrap up",
-                        "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/5329ea4dde4909776fb8be714715c784c782b6d3"
+                        "new_file": true,
+                        "new_path": "iteration 2 is so short",
+                        "old_path": "iteration 2 is so short",
+                        "renamed_file": false
                     }
                 ],
-                "created_date": "2021-03-11T19:36:08.651Z",
-                "description": "Closes #11",
-                "id": 9,
-                "iid": 9,
-                "line_counts": {
-                    "blanks_added": 134,
-                    "blanks_deleted": 159,
-                    "comments_added": 261,
-                    "comments_deleted": 480,
-                    "lines_added": 352,
-                    "lines_deleted": 146,
-                    "spacing_changes": 460,
-                    "syntax_changes": 445
-                },
-                "merged_by": 6,
-                "merged_date": "2021-03-11T19:36:19.943Z",
-                "related_issue_iid": 11,
-                "state": "merged",
-                "title": "Resolve \"Implemented paxo\"",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/9"
-            }
-        ],
-        "TestUser H": [
-            {
-                "author": {
-                    "avatar_url": "https://secure.gravatar.com/avatar/23815a774084d4e3e53a95f97cc86359?s=80&d=identicon",
-                    "id": 5,
-                    "name": "TestUser H",
-                    "state": "active",
-                    "username": "TestUserHenry",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/TestUserHenry"
-                },
                 "code_diff_id": 411,
                 "comments": null,
                 "commit_list": [
                     {
-                        "author_name": "TestUser H",
+                        "author_name": "Administrator",
+                        "code_diff_detail": [
+                            {
+                                "a_mode": "0",
+                                "b_mode": "100644",
+                                "deleted_file": false,
+                                "file_type": null,
+                                "line_counts": {
+                                    "blanks_added": 1,
+                                    "blanks_deleted": 0,
+                                    "comments_added": 0,
+                                    "comments_deleted": 0,
+                                    "lines_added": 8,
+                                    "lines_deleted": 0,
+                                    "spacing_changes": 0,
+                                    "syntax_changes": 0
+                                },
+                                "new_file": true,
+                                "new_path": "iteration 2 is so short",
+                                "old_path": "iteration 2 is so short",
+                                "renamed_file": false
+                            }
+                        ],
                         "code_diff_id": 412,
-                        "committed_date": "2021-03-11T04:20:24.000Z",
-                        "committer_name": "TestUser H",
-                        "id": "d95a38e637e7bc8fbe9f97af4bf2114eeed29c1e",
+                        "committed_date": "2021-03-14T01:47:27.000Z",
+                        "committer_name": "Administrator",
+                        "direct_to_master": true,
+                        "id": "cc01e56d9a3dfe76de618db844a0aa19ce204f12",
                         "line_counts": {
-                            "blanks_added": 645,
-                            "blanks_deleted": 611,
-                            "comments_added": 344,
-                            "comments_deleted": 609,
-                            "lines_added": 435,
-                            "lines_deleted": 474,
-                            "spacing_changes": 454,
-                            "syntax_changes": 462
+                            "blanks_added": 1,
+                            "blanks_deleted": 0,
+                            "comments_added": 0,
+                            "comments_deleted": 0,
+                            "lines_added": 8,
+                            "lines_deleted": 0,
+                            "spacing_changes": 0,
+                            "syntax_changes": 0
                         },
-                        "short_id": "d95a38e6",
-                        "title": "Update server/app.py, server/random.py files",
-                        "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/d95a38e637e7bc8fbe9f97af4bf2114eeed29c1e"
+                        "org_author": "Administrator",
+                        "short_id": "cc01e56d",
+                        "title": "Update iteration 2 is so short",
+                        "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/cc01e56d9a3dfe76de618db844a0aa19ce204f12"
                     }
                 ],
-                "created_date": "2021-03-11T04:01:02.426Z",
-                "description": "Closes #9",
-                "id": 6,
-                "iid": 6,
+                "created_date": "2021-03-14T01:48:10.139Z",
+                "description": "",
+                "id": 15,
+                "iid": 15,
                 "line_counts": {
-                    "blanks_added": 162,
-                    "blanks_deleted": 293,
-                    "comments_added": 74,
-                    "comments_deleted": 107,
-                    "lines_added": 397,
-                    "lines_deleted": 85,
-                    "spacing_changes": 367,
-                    "syntax_changes": 250
+                    "blanks_added": 1,
+                    "blanks_deleted": 0,
+                    "comments_added": 0,
+                    "comments_deleted": 0,
+                    "lines_added": 8,
+                    "lines_deleted": 0,
+                    "spacing_changes": 0,
+                    "syntax_changes": 0
                 },
-                "merged_by": null,
-                "merged_date": null,
-                "related_issue_iid": 9,
-                "state": "opened",
-                "title": "Update app.py",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/6"
-            },
-            {
-                "author": {
-                    "avatar_url": "https://secure.gravatar.com/avatar/23815a774084d4e3e53a95f97cc86359?s=80&d=identicon",
-                    "id": 5,
-                    "name": "TestUser H",
-                    "state": "active",
-                    "username": "TestUserHenry",
-                    "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/TestUserHenry"
-                },
-                "code_diff_id": 429,
-                "comments": null,
-                "commit_list": [
-                    {
-                        "author_name": "TestUser H",
-                        "code_diff_id": 430,
-                        "committed_date": "2021-03-09T04:30:47.000Z",
-                        "committer_name": "TestUser H",
-                        "id": "16e45c9e7ed5a71bb0ced8129f91abff0ef2672d",
-                        "line_counts": {
-                            "blanks_added": 592,
-                            "blanks_deleted": 458,
-                            "comments_added": 615,
-                            "comments_deleted": 705,
-                            "lines_added": 335,
-                            "lines_deleted": 457,
-                            "spacing_changes": 309,
-                            "syntax_changes": 774
-                        },
-                        "short_id": "16e45c9e",
-                        "title": "Update server/model/commit.py, server/random.py files",
-                        "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/16e45c9e7ed5a71bb0ced8129f91abff0ef2672d"
-                    }
-                ],
-                "created_date": "2021-03-09T04:32:16.109Z",
-                "description": "Closes #3",
-                "id": 2,
-                "iid": 2,
-                "line_counts": {
-                    "blanks_added": 311,
-                    "blanks_deleted": 422,
-                    "comments_added": 177,
-                    "comments_deleted": 263,
-                    "lines_added": 492,
-                    "lines_deleted": 95,
-                    "spacing_changes": 464,
-                    "syntax_changes": 462
-                },
-                "merged_by": 5,
-                "merged_date": "2021-03-09T04:41:57.594Z",
-                "related_issue_iid": 3,
+                "merged_by": 1,
+                "merged_date": "2021-03-14T01:48:17.064Z",
+                "related_issue_iid": null,
                 "state": "merged",
-                "title": "Update server/model/commit.py, server/random.py files",
-                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/2"
+                "title": "Update iteration 2 is so short",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/merge_requests/15"
             }
         ]
     },
@@ -769,38 +692,23 @@ Example javascript ajax call:
         {
             "a_mode": "100644",
             "b_mode": "100644",
-            "blanks_added": 0,
-            "blanks_deleted": 0,
-            "comments_added": 2,
-            "comments_deleted": 0,
             "deleted_file": false,
-            "diff": "@@ -1,5 +1,8 @@\n from interface.gitlab_interface import GitLab\n \n+for test in test:\n+    print(\"We need to write some unit test\")\n+\n \"\"\"\n Below are only for testing purpose\n \"\"\"\n",
-            "lines_added": 0,
-            "lines_deleted": 0,
+            "diff": "@@ -52,6 +52,25 @@ class Comment(DataObject):\n         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE\n         super().__init__()\n \n+\n+    def get_comments_by_userID(self, userID) -> Union[List[Comment], None]:\n+        listUserID = []\n+        for comment in self.__commentList:\n+            if comment.author == userID:\n+                listUserID.append(comment)\n+        return listUserID\n+\n+    def get_comments_by_range(self, startDate, endDate) -> Union[List[Comment], None]:\n+        listTimeRange = []\n+\n+        start = parser.parse(startDate)\n+        end = parser.parse(endDate)\n+        for comment in self.__commentList:\n+            tempDate = datetime.strptime(comment.created_date, \"%Y-%m-%dT%H:%M:%S.%f%z\")\n+            if start <= tempDate <= end:\n+                listTimeRange.append(comment)\n+        return listTimeRange\n+\n     # Getters\n \n     @property\n",
+            "file_type": "py",
+            "line_counts": {
+                "blanks_added": 4,
+                "blanks_deleted": 0,
+                "comments_added": 0,
+                "comments_deleted": 0,
+                "lines_added": 15,
+                "lines_deleted": 0,
+                "spacing_changes": 0,
+                "syntax_changes": 0
+            },
             "new_file": false,
-            "new_path": "server/test/gitlab_interface_test.py",
-            "old_path": "server/test/gitlab_interface_test.py",
-            "renamed_file": false,
-            "spacing_changes": 0,
-            "syntax_changes": 1
-        },
-        {
-            "a_mode": "100644",
-            "b_mode": "100644",
-            "blanks_added": 0,
-            "blanks_deleted": 0,
-            "comments_added": 2,
-            "comments_deleted": 0,
-            "deleted_file": false,
-            "diff": "@@ -1,5 +1,8 @@\n from interface.gitlab_interface import GitLab\n \n+for test in test:\n+    print(\"We need to write some unit test\")\n+\n \"\"\"\n Below are only for testing purpose\n \"\"\"\n",
-            "lines_added": 0,
-            "lines_deleted": 0,
-            "new_file": false,
-            "new_path": "server/test/app.py",
-            "old_path": "server/test/app.py",
-            "renamed_file": false,
-            "spacing_changes": 0,
-            "syntax_changes": 1
+            "new_path": "server/model/fetchmodel.py",
+            "old_path": "server/model/fetchmodel.py",
+            "renamed_file": false
         }
     ],
     "response": true
@@ -815,24 +723,16 @@ Example javascript ajax call:
     "cause": "",
     "notes": [
         {
-            "author": "TestUser H",
-            "body": "Comments in issue",
-            "created_date": "2021-03-09T04:33:55.928Z",
-            "id": 8,
-            "noteable_id": 3,
-            "noteable_iid": 3,
-            "noteable_type": "Issue",
-            "word_count": 3
-        },
-        {
             "author": "Administrator",
-            "body": "test comment",
-            "created_date": "2021-02-17T00:14:48.244Z",
-            "id": 2,
-            "noteable_id": 1,
-            "noteable_iid": 1,
-            "noteable_type": "Issue",
-            "word_count": 2
+            "body": "Another another comment",
+            "created_date": "2021-03-14T01:45:01.469Z",
+            "id": null,
+            "noteable_id": "e0835b1e",
+            "noteable_iid": null,
+            "noteable_type": "Commit",
+            "owner_of_noteable": "Administrator",
+            "ownership": "Own",
+            "word_count": 3
         }
     ],
     "response": true
@@ -846,37 +746,17 @@ Example javascript ajax call:
 {
     "cause": "",
     "notes": {
-        "Joseph Test": [
+        "Administrator": [
             {
-                "author": "Joseph Test",
-                "body": "Good work, this looks good to merge.",
-                "created_date": "2021-03-11T19:07:36.496Z",
-                "id": 34,
-                "noteable_id": 6,
-                "noteable_iid": 6,
-                "noteable_type": "MergeRequest",
-                "word_count": 7
-            },
-            {
-                "author": "Joseph Test",
-                "body": "Maybe we should merge this with the get all route.",
-                "created_date": "2021-03-11T19:07:01.545Z",
-                "id": 33,
-                "noteable_id": 6,
-                "noteable_iid": 6,
-                "noteable_type": "MergeRequest",
-                "word_count": 10
-            }
-        ],
-        "TestUser H": [
-            {
-                "author": "TestUser H",
-                "body": "Comments in issue",
-                "created_date": "2021-03-09T04:33:55.928Z",
-                "id": 8,
-                "noteable_id": 3,
-                "noteable_iid": 3,
-                "noteable_type": "Issue",
+                "author": "Administrator",
+                "body": "Another another comment",
+                "created_date": "2021-03-14T01:45:01.469Z",
+                "id": null,
+                "noteable_id": "e0835b1e",
+                "noteable_iid": null,
+                "noteable_type": "Commit",
+                "owner_of_noteable": "Administrator",
+                "ownership": "Own",
                 "word_count": 3
             }
         ]
@@ -888,20 +768,101 @@ Example javascript ajax call:
 
 ### Start garbage collector
 #### `POST /config/garbage_monitor/start`
+```json
+{
+    "cause": "",
+    "response": true
+}
+```
 [Go back to API list](#api-example-response)
 
 ### Stop garbage collector
 #### `POST /config/garbage_monitor/stop`
+```json
+{
+    "cause": "",
+    "response": true
+}
+```
 [Go back to API list](#api-example-response)
 
 ### Get garbage collector check period
 #### `GET /config/garbage_monitor/check_period`
+```json
+{
+    "cause": "",
+    "check_period": 8,
+    "response": true
+}
+```
 [Go back to API list](#api-example-response)
 
 ### Change garbage collector check period
 #### `POST /config/garbage_monitor/check_period`
-
+```json
+{
+    "cause": "",
+    "response": true
+}
+```
 Variables needed in `form-data`
 - `check_period`(int): The garbage monitor will check every `check_period` **hours**
 
+[Go back to API list](#api-example-response)
+
+### Map users
+#### `POST /projects/<int:projectID>/map`
+```json
+{
+    "cause": "",
+    "response": true
+}
+```
+**Required json body in the request:**
+```json
+{
+    "user_mapping": {
+        "fanghaof": ["Administrator", "TestUser H"],
+        "Thomas Min": ["Joseph Test", "springbro294"]
+    }
+}
+```
+[Go back to API list](#api-example-response)
+
+### Add user config
+#### `POST /config`
+```json
+{
+    "cause": "",
+    "response": true
+}
+```
+**Required json body in the request:**
+```json
+{
+    "name": "Test2",
+    "value": {
+        "language": "python",
+        "points": 1,
+        ... What ever other values in this dict, this is just an example
+    }
+}
+```
+
+[Go back to API list](#api-example-response)
+
+### Get all previously added user configs
+#### `GET /config`
+```json
+{
+    "cause": "",
+    "configs": {
+        "Test2": {
+            "language": "python",
+            "points": 1
+        }
+    },
+    "response": true
+}
+```
 [Go back to API list](#api-example-response)
