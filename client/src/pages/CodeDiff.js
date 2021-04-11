@@ -253,7 +253,7 @@ const CodeDiff = ({ codeId }) => {
   const codeDiffTags = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Tag color="#2db7f5">Overall Score Breakdown</Tag>
+        <Tag color="blue">Overall Score Breakdown</Tag>
         {specificFile ? (
           <Tag
             style={{ marginLeft: '35em', marginRight: 'auto' }}

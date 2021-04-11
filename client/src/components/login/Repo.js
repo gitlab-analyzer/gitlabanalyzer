@@ -50,6 +50,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     setCurrentConfig,
     setDataList,
     setFinishedConfig,
+    finishedConfig,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -717,12 +718,22 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     fetchAndRedirect();
   };
 
+  const innerContent = () => <p>Global Configuration Incomplete</p>;
+
   const goRender = (item) => {
     if (item['lastSynced'] === null) {
       return (
         <Button type="primary" disabled>
           Go
         </Button>
+      );
+    } else if (!finishedConfig) {
+      return (
+        <Popover content={innerContent}>
+          <Button type="primary" disabled>
+            No
+          </Button>
+        </Popover>
       );
     } else {
       return (

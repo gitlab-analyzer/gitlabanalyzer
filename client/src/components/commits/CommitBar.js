@@ -150,6 +150,7 @@ const CommitBar = () => {
    */
   let mergeRequestData = [];
   let commitsOnlyData = [];
+  let unmergedData = [];
   const selectedUserMRList = mergeRequestList[selectUser] || 0;
 
   console.log('Here is What', selectedUserMRList);
@@ -182,10 +183,11 @@ const CommitBar = () => {
         commitTotalScore += v['score'];
       }
       commitsOnlyData.push(...commitsData);
-
+      console.log('mg date', value['mergedDate']);
       if (
         value['mergedDate'] < new Date(dataList[0]) ||
-        value['mergedDate'] > new Date(dataList[1])
+        value['mergedDate'] > new Date(dataList[1]) ||
+        value['mergedDate'] < new Date('1971-01-01T00:00:00.000Z')
       ) {
         continue;
       }
@@ -343,7 +345,7 @@ const CommitBar = () => {
   const columns = [
     { title: 'MR ID', dataIndex: 'mrid', key: 'mrid', width: 90 },
     { title: 'Author', dataIndex: 'author', key: 'author', width: 110 },
-    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', width: 160 },
+    { title: 'Date', dataIndex: 'mergedDate', key: 'mergedDate', width: 160 },
     { title: 'Title', dataIndex: 'branch', key: 'branch', width: 300 },
     {
       title: 'MR Diff',
@@ -364,11 +366,22 @@ const CommitBar = () => {
       dataIndex: 'status',
       key: 'status',
 
-      render: () => (
-        <span>
-          <Tag color="green">Merged</Tag>
-        </span>
-      ),
+      render: (text, record) => {
+        console.log('reco', record);
+        if (record['ignore']) {
+          return (
+            <span>
+              <Tag color="red">Ignored</Tag>
+            </span>
+          );
+        } else {
+          return (
+            <span>
+              <Tag color="green">Merged</Tag>
+            </span>
+          );
+        }
+      },
     },
     {
       title: 'Action',
