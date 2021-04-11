@@ -28,9 +28,11 @@ const DisplayScore = () => {
           commitvalue['codeDiffDetail']
         )) {
           if (filevalue['file_type'] in fileType) {
-            fileType[filevalue['file_type']] += 1; /////////////////       filevalue['score'] /////////////////
+            // fileType[filevalue['file_type']] += 1; /////////////////       filevalue['score'] /////////////////
+            fileType[filevalue['file_type']] += filevalue['score'];
           } else {
-            fileType[filevalue['file_type']] = 1; /////////////////       filevalue['score'] /////////////////
+            // fileType[filevalue['file_type']] = 1; /////////////////       filevalue['score'] /////////////////
+            fileType[filevalue['file_type']] = filevalue['score'];
           }
         }
       }
