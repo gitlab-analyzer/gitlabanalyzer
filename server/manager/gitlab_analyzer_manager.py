@@ -331,3 +331,13 @@ class GitLabAnalyzerManager:
 
     def get_garbage_monitor_check_period(self) -> int:
         return self.__worker_check_period
+
+    def map_users(
+        self, hashedToken: str, projectID: int, userMapDict: dict
+    ) -> Tuple[bool, str]:
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
+            hashedToken, projectID
+        )
+        if isValid:
+            myProject.call_map_users_to_members(userMapDict)
+        return isValid, errorCode
