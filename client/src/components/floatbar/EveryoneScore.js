@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import HorizontalScroll from './Scroll';
 import { useAuth } from '../../context/AuthContext';
 import './EveryoneScore.css';
+import axios from "axios";
 
 const usercolours = [
   '#b0911d',
@@ -34,6 +35,8 @@ export function ScoreCalculator(username) {
 const EveryoneScore = () => {
   const { notesList, mergeRequestList, setFloatScores, dataList, selectUser, anon } = useAuth();
 
+  console.log('MR',mergeRequestList);
+
   useEffect(() => {
     async function updateData() {
       barData = [];
@@ -61,8 +64,16 @@ const EveryoneScore = () => {
           let linesAdded = 0;
           let linesDeleted = 0;
           let syntaxChanged = 0;
-          for (let [key, value] of Object.entries(uservalue['mr'])) {
+          for (let [fileID, value] of Object.entries(uservalue['mr'])) {
+            //TODO: Iterate Code Diffs in this Level
+
+            // console.log('value', value)
+            // if (value['ignore']) {
+            //   continue;
+            // }
+            // console.log(value["ignore"])
             if (value['ignore']) {
+              ignore = true;
               continue;
             }
             for (let [k, v] of Object.entries(value['commitList'])) {
