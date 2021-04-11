@@ -230,6 +230,15 @@ def change_garbage_collector_check_period():
     return jsonify({"response": True, 'cause': ""})
 
 
+@app.route('/projects/<int:projectID>/map', methods=['post'])
+def map_users(projectID):
+    isSuccess, errorCode = gitlab_manager.map_users(
+        request.cookies.get("id", ""), projectID, get_request(request, "user_mapping")
+    )
+
+    return jsonify({"response": isSuccess, 'cause': errorCode})
+
+
 if __name__ == '__main__':
     gitlab_manager = GitLabAnalyzerManager()
     app.run(host='0.0.0.0', port=5678)
