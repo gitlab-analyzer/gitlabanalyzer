@@ -1,28 +1,34 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .TotalScoreContainer {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 30px 0 30px;
-    height: auto;
-    /*background-color: red;*/
+  display: flex;
+  justify-content: space-between;
+  margin: 0 30px 0 30px;
+  height: auto;
+  /*background-color: red;*/
 }
 .scoreType {
-    display: flex;
+  display: flex;
 }
 .scoreNumber {
 }
 .fileContainer {
-    display: flex;
-    justify-content: space-between;
-    /*background-color: lightblue;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /*background-color: lightblue;*/
 }
 .fileType {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 .fileScoreNumber {
-    float: right;
-    /*background-color: wheat;*/
+  float: right;
+  /*background-color: wheat;*/
+}
+
+.filesInner {
+  display: flex;
+  justify-content: space-between;
 }

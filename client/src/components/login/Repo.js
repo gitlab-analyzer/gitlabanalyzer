@@ -211,33 +211,50 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     'syntax_changes',
   ];
 
-  const mrScore = (codediffdetail) => {
+  const mrScore = (codediffdetail, singleFile) => {
     let index;
     let totalScore = 0;
     // maybe move file type
     let totalFileType = {};
-    for (let file of codediffdetail) {
-      let score = 0;
-      let lines = file['line_counts'];
-      let ext = file['file_type'];
-      // console.log()
+
+    if (singleFile) {
+      let lines = codediffdetail['line_counts'];
+      let ext = codediffdetail['file_type'];
       index = 0;
+
       for (let type in lines) {
-        score += lines[type] * multiplier[index];
+        totalScore += lines[type] * multiplier[index];
         index++;
       }
+
       if (ext in lang) {
-        score *= lang[ext];
+        totalScore *= lang[ext];
       }
-      if (ext in totalFileType) {
-        totalFileType[ext] += score;
-      } else {
-        totalFileType[ext] = score;
+      return totalScore;
+    } else {
+      for (let file of codediffdetail) {
+        let score = 0;
+        let lines = file['line_counts'];
+        let ext = file['file_type'];
+        // console.log()
+        index = 0;
+        for (let type in lines) {
+          score += lines[type] * multiplier[index];
+          index++;
+        }
+        if (ext in lang) {
+          score *= lang[ext];
+        }
+        if (ext in totalFileType) {
+          totalFileType[ext] += score;
+        } else {
+          totalFileType[ext] = score;
+        }
+        // console.log('totalFileType', totalFileType);
+        totalScore += score;
       }
-      // console.log('totalFileType', totalFileType);
-      totalScore += score;
+      return totalScore;
     }
-    return totalScore;
   };
 
   let lang = {};
@@ -293,12 +310,20 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               // score:
               //   commit.line_counts.lines_added +
               //   commit.line_counts.lines_deleted * 0.1,
-              score: mrScore(commit.code_diff_detail),
+              score: mrScore(commit.code_diff_detail, false),
               // Flag to ignore this commit
               ignore: false,
               omitScore: 0,
               // Frontend defined variables End --------------------------
             };
+            for (let [k1, v1] of Object.entries(
+              tempCommits[commit.short_id]['codeDiffDetail']
+            )) {
+              tempCommits[commit.short_id]['codeDiffDetail'][k1][
+                'score'
+              ] = mrScore(v1, true);
+              console.log('codei', k1, v1);
+            }
           }
           tempMR[user].mr[author.id] = {
             author: author.author,
@@ -322,7 +347,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             // score:
             //   author.line_counts.lines_added +
             //   author.line_counts.lines_deleted * 0.1,
-            score: mrScore(author.code_diff_detail),
+            score: mrScore(author.code_diff_detail, false),
             // Flag to ignore this MR
             ignore: false,
             omitScore: 0,
