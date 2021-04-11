@@ -359,6 +359,77 @@ class CodeDiffAnalyzer(unittest.TestCase):
             "syntax_changes": 1,
         }
         self.assertEqual(self.get_code_diff_statistic(diff,namePy), info)
+    
+    #Test with other file type for comment and block of command
+    def test_html_block_comment(self):
+        diff = "- if i == 2 do\n+ <!--some comment -->\n+ while(n < 10)"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 1,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,"abc.html"), info)
+
+    def test_html_block_of_line_comments(self):
+        diff = "- if i == 2 do\n+ <!--\n+some comment\n+ --> print(i)\n+ while(n < 10)"
+        info = {
+            "lines_added": 2,
+            "lines_deleted": 1,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,"abc.html"), info)
+        
+    def test_sql_comment(self):
+        diff = "- if i == 2 do\n+ --some comment\n+ while(x < 10)"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 1,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 0,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,"abc.sql"), info)
+
+    def test_sql_block_of_comment(self):
+        diff = "- if i == 2 do\n+ /*some comment\n+ */ \n+ while(x < 10)"
+        info = {
+            "lines_added": 1,
+            "lines_deleted": 1,
+            "comments_added": 1,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,"abc.sql"), info)
+
+    def test_js_syntax(self):
+        diff = "- if i == 2 do\n+ if i == 2 do <>"
+        info = {
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "comments_added": 0,
+            "comments_deleted": 0,
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "spacing_changes": 0,
+            "syntax_changes": 1,
+        }
+        self.assertEqual(self.get_code_diff_statistic(diff,"abc.js"), info)
 
 if __name__ == '__main__':
     unittest.main()
