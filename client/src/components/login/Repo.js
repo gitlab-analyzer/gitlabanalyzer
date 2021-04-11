@@ -46,6 +46,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setRepo,
     value,
     setValue,
+    currentConfig,
     setCurrentConfig,
     setDataList,
     setFinishedConfig,
@@ -213,6 +214,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCommitsList([...tempCommits]);
   };
 
+  const calcScore = (codediffdetail) => {
+    for (let file of codediffdetail) {
+      console.log(file['line_counts']);
+    }
+    let score = 0;
+    return 2;
+  };
+
+  let lang = {};
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
@@ -228,6 +238,14 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     // Generate a temporary merge request list to parse and set to Global Context API
     const generateTempMR = () => {
       const mrList = mergeRequestRes.data['merge_request_users_list'];
+      if (currentConfig.language) {
+        for (let [langkey, langvalue] of Object.entries(
+          currentConfig.language
+        )) {
+          lang[langvalue.extname] = langvalue.extpoint;
+        }
+      }
+
       const tempMR = {};
       // Loop through object key
       for (let user in mrList) {
@@ -253,9 +271,10 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               webUrl: commit.web_url,
               // Frontend defined variables Start --------------------------
               // Initial score calculation
-              score:
-                commit.line_counts.lines_added +
-                commit.line_counts.lines_deleted * 0.1,
+              // score:
+              //   commit.line_counts.lines_added +
+              //   commit.line_counts.lines_deleted * 0.1,
+              score: calcScore(commit.code_diff_detail),
               // Flag to ignore this commit
               ignore: false,
               omitScore: 0,
@@ -281,9 +300,10 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             webUrl: author.web_url,
             // Frontend defined variables Start --------------------------
             // Initial score calculation
-            score:
-              author.line_counts.lines_added +
-              author.line_counts.lines_deleted * 0.1,
+            // score:
+            //   author.line_counts.lines_added +
+            //   author.line_counts.lines_deleted * 0.1,
+            score: calcScore(author.code_diff_detail),
             // Flag to ignore this MR
             ignore: false,
             omitScore: 0,
