@@ -33,19 +33,6 @@ class CodeDiffAnalyzer:
         fileType = self.check_for_code_type(codeDiffObject)
 
         HTMLfileExtension = {"xml", "htm", "html"}
-        python = False
-        HTML = False
-        SQL = False
-        generalFileType = False
-
-        if fileType == "py":
-            python = True
-        elif fileType == "sql":
-            SQL = True
-        elif fileType in HTMLfileExtension:
-            HTML = True
-        else:
-            generalFileType = True
 
         block_code = False
 
@@ -56,9 +43,9 @@ class CodeDiffAnalyzer:
                 # Check for block of comments
                 # -------------------------------------------------
                 temp = info.copy()
-                if generalFileType is True or SQL is True:
+                if fileType not in HTMLfileExtension or fileType == "sql":
                     info = self.define_block_of_code(
-                        block_code, "/*", line, info, python, HTML, SQL, generalFileType
+                        block_code, "/*", line, info, fileType
                     )
                     if "/*" in line and "*/" in line:
                         block_code = False
@@ -66,34 +53,28 @@ class CodeDiffAnalyzer:
                         block_code = True
                     if "*/" in line and info == temp:
                         info = self.add_block_of_comments(
-                            line, python, info, block_code, HTML, SQL, generalFileType
+                            line, info, block_code, fileType
                         )
                         block_code = False
-                elif python is True:
+                elif fileType == "py":
                     info = self.define_block_of_code(
                         block_code,
                         "'''",
                         line,
                         info,
-                        python,
-                        HTML,
-                        SQL,
-                        generalFileType,
+                        fileType
                     )
                     if line.count("'''") == 2:
                         block_code = False
                     elif "'''" in line:
                         block_code = not block_code
-                elif HTML is True:
+                elif fileType in HTMLfileExtension:
                     info = self.define_block_of_code(
                         block_code,
                         "<!--",
                         line,
                         info,
-                        python,
-                        HTML,
-                        SQL,
-                        generalFileType,
+                        fileType
                     )
                     if "<!--" in line and "-->" in line:
                         block_code = False
@@ -101,7 +82,7 @@ class CodeDiffAnalyzer:
                         block_code = True
                     if "-->" in line and info == temp:
                         info = self.add_block_of_comments(
-                            line, python, info, block_code, HTML, SQL, generalFileType
+                            line, info, block_code, fileType
                         )
                         block_code = False
                 if info != temp:
@@ -113,7 +94,7 @@ class CodeDiffAnalyzer:
                 # -------------------------------------------------
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                     info = self.add_one_char_middle(
-                        line, oldLine, info, python, SQL, generalFileType
+                        line, oldLine, info, fileType
                     )
                     if temp != info:
                         info = self.modify_info_value("lines", info, oldLine[0], -1)
@@ -125,11 +106,11 @@ class CodeDiffAnalyzer:
                 # -------------------------------------------------
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line(
-                        "+", line, oldLine, info, python, SQL, generalFileType
+                        "+", line, oldLine, info, fileType
                     )
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
                     info = self.add_to_existing_line(
-                        "-", oldLine, line, info, python, SQL, generalFileType
+                        "-", oldLine, line, info, fileType
                     )
                 if info != temp:
                     info = self.modify_info_value("lines", info, oldLine[0], -1)
@@ -140,7 +121,7 @@ class CodeDiffAnalyzer:
                 # Normal case
                 # -------------------------------------------------
                 info = self.add_normal_line_of_code(
-                    info, line, python, SQL, generalFileType
+                    info, line, fileType
                 )
                 oldLine = line
                 # -------------------------------------------------
@@ -155,14 +136,14 @@ class CodeDiffAnalyzer:
             return found.group(1)
         return None
 
-    def add_normal_line_of_code(self, info, line, python, SQL, generalFileType) -> dict:
+    def add_normal_line_of_code(self, info, line, fileType) -> dict:
         if len(line) == 1:
             info = self.modify_info_value("blanks", info, line)
             return info
 
         temp = info.copy()
         info = self.check_for_spacing_syntax_or_comment(
-            line[0:1], info, line[1:], python, SQL, generalFileType
+            line[0:1], info, line[1:], fileType
         )
         if info != temp:
             return info
@@ -171,9 +152,10 @@ class CodeDiffAnalyzer:
         return info
 
     def check_for_spacing_syntax_or_comment(
-        self, signal, info, str, python, SQL, generalFileType
+        self, signal, info, str, fileType
     ) -> dict:
         isSyntax = False
+        HTMLfileExtension = {"xml", "htm", "html"}
         syntaxStr = {
             "{",
             "}",
@@ -211,15 +193,15 @@ class CodeDiffAnalyzer:
             if str[i] in syntaxStr:
                 isSyntax = True
                 continue
-        if python:
+        if fileType == "py":
             if str[i] == "#" and isSyntax is False:
                 info = self.modify_info_value("comments", info, signal)
                 return info
-        elif SQL:
+        elif fileType == "sql":
             if str[i : i + 2] == "--" and isSyntax is False:
                 info = self.modify_info_value("comments", info, signal)
                 return info
-        elif generalFileType:
+        elif fileType not in HTMLfileExtension:
             if str[i : i + 2] == "//" and isSyntax is False:
                 info = self.modify_info_value("comments", info, signal)
                 return info
@@ -231,7 +213,7 @@ class CodeDiffAnalyzer:
         return info
 
     def add_one_char_middle(
-        self, line, oldLine, info, python, SQL, generalFileType
+        self, line, oldLine, info, fileType
     ) -> dict:
         temp = 0
         if len(line) > len(oldLine):
@@ -247,11 +229,11 @@ class CodeDiffAnalyzer:
         if temp != 0:
             if len(line) > len(oldLine):
                 info = self.add_normal_line_of_code(
-                    info, line[0] + line[temp], python, SQL, generalFileType
+                    info, line[0] + line[temp], fileType
                 )
             else:
                 info = self.add_normal_line_of_code(
-                    info, oldLine[0] + oldLine[temp], python, SQL, generalFileType
+                    info, oldLine[0] + oldLine[temp], fileType
                 )
         return info
 
@@ -261,10 +243,7 @@ class CodeDiffAnalyzer:
         signal_block_code,
         line,
         info,
-        python,
-        HTML,
-        SQL,
-        generalFileType,
+        fileType
     ) -> dict:
         if block_code == True and signal_block_code not in line:
             if "*/" not in line and "'''" not in line and "-->" not in line:
@@ -272,42 +251,41 @@ class CodeDiffAnalyzer:
                 return info
 
         if signal_block_code in line:
-            if ("*/" in line or "-->" in line and python == False) or (
-                line.count(signal_block_code) == 2 and python == True
+            if ("*/" in line or "-->" in line and fileType != "py") or (
+                line.count(signal_block_code) == 2 and fileType == "py"
             ):
                 info = self.modify_info_value("comments", info, line[0])
             else:
                 info = self.add_block_of_comments(
-                    line, python, info, block_code, HTML, SQL, generalFileType
+                    line, info, block_code, fileType
                 )
         return info
 
     def add_block_of_comments(
-        self, line, python, info, block_code, HTML, SQL, generalFileType
+        self, line, info, block_code, fileType
     ) -> dict:
+        HTMLfileExtension = {"xml", "htm", "html"}
         temp = 0
 
         for i in range(0, len(line)):
-            if generalFileType or SQL:
+            if fileType != "py" and fileType not in HTMLfileExtension:
                 if line[i : i + 2] == "/*" or line[i : i + 2] == "*/":
                     temp = i
-            elif python:
+            elif fileType == "py":
                 if line[i : i + 3] == "'''":
                     temp = i
-            elif HTML:
+            elif fileType in HTMLfileExtension:
                 if line[i : i + 4] == "<!--" or line[i : i + 3] == "-->":
                     temp = i
 
-        if generalFileType or SQL:
+        if fileType != "py" and fileType not in HTMLfileExtension:
             if line[temp : temp + 2] == "/*":
                 info = self.check_block_code_cases(
                     line[1:temp],
                     line[temp + 2 :],
                     info,
                     line,
-                    python,
-                    SQL,
-                    generalFileType,
+                    fileType
                 )
             if line[temp : temp + 2] == "*/":
                 info = self.check_block_code_cases(
@@ -315,20 +293,16 @@ class CodeDiffAnalyzer:
                     line[1:temp],
                     info,
                     line,
-                    python,
-                    SQL,
-                    generalFileType,
+                    fileType
                 )
-        elif python:
+        elif fileType == "py":
             if block_code:
                 info = self.check_block_code_cases(
                     line[temp + 3 :],
                     line[1:temp],
                     info,
                     line,
-                    python,
-                    SQL,
-                    generalFileType,
+                    fileType
                 )
             else:
                 info = self.check_block_code_cases(
@@ -336,20 +310,16 @@ class CodeDiffAnalyzer:
                     line[temp + 3 :],
                     info,
                     line,
-                    python,
-                    SQL,
-                    generalFileType,
+                    fileType
                 )
-        elif HTML:
+        elif fileType in HTMLfileExtension:
             if line[temp : temp + 4] == "<!--":
                 info = self.check_block_code_cases(
                     line[1:temp],
                     line[temp + 4 :],
                     info,
                     line,
-                    python,
-                    SQL,
-                    generalFileType,
+                    fileType
                 )
             if line[temp : temp + 3] == "-->":
                 info = self.check_block_code_cases(
@@ -357,14 +327,12 @@ class CodeDiffAnalyzer:
                     line[1:temp],
                     info,
                     line,
-                    python,
-                    SQL,
-                    generalFileType,
+                    fileType
                 )
         return info
 
     def check_block_code_cases(
-        self, strFront, strBack, info, line, python, SQL, generalFileType
+        self, strFront, strBack, info, line, fileType
     ) -> dict:
         if (
             (strFront.isspace() or strFront == "")
@@ -378,17 +346,17 @@ class CodeDiffAnalyzer:
             info["syntax_changes"] = info["syntax_changes"] + 1
         else:
             info = self.add_normal_line_of_code(
-                info, line[0] + strFront, python, SQL, generalFileType
+                info, line[0] + strFront, fileType
             )
         return info
 
     def add_to_existing_line(
-        self, signal, line, oldLine, info, python, SQL, generalFileType
+        self, signal, line, oldLine, info, fileType
     ) -> dict:
         if oldLine != " " and line[1:] != oldLine[1:]:
             tempLine = signal + line[1:].replace(oldLine[1:], "")
             info = self.add_normal_line_of_code(
-                info, tempLine, python, SQL, generalFileType
+                info, tempLine, fileType
             )
         return info
 
