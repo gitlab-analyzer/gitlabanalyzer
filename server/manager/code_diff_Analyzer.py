@@ -125,7 +125,48 @@ class CodeDiffAnalyzer:
     def check_for_spacing_syntax_or_comment(self, signal, info, str, python) -> dict:
 
         isSyntax = False
-        syntaxStr = {"{", "}", ";", "(", ")"}
+        syntaxStr = {
+            "{",
+            "}",
+            ":",
+            "(",
+            ")",
+            "[",
+            "]",
+            "\"",
+            "'",
+            "%",
+            "<",
+            "</",
+            "/>",
+            ">",
+            "==",
+            "!=",
+            ">=",
+            "<=",
+            "=",
+        }
+        syntaxStrPython = {
+            "{",
+            "}",
+            ":",
+            "(",
+            ")",
+            "[",
+            "]",
+            "\"",
+            "'",
+            "%",
+            "<",
+            ">",
+            "==",
+            "!=",
+            ">=",
+            "<=",
+            "=",
+            "in",
+            "not in",
+        }
 
         if str.isspace():
             info["spacing_changes"] = info["spacing_changes"] + 1
@@ -133,7 +174,7 @@ class CodeDiffAnalyzer:
 
         for i in range(0, len(str)):
             if python:
-                if str[i] == ':' or str[i] == "(" or str[i] == ")":
+                if str[i] in syntaxStrPython:
                     isSyntax = True
                     continue
                 if str[i] == "#" and isSyntax is False:
@@ -155,8 +196,6 @@ class CodeDiffAnalyzer:
 
     def add_one_char_middle(self, line, oldLine, info, python) -> dict:
         temp = 0
-        syntaxStr = {"{", "}", ";", "(", ")"}
-
         if len(line) > len(oldLine):
             length = len(oldLine)
         else:
@@ -169,27 +208,11 @@ class CodeDiffAnalyzer:
 
         if temp != 0:
             if len(line) > len(oldLine):
-                info = self.modify_info_based_on_middle_char_cases(
-                    line, line[temp], python, info
-                )
+                info = self.add_normal_line_of_code(info, line[0] + line[temp], python)
             else:
-                info = self.modify_info_based_on_middle_char_cases(
-                    oldLine, oldLine[temp], python, info
+                info = self.add_normal_line_of_code(
+                    info, oldLine[0] + oldLine[temp], python
                 )
-        return info
-
-    def modify_info_based_on_middle_char_cases(self, line, char, python, info) -> dict:
-        syntaxStr = {"{", "}", ";", "(", ")"}
-        if char == " ":
-            info["spacing_changes"] = info["spacing_changes"] + 1
-        elif char == ":":
-            if python:
-                info["syntax_changes"] = info["syntax_changes"] + 1
-        elif char in syntaxStr:
-            if python is False:
-                info["syntax_changes"] = info["syntax_changes"] + 1
-        else:
-            info = self.modify_info_value("lines", info, line[0])
         return info
 
     def define_block_of_code(
