@@ -58,11 +58,7 @@ class CodeDiffAnalyzer:
                         block_code = False
                 elif fileType == "py":
                     info = self.define_block_of_code(
-                        block_code,
-                        "'''",
-                        line,
-                        info,
-                        fileType
+                        block_code, "'''", line, info, fileType
                     )
                     if line.count("'''") == 2:
                         block_code = False
@@ -70,11 +66,7 @@ class CodeDiffAnalyzer:
                         block_code = not block_code
                 elif fileType in HTMLfileExtension:
                     info = self.define_block_of_code(
-                        block_code,
-                        "<!--",
-                        line,
-                        info,
-                        fileType
+                        block_code, "<!--", line, info, fileType
                     )
                     if "<!--" in line and "-->" in line:
                         block_code = False
@@ -93,9 +85,7 @@ class CodeDiffAnalyzer:
                 # Adding to middle of the line instead of to the front or the back
                 # -------------------------------------------------
                 if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                    info = self.add_one_char_middle(
-                        line, oldLine, info, fileType
-                    )
+                    info = self.add_one_char_middle(line, oldLine, info, fileType)
                     if temp != info:
                         info = self.modify_info_value("lines", info, oldLine[0], -1)
                         oldLine = line
@@ -105,13 +95,9 @@ class CodeDiffAnalyzer:
                 # Adding to an exisiting line
                 # -------------------------------------------------
                 if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                    info = self.add_to_existing_line(
-                        "+", line, oldLine, info, fileType
-                    )
+                    info = self.add_to_existing_line("+", line, oldLine, info, fileType)
                 if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                    info = self.add_to_existing_line(
-                        "-", oldLine, line, info, fileType
-                    )
+                    info = self.add_to_existing_line("-", oldLine, line, info, fileType)
                 if info != temp:
                     info = self.modify_info_value("lines", info, oldLine[0], -1)
                     oldLine = line
@@ -120,9 +106,7 @@ class CodeDiffAnalyzer:
 
                 # Normal case
                 # -------------------------------------------------
-                info = self.add_normal_line_of_code(
-                    info, line, fileType
-                )
+                info = self.add_normal_line_of_code(info, line, fileType)
                 oldLine = line
                 # -------------------------------------------------
 
@@ -151,9 +135,7 @@ class CodeDiffAnalyzer:
         info = self.modify_info_value("lines", info, line[0])
         return info
 
-    def check_for_spacing_syntax_or_comment(
-        self, signal, info, str, fileType
-    ) -> dict:
+    def check_for_spacing_syntax_or_comment(self, signal, info, str, fileType) -> dict:
         isSyntax = False
         HTMLfileExtension = {"xml", "htm", "html"}
         syntaxStr = {
@@ -212,9 +194,7 @@ class CodeDiffAnalyzer:
             info["syntax_changes"] = info["syntax_changes"] + 1
         return info
 
-    def add_one_char_middle(
-        self, line, oldLine, info, fileType
-    ) -> dict:
+    def add_one_char_middle(self, line, oldLine, info, fileType) -> dict:
         temp = 0
         if len(line) > len(oldLine):
             length = len(oldLine)
@@ -238,12 +218,7 @@ class CodeDiffAnalyzer:
         return info
 
     def define_block_of_code(
-        self,
-        block_code,
-        signal_block_code,
-        line,
-        info,
-        fileType
+        self, block_code, signal_block_code, line, info, fileType
     ) -> dict:
         if block_code == True and signal_block_code not in line:
             if "*/" not in line and "'''" not in line and "-->" not in line:
@@ -256,14 +231,10 @@ class CodeDiffAnalyzer:
             ):
                 info = self.modify_info_value("comments", info, line[0])
             else:
-                info = self.add_block_of_comments(
-                    line, info, block_code, fileType
-                )
+                info = self.add_block_of_comments(line, info, block_code, fileType)
         return info
 
-    def add_block_of_comments(
-        self, line, info, block_code, fileType
-    ) -> dict:
+    def add_block_of_comments(self, line, info, block_code, fileType) -> dict:
         HTMLfileExtension = {"xml", "htm", "html"}
         temp = 0
 
@@ -281,59 +252,33 @@ class CodeDiffAnalyzer:
         if fileType != "py" and fileType not in HTMLfileExtension:
             if line[temp : temp + 2] == "/*":
                 info = self.check_block_code_cases(
-                    line[1:temp],
-                    line[temp + 2 :],
-                    info,
-                    line,
-                    fileType
+                    line[1:temp], line[temp + 2 :], info, line, fileType
                 )
             if line[temp : temp + 2] == "*/":
                 info = self.check_block_code_cases(
-                    line[temp + 2 :],
-                    line[1:temp],
-                    info,
-                    line,
-                    fileType
+                    line[temp + 2 :], line[1:temp], info, line, fileType
                 )
         elif fileType == "py":
             if block_code:
                 info = self.check_block_code_cases(
-                    line[temp + 3 :],
-                    line[1:temp],
-                    info,
-                    line,
-                    fileType
+                    line[temp + 3 :], line[1:temp], info, line, fileType
                 )
             else:
                 info = self.check_block_code_cases(
-                    line[1:temp],
-                    line[temp + 3 :],
-                    info,
-                    line,
-                    fileType
+                    line[1:temp], line[temp + 3 :], info, line, fileType
                 )
         elif fileType in HTMLfileExtension:
             if line[temp : temp + 4] == "<!--":
                 info = self.check_block_code_cases(
-                    line[1:temp],
-                    line[temp + 4 :],
-                    info,
-                    line,
-                    fileType
+                    line[1:temp], line[temp + 4 :], info, line, fileType
                 )
             if line[temp : temp + 3] == "-->":
                 info = self.check_block_code_cases(
-                    line[temp + 3 :],
-                    line[1:temp],
-                    info,
-                    line,
-                    fileType
+                    line[temp + 3 :], line[1:temp], info, line, fileType
                 )
         return info
 
-    def check_block_code_cases(
-        self, strFront, strBack, info, line, fileType
-    ) -> dict:
+    def check_block_code_cases(self, strFront, strBack, info, line, fileType) -> dict:
         if (
             (strFront.isspace() or strFront == "")
             and strBack != ""
@@ -345,19 +290,13 @@ class CodeDiffAnalyzer:
         ):
             info["syntax_changes"] = info["syntax_changes"] + 1
         else:
-            info = self.add_normal_line_of_code(
-                info, line[0] + strFront, fileType
-            )
+            info = self.add_normal_line_of_code(info, line[0] + strFront, fileType)
         return info
 
-    def add_to_existing_line(
-        self, signal, line, oldLine, info, fileType
-    ) -> dict:
+    def add_to_existing_line(self, signal, line, oldLine, info, fileType) -> dict:
         if oldLine != " " and line[1:] != oldLine[1:]:
             tempLine = signal + line[1:].replace(oldLine[1:], "")
-            info = self.add_normal_line_of_code(
-                info, tempLine, fileType
-            )
+            info = self.add_normal_line_of_code(info, tempLine, fileType)
         return info
 
     def modify_info_value(self, info_name, info, signal, amount=1) -> dict:
