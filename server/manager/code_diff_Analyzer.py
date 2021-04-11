@@ -129,6 +129,7 @@ class CodeDiffAnalyzer:
             "{",
             "}",
             ":",
+            ";",
             "(",
             ")",
             "[",
@@ -145,27 +146,12 @@ class CodeDiffAnalyzer:
             ">=",
             "<=",
             "=",
-        }
-        syntaxStrPython = {
-            "{",
-            "}",
-            ":",
-            "(",
-            ")",
-            "[",
-            "]",
-            "\"",
-            "'",
-            "%",
-            "<",
-            ">",
-            "==",
-            "!=",
-            ">=",
-            "<=",
-            "=",
-            "in",
-            "not in",
+            "{/*",
+            "*/}",
+            "<>",
+            "$",
+            "in"
+            "not in"
         }
 
         if str.isspace():
@@ -173,17 +159,14 @@ class CodeDiffAnalyzer:
             return info
 
         for i in range(0, len(str)):
-            if python:
-                if str[i] in syntaxStrPython:
+            if str[i] in syntaxStr:
                     isSyntax = True
                     continue
+            if python:
                 if str[i] == "#" and isSyntax is False:
                     info = self.modify_info_value("comments", info, signal)
                     return info
             else:
-                if str[i] in syntaxStr:
-                    isSyntax = True
-                    continue
                 if str[i : i + 2] == '//' and isSyntax is False:
                     info = self.modify_info_value("comments", info, signal)
                     return info
