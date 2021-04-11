@@ -1,4 +1,4 @@
-import { React } from 'react';
+import { React, useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
-import FilterMenu from '../components/table/FilterMenu';
+import Stats from '../components/table/Stats';
 import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
 
@@ -59,7 +59,17 @@ const TablePage = () => {
   const { 
     selectUser, 
     notesList, 
-    dataList
+    dataList,
+    wordCount,
+    setWordCount,
+    crCount,
+    setCrCount,
+    ownCount,
+    setOwnCount,
+    otherCount,
+    setOtherCount,
+    issueCount,
+    setIssueCount
   } = useAuth()
   const classes = useStyles();
 
@@ -114,23 +124,49 @@ const TablePage = () => {
     var i;
     var result = [];
     var type;
+    var wordcount = 0;
+    var crcount = 0;
+    var issuecount = 0;
+    var owncount = 0;
+    var othercount = 0;
     for (i = 0; i < notes.length; i++) {
       if(dates.length !== 0) {
         if ((selectUser === notes[i].author) && (dates[0]._d <= notes[i].createdDate && notes[i].createdDate <= dates[1]._d)) {
+          if(notes[i].ownership === "Own") {
+            owncount += 1
+          } else if(notes[i].ownership === "Other") {
+            othercount += 1
+          }
           if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
             type = "Code Review"
+            crcount += 1
           } else {
             type = "Issue"
+            issuecount += 1
           }
-          result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
+          wordcount += notes[i].wordCount
+          result.push(createData(dateFormatter(
+           notes[i].createdDate),
+           notes[i].wordCount, 
+           notes[i].body, 
+           notes[i].ownership, 
+           type))
         }
       } else {
         if(selectUser === notes[i].author) {
+          if(notes[i].ownership === "Own") {
+            owncount += 1
+          } else if(notes[i].ownership === "Other") {
+            othercount += 1
+          }
           if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
             type = "Code Review"
+            crcount += 1
           } else {
             type = "Issue"
+            issuecount += 1
           }
+          wordcount += notes[i].wordCount
           result.push(
             createData(dateFormatter(notes[i].createdDate), 
             notes[i].wordCount, 
@@ -140,11 +176,20 @@ const TablePage = () => {
         }
       }
     }
-      return result;
+      return [result, wordcount, crcount, owncount, othercount, issuecount];
     }
 
   // Table updates based on state of this
-  var rows = populateTable(notesList, dataList)
+  var values  = populateTable(notesList, dataList)
+  var rows = values[0]
+
+  useEffect(() => {
+    setWordCount(values[1])
+    setCrCount(values[2])
+    setOwnCount(values[3])
+    setOtherCount(values[4])
+    setIssueCount(values[5])
+  }, [selectUser, dataList])
 
   return (
     <>
@@ -190,7 +235,7 @@ const TablePage = () => {
             </TableContainer>
           </Grid>
           <Grid item xs={3} style={{ textAlign: 'center' }} component={Paper} elevation={0}>
-            <FilterMenu />
+            <Stats />
           </Grid>
         </Grid>
       </div>

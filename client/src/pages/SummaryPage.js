@@ -50,6 +50,8 @@ const Summary = () => {
   const CODE_REVIEWS_OWN = 5;
   const CODE_REVIEWS_OTHERS = 6;
 
+  console.log(mergeRequestList)
+
   const countDates = (list, type, dates) => {
     var result = {};
     var i, j;

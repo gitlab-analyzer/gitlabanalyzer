@@ -25,6 +25,11 @@ const AuthProvider = (props) => {
   const [filteredList, setFilteredList] = useState([]);
   const [value, setValue] = useState('');
   const [finishedConfig, setFinishedConfig] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
+  const [crCount, setCrCount] = useState(0);
+  const [ownCount, setOwnCount] = useState(0);
+  const [otherCount, setOtherCount] = useState(0);
+  const [issueCount, setIssueCount] = useState(0);
 
   const authContextValue = {
     user,
@@ -71,6 +76,16 @@ const AuthProvider = (props) => {
     setValue,
     finishedConfig,
     setFinishedConfig,
+    wordCount,
+    setWordCount,
+    crCount, 
+    setCrCount,
+    ownCount,
+    setOwnCount,
+    otherCount,
+    setOtherCount,
+    issueCount,
+    setIssueCount
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
