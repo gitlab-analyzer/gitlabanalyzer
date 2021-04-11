@@ -125,7 +125,7 @@ class MergeRequest(DataObject):
 
     def add_comment(self, comment_iid: int):
         self.__comment_iid_list.append(comment_iid)
-        
+
     def set_comments(self, commentList: List[str]):
         self.__comments = commentList
 
