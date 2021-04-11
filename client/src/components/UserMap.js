@@ -134,8 +134,8 @@ const UserMap = () => {
     } = useAuth();
 
     const userListLength = usersList.length;
-    // const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"];
-    const memberList = membersList.map((item) => item.name);    // real data
+    const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"]; // fake data
+    // const memberList = membersList.map((item) => item.name);    // real data
     
     // const MemberList = ({ list }) => (
     //     <ul className="allList">

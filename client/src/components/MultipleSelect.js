@@ -8,17 +8,33 @@ const MultipleSelect = (props) => {
     const {
         usersList,
         mapList, setMapList,
+        selectedOptions, 
+        setSelectedOptions,
+        nonSelectedOptions, setNonSelectedOptions,
     } = useAuth();
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [newSelectedItems, setNewSelectedItems] = useState();
-    // const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
-    const userList = usersList;     // real data
+    const userList = ["User1", "User2", "User3", "User4", "User5", "User6"]; // fake data
+    // const userList = usersList;     // real data
     const dict = {};
     const [dictionary, setDictionary] = useState({});
+
+    function handleSelect(value) {
+        setSelectedOptions([...selectedOptions, value]);
+    }
+
+    function handleDeselect(value) {
+        var tempSelectedOptions = selectedOptions; 
+        var index = tempSelectedOptions.indexOf(value)
+        if (index !== -1) {
+            tempSelectedOptions.splice(index, 1);
+            setSelectedOptions(tempSelectedOptions)
+        }
+    }
     
     function handleChange(value) {
-        setSelectedItems(value)
+        setSelectedItems(value);
         // console.log(props.currentMember)
 
         // var dict = {};
@@ -45,25 +61,26 @@ const MultipleSelect = (props) => {
         
     }
 
-    //const { selectedItems } = this.state;
-    const filteredOptions = userList.filter(o => !selectedItems.includes(o));
-        return (
-          <Select
-            mode="multiple"
-            placeholder="None"
-            value={selectedItems}
-            onChange={handleChange}
-            size="large"
-            allowClear
-            className="multipleSelection"
-          >
-            {filteredOptions.map(item => (
-              <Select.Option key={item} value={item}>
-                {item}
-              </Select.Option>
-            ))}
-          </Select>
-        );
+    const filteredOptions = userList.filter(o => !selectedOptions.includes(o));
+    return (
+        <Select
+          mode="multiple"
+          placeholder="None"
+          value={selectedItems}
+          onChange={handleChange}
+          onSelect={handleSelect}
+          onDeselect={handleDeselect}
+          size="large"
+          allowClear
+          className="multipleSelection"
+        >
+          {filteredOptions.map(item => (
+            <Select.Option key={item} value={item}>
+              {item}
+            </Select.Option>
+          ))}
+        </Select>
+      );
       
     
 }
