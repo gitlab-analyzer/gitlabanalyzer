@@ -10,7 +10,6 @@ const MultipleSelect = (props) => {
         mapList, setMapList,
         selectedOptions, 
         setSelectedOptions,
-        nonSelectedOptions, setNonSelectedOptions,
     } = useAuth();
 
     const [selectedItems, setSelectedItems] = useState([]);
@@ -18,7 +17,6 @@ const MultipleSelect = (props) => {
     const userList = ["User1", "User2", "User3", "User4", "User5", "User6"]; // fake data
     // const userList = usersList;     // real data
     const dict = {};
-    const [dictionary, setDictionary] = useState({});
 
     function handleSelect(value) {
         setSelectedOptions([...selectedOptions, value]);
@@ -37,29 +35,24 @@ const MultipleSelect = (props) => {
         setSelectedItems(value);
         // console.log(props.currentMember)
 
-        // var dict = {};
-        
+        var dict = mapList;
         // this!
         dict[props.currentMember] = value;
-        console.log(dict);
+        // console.log(dict);
 
-        // setDictionary({...dictionary, dict})
-        // console.log(dictionary)
-        
+        setMapList(dict)
         // setMapList(oldList => ({...oldList, dict}));  // this!
-        setMapList({...mapList, dict})
+        // setMapList({...mapList, dict}) // this!
         // setMapList(dict)
         // console.log(mapList)
     }
 
+    /*
     useEffect( () => {
         console.log("helloooooooo")
         // setMapList(oldList => ({...oldList, dictionary})); 
-    }, [dictionary])
-
-    function addToDictionary() {
-        
-    }
+    }, [mapList])
+    */
 
     const filteredOptions = userList.filter(o => !selectedOptions.includes(o));
     return (

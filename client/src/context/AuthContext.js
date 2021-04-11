@@ -28,7 +28,6 @@ const AuthProvider = (props) => {
 
   const [mapList, setMapList] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [nonSelectedOptions, setNonSelectedOptions] = useState(usersList);
 
   const authContextValue = {
     user,
@@ -79,7 +78,6 @@ const AuthProvider = (props) => {
     setMapList,
     selectedOptions, 
     setSelectedOptions,
-    nonSelectedOptions, setNonSelectedOptions,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
