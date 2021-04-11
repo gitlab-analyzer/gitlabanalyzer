@@ -14,7 +14,7 @@ const MultipleSelect = (props) => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [newSelectedItems, setNewSelectedItems] = useState();
-    const userList = ["User1", "User2", "User3", "User4", "User5", "User6", "MemberA", "MemberB"]; // fake data
+    const userList = ["UserA", "UserB", "UserC", "UserD", "UserE", "UserJJJ", "UserX"] //  fake data
 
     /*
     // real data
@@ -33,12 +33,19 @@ const MultipleSelect = (props) => {
         var index = tempSelectedOptions.indexOf(value)
         if (index !== -1) {
             tempSelectedOptions.splice(index, 1);
-            setSelectedOptions(tempSelectedOptions)
+            setSelectedOptions([...selectedOptions, tempSelectedOptions])
         }
+        console.log(selectedOptions)
+        console.log(value);
+        
+        console.log(selectedOptions)
+        console.log(value);
+       
     }
     
     function handleChange(value) {
         setSelectedItems(value);
+        // setSelectedOptions(value);
         // console.log(props.currentMember)
 
         var dict = mapList;
