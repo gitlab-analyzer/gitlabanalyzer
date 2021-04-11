@@ -7,6 +7,8 @@ from pymongo.collection import Collection
 from pymongo.errors import DuplicateKeyError, ExecutionTimeout
 from pymongo.results import *
 
+from bson import ObjectId
+
 from model.commit import Commit
 from model.merge_request import MergeRequest
 from model.comment import Comment
@@ -471,7 +473,13 @@ class GitLabDB:
     @staticmethod
     def __comment_to_bson(project_id: Union[int, str], comment: Comment) -> dict:
         return {
-            "_id": (comment.noteable_iid, comment.noteable_type, project_id),
+            "_id": (
+                comment.noteable_iid
+                if comment.noteable_iid is not None
+                else ObjectId(),
+                comment.noteable_type,
+                project_id,
+            ),
             "project_id": project_id,
         }.update(comment.to_dict())
 

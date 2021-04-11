@@ -3,8 +3,6 @@ from typing import Union, Optional
 import gitlab
 import re
 
-from bson import ObjectId
-
 """
 For comments from Issue / Merge Request:
 * id => id of the comment itself. None if comment is on "Commit"
@@ -57,7 +55,7 @@ class Comment(DataObject):
             )  # datetime in ISO 8601 format
             self.__noteable_id: Union[int, str] = commitSha
             self.__noteable_type: str = "Commit"
-            self.__noteable_iid: Optional[int] = ObjectId()
+            self.__noteable_iid: Optional[int] = None
             self.__id: Optional[int] = None
             self.__word_count = len(re.findall(r'\w+', self.__body))
             self.__owner_of_noteable: str = author_of_notable
