@@ -37,7 +37,7 @@ const Appdiff = ({ diffText, code }) => {
     let score = 0;
     let index = 0;
     for (let line of fields) {
-      score += code[line] * multiplier[index];
+      score += code['line_counts'][line] * multiplier[index];
       index++;
     }
 
@@ -60,10 +60,11 @@ const Appdiff = ({ diffText, code }) => {
         {oldPath === newPath ? oldPath : `${oldPath} -> ${newPath}`}
         <div>
           <Button type="primary" ghost style={{ marginRight: '10px' }}>
-            Score: {scoreCalculator().toFixed(2)}
+            Score: {scoreCalculator().toFixed(1)}
           </Button>
           <Button
             onClick={() => {
+              console.log('code', code);
               setSpecificFile(code);
             }}
             type="primary"

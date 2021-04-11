@@ -23,15 +23,16 @@ const CodeDiffTable = ({ singleFile }) => {
       if (!specificFile) {
         return null;
       }
+      console.log('spe', specificFile);
       return {
-        lines_added: specificFile['lines_added'],
-        lines_deleted: specificFile['lines_deleted'],
-        comments_added: specificFile['comments_added'],
-        comments_deleted: specificFile['comments_deleted'],
-        blanks_added: specificFile['blanks_added'],
-        blanks_deleted: specificFile['blanks_deleted'],
-        spacing_changes: specificFile['spacing_changes'],
-        syntax_changes: specificFile['syntax_changes'],
+        lines_added: specificFile['line_counts']['lines_added'],
+        lines_deleted: specificFile['line_counts']['lines_deleted'],
+        comments_added: specificFile['line_counts']['comments_added'],
+        comments_deleted: specificFile['line_counts']['comments_deleted'],
+        blanks_added: specificFile['line_counts']['blanks_added'],
+        blanks_deleted: specificFile['line_counts']['blanks_deleted'],
+        spacing_changes: specificFile['line_counts']['spacing_changes'],
+        syntax_changes: specificFile['line_counts']['syntax_changes'],
       };
     } else {
       return codeDiffDetail['lineCounts'];
@@ -55,13 +56,14 @@ const CodeDiffTable = ({ singleFile }) => {
           object.key = lineName;
           object.name = capitalize(lineName.replace('_', ' '));
           object.lc = lineCounts[lineName];
+          console.log('um', object.lc);
           object.multiplier = 'x ' + multiplier[index].toString();
-          object.score = (lineCounts[lineName] * multiplier[index]).toFixed(2);
+          object.score = (lineCounts[lineName] * multiplier[index]).toFixed(1);
           score += lineCounts[lineName] * multiplier[index];
           data.push(object);
           index++;
         }
-        data.push({ name: 'Total', score: score.toFixed(2) });
+        data.push({ name: 'Total', score: score.toFixed(1) });
         setLcData(data);
       };
       constructDataSource();

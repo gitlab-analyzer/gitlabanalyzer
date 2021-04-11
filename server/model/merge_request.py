@@ -1,4 +1,3 @@
-from model.code_diff import CodeDiff
 from model.commit import Commit
 from model.data_object import DataObject
 from typing import Optional, List
@@ -27,9 +26,10 @@ class MergeRequest(DataObject):
         else:  # merge request is not merged
             self.__merged_by: Optional[int] = None
         self.__merged_date: Optional[str] = mr.merged_at
-        self.__comments: Optional[List[str]] = None
+        self.__comment_iid_list: List[int] = []
         self.__related_commits_list: List[Commit] = []
         self.__line_counts: dict = {}
+        self.__code_diff_detail: list = []
         self.__add_commits_list(commits_list)
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
@@ -96,8 +96,8 @@ class MergeRequest(DataObject):
         return self.__merged_date
 
     @property
-    def comments(self) -> Optional[List[str]]:
-        return self.__comments
+    def comment_iid_list(self) -> Optional[List[str]]:
+        return self.__comment_iid_list
 
     @property
     def related_commits_list(self) -> List[Commit]:
@@ -111,6 +111,10 @@ class MergeRequest(DataObject):
     def line_counts(self) -> dict:
         return self.__line_counts
 
+    @property
+    def code_diff_detail(self) -> list:
+        return self.code_diff_detail
+
     @line_counts.setter
     def line_counts(self, lineCounts) -> None:
         self.__line_counts = lineCounts
@@ -119,5 +123,12 @@ class MergeRequest(DataObject):
     def code_diff_id(self, codeDiffID: int) -> None:
         self.__code_diff_id = codeDiffID
 
+    def add_comment(self, comment_iid: int):
+        self.__comment_iid_list.append(comment_iid)
+
     def set_comments(self, commentList: List[str]):
         self.__comments = commentList
+
+    @code_diff_detail.setter
+    def code_diff_detail(self, codeDiffDetail: list) -> None:
+        self.__code_diff_detail = codeDiffDetail

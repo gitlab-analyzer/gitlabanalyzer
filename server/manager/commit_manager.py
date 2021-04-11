@@ -19,9 +19,9 @@ class CommitManager:
             myList.append(commit.to_dict())
         return myList
 
-    def add_commit(self, commit: gitlab) -> None:
-        test = Commit(commit)
-        self.__commitList.append(test)
+    def add_commit(self, commit: gitlab, direct_to_master: bool = False) -> None:
+        myCommit = Commit(commit, direct_to_master=direct_to_master)
+        self.__commitList.append(myCommit)
 
     def get_commit_by_id(self, ID) -> Union[Commit, None]:
         for commit in self.__commitList:

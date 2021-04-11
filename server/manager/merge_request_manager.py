@@ -18,8 +18,10 @@ class MergeRequestManager:
 
     def add_merge_request(
         self, mergeRequest: gitlab, commits_list: List[Commit]
-    ) -> None:
-        self.__mergeRequestList.append(MergeRequest(mergeRequest, commits_list))
+    ) -> MergeRequest:
+        newMR = MergeRequest(mergeRequest, commits_list)
+        self.__mergeRequestList.append(newMR)
+        return newMR
 
     def get_merge_request_by_id(self, myId) -> Union[MergeRequest, None]:
         for mergeRequest in self.__mergeRequestList:
