@@ -27,13 +27,11 @@ class MembersList extends React.Component {
 
 // this version
 const MembersList = (props) => {
-    // const { membersList, } = useAuth();
     const {
       membersList,
     } = useAuth();
 
     const memberList = props.list
-    // const memberList = membersList
     // const memberList = membersList.map((item) => item);
 
     return(

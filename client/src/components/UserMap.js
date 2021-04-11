@@ -133,12 +133,9 @@ const UserMap = () => {
         mapList, setMapList,
     } = useAuth();
 
-    const userListLength = membersList.length;
-    const userList = usersList;
-    // const memberList = membersList;
-    const memberList = ["MemberA", "MemberB", "MemberC", "MemberD", "MemberE"];
-
-    // const memberList = membersList.map((item) => item);
+    const userListLength = usersList.length;
+    // const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"];
+    const memberList = membersList.map((item) => item.name);    // real data
     
     // const MemberList = ({ list }) => (
     //     <ul className="allList">
@@ -176,13 +173,7 @@ const UserMap = () => {
     );
 
     const proceedMapping = () => {
-        // call backend api
-        
-        // console.log(membersList.length)
-        // console.log(membersList)
-        // console.log(usersList.length)
-        // console.log(usersList)
-        
+        // call backend     
         console.log(mapList)
     }
 

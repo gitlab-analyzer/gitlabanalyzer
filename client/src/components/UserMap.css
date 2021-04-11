@@ -11,12 +11,12 @@ p {
 
 .intro {
     margin-top: 50px;
-    margin-bottom: 40px;
+    margin-bottom: 4px;
 }
 
 .columnNames {
     margin-top: 30px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .allList {
@@ -51,5 +51,5 @@ p {
 }
 
 .button {
-    margin-top: 70px;
+    margin-top: 50px;
 }

@@ -12,9 +12,9 @@ const MultipleSelect = (props) => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [newSelectedItems, setNewSelectedItems] = useState();
-    const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
-    // const userList = usersList;
-    const dict = [];
+    // const userList = ["User1", "User2", "User3", "User4", "User5", "User6"];
+    const userList = usersList;     // real data
+    const dict = {};
     const [dictionary, setDictionary] = useState({});
     
     function handleChange(value) {
@@ -22,21 +22,24 @@ const MultipleSelect = (props) => {
         // console.log(props.currentMember)
 
         // var dict = {};
-        dict[props.currentMember] = value
+        
+        // this!
+        dict[props.currentMember] = value;
         console.log(dict);
 
-        setDictionary({...dictionary, dict})
+        // setDictionary({...dictionary, dict})
         // console.log(dictionary)
         
-        setMapList(oldList => ({...oldList, dict}));
-        // setMapList({...mapList, dict})
+        // setMapList(oldList => ({...oldList, dict}));  // this!
+        setMapList({...mapList, dict})
         // setMapList(dict)
         // console.log(mapList)
     }
 
     useEffect( () => {
         console.log("helloooooooo")
-    }, [mapList])
+        // setMapList(oldList => ({...oldList, dictionary})); 
+    }, [dictionary])
 
     function addToDictionary() {
         
