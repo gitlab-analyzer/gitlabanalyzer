@@ -77,6 +77,7 @@ const CodeDiffTable = ({ singleFile }) => {
     {
       title: <Text strong>Line counts</Text>,
       dataIndex: 'lc',
+      align: 'center',
       key: 'age',
     },
     {
@@ -87,9 +88,11 @@ const CodeDiffTable = ({ singleFile }) => {
     {
       title: 'Score',
       dataIndex: 'score',
+      align: 'right',
       key: 'score',
     },
   ];
+
   const loadingSim = () => {
     if (!lcdata) {
       return null;
