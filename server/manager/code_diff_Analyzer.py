@@ -30,7 +30,12 @@ class CodeDiffAnalyzer:
         }
 
         oldLine = " "
-        python = self.check_for_code_type(codeDiffObject)
+        fileType = self.check_for_code_type(codeDiffObject)
+
+        python = False
+        if fileType == "py":
+            python = True
+
         block_code = False
 
         diffCode = codeDiffObject
@@ -90,14 +95,13 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> bool:
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> str:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
         found = re.search('\.(.+?)$', fileName)
         if found is not None:
-            if found.group(1) == 'py':
-                return True
-        return False
+            return found.group(1)
+        return None
 
     def add_normal_line_of_code(self, info, line, python) -> dict:
 
@@ -187,9 +191,8 @@ class CodeDiffAnalyzer:
                 line.count(signal_block_code) == 2 and python == True
             ):
                 info = self.modify_info_value("comments", info, line[0])
-                return info
-
-        info = self.add_block_of_comments(line, python, info, block_code)
+            else:
+                info = self.add_block_of_comments(line, python, info, block_code)
         return info
 
     def add_block_of_comments(self, line, python, info, block_code) -> dict:

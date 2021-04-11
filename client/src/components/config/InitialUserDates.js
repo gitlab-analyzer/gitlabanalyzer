@@ -32,7 +32,6 @@ function InitialUserDates() {
         label="Dates"
         name="date"
         initialValue={dataList}
-        
         rules={[
           {
             required: true,
@@ -46,7 +45,6 @@ function InitialUserDates() {
               Today: [moment().startOf('day'), moment().endOf('day')],
             }}
             defaultValue={dataList}
-            // onChange={setDataList}
             showTime
             allowClear={false}
             renderExtraFooter={() => 'Format: YYYY/MM/DD hh:mm:ss'}

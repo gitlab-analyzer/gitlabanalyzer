@@ -1,6 +1,7 @@
 import datetime
 from model.project import Project
 import threading
+from copy import deepcopy
 
 from interface.gitlab_interface import GitLab
 from manager.code_diff_Analyzer import CodeDiffAnalyzer
@@ -20,7 +21,7 @@ TOTAL_SYNC_STAGES: int = 7
 
 
 class GitLabProject:
-    def __init__(self, project):
+    def __init__(self, project, default_branch: str = "master"):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -33,6 +34,7 @@ class GitLabProject:
         self.__last_synced: datetime = None
         self.__syncing_state: str = "Not Synced"
         self.__syncing_progress: int = 0
+        self.__default_branch: str = default_branch
         # This will be filled after the call to self.__update_commits_manager(myGitlab)
         self.__user_list: list = []
 
@@ -103,6 +105,9 @@ class GitLabProject:
             self.__membersManager.add_member(member)
         self.__syncing_progress = self.__syncing_progress + 1
 
+    def __check_commit_direct_to_master(self, refBranches: list) -> bool:
+        return len(refBranches) == 1 and refBranches[0]["name"] == self.__default_branch
+
     def __update_commits_manager(self, myGitlab: GitLab) -> None:
         commitList: list = myGitlab.get_commit_list_for_project()
         tempUserSet: set = set()
@@ -163,7 +168,10 @@ class GitLabProject:
             diffStats: dict = self.__codeDiffAnalyzer.get_code_diff_statistic(
                 CodeDiff(diff)
             )
-            diff.update(diffStats)
+            diff["line_counts"] = diffStats
+            diff["file_type"] = self.__codeDiffAnalyzer.check_for_code_type(
+                CodeDiff(diff)
+            )
 
     def get_commit_score_data(self, commit: Commit) -> dict:
         # TODO: CHANGE
@@ -181,7 +189,7 @@ class GitLabProject:
         codeDiff: List[dict] = self.__codeDiffManager.get_code_diff(commit.code_diff_id)
         for diff in codeDiff:
             for key in scoreData.keys():
-                scoreData[key] += diff[key]
+                scoreData[key] += diff["line_counts"][key]
 
         return scoreData
 
@@ -215,7 +223,7 @@ class GitLabProject:
         )
         for diff in codeDiff:
             for key in scoreData["mergeRequestScoreData"].keys():
-                scoreData["mergeRequestScoreData"][key] += diff[key]
+                scoreData["mergeRequestScoreData"][key] += diff["line_counts"][key]
 
         for commit in mergeRequest.related_commits_list:
             commitScoreData = self.get_commit_score_data(commit)
@@ -228,7 +236,17 @@ class GitLabProject:
         self.__syncing_state = "Analyzing commits"
         for commit in self.__commitsManager.get_commit_list():
             commit.line_counts = self.get_commit_score_data(commit)
+            commit.code_diff_detail = self.__get_code_diff_detail(
+                self.__codeDiffManager.get_code_diff(commit.code_diff_id)
+            )
         self.__syncing_progress = self.__syncing_progress + 1
+
+    def __get_code_diff_detail(self, myCodeDiffList: list) -> list:
+        codeDiff: dict
+        CodeDiffList = deepcopy(myCodeDiffList)
+        for codeDiff in CodeDiffList:
+            codeDiff.pop("diff")
+        return CodeDiffList
 
     def __analyze_merge_requests_code_diff(self) -> None:
         self.__syncing_state = "Analyzing merge requests"
@@ -237,8 +255,14 @@ class GitLabProject:
             mr.line_counts = self.get_merge_request_score_data(mr)[
                 "mergeRequestScoreData"
             ]
+            mr.code_diff_detail = self.__get_code_diff_detail(
+                self.__codeDiffManager.get_code_diff(mr.code_diff_id)
+            )
             for commit in mr.related_commits_list:
                 commit.line_counts = self.get_commit_score_data(commit)
+                commit.code_diff_detail = self.__get_code_diff_detail(
+                    self.__codeDiffManager.get_code_diff(commit.code_diff_id)
+                )
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __get_members_and_user_names(self) -> list:
@@ -268,6 +292,32 @@ class GitLabProject:
                     user["commits"].append(commit.to_dict())
                     break
         return commitListsForAllUsers
+
+    def __check_if_direct_on_master(self, tempCommit: Commit) -> bool:
+        for mr in self.__mergeRequestManager.merge_request_list:
+            for commit in mr.related_commits_list:
+                if tempCommit.short_id == commit.short_id:
+                    return False
+                else:
+                    commit.direct_to_master = True
+                    return True
+
+    def __not_merge_commit(self, commit: Commit):
+        return "Merge branch " not in commit.title
+
+    def get_direct_commit_list_on_master_all_user(self) -> dict:
+        commitList: dict = {}
+        for commit in self.__commitsManager.get_commit_list():
+            if self.__not_merge_commit(commit) and self.__check_if_direct_on_master(
+                commit
+            ):
+                if (
+                    self.__not_merge_commit(commit)
+                    and commitList.get(commit.author_name, None) is None
+                ):
+                    commitList[commit.author_name] = []
+                commitList[commit.author_name].append(commit.to_dict())
+        return commitList
 
     def __get_commit_list_and_authors(self, commits: List[Commit]) -> Tuple[list, list]:
         commitList = []

@@ -22,6 +22,7 @@ class BarGraph extends React.Component {
             dashArray: 0,      
         },
           chart: {
+            fontFamily: 'Comfortaa',
             id: this.props.id,
             toolbar: {
               show: false

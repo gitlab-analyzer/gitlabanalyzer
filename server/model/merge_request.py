@@ -29,6 +29,7 @@ class MergeRequest(DataObject):
         self.__comment_iid_list: List[int] = []
         self.__related_commits_list: List[Commit] = []
         self.__line_counts: dict = {}
+        self.__code_diff_detail: list = []
         self.__add_commits_list(commits_list)
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
@@ -110,6 +111,10 @@ class MergeRequest(DataObject):
     def line_counts(self) -> dict:
         return self.__line_counts
 
+    @property
+    def code_diff_detail(self) -> list:
+        return self.code_diff_detail
+
     @line_counts.setter
     def line_counts(self, lineCounts) -> None:
         self.__line_counts = lineCounts
@@ -120,3 +125,10 @@ class MergeRequest(DataObject):
 
     def add_comment(self, comment_iid: int):
         self.__comment_iid_list.append(comment_iid)
+        
+    def set_comments(self, commentList: List[str]):
+        self.__comments = commentList
+
+    @code_diff_detail.setter
+    def code_diff_detail(self, codeDiffDetail: list) -> None:
+        self.__code_diff_detail = codeDiffDetail

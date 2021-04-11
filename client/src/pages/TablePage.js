@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import { React } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,10 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Button } from 'antd'
 
 import FilterMenu from '../components/table/FilterMenu';
-import SelectUser from '../components/SelectUser';
 import Header from '../components/Header';
 import FooterBar from '../components/FooterBar';
 
@@ -24,6 +22,13 @@ const StyledTableCell = withStyles((theme) => ({
   },
   body: {
     fontFamily: 'Comfortaa',
+  },
+}))(TableCell);
+
+const CommentTableCell = withStyles((theme) => ({
+  body: {
+    fontFamily: 'Comfortaa',
+    fontSize: '12px'
   },
 }))(TableCell);
 
@@ -51,33 +56,95 @@ function createData(date, wordcount, comment, ownership, type) {
 
 
 const TablePage = () => {
-  const { selectUser, setSelectUser, notesList, setNotesList} = useAuth()
+  const { 
+    selectUser, 
+    notesList, 
+    dataList
+  } = useAuth()
   const classes = useStyles();
 
-  const populateTable = (notes) => {
+  // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
+  // if not, Mar 14 2020 @ 8:30pm
+  const dateFormatter = (dateObject) => {
+    let today = new Date();
+    let ampm = '';
+    let thisYear = today.getFullYear();
+    let months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    let month = dateObject.getMonth();
+    let day = dateObject.getDate();
+    let year = dateObject.getFullYear();
+    let hour = dateObject.getHours();
+    let minute = dateObject.getMinutes();
+
+    if (hour === 0) {
+      hour = 12;
+      ampm = 'am';
+    } else if (hour >= 13) {
+      hour -= 12;
+      ampm = 'pm';
+    } else {
+      ampm = 'am';
+    }
+
+    if (minute < 10) {
+      minute = '0' + minute;
+    }
+
+    if (thisYear === year) {
+      return `${months[month]} ${day} @ ${hour}:${minute}${ampm}`;
+    } else {
+      return `${months[month]} ${year} ${day} @ ${hour}:${minute}${ampm}`;
+    }
+  };
+
+  const populateTable = (notes, dates) => {
     var i;
     var result = [];
-    var type, date;
+    var type;
     for (i = 0; i < notes.length; i++) {
-      if (selectUser === notes[i].author) {
-        if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
-          type = "Code Review"
-        } else {
-          type = "Issue"
+      if(dates.length !== 0) {
+        if ((selectUser === notes[i].author) && (dates[0]._d <= notes[i].createdDate && notes[i].createdDate <= dates[1]._d)) {
+          if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+            type = "Code Review"
+          } else {
+            type = "Issue"
+          }
+          result.push(createData(dateFormatter(notes[i].createdDate), notes[i].wordCount, notes[i].body, notes[i].ownership, type))
         }
-        date = [
-          notes[i].createdDate.getFullYear(),
-          notes[i].createdDate.getMonth() +1,
-          notes[i].createdDate.getDate(),
-        ].join('-');
-        result.push(createData(date, notes[i].wordCount, notes[i].body, "author", type))
+      } else {
+        if(selectUser === notes[i].author) {
+          if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+            type = "Code Review"
+          } else {
+            type = "Issue"
+          }
+          result.push(
+            createData(dateFormatter(notes[i].createdDate), 
+            notes[i].wordCount, 
+            notes[i].body, 
+            notes[i].ownership, 
+            type))
         }
       }
+    }
       return result;
     }
 
   // Table updates based on state of this
-  var rows = populateTable(notesList)
+  var rows = populateTable(notesList, dataList)
 
   return (
     <>
@@ -89,7 +156,7 @@ const TablePage = () => {
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>Date</StyledTableCell>
+                    <StyledTableCell style={{ width: '20%' }}>Date</StyledTableCell>
                     <StyledTableCell align="right">Word Count</StyledTableCell>
                     <StyledTableCell style={{ width: '50%' }} align="left">
                       Comment
@@ -107,9 +174,9 @@ const TablePage = () => {
                       <StyledTableCell align="right">
                         {row.wordcount}
                       </StyledTableCell>
-                      <StyledTableCell size="medium" align="left">
+                      <CommentTableCell size="medium" align="left">
                         {row.comment}
-                      </StyledTableCell>
+                      </CommentTableCell>
                       <StyledTableCell align="right">
                         {row.ownership}
                       </StyledTableCell>

@@ -3,7 +3,7 @@ from typing import Any
 
 import flask
 from flask import Flask, request, jsonify, make_response
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
 
 app = Flask(__name__)
@@ -16,11 +16,6 @@ projectIDError = {"response": False, "cause": "Error, invalid projectID."}
 
 def hash_token(myToken: str):
     return hashlib.sha256(str.encode(myToken)).hexdigest()
-
-
-# TODO:
-#  1. Add a background task to delete key value pairs if it has
-#  stayed in the map for a long time (so it wont blow up the memory)
 
 
 @app.route('/auth', methods=['post'])
@@ -74,7 +69,7 @@ def sync_a_list_of_products():
     return jsonify({"response": isSuccess, "status": response, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/sync/state', methods=['get'])
+@app.route('/projects/<int:projectID>/sync/state', methods=['post'])
 def get_state(projectID: int):
     isSuccess, errorCode, value = gitlab_manager.check_sync_state(
         request.cookies.get("id", ""), projectID
@@ -140,6 +135,19 @@ def get_commits_for_users(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
+@app.route('/projects/<int:projectID>/commit/master/direct/user/all', methods=['get'])
+def get_unique_master_commits_for_users(projectID):
+    (
+        isSuccess,
+        errorCode,
+        value,
+    ) = gitlab_manager.get_project_master_direct_commits_by_user(
+        request.cookies.get("id", ""), projectID
+    )
+
+    return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
+
+
 @app.route('/projects/<int:projectID>/merge_request/user/all', methods=['get'])
 def get_merge_requests_for_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_merge_request_by_user(
@@ -187,6 +195,48 @@ def get_notes_for_all_users(projectID):
     )
 
     return jsonify({'notes': value, "response": isSuccess, 'cause': errorCode})
+
+
+# TODO: May be we can add a admin list so only user with admin access can make this call
+@app.route('/config/garbage_monitor/start', methods=['post'])
+def start_garbage_collector():
+    gitlab_manager.start_garbage_monitor_thread()
+
+    return jsonify({"response": True, 'cause': ""})
+
+
+@app.route('/config/garbage_monitor/stop', methods=['post'])
+def stop_garbage_collector():
+    gitlab_manager.stop_garbage_monitor_thread()
+
+    return jsonify({"response": True, 'cause': ""})
+
+
+@app.route('/config/garbage_monitor/check_period', methods=['get', 'post'])
+def change_garbage_collector_check_period():
+    if request.method == "get":
+        return jsonify(
+            {
+                "response": True,
+                'cause': "",
+                "check_period": gitlab_manager.get_garbage_monitor_check_period(),
+            }
+        )
+    elif request.method == "post":
+        gitlab_manager.change_worker_check_period(
+            request.form.get("check_period", None)
+        )
+
+    return jsonify({"response": True, 'cause': ""})
+
+
+@app.route('/projects/<int:projectID>/map', methods=['post'])
+def map_users(projectID):
+    isSuccess, errorCode = gitlab_manager.map_users(
+        request.cookies.get("id", ""), projectID, get_request(request, "user_mapping")
+    )
+
+    return jsonify({"response": isSuccess, 'cause': errorCode})
 
 
 if __name__ == '__main__':
