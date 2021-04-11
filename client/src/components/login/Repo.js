@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { useAuth } from '../../context/AuthContext';
 import { useHistory, Link } from 'react-router-dom';
+import { SavedConfigs } from '../../pages/ConfigPage';
 import {
   CloseCircleOutlined,
   SettingOutlined,
@@ -45,6 +46,9 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setRepo,
     value,
     setValue,
+    setCurrentConfig,
+    setDataList,
+    setFinishedConfig,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -53,6 +57,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const [syncPercent, setSyncPercent] = useState(0);
   const [selectVal, setSelectVal] = useState(false);
   const history = useHistory();
+  const [form] = Form.useForm();
 
   useEffect(() => {}, [
     filteredList,
@@ -76,6 +81,14 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         duration: 1,
       });
     }
+  };
+
+  const handleSubmit = (value) => {
+    setVisible(false);
+    setCurrentConfig(value);
+    setDataList(value.date);
+    SavedConfigs['default'] = value;
+    setFinishedConfig(true);
   };
 
   // General error handling function for fetch requests
@@ -113,7 +126,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
    * Upon syncing, it will update syncDone state to reveal redirect button.
    */
   const syncProject = async () => {
-    const syncStatus = await axios.get(
+    const syncStatus = await axios.post(
       `http://localhost:5678/projects/${selectRepo}/sync/state`,
       {
         withCredentials: true,
@@ -223,7 +236,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           weightedScore: 0,
         };
         // Loop through object item
-        console.log(mrList[user]);
         for (let author of mrList[user]) {
           let tempCommits = {};
           for (let commit of author.commit_list) {
@@ -231,6 +243,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               authorName: commit.author_name,
               codeDiffId: commit.code_diff_id,
               comittedDate: new Date(commit.committed_date),
+              codeDiffDetail: { ...commit.code_diff_detail },
               committerName: commit.committer_name,
               id: commit.id,
               relatedMr: author.id,
@@ -245,6 +258,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 commit.line_counts.lines_deleted * 0.1,
               // Flag to ignore this commit
               ignore: false,
+              omitScore: 0,
               // Frontend defined variables End --------------------------
             };
           }
@@ -252,6 +266,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             author: author.author,
             codeDiffId: author.code_diff_id,
             comments: author.comments,
+            codeDiffDetail: { ...author.code_diff_detail },
             commitList: tempCommits,
             createdDate: new Date(author.created_date),
             description: author.description,
@@ -271,11 +286,12 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               author.line_counts.lines_deleted * 0.1,
             // Flag to ignore this MR
             ignore: false,
+            omitScore: 0,
             // Frontend defined variables End --------------------------
           };
         }
       }
-      // console.log(tempMR);
+      console.log('tempMR', tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -300,6 +316,8 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       noteableId: note.noteable_id,
       noteableIid: note.noteable_iid,
       noteableType: note.noteable_type,
+      owner_of_noteable: note.owner_of_noteable,
+      ownership: note.ownership,
       wordCount: note.word_count,
       // Frontend defined variables Start --------------------------
       // Initial score calculation
@@ -335,6 +353,8 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             noteableIid: comment.noteable_iid,
             noteableType: comment.noteable_type,
             wordCount: comment.word_count,
+            owner_of_noteable: comment.owner_of_noteable,
+            ownership: comment.ownership,
             // Frontend defined variables Start --------------------------
             // Initial score calculation
             score: 0,
@@ -411,8 +431,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     }
   };
 
-  const handleDrawer = async () => {
-    await fetchMembers();
+  const handleDrawer = () => {
     setVisible(true);
   };
   const onClose = () => {
@@ -550,13 +569,25 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             display: 'flex',
             justifyContent: 'flex-end',
           }}
-        ></div>
+        />
         <div
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
+            alignItems: 'center',
           }}
         >
+          <Popover content="Global Configuration">
+            <SettingOutlined
+              height="100px"
+              style={{
+                marginRight: 10,
+                fontSize: 20,
+                color: '#1890ff',
+              }}
+              onClick={handleDrawer}
+            />
+          </Popover>
           <Button
             onClick={selectAll}
             style={{ marginRight: '10px' }}
@@ -761,7 +792,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
                 >
                   Batch
                 </Checkbox>,
-                <SettingOutlined onClick={handleDrawer} />,
               ]}
             >
               <List.Item.Meta
@@ -778,11 +808,11 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         />
         <Drawer
           placement="right"
-          width={500}
+          width="600px"
           closable={false}
           onClose={onClose}
           visible={visible}
-          title="Initial Configuration"
+          title="GLOBAL CONFIGURATION"
           footer={
             <div
               style={{
@@ -792,13 +822,13 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               <Button style={{ marginRight: 10 }} onClick={onClose}>
                 Close
               </Button>
-              <Button type="primary" htmlType="submit" onClick={handleRoute}>
+              <Button type="primary" onClick={form.submit}>
                 Save
               </Button>
             </div>
           }
         >
-          <Form layout="vertical">
+          <Form form={form} layout="vertical" onFinish={handleSubmit}>
             <InitialConfig />
           </Form>
         </Drawer>

@@ -8,9 +8,9 @@
 - [Sync a list of projects(batch processing)](#sync-a-list-of-projectsbatch-processing)
     - `POST /projects/sync/batch`
 - [Get project syncing state](#get-project-syncing-state)
-    - `GET /projects/<int:projectID>/sync/state`
+    - `POST /projects/<int:projectID>/sync/state`
 - [Get a list of projects' syncing state](#get-a-list-of-projects-syncing-statebatch-processing)
-    - `GET /projects/sync/batch/state`
+    - `POST /projects/sync/batch/state`
 - [Get all the members in the repo](#get-all-the-members-in-the-project)
     - `GET /projects/<int:projectID>/members`
 - [Get all the committers' name](#get-all-the-users-in-the-project)
@@ -19,6 +19,8 @@
     - `GET /projects/<int:projectID>/commit`
 - [Get all the commits sorted in users](#get-all-the-commits-sorted-in-users)
     - `GET /projects/<int:projectID>/commit/user/all`
+- [Get all the commits committed directly on master]
+    - `GET /projects/<int:projectID>/commit/master/direct/user/all`
 - [Get all the merge requests in the project](#get-all-the-merge-request-in-that-project)
     - `GET /projects/<int:projectID>/merge_request/all`
 - [Get all the merge Request sorted in users](#get-all-the-merge-request-sorted-in-users)
@@ -29,6 +31,15 @@
     - `GET /projects/<int:projectID>/comments/all`
 - [Get all the comments sorted in users](#get-all-comments-sorted-in-users)
     - `GET /projects/<int:projectID>/comments/user/all`
+- [Start garbage collector](#start-garbage-collector)
+    - `POST /config/garbage_monitor/start`
+- [Stop garbage collector](#stop-garbage-collector)
+    - `POST /config/garbage_monitor/stop`
+- [Get garbage collector check period](#get-garbage-collector-check-period)
+    - `GET /config/garbage_monitor/check_period`
+- [Change garbage collector check period](#change-garbage-collector-check-period)
+    - `POST /config/garbage_monitor/check_period`
+
 
 #### Note
 All the API calls will contain two variables, `response` and `cause`
@@ -118,7 +129,7 @@ Example javascript ajax call:
 [Go back to API list](#api-example-response)
 
 ### Get project syncing state
-#### `GET /projects/<int:projectID>/sync/state`
+#### `POST /projects/<int:projectID>/sync/state`
 ```json
 {
     "cause": "",
@@ -144,7 +155,7 @@ Example javascript ajax call:
 [Go back to API list](#api-example-response)
 
 ### Get a list of projects' syncing state(batch processing)
-#### `GET /projects/sync/batch/state`
+#### `POST /projects/sync/batch/state`
 ```json
 {
     "cause": "",
@@ -368,6 +379,64 @@ Example javascript ajax call:
             "user_name": "springbro294"
         }
     ],
+    "response": true
+}
+```
+[Go back to API list](#api-example-response)
+
+### Get all the commits committed directly on master
+#### `GET /projects/<int:projectID>/commit/master/direct/user/all`
+```json
+{
+    "cause": "",
+    "commit_list": {
+        "Administrator": [
+            {
+                "author_name": "Administrator",
+                "code_diff_id": 0,
+                "committed_date": "2021-03-14T01:49:26.000+00:00",
+                "committer_name": "Administrator",
+                "direct_to_master": false,
+                "id": "c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6",
+                "line_counts": {
+                    "blanks_added": 0,
+                    "blanks_deleted": 0,
+                    "comments_added": 2,
+                    "comments_deleted": 0,
+                    "lines_added": 0,
+                    "lines_deleted": 0,
+                    "spacing_changes": 0,
+                    "syntax_changes": 1
+                },
+                "short_id": "c67b9155",
+                "title": "Update gitlab_interface_test.py",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/c67b9155f4691a9e8a4b8892479ec3ac87e8b6a6"
+            }
+        ],
+        "Andrew": [
+            {
+                "author_name": "Andrew",
+                "code_diff_id": 384,
+                "committed_date": "2021-02-05T01:31:20.000-08:00",
+                "committer_name": "Andrew",
+                "direct_to_master": false,
+                "id": "1fd1e554ba6414419d8804bb8a3ff99cd11ec21a",
+                "line_counts": {
+                    "blanks_added": 13,
+                    "blanks_deleted": 6,
+                    "comments_added": 0,
+                    "comments_deleted": 4,
+                    "lines_added": 557,
+                    "lines_deleted": 48,
+                    "spacing_changes": 0,
+                    "syntax_changes": 60
+                },
+                "short_id": "1fd1e554",
+                "title": "added simple nav bar and routing",
+                "web_url": "https://cmpt373-1211-12.cmpt.sfu.ca/root/makemke_mirrored/-/commit/1fd1e554ba6414419d8804bb8a3ff99cd11ec21a"
+            }
+        ]
+    },
     "response": true
 }
 ```
@@ -698,24 +767,40 @@ Example javascript ajax call:
     "cause": "",
     "code_diff_list": [
         {
-            "a_mode": "0",
+            "a_mode": "100644",
             "b_mode": "100644",
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "comments_added": 2,
+            "comments_deleted": 0,
             "deleted_file": false,
-            "diff": "@@ -0,0 +1,100 @@\n+import copy\n+\n+class Analyzer:\n+    def __init__(self, acceptor_ids, factor=0.05):\n+        self.weight_changed = False\n+        self.acceptor_ids = acceptor_ids\n+        self.factor=factor\n+        self.num_acceptors = len(acceptor_ids)\n+        self.nominal = 1 / self.num_acceptors\n+        #self.ceiling = (int(self.num_acceptors/3)+1) * self.nominal\n+        self.ceiling = 1/2\n+\n+        self.weights = {}\n+        self.msgs_sent = {}\n+        self.msgs_recvd = {}\n+        self.msg_ratios = {}\n+        self.thresholds = {}\n+        for pid in acceptor_ids:\n+            self.weights[pid] = self.nominal\n+            self.msgs_sent[pid] = 0\n+            self.msgs_recvd[pid] = 0\n+            self.msg_ratios[pid] = 0\n+            self.thresholds[pid] = round(1-self.factor,2)\n+\n+        # make copy of state to compare before/after run\n+        self._pre = copy.copy(self)\n+\n+    def add_send(self, pid):\n+        self.msgs_sent[pid] += 1\n+\n+    def add_recvd(self, pid):\n+        self.msgs_recvd[pid] += 1\n+        try:\n+            self.msg_ratios[pid] = round(self.msgs_recvd[pid]/self.msgs_sent[pid],2)\n+        except ZeroDivisionError:\n+            pass\n+        #self.check_threshold(pid)\n+\n+    def check(self):\n+        for pid in self.acceptor_ids:\n+            self.check_threshold(pid)\n+\n+    def check_threshold(self, pid):\n+        if self.msg_ratios[pid] <= self.thresholds[pid]:\n+            self.thresholds[pid] = round(self.thresholds[pid]-self.factor,2)\n+            self.lower_weight(pid)\n+\n+    def lower_weight(self, pid):\n+        # lower the pid's weight\n+        tmp = round(self.weights[pid]-self.factor,2)\n+        if tmp > 0.0:\n+            self.weights[pid] = tmp\n+        else:\n+            self.weights[pid] = 0.0\n+        self.raise_weight()\n+        self.weight_changed = True\n+\n+    def raise_weight(self):\n+        # increase another pid's weight\n+        if self.nominal != self.ceiling:\n+            adjusted = False\n+            while not adjusted:\n+                for i in range(self.num_acceptors):\n+                    pid = self.acceptor_ids[i]\n+                    diff = self.weights[pid] - self.nominal\n+                    if diff == 0.0:\n+                        self.weights[pid] = round(self.weights[pid]+self.factor,2)\n+                        adjusted = True\n+                        break\n+                if i is (self.num_acceptors-1):\n+                    self.nominal = round(self.nominal+self.factor,2)\n+\n+    def log(self):\n+        print(\"Acceptor weights: {}\".format(self.weights))\n+        print(\"Acceptor ratios: {}\".format(self.msg_ratios))\n+        print(\"Acceptor thresholds: {}\".format(self.thresholds))\n+\n+\n+if __name__ == '__main__':\n+    import random\n+\n+    def test(acceptors, fail_rates, num_msgs):\n+        print(\"testing pids {}: \".format(acceptors))\n+        a=Analyzer(acceptors)\n+        print(\"\\nBefore rounds...\")\n+        a.log()\n+        for n in range(num_msgs):\n+            for pid in acceptors:\n+                a.add_send(pid)\n+                if fail_rates[pid] > random.random():\n+                    pass\n+                else:\n+                    a.add_recvd(pid)\n+        print(\"\\nAfter rounds...\")\n+        a.log()\n+        print('\\n')\n+\n+    test([0,1,2,3],[0,0,0.05,0],100)\n+    test([0,1,2,3,4],[0,0,0.05,0,0],100)\n+    test([0,1,2,3,4,5,6,7,8,9],[0,0,0.05,0,0,0,0,0,0.1,0],1000)\n\\ No newline at end of file\n",
-            "new_file": true,
-            "new_path": "server/model/analyzer.py",
-            "old_path": "server/model/analyzer.py",
-            "renamed_file": false
+            "diff": "@@ -1,5 +1,8 @@\n from interface.gitlab_interface import GitLab\n \n+for test in test:\n+    print(\"We need to write some unit test\")\n+\n \"\"\"\n Below are only for testing purpose\n \"\"\"\n",
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "new_file": false,
+            "new_path": "server/test/gitlab_interface_test.py",
+            "old_path": "server/test/gitlab_interface_test.py",
+            "renamed_file": false,
+            "spacing_changes": 0,
+            "syntax_changes": 1
         },
         {
-            "a_mode": "0",
+            "a_mode": "100644",
             "b_mode": "100644",
+            "blanks_added": 0,
+            "blanks_deleted": 0,
+            "comments_added": 2,
+            "comments_deleted": 0,
             "deleted_file": false,
-            "diff": "@@ -0,0 +1,152 @@\n+from collections import defaultdict\n+\n+from paxos.messages import *\n+\n+\n+class BasicPaxosProtocol:\n+\n+    def __init__(self, agent):\n+        self.agent = agent\n+\n+    def have_acceptor_majority(self, acceptors):\n+        \"\"\"\n+        Return True or False, depending on whether or not the passed collection\n+        of acceptors make up a majority.\n+        \"\"\"\n+        config = self.agent.config\n+        majority_weight = config.total_weight / float(2)\n+        current_weight = sum([config.weights[i] for i in acceptors])\n+        return current_weight > majority_weight\n+\n+    def tally_outbound_msgs(self):\n+        if self.agent.analyzer:\n+            for pid in self.agent.config.acceptor_ids:\n+                self.agent.analyzer.add_send(pid)\n+\n+    def tally_inbound_msgs(self, pid):\n+        if self.agent.analyzer:\n+            self.agent.analyzer.add_recvd(pid)\n+\n+    def adjust_weights(self):\n+        if self.agent.analyzer:\n+            self.agent.analyzer.check()\n+            if self.agent.analyzer.weight_changed:\n+                weights = self.agent.analyzer.weights\n+                source = self.agent.pid\n+                msg = AdjustWeightsMsg(source, weights)\n+                self.agent.send_message(msg, self.agent.config.learner_ids)\n+                print(\"--RATIOS--{}\".format(self.agent.analyzer.msg_ratios))\n+                print(\"--WEIGHTS--{}\".format(weights))\n+                self.agent.analyzer.weight_changed = False\n+\n+class BasicPaxosProposerProtocol(BasicPaxosProtocol):\n+\n+    def __init__(self, agent, proposal):\n+        super(BasicPaxosProposerProtocol, self).__init__(agent)\n+        # Request from a client.\n+        self.request = None\n+        # The current proposal for the instance started by this proposer.\n+        self.proposal = proposal\n+\n+        self.prepare_responders = set()\n+        self.highest_proposal_from_promises = Proposal(-1, None)\n+        self.accept_responders = set()\n+\n+        # States.\n+        self.state = None\n+        self.PREPARE_SENT = 0\n+        self.ACCEPT_SENT = 1\n+\n+    def handle_client_request(self, proposal):\n+        next_msg = PrepareMsg(proposal.pid, proposal)\n+        self.agent.send_message(next_msg, self.agent.config.acceptor_ids)\n+        # if dynamic weights, tally messages\n+        self.tally_outbound_msgs()\n+        self.state = self.PREPARE_SENT\n+\n+    def handle_prepare_response(self, msg):\n+        \"\"\"\n+        Handle a response to a proposal.\n+        See if we've got a response from a majority of acceptors.  If so, send\n+        accept messages to acceptors.\n+        \"\"\"\n+        self.prepare_responders.add(msg.source)\n+        self.tally_inbound_msgs(msg.source)\n+        if msg.highest_proposal.number > self.highest_proposal_from_promises.number:\n+            self.highest_proposal_from_promises = msg.highest_proposal\n+        # Check that we have sent prepare but not yet sent accept.\n+        if self.state == self.PREPARE_SENT:\n+            if self.have_acceptor_majority(self.prepare_responders):\n+                # If we have received any prepare responses with a higher\n+                # proposal number, we must use the value in that proposal.\n+                # If that value is None, then we get to choose (i.e. we'll use\n+                # the client's requested value.\n+                # Also set a flag here to note whether or not we used the\n+                # client's requested value (for retrying later).\n+                if self.highest_proposal_from_promises.value is not None:\n+                    self.proposal.value = self.highest_proposal_from_promises.value\n+                    self.client_request_handled = False\n+                else:\n+                    self.proposal.value = self.request\n+                    self.client_request_handled = True\n+                next_msg = AcceptMsg(self.agent.pid, self.proposal)\n+                # Can send to all acceptors or just the ones that responded.\n+                self.agent.send_message(next_msg, self.agent.config.acceptor_ids)\n+                #self.agent.send_message(next_msg, self.prepare_responders)\n+                self.tally_outbound_msgs()\n+                self.state = self.ACCEPT_SENT\n+\n+    def handle_accept_response(self, msg):\n+        self.accept_responders.add(msg.source)\n+        self.tally_inbound_msgs(msg.source)\n+        if self.have_acceptor_majority(self.accept_responders):\n+            self.adjust_weights()\n+\n+            class BasicPaxosAcceptorProtocol(BasicPaxosProtocol):\n+\n+    def __init__(self, agent):\n+        super(BasicPaxosAcceptorProtocol, self).__init__(agent)\n+        self.highest_proposal_promised = Proposal(-1, None)\n+        self.highest_proposal_accepted = Proposal(-1, None)\n+\n+    def handle_prepare(self, msg):\n+        if msg.proposal.number > self.highest_proposal_promised.number:\n+            self.highest_proposal_promised = msg.proposal\n+            next_msg = PrepareResponseMsg(self.agent.pid, msg.proposal,\n+                                          self.highest_proposal_accepted)\n+            self.agent.send_message(next_msg, [msg.source])\n+        # Optimization: send proposer a reject message because another proposer\n+        # has already initiated a proposal with a higher number.\n+        #else:\n+        #    msg = RejectMsg()\n+\n+    def handle_accept(self, msg):\n+        # Accept proposal unless we have already promised a higher proposal number.\n+        if msg.proposal.number >= self.highest_proposal_promised.number:\n+            # Set this accepted proposal number as the highest accepted.\n+            self.highest_proposal_accepted = msg.proposal\n+            next_msg = AcceptResponseMsg(self.agent.pid, msg.proposal)\n+            # Send \"accepted\" message to sender of the accept message\n+            # (the proposer), and to all learners.\n+            self.agent.send_message(next_msg,\n+                              [msg.source] + list(self.agent.config.learner_ids))\n+\n+\n+class BasicPaxosLearnerProtocol(BasicPaxosProtocol):\n+\n+    def __init__(self, agent):\n+        super(BasicPaxosLearnerProtocol, self).__init__(agent)\n+        # Set of acceptors that have sent an accept response.\n+        self.accept_responders = defaultdict(set)\n+\n+        self.state = None\n+        self.RESULT_SENT = 1\n+\n+    def handle_accept_response(self, msg):\n+        self.accept_responders[msg.proposal.value].add(msg.source)\n+        # Don't do anything if we've already logged the result.\n+        if self.state == self.RESULT_SENT:\n+            return\n+        if self.have_acceptor_majority(self.accept_responders[msg.proposal.value]):\n+            self.agent.log_result(msg)\n+            self.state = self.RESULT_SENT\n\\ No newline at end of file\n",
-            "new_file": true,
-            "new_path": "server/model/protocol.py",
-            "old_path": "server/model/protocol.py",
-            "renamed_file": false
+            "diff": "@@ -1,5 +1,8 @@\n from interface.gitlab_interface import GitLab\n \n+for test in test:\n+    print(\"We need to write some unit test\")\n+\n \"\"\"\n Below are only for testing purpose\n \"\"\"\n",
+            "lines_added": 0,
+            "lines_deleted": 0,
+            "new_file": false,
+            "new_path": "server/test/app.py",
+            "old_path": "server/test/app.py",
+            "renamed_file": false,
+            "spacing_changes": 0,
+            "syntax_changes": 1
         }
     ],
     "response": true
@@ -799,4 +884,24 @@ Example javascript ajax call:
     "response": true
 }
 ```
+[Go back to API list](#api-example-response)
+
+### Start garbage collector
+#### `POST /config/garbage_monitor/start`
+[Go back to API list](#api-example-response)
+
+### Stop garbage collector
+#### `POST /config/garbage_monitor/stop`
+[Go back to API list](#api-example-response)
+
+### Get garbage collector check period
+#### `GET /config/garbage_monitor/check_period`
+[Go back to API list](#api-example-response)
+
+### Change garbage collector check period
+#### `POST /config/garbage_monitor/check_period`
+
+Variables needed in `form-data`
+- `check_period`(int): The garbage monitor will check every `check_period` **hours**
+
 [Go back to API list](#api-example-response)

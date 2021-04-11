@@ -28,7 +28,7 @@ const FilterMenu = () => {
     return (
         <div>
             <Grid container className={classes.grid} direction="column"
-          alignItems="center">
+          >
                 <Grid item xs={12}>
                     <h4 className={classes.filterText}><b>Filter</b></h4>
                     <h6 className={classes.filterText}>Word Count</h6>

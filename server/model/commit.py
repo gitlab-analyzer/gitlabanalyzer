@@ -5,7 +5,12 @@ from typing import Union, Optional, List
 
 
 class Commit(DataObject):
-    def __init__(self, commit: gitlab = None, codeDiffID: int = -1) -> None:
+    def __init__(
+        self,
+        commit: gitlab = None,
+        codeDiffID: int = -1,
+        direct_to_master: bool = False,
+    ) -> None:
         self.__id: int = commit.id
         self.__short_id: int = commit.short_id
         self.__title: str = commit.title
@@ -18,6 +23,8 @@ class Commit(DataObject):
             commit.committed_date
         )  # datetime in ISO 8601 format
         self.__line_counts: dict = {}
+        self.__direct_to_master: bool = direct_to_master
+        self.__code_diff_detail: list = []
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
@@ -60,6 +67,14 @@ class Commit(DataObject):
         return self.__line_counts
 
     @property
+    def direct_to_master(self) -> bool:
+        return self.__direct_to_master
+
+    @property
+    def code_diff_detail(self) -> list:
+        return self.code_diff_detail
+
+    @property
     def org_author(self) -> str:
         return self.__org_author
 
@@ -75,3 +90,11 @@ class Commit(DataObject):
     @author_name.setter
     def author_name(self, authorName) -> None:
         self.__author_name = authorName
+
+    @direct_to_master.setter
+    def direct_to_master(self, directly_to_master: bool) -> None:
+        self.__direct_to_master = directly_to_master
+
+    @code_diff_detail.setter
+    def code_diff_detail(self, codeDiffDetail: list) -> None:
+        self.__code_diff_detail = codeDiffDetail
