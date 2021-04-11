@@ -11,6 +11,7 @@ from typing import List, Optional
 class GitLabAnalyzer:
     def __init__(self, user_token: str, user_token_hashed=None, url=None):
         self.__project_list: List[GitLabProject] = []
+        self.__configs: dict = {}
         self.__gitlab: GitLab = GitLab(user_token, url)
         self.__user_token_hashed: str = user_token_hashed  # hashed
         self.__last_time_access: datetime = datetime.datetime.now()
@@ -62,6 +63,10 @@ class GitLabAnalyzer:
     @property
     def last_time_access(self):
         return self.__last_time_access
+
+    @property
+    def configs(self):
+        return self.__configs
 
     @last_time_access.setter
     def last_time_access(self, myTime: datetime) -> None:

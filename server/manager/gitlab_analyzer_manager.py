@@ -341,3 +341,16 @@ class GitLabAnalyzerManager:
         if isValid:
             myProject.call_map_users_to_members(userMapDict)
         return isValid, errorCode
+
+    def update_config(self, hashedToken: str, configName: str, config: dict) -> Tuple[bool, str]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is not None:
+            myGitLab.configs[configName] = config
+            return True, ""
+        return False, ERROR_CODES["invalidToken"]
+
+    def get_config(self, hashedToken: str) -> Tuple[bool, str, dict]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is not None:
+            return True, "", myGitLab.configs
+        return False, ERROR_CODES["invalidToken"], {}

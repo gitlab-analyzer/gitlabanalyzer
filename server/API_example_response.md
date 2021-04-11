@@ -19,7 +19,7 @@
     - `GET /projects/<int:projectID>/commit`
 - [Get all the commits sorted in users](#get-all-the-commits-sorted-in-users)
     - `GET /projects/<int:projectID>/commit/user/all`
-- [Get all the commits committed directly on master]
+- [Get all the commits committed directly on master](#get-all-the-commits-committed-directly-on-master)
     - `GET /projects/<int:projectID>/commit/master/direct/user/all`
 - [Get all the merge requests in the project](#get-all-the-merge-request-in-that-project)
     - `GET /projects/<int:projectID>/merge_request/all`
