@@ -69,22 +69,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     selectedRepo,
   ]);
 
-  const handleRoute = () => {
-    if (
-      Object.keys(configSettings.iteration).length > 5 &&
-      configSettings.enddate
-    ) {
-      history.push('/summary');
-    } else {
-      notification.open({
-        message: 'Error',
-        description: 'Please fill out ( * ) all fields.',
-        icon: <CloseCircleOutlined style={{ color: 'red' }} />,
-        duration: 1,
-      });
-    }
-  };
-
   const handleSubmit = (value) => {
     setVisible(false);
     setCurrentConfig(value);
@@ -250,7 +234,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       } else {
         totalFileType[ext] = score;
       }
-      console.log('totalFileType', totalFileType);
+      // console.log('totalFileType', totalFileType);
       totalScore += score;
     }
     return totalScore;

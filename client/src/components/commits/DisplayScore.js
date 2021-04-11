@@ -13,10 +13,43 @@ const DisplayScore = () => {
     selectUser,
   } = useAuth();
 
-  console.log('mr', mergeRequestList);
-  // for (let [nkey, nvalue] of Object.entries(notesList)) {
-  //
-  // }
+  let TotalScoreData = [];
+  for (let [user, uservalue] of Object.entries(mergeRequestList)) {
+    let totalMR = 0;
+    let totalCommit = 0;
+    let fileType = {};
+    for(let [mrID, mrvalue] of Object.entries(uservalue['mr'])) {
+      totalMR += mrvalue['score'];
+      for (let [commitID, commitvalue] of Object.entries(mrvalue['commitList'])) {
+        totalCommit += commitvalue['score'];
+        for (let [codediffFile, filevalue] of Object.entries(commitvalue['codeDiffDetail'])) {
+          if (filevalue['file_type'] in fileType) {
+            fileType[filevalue['file_type']] += 1; /////////////////       filevalue['score'] /////////////////
+          }
+          else {
+            fileType[filevalue['file_type']] = 1; /////////////////       filevalue['score'] /////////////////
+          }
+        }
+      }
+    }
+    TotalScoreData.push({
+      [user]: {
+        mr: totalMR.toFixed(1),
+        commit: totalCommit.toFixed(1),
+        fileType,
+      },
+    })
+  }
+  let mrScore = 0;
+  let commitScore = 0;
+  let fileScore = [];
+  for(let [key, data] of Object.entries(TotalScoreData)) {
+    if (selectUser in data) {
+      mrScore = data[selectUser]['mr'];
+      commitScore = data[selectUser]['commit'];
+      fileScore = data[selectUser]['fileType'];
+    }
+  }
   return (
     <div>
       <Collapse  style={{ margin:"10px 0px 20px 0px" }}>
@@ -24,65 +57,46 @@ const DisplayScore = () => {
           <div style={{ height:15 }} />
           <div className="TotalScoreContainer">
             <div className="scoreType">
-              Student's Comments :
+              Student's Commits :
             </div>
             <div className="scoreNumber">
-              Score
+              {commitScore}
             </div>
           </div>
-          {/*<b>Student's Comments : </b>*/}
           <Divider />
           <div className="TotalScoreContainer">
             <div className="scoreType">
               Merge Request :
             </div>
             <div className="scoreNumber">
-              Score
+              {mrScore}
             </div>
           </div>
-          {/*<b>Merge Request : </b>*/}
           <Divider />
           <div className="TotalScoreContainer">
             <div style={{display:"flex"}}>
               <div className="scoreType">
                 Each File Type :
               </div>
-              <div className="fileContainer" style={{display:"flex", justifyContent:"space-between", width:100}}>
-                <div className="fileType">
-                  <div>
-                    classname
-                  </div>
-                  <div>
-                    classname
-                  </div>
-                  <div>
-                    classname
-                  </div>
-
-                </div>
-                <div className="fileScoreNumber">
-                  Score
-                </div>
-
+              <div className="fileContainer" >
+                  {Object.keys(fileScore).map(function(item){
+                  {/*{Object.keys(fileScore).forEach(item => {*/}
+                    return (
+                      <div>
+                        <div>
+                          {item}
+                        </div>
+                        <div>
+                          {fileScore[item]}
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
-
           </div>
-          {/*<b>Each File Type : </b>*/}
         </Panel>
       </Collapse>
-      {/*<div style={{padding: "10px 50px 30px 30px", display:"flex", justifyContent:"center"}}>*/}
-      {/*  /!*{selectUser}*!/*/}
-      {/*  <Card size="small" title="Total Commit Score">*/}
-      {/*    <div>A Score</div>*/}
-      {/*  </Card>*/}
-      {/*  <Card size="small" title="Total MR Score">*/}
-      {/*    <div>A Score</div>*/}
-      {/*  </Card>*/}
-      {/*  <Card size="small" title="Total F">*/}
-      {/*    <div>A Score</div>*/}
-      {/*  </Card>*/}
-      {/*</div>*/}
     </div>
 
   );
