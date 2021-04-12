@@ -57,7 +57,7 @@ const Summary = () => {
 
   const countDates = (list, type, dates) => {
     var result = {};
-    var i, j;
+    var i, j, k;
     var date;
     var rarr = [];
     
@@ -215,7 +215,13 @@ const Summary = () => {
                     list[selectUser].mr[i].createdDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
-                  result[date] += list[selectUser].mr[i].score;
+                  if(list[selectUser].mr[i].ignore == false) {
+                    for(k in list[selectUser].mr[i].codeDiffDetail) {
+                      if(list[selectUser].mr[i].codeDiffDetail[k].ignore == false) {
+                        result[date] += list[selectUser].mr[i].codeDiffDetail[k].score;
+                      }
+                    }
+                  }
               }
             } else {
               date = [
@@ -224,7 +230,53 @@ const Summary = () => {
                 list[selectUser].mr[i].createdDate.getDate(),
               ].join('-');
               result[date] = result[date] || 0;
-              result[date] += list[selectUser].mr[i].score;
+              if(list[selectUser].mr[i].ignore == false) {
+                for(k in list[selectUser].mr[i].codeDiffDetail) {
+                  if(list[selectUser].mr[i].codeDiffDetail[k].ignore == false) {
+                    result[date] += list[selectUser].mr[i].codeDiffDetail[k].score;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } else if (type === COMMIT_SCORE) {
+      for(i in list) {
+        if (i === selectUser) {
+          for( i in list[selectUser].mr) {
+            for(j in list[selectUser].mr[i].commitList) {
+              if (dates.length !== 0) {
+                if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
+                  date = [
+                    list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                    list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                  ].join('-');
+                  result[date] = result[date] || 0;
+                  if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                    for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                      if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                        result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[0].score;
+                      }
+                    }
+                  }
+                }
+              } else {
+                date = [
+                  list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                  list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                  list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                ].join('-');
+                result[date] = result[date] || 0;
+                if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                  for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                    if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                      result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[0].score;
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -286,8 +338,9 @@ const Summary = () => {
 
   var dailyMRScores = countDates(userMRList, MERGE_REQUEST_SCORE, dataList)
   var dailyMRScoresArray = populateCounts(dailyMRScores)
-  var dailyMRDatesArray = populateDates(dailyMRScores)
-  console.log(dailyMRScoresArray)
+
+  var dailyCommitScores = countDates(userMRList, COMMIT_SCORE, dataList)
+  var dailyCommitScoresArray = populateCounts(dailyCommitScores)
 
   // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
@@ -314,7 +367,7 @@ const Summary = () => {
         },
         {
           name: 'Commits',
-          data: commitCountsArray,
+          data: dailyCommitScoresArray,
         },
       ])
     }
@@ -382,13 +435,12 @@ const Summary = () => {
       setTextRender('Number');
     } else if (e.key === 'Score') {
       setCombinedDropdown('Score');
-      console.log(dailyMRScoresArray)
       setCombinedSeries([
         {
           data: dailyMRScoresArray,
         },
         {
-          data: [],
+          data: dailyCommitScoresArray,
         },
       ]);
       setTextRender('Score');
