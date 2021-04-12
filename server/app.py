@@ -18,7 +18,7 @@ def hash_token(myToken: str):
     return hashlib.sha256(str.encode(myToken)).hexdigest()
 
 
-@app.route('/auth', methods=['post'])
+@app.route('/auth', methods=['POST'])
 def auth():
     myToken = request.form['token']
     hashedToken = hash_token(myToken)
@@ -35,7 +35,7 @@ def auth():
     return response
 
 
-@app.route('/projects', methods=['get'])
+@app.route('/projects', methods=['GET'])
 def get_project_list():
     isSuccess, errorCode, value = gitlab_manager.get_project_list(
         request.cookies.get("id", "")
@@ -44,7 +44,7 @@ def get_project_list():
     return jsonify({'projects': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/sync', methods=['post'])
+@app.route('/projects/<int:projectID>/sync', methods=['POST'])
 def sync_project(projectID: int):
     isSuccess, errorCode = gitlab_manager.sync_project(
         request.cookies.get("id", ""), projectID
@@ -60,7 +60,7 @@ def get_request(myRequest: flask.Request, key: str) -> Any:
     return requestBody.get(key)
 
 
-@app.route('/projects/sync/batch', methods=['post'])
+@app.route('/projects/sync/batch', methods=['POST'])
 def sync_a_list_of_products():
     isSuccess, errorCode, response = gitlab_manager.sync_list_of_projects(
         request.cookies.get("id", ""), get_request(request, "project_list")
@@ -69,7 +69,7 @@ def sync_a_list_of_products():
     return jsonify({"response": isSuccess, "status": response, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/sync/state', methods=['post'])
+@app.route('/projects/<int:projectID>/sync/state', methods=['POST'])
 def get_state(projectID: int):
     isSuccess, errorCode, value = gitlab_manager.check_sync_state(
         request.cookies.get("id", ""), projectID
@@ -78,7 +78,7 @@ def get_state(projectID: int):
     return jsonify({'status': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/sync/batch/state', methods=['post'])
+@app.route('/projects/sync/batch/state', methods=['POST'])
 def get_state_for_multiple_project():
     (
         isSuccess,
@@ -99,7 +99,7 @@ def get_state_for_multiple_project():
     )
 
 
-@app.route('/projects/<int:projectID>/members', methods=['get'])
+@app.route('/projects/<int:projectID>/members', methods=['GET'])
 def get_project_members(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_members(
         request.cookies.get("id", ""), projectID
@@ -108,7 +108,7 @@ def get_project_members(projectID):
     return jsonify({'members': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/users', methods=['get'])
+@app.route('/projects/<int:projectID>/users', methods=['GET'])
 def get_project_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_users(
         request.cookies.get("id", ""), projectID
@@ -117,7 +117,7 @@ def get_project_users(projectID):
     return jsonify({'users': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/commit', methods=['get'])
+@app.route('/projects/<int:projectID>/commit', methods=['GET'])
 def get_commits(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_master_commits(
         request.cookies.get("id", ""), projectID
@@ -126,7 +126,7 @@ def get_commits(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/commit/user/all', methods=['get'])
+@app.route('/projects/<int:projectID>/commit/user/all', methods=['GET'])
 def get_commits_for_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_all_commits_by_user(
         request.cookies.get("id", ""), projectID
@@ -135,7 +135,7 @@ def get_commits_for_users(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/commit/master/direct/user/all', methods=['get'])
+@app.route('/projects/<int:projectID>/commit/master/direct/user/all', methods=['GET'])
 def get_unique_master_commits_for_users(projectID):
     (
         isSuccess,
@@ -148,7 +148,7 @@ def get_unique_master_commits_for_users(projectID):
     return jsonify({'commit_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/merge_request/user/all', methods=['get'])
+@app.route('/projects/<int:projectID>/merge_request/user/all', methods=['GET'])
 def get_merge_requests_for_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_merge_request_by_user(
         request.cookies.get("id", ""), projectID
@@ -159,7 +159,7 @@ def get_merge_requests_for_users(projectID):
     )
 
 
-@app.route('/projects/<int:projectID>/merge_request/all', methods=['get'])
+@app.route('/projects/<int:projectID>/merge_request/all', methods=['GET'])
 def get_all_merge_requests(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_all_merge_request(
         request.cookies.get("id", ""), projectID
@@ -170,7 +170,7 @@ def get_all_merge_requests(projectID):
     )
 
 
-@app.route('/projects/<int:projectID>/code_diff/<int:codeDiffID>', methods=['get'])
+@app.route('/projects/<int:projectID>/code_diff/<int:codeDiffID>', methods=['GET'])
 def get_code_diff(projectID, codeDiffID):
     isSuccess, errorCode, value = gitlab_manager.get_code_diff(
         request.cookies.get("id", ""), projectID, codeDiffID
@@ -179,7 +179,7 @@ def get_code_diff(projectID, codeDiffID):
     return jsonify({'code_diff_list': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/comments/all', methods=['get'])
+@app.route('/projects/<int:projectID>/comments/all', methods=['GET'])
 def get_all_notes(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_all_project_notes(
         request.cookies.get("id", ""), projectID
@@ -188,7 +188,7 @@ def get_all_notes(projectID):
     return jsonify({'notes': value, "response": isSuccess, 'cause': errorCode})
 
 
-@app.route('/projects/<int:projectID>/comments/user/all', methods=['get'])
+@app.route('/projects/<int:projectID>/comments/user/all', methods=['GET'])
 def get_notes_for_all_users(projectID):
     isSuccess, errorCode, value = gitlab_manager.get_project_notes_by_user(
         request.cookies.get("id", ""), projectID
@@ -198,23 +198,23 @@ def get_notes_for_all_users(projectID):
 
 
 # TODO: May be we can add a admin list so only user with admin access can make this call
-@app.route('/config/garbage_monitor/start', methods=['post'])
+@app.route('/config/garbage_monitor/start', methods=['POST'])
 def start_garbage_collector():
     gitlab_manager.start_garbage_monitor_thread()
 
     return jsonify({"response": True, 'cause': ""})
 
 
-@app.route('/config/garbage_monitor/stop', methods=['post'])
+@app.route('/config/garbage_monitor/stop', methods=['POST'])
 def stop_garbage_collector():
     gitlab_manager.stop_garbage_monitor_thread()
 
     return jsonify({"response": True, 'cause': ""})
 
 
-@app.route('/config/garbage_monitor/check_period', methods=['get', 'post'])
+@app.route('/config/garbage_monitor/check_period', methods=['GET', 'POST'])
 def change_garbage_collector_check_period():
-    if request.method == "get":
+    if request.method == "GET":
         return jsonify(
             {
                 "response": True,
@@ -222,7 +222,7 @@ def change_garbage_collector_check_period():
                 "check_period": gitlab_manager.get_garbage_monitor_check_period(),
             }
         )
-    elif request.method == "post":
+    elif request.method == "POST":
         gitlab_manager.change_worker_check_period(
             request.form.get("check_period", None)
         )
@@ -230,13 +230,30 @@ def change_garbage_collector_check_period():
     return jsonify({"response": True, 'cause': ""})
 
 
-@app.route('/projects/<int:projectID>/map', methods=['post'])
+@app.route('/projects/<int:projectID>/map', methods=['POST'])
 def map_users(projectID):
     isSuccess, errorCode = gitlab_manager.map_users(
         request.cookies.get("id", ""), projectID, get_request(request, "user_mapping")
     )
 
     return jsonify({"response": isSuccess, 'cause': errorCode})
+
+
+@app.route('/config', methods=['GET', 'POST'])
+def add_or_get_config():
+    value: dict = {}
+    if request.method == "GET":
+        isSuccess, errorCode, value = gitlab_manager.get_config(
+            request.cookies.get("id", "")
+        )
+    else:
+        isSuccess, errorCode = gitlab_manager.update_config(
+            request.cookies.get("id", ""),
+            get_request(request, "name"),
+            get_request(request, "value"),
+        )
+
+    return jsonify({"response": isSuccess, 'cause': errorCode, "configs": value})
 
 
 if __name__ == '__main__':

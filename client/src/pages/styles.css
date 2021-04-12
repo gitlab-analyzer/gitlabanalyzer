@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
+.ubuntu {
+  font-family: 'Ubuntu Mono', monospace;
+}
+
+.file-diff {
+  font-family: 'Ubuntu Mono', monospace;
+  border: 1px solid #ddd;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.diff-header {
+  font-family: 'Ubuntu Mono', monospace;
+  text-align: left;
+  font-size: 16px;
+  padding: 5px 10px;
+  line-height: 2;
+  background-color: #fafbfc;
+  border-bottom: 1px solid #ddd;
+}
+
+.hunk-header {
+  font-family: 'Ubuntu Mono', monospace;
+  text-align: left;
+  background-color: #f0f8ff;
+  color: #1b1f2380;
+  padding: 5px 20px;
+}

@@ -24,12 +24,20 @@ const AuthProvider = (props) => {
   const [reList, setReList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [value, setValue] = useState('');
+  const [codeDiffId, setCodeDiffId] = useState('');
+  const [codeDrawer, setCodeDrawer] = useState(false);
   const [finishedConfig, setFinishedConfig] = useState(false);
+<<<<<<< HEAD
   const [wordCount, setWordCount] = useState(0);
   const [crCount, setCrCount] = useState(0);
   const [ownCount, setOwnCount] = useState(0);
   const [otherCount, setOtherCount] = useState(0);
   const [issueCount, setIssueCount] = useState(0);
+=======
+  const [codeDiffDetail, setCodeDiffDetail] = useState({});
+  const [codeFiles, setCodeFiles] = useState([]);
+  const [specificFile, setSpecificFile] = useState(null);
+>>>>>>> master
 
   const authContextValue = {
     user,
@@ -74,8 +82,13 @@ const AuthProvider = (props) => {
     setFilteredList,
     value,
     setValue,
+    codeDiffId,
+    setCodeDiffId,
+    codeDrawer,
+    setCodeDrawer,
     finishedConfig,
     setFinishedConfig,
+<<<<<<< HEAD
     wordCount,
     setWordCount,
     crCount, 
@@ -86,6 +99,14 @@ const AuthProvider = (props) => {
     setOtherCount,
     issueCount,
     setIssueCount
+=======
+    codeDiffDetail,
+    setCodeDiffDetail,
+    codeFiles,
+    setCodeFiles,
+    specificFile,
+    setSpecificFile,
+>>>>>>> master
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
