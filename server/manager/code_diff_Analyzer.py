@@ -29,7 +29,8 @@ class CodeDiffAnalyzer:
             "syntax_changes": 0,
         }
 
-        oldLine = " "
+        oldLine = None
+        oldLineType = None
         fileType = self.check_for_code_type(codeDiffObject)
 
         HTMLfileExtension = {"xml", "htm", "html"}
@@ -80,35 +81,44 @@ class CodeDiffAnalyzer:
                         )
                         block_code = False
                 if info != temp:
+                    oldLineType = self.compare_dict_value(info, temp)
                     oldLine = line
                     continue
                 # -------------------------------------------------
 
                 # Adding to middle of the line instead of to the front or the back
                 # -------------------------------------------------
-                if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
-                    info = self.add_one_char_middle(line, oldLine, info, fileType)
-                    if temp != info:
+                if oldLine != None:
+                    if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
+                        info = self.add_one_char_middle(line, oldLine, info, fileType)
+                        if temp != info:
+                            info = self.modify_info_value("lines", info, oldLine[0], -1)
+                            oldLineType = self.compare_dict_value(info, temp)
+                            oldLine = line
+                            continue
+                    # -------------------------------------------------
+
+                    # Adding to an exisiting line
+                    # -------------------------------------------------
+                    if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
+                        info = self.add_to_existing_line(
+                            "+", line, oldLine, info, fileType
+                        )
+                    if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
+                        info = self.add_to_existing_line(
+                            "-", oldLine, line, info, fileType
+                        )
+                    if info != temp:
                         info = self.modify_info_value("lines", info, oldLine[0], -1)
+                        oldLineType = self.compare_dict_value(info, temp)
                         oldLine = line
                         continue
-                # -------------------------------------------------
-
-                # Adding to an exisiting line
-                # -------------------------------------------------
-                if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                    info = self.add_to_existing_line("+", line, oldLine, info, fileType)
-                if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                    info = self.add_to_existing_line("-", oldLine, line, info, fileType)
-                if info != temp:
-                    info = self.modify_info_value("lines", info, oldLine[0], -1)
-                    oldLine = line
-                    continue
-                # -------------------------------------------------
+                    # -------------------------------------------------
 
                 # Normal case
                 # -------------------------------------------------
                 info = self.add_normal_line_of_code(info, line, fileType)
+                oldLineType = self.compare_dict_value(info, temp)
                 oldLine = line
                 # -------------------------------------------------
 
@@ -170,7 +180,7 @@ class CodeDiffAnalyzer:
         }
 
         if str.isspace():
-            info["spacing_changes"] = info["spacing_changes"] + 1
+            info = self.modify_info_value("spacing", info, signal)
             return info
 
         for i in range(0, len(str)):
@@ -193,7 +203,7 @@ class CodeDiffAnalyzer:
                 return info
 
         if isSyntax:
-            info["syntax_changes"] = info["syntax_changes"] + 1
+            info = self.modify_info_value("syntax", info, signal)
         return info
 
     def add_one_char_middle(self, line, oldLine, info, fileType) -> dict:
@@ -290,7 +300,7 @@ class CodeDiffAnalyzer:
         elif (
             strFront.isspace() or strFront == "" and strBack.isspace() or strBack == ""
         ):
-            info["syntax_changes"] = info["syntax_changes"] + 1
+            info = self.modify_info_value("syntax", info, line[0])
         else:
             info = self.add_normal_line_of_code(info, line[0] + strFront, fileType)
         return info
@@ -302,8 +312,29 @@ class CodeDiffAnalyzer:
         return info
 
     def modify_info_value(self, info_name, info, signal, amount=1) -> dict:
-        if signal == "+":
-            info[info_name + "_added"] = info[info_name + "_added"] + amount
-        if signal == "-":
-            info[info_name + "_deleted"] = info[info_name + "_deleted"] + amount
+        if info_name == "syntax" or info_name == "spacing":
+            info[info_name + "_changes"] = info[info_name + "_changes"] + amount
+        else:
+            if signal == "+":
+                info[info_name + "_added"] = info[info_name + "_added"] + amount
+            if signal == "-":
+                info[info_name + "_deleted"] = info[info_name + "_deleted"] + amount
         return info
+
+    def compare_dict_value(self, oldInfo, newInfo) -> str:
+        if oldInfo["lines_added"] != newInfo["lines_added"]:
+            return "lines"
+        elif oldInfo["lines_deleted"] != newInfo["lines_deleted"]:
+            return "lines"
+        elif oldInfo["comments_added"] != newInfo["comments_added"]:
+            return "comments"
+        elif oldInfo["comments_deleted"] != newInfo["comments_deleted"]:
+            return "comments"
+        elif oldInfo["blanks_added"] != newInfo["blanks_added"]:
+            return "blanks"
+        elif oldInfo["blanks_deleted"] != newInfo["blanks_deleted"]:
+            return "blanks"
+        elif oldInfo["spacing_changes"] != newInfo["spacing_changes"]:
+            return "spacing"
+        elif oldInfo["syntax_changes"] != newInfo["syntax_changes"]:
+            return "syntax"
