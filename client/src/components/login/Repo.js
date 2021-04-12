@@ -69,12 +69,31 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     selectedRepo,
   ]);
 
-  const handleSubmit = (value) => {
+  const handleSubmit = async (value) => {
     setVisible(false);
     setCurrentConfig(value);
     setDataList(value.date);
-    SavedConfigs['default'] = value;
     setFinishedConfig(true);
+
+    let configDict ={}
+    configDict["name"] = 'default';
+    configDict["value"] = value;
+    let currConfig = JSON.stringify(
+      configDict);
+    const configStatus = await axios.post(
+      `http://localhost:5678/config`,
+      currConfig,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
+      }
+    );
+    fetchErrorChecker(configStatus.data['response'], 'config');
   };
 
   // General error handling function for fetch requests
