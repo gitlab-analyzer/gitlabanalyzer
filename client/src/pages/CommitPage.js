@@ -7,11 +7,13 @@ import FooterBar from '../components/FooterBar';
 const CommitPage = () => {
   return (
     <>
-      <Header />
-      <div>
-        <CommitBar />
+      <div className="minheight">
+        <Header />
+        <div>
+          <CommitBar />
+        </div>
+        <FooterBar />
       </div>
-      <FooterBar />
     </>
   );
 };

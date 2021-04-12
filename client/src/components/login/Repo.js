@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import {
+  Popconfirm,
   Tag,
   Button,
   Checkbox,
@@ -26,7 +27,7 @@ import axios from 'axios';
 
 /// TODO: Hardcoded because of some weird bug
 let selectRepo = 2;
-const Repo = ({ analyzing, setAnalyzing, loading }) => {
+const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   const {
     setMembersList,
     setUsersList,
@@ -53,6 +54,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setFinishedConfig,
     commitsMaster,
     setCommitsMaster,
+    finishedConfig,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -60,6 +62,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
   const [selectVal, setSelectVal] = useState(false);
+  const [analyzeConfirm, setAnalyzeConfirm] = useState(false);
   const history = useHistory();
   const [form] = Form.useForm();
 
@@ -121,6 +124,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         crossDomain: true,
       }
     );
+    console.log('projectRes', projectRes);
     if (!projectRes.data['response']) {
       console.log('Failed to set project ID!');
       console.log(projectRes);
@@ -683,17 +687,19 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             alignItems: 'center',
           }}
         >
-          <Popover content="Global Configuration">
-            <SettingOutlined
-              height="100px"
-              style={{
-                marginRight: 10,
-                fontSize: 20,
-                color: '#1890ff',
-              }}
-              onClick={handleDrawer}
-            />
-          </Popover>
+          {insideApp ? null : (
+            <Popover content="Global Configuration">
+              <SettingOutlined
+                height="100px"
+                style={{
+                  marginRight: 10,
+                  fontSize: 20,
+                  color: '#1890ff',
+                }}
+                onClick={handleDrawer}
+              />
+            </Popover>
+          )}
           <Button
             onClick={selectAll}
             style={{ marginRight: '10px' }}
@@ -777,7 +783,16 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const tagRender = (item) => {
     if (analyzing && selectedRepo === item.id) {
       return (
-        <Tag icon={<SyncOutlined spin />} color="processing" key={'cached'}>
+        <Tag
+          style={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          icon={<SyncOutlined spin />}
+          color="processing"
+          key={'cached'}
+        >
           Analyzing
         </Tag>
       );
@@ -789,7 +804,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       );
     } else {
       return (
-        <Tag color={'green'} key={'cached'}>
+        <Tag
+          style={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          color={'green'}
+          key={'cached'}
+        >
           Cached: {Math.round(item['lastSynced'])} min ago
         </Tag>
       );
@@ -802,12 +825,22 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     fetchAndRedirect();
   };
 
+  const innerContent = () => <p>Global Configuration Incomplete</p>;
+
   const goRender = (item) => {
     if (item['lastSynced'] === null) {
       return (
         <Button type="primary" disabled>
           Go
         </Button>
+      );
+    } else if (!finishedConfig) {
+      return (
+        <Popover content={innerContent}>
+          <Button type="primary" disabled>
+            Go
+          </Button>
+        </Popover>
       );
     } else {
       return (
@@ -819,6 +852,43 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         >
           Go
         </Button>
+      );
+    }
+  };
+
+  const popMsg = () => {
+    return (
+      <>
+        <div>This Repository has already been synced before,</div>
+        <div>Are you sure you want to re-sync it again?</div>
+      </>
+    );
+  };
+
+  const renderAnalyze = (item) => {
+    if (item['lastSynced'] === null) {
+      return (
+        <Button
+          onClick={(e) => {
+            handleAnalyze(e, item.id);
+          }}
+          key="analyze"
+        >
+          Analyze
+        </Button>
+      );
+    } else {
+      return (
+        <Popconfirm
+          title={popMsg}
+          onConfirm={(e) => {
+            handleAnalyze(e, item.id);
+          }}
+        >
+          <Button ghost type="primary" key="analyze">
+            Analyze
+          </Button>
+        </Popconfirm>
       );
     }
   };
@@ -882,14 +952,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             <List.Item
               actions={[
                 tagRender(item),
-                <Button
-                  onClick={(e) => {
-                    handleAnalyze(e, item.id);
-                  }}
-                  key="analyze"
-                >
-                  Analyze
-                </Button>,
+                renderAnalyze(item),
                 goRender(item),
                 <Checkbox
                   checked={item.batched}

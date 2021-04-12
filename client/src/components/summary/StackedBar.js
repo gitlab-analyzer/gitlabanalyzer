@@ -54,6 +54,9 @@ class StackedBarGraph extends React.Component {
           xaxis: {
             categories: this.props.xlabel,
           },
+          yaxis: {
+            decimalsInFloat: 1
+          },
           legend: {
             position: 'top',
             horizontalAlign: 'right',

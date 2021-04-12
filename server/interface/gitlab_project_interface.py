@@ -415,7 +415,7 @@ class GitLabProject:
         for mr in all_mrs_list:
             commits_list = mr.related_commits_list
             for i in range(0, len(commits_list)):
-                commit_authorName = commits_list[i].author_name
+                commit_authorName = commits_list[i].org_author
                 for user_sublist in range(0, len(userList)):
                     if commit_authorName in userList[user_sublist]:
                         mr.related_commits_list[i].author_name = memberList[
@@ -425,10 +425,26 @@ class GitLabProject:
     def __update_commits_manager_after_mapping(self, memberList, userList) -> None:
         all_commits_list = self.__commitsManager.get_commit_list()
         for i in range(0, len(all_commits_list)):
-            commit_authorName = all_commits_list[i].author_name
+            commit_authorName = all_commits_list[i].org_author
             for user_sublist in range(0, len(userList)):
                 if commit_authorName in userList[user_sublist]:
                     all_commits_list[i].author_name = memberList[user_sublist]
+
+    def reset_user_mapping(self):
+        self.__reset_commits()
+        self.__reset_mr_and_commits()
+
+    def __reset_commits(self):
+        commit: Commit
+        for commit in self.__commitsManager.get_commit_list():
+            commit.author_name = commit.org_author
+
+    def __reset_mr_and_commits(self):
+        mr: MergeRequest
+        for mr in self.__mergeRequestManager.merge_request_list:
+            commit: Commit
+            for commit in mr.related_commits_list:
+                commit.author_name = commit.org_author
 
     @property
     def project(self) -> Project:
