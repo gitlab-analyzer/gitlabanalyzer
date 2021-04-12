@@ -12,7 +12,7 @@
 <br>
 
 <h1 align="center">
-  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/iteration2ss.png" width="900">
+  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/iter3.png" width="900">
 </h1>
 
 
