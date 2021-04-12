@@ -37,6 +37,8 @@ const AuthProvider = (props) => {
   const [codeFiles, setCodeFiles] = useState([]);
   const [specificFile, setSpecificFile] = useState(null);
   const [codeDiffPath, setCodeDiffPath] = useState('');
+  const [mapList, setMapList] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const authContextValue = {
     user,
@@ -91,7 +93,7 @@ const AuthProvider = (props) => {
     setCommitsMaster,
     wordCount,
     setWordCount,
-    crCount, 
+    crCount,
     setCrCount,
     ownCount,
     setOwnCount,
@@ -107,6 +109,10 @@ const AuthProvider = (props) => {
     setSpecificFile,
     codeDiffPath,
     setCodeDiffPath,
+    mapList,
+    setMapList,
+    selectedOptions,
+    setSelectedOptions,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
