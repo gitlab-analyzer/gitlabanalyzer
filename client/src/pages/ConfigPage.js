@@ -106,7 +106,6 @@ const ConfigPage = () => {
   const recalculateScores = () => {
     if (currentConfig.language) {
       for (let [langkey, langvalue] of Object.entries(currentConfig.language)) {
-        console.log('lang', langvalue.extname)
         langvalue.extname = langvalue.extname.replaceAll(' ', '');
         lang[langvalue.extname] = langvalue.extpoint;
       }
@@ -115,7 +114,6 @@ const ConfigPage = () => {
     const tempMR = {};
     // Loop through object key
     for (let user in mergeRequestList) {
-      console.log('mrList', mergeRequestList);
       tempMR[user] = {
         mr: {},
         weightedScore: 0,
@@ -218,7 +216,6 @@ const ConfigPage = () => {
     form.setFieldsValue(currentConfig);
     recalculateScores();
     retrieveConfig();
-    console.log('New MR: ', mergeRequestList);
   }, [currentConfig]);
 
   const fillForm = (value) => {

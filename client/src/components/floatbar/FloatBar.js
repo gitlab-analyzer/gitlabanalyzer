@@ -60,11 +60,11 @@ function FloatBar() {
       barData.sort((a, b) => (a.name > b.name ? 1 : -1));
     } else if (value === 'low') {
       barData.sort((a, b) =>
-        ScoreCalculator(a.name) > ScoreCalculator(b.name) ? 1 : -1
+        a.weightscore > b.weightscore ? 1 : -1
       );
     } else if (value === 'high') {
       barData.sort((a, b) =>
-        ScoreCalculator(a.name) < ScoreCalculator(b.name) ? 1 : -1
+        a.weightscore < b.weightscore ? 1 : -1
       );
     }
   };
@@ -120,11 +120,11 @@ function FloatBar() {
                 format={'text/plain'}
                 text={
                   (userData &&
-                    String(ScoreCalculator(userData.name).toFixed(0)) +
+                      userData.weightscore.toFixed(0) +
                       '\t' +
-                      userData.commits +
+                      userData.cmcount +
                       '\t' +
-                      userData.code +
+                      userData.mrcount +
                       '\t' +
                       userData.issue) ||
                   '0\t0\t0\t0'

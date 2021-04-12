@@ -77,15 +77,17 @@
 } */
 
 .userScore {
+    /* padding-top: 10px; */
     font-size: 25px;
 }
 .userScoreDetails {
     font-size: 23px;
-    color: #6E7590;
+    color:#8C8F90;
 }
 
 .userScore,
 .userScoreDetails {
+    padding-top: 5px;
     font-weight: bold;
     line-height: 120%;
 }

@@ -33,34 +33,36 @@ export function ScoreCalculator(username) {
 }
 
 const EveryoneScore = () => {
-  const { notesList, mergeRequestList, setFloatScores, dataList, selectUser, anon } = useAuth();
+  const { 
+    notesList, 
+    mergeRequestList, 
+    setFloatScores, 
+    dataList, 
+    selectUser, 
+    anon,
+    commitsMaster,
+  } = useAuth();
 
-  console.log('MR',mergeRequestList);
+  console.log('master', commitsMaster);
   
-    const dateInRange = (value) => {
-      // new Date(value)
-      console.log('date type', value); 
-      console.log(dataList);
-      if (value < dataList[0] || value > dataList[1]) {
-      }
+  const dateOutOfRange = (value) => {  
+    if (value < dataList[0] || value > dataList[1]) {
+      return true;
     }
+    return false;
+  };
 
   useEffect(() => {
 
     async function updateData() {
       barData = [];
       let subscore = {};
-      let ignore = false;
       let num = 0;
-      /////////////////////////
-      let mrIgnore, mrFileIgnore;
-      ////////////////////////
 
       if (notesList) {
         for (let [noteKey, noteObj] of Object.entries(notesList)) {
-          if (noteObj['ignore'] ||
-            (dataList[0]==null || ((noteObj['createdDate'] < new Date(dataList[0]))) ||
-            (noteObj['createdDate'] > new Date(dataList[1])))) 
+          if (noteObj['ignore'] || dataList[0]==null ||
+            (dateOutOfRange(noteObj['createdDate'])))
           {
             continue;
           }
@@ -71,36 +73,26 @@ const EveryoneScore = () => {
           }
         }
       }
-      console.log('mergerequestlist', mergeRequestList);
       if (mergeRequestList !== 0) {
         for (let [user, uservalue] of Object.entries(mergeRequestList)) {
           let fileType = {};
-          let commitScore = 0;
-          let linesAdded = 0;
-          let linesDeleted = 0;
-          let syntaxChanged = 0;
           let mrScore = 0;
           let mrCount = 0;
           let cmScore = 0;
           let cmCount = 0;
           for (let [mrID, mrObj] of Object.entries(uservalue['mr'])) {
-            if (mrObj['ignore']) {
-              mrIgnore = true;
+            if (mrObj['ignore'] || dateOutOfRange(mrObj['mergedDate'])) {
               continue;
             }
-            if (dateInRange(mrObj['createdDate'])) {
-
+            // if (dateOutOfRange(mrObj['createdDate'])) {
+            //   continue;
+            // }
+            if (!mrObj['codeDiffDetail']['ignore']) {
+              mrCount++;
             }
-            //TODO: Iterate Code Diffs in this Level
-            // console.log(mrID, mrObj)
-            // console.log('code diff detail', mrObj['codeDiffDetail'])
             for (let [codeDiffFile, codeDiffFileObj] of Object.entries(mrObj['codeDiffDetail'])) {
-              console.log(codeDiffFile, codeDiffFileObj)
               if (!codeDiffFileObj['ignore']) {
-                // mrFileIgnore = true;
-                // continue;
-                // console.log(codeDiffFileObj['file_type'])
-                mrCount++;
+                
                 mrScore += codeDiffFileObj['score'];
                 if (codeDiffFileObj['file_type'] in fileType) {
                   fileType[codeDiffFileObj['file_type']] += codeDiffFileObj['score'];
@@ -108,55 +100,21 @@ const EveryoneScore = () => {
                 else {
                   fileType[codeDiffFileObj['file_type']] = codeDiffFileObj['score'];
                 }
-                // console.log(codeDiffFileObj['file_type'])
               }
             }
-            // console.log(mrID, mrObj);
             for (let [commitID, commitObj] of Object.entries(mrObj['commitList'])) {
-              // console.log(commitID, commitObj)]
-              if (commitObj['ignore']) {
+              if (commitObj['ignore'] || dateOutOfRange(commitObj['comittedDate'])) {
                 continue;
               }
               else {
-              // if (!commitObj['ignore']) {  // ignore commit
+                cmCount++;
                 for (let [commitFileID, commitFileObject] of Object.entries(commitObj['codeDiffDetail'])) {
-                  console.log(commitFileID, commitFileObject)
                   if (!commitFileObject['ignore']) {
-                    cmCount++;
                     cmScore += commitFileObject['score'];
                   }
                 }
               }
             }
-            // console.log('value', value)
-            // if (value['ignore']) {
-            //   continue;
-            // }
-            // console.log(value["ignore"])
-            for (let [k, v] of Object.entries(mrObj['commitList'])) {
-              if (v['ignore']) {
-                ignore = true
-                continue;
-              }
-              if (
-                (v['comittedDate'] < new Date(dataList[0])) || 
-                (v['comittedDate'] > new Date(dataList[1]))
-              ) {
-                ignore = true
-                continue;
-              }
-              commitScore += v['score'];
-            }
-            for (let [keylines, valuelines] of Object.entries(
-              mrObj['lineCounts']
-            )) {
-              if (!ignore) {
-                linesAdded += mrObj['lineCounts']['lines_added'];
-                linesDeleted += mrObj['lineCounts']['lines_deleted'];
-                syntaxChanged += mrObj['lineCounts']['syntax_changes'];
-              }
-            }
-            ignore = false
           }
           if (!subscore[user]) {
             subscore[user] = 0;
@@ -164,13 +122,22 @@ const EveryoneScore = () => {
           barData.push({
             name: user,
             id: num++,
-            commits: commitScore.toFixed(0),
-            code: linesAdded,
-            deleted: linesDeleted,
-            syntax: syntaxChanged,
+            // commits: commitScore.toFixed(0),
+            // code: linesAdded,
+            // deleted: linesDeleted,
+            // syntax: syntaxChanged,
+
+            weightscore: mrScore,
+            // weightscore: mrScore+masterCm,
+            mrscore: mrScore,
+            mrcount: mrCount,
+            cmscore: cmScore,
+            cmcount: cmCount,
             issue: subscore[user],
+            filetype: fileType
           });
         }
+        
       }
       await setFloatScores([...barData]);  
     }
@@ -185,7 +152,7 @@ const EveryoneScore = () => {
         <div className="scoreLabel">weighted score</div>
         <div className="remainingLabels">
           <div>commits</div>
-          <div>lines of code</div>
+          <div>merge request</div>
           <div>issues & reviews</div>
         </div>
       </div>
@@ -203,11 +170,13 @@ const EveryoneScore = () => {
                   }
                 </div>
                 <div className="userScore">
-                  {ScoreCalculator(Detail.name).toFixed(0)}
+                  {/* {ScoreCalculator(Detail.name).toFixed(0)} */}
+                  {Detail.weightscore.toFixed(0)}
                 </div>
                 <div className="userScoreDetails">
-                  <div>{Detail.commits}</div>
-                  <div>{Detail.code}</div>
+                  {/* <div className="userScore">{Detail.weightscore.toFixed(0)}</div> */}
+                  <div>{Detail.cmcount}</div>
+                  <div>{Detail.mrcount}</div>
                   <div>{Detail.issue}</div>
                 </div>
               </div>

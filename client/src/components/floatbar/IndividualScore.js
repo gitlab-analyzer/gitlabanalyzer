@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScoreCalculator, barData } from './EveryoneScore';
+import { barData } from './EveryoneScore';
 import { Button, Popover } from 'antd';
 
 function IndividualScore({ user }) {
@@ -21,7 +21,8 @@ function IndividualScore({ user }) {
                 placement="bottom"
               >
                 <Button>
-                  {ScoreCalculator(user).toFixed(0)}
+                  {/* {ScoreCalculator(user).toFixed(0)} */}
+                  {Detail.weightscore.toFixed(0)}
                 </Button>
               </Popover>
               <Popover 
@@ -30,16 +31,16 @@ function IndividualScore({ user }) {
                 placement="bottom"
               >
                 <Button>
-                  {Detail.commits}
+                  {Detail.cmcount}
                 </Button>
               </Popover>
               <Popover 
                 trigger="hover"
-                content="Lines of Code"
+                content="Number of Merge Requests"
                 placement="bottom"
               >
                 <Button>
-                  {Detail.code}
+                  {Detail.mrcount}
                 </Button>
               </Popover>
               <Popover 

@@ -193,22 +193,6 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     setUsersList([...usersRes.data['users']]);
   };
   // Function for fetching commits list data
-  const fetchCommitsMaster = async () => {
-    const commitsMasterRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/commit/master/direct/user/all`,
-      {
-        withCredentials: true,
-      }
-    );
-    fetchErrorChecker(commitsMasterRes.data['response'], 'commits master');
-
-    const tempCommits = { commit_list: {...commitsMasterRes.data['commit_list']}};
-    console.log('tempCommits', tempCommits);
-
-    setCommitsMaster([...tempCommits]);
-  };
-
-  // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
       `http://localhost:5678/projects/${selectRepo}/commit/user/all`,
@@ -250,6 +234,31 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     'spacing_changes',
     'syntax_changes',
   ];
+
+  // Function for fetching commits list data
+  const fetchCommitsMaster = async () => {
+    const commitsMasterRes = await axios.get(
+      `http://localhost:5678/projects/${selectRepo}/commit/master/direct/user/all`,
+      {
+        withCredentials: true,
+      }
+    );
+    fetchErrorChecker(commitsMasterRes.data['response'], 'commits master');
+
+    const tempCommits = { commit_list: {...commitsMasterRes.data['commit_list']}};
+
+    for (let [k, v] of Object.entries(tempCommits['commit_list'])) {
+      for (let [k1, v1] of Object.entries(v)) {
+        for (let [k2, v2] of Object.entries(v1['code_diff_detail'])) {
+          v2['score'] = mrScore(v2,true);
+          v2['ignore'] = false;
+          // tempCommits['commit_list'][k1]['code_diff_detail']['score'] = mrScore(v2, true);
+        }
+      }
+    }
+
+    setCommitsMaster({...tempCommits});
+  };
 
   const mrScore = (codediffdetail, singleFile) => {
     let index;
@@ -403,7 +412,6 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
           }
         }
       }
-      console.log('tempMR', tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
