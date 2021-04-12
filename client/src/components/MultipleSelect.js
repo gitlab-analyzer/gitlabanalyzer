@@ -28,8 +28,8 @@ const MultipleSelect = (props) => {
             tempSelectedOptions.splice(index, 1);
             setSelectedOptions([...selectedOptions, tempSelectedOptions])
         }
-        console.log(selectedOptions)
-        console.log(value);
+        // console.log(selectedOptions)
+        // console.log(value);
        
     }
     
@@ -38,7 +38,7 @@ const MultipleSelect = (props) => {
         
         var dict = mapList;
         dict[props.currentMember] = value;  
-        setMapList(dict)
+        setMapList(dict);
     }
 
     const filteredOptions = userList.filter(o => !selectedOptions.includes(o));

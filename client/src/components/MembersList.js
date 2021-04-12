@@ -3,7 +3,7 @@ import './UserMap.css';
 import MultipleSelect from './MultipleSelect';
 
 const MembersList = (props) => {
-    const memberList = props.list
+    const memberList = props.list;
     
     return(
       <ul className="allList">

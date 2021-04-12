@@ -30,7 +30,7 @@ const UserMap = () => {
         if (selectedOptions.length !== 0) { 
             try {
                 await mapUsers();
-                console.log(finalDict)
+                console.log(finalDict);
             } catch (error) {
                 console.log(error);
             }
