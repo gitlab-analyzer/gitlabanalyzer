@@ -40,44 +40,77 @@ const EveryoneScore = () => {
   useEffect(() => {
     async function updateData() {
       barData = [];
-      var subscore = {};
+      let subscore = {};
       let ignore = false;
       let num = 0;
-      if (notesList !== 0) {
-        for (let [nkey, nvalue] of Object.entries(notesList)) {
-          if (nvalue['ignore'] ||
-            (dataList[0]==null || ((nvalue['createdDate'] < new Date(dataList[0]))) ||
-            (nvalue['createdDate'] > new Date(dataList[1])))) 
+      /////////////////////////
+      let mrIgnore, mrFileIgnore;
+      ////////////////////////
+
+      if (notesList) {
+        for (let [noteKey, noteObj] of Object.entries(notesList)) {
+          if (noteObj['ignore'] ||
+            (dataList[0]==null || ((noteObj['createdDate'] < new Date(dataList[0]))) ||
+            (noteObj['createdDate'] > new Date(dataList[1])))) 
           {
             continue;
           }
-          if (nvalue['author'] in subscore) {
-            subscore[nvalue['author']] += nvalue['score'];
+          if (noteObj['author'] in subscore) {
+            subscore[noteObj['author']] += noteObj['score'];
           } else {
-            subscore[nvalue['author']] = nvalue['score'];
+            subscore[noteObj['author']] = noteObj['score'];
           }
         }
       }
       console.log('mergerequestlist', mergeRequestList);
       if (mergeRequestList !== 0) {
         for (let [user, uservalue] of Object.entries(mergeRequestList)) {
+          let fileType = {};
           let commitScore = 0;
           let linesAdded = 0;
           let linesDeleted = 0;
           let syntaxChanged = 0;
-          for (let [fileID, value] of Object.entries(uservalue['mr'])) {
-            //TODO: Iterate Code Diffs in this Level
+          let mrScore = 0;
+          let mrCount = 0;
+          for (let [mrID, mrObj] of Object.entries(uservalue['mr'])) {
+            if (mrObj['ignore']) {
+              mrIgnore = true;
+              continue;
+            }
 
+            //TODO: Iterate Code Diffs in this Level
+            // console.log(mrID, mrObj)
+            // console.log('code diff detail', mrObj['codeDiffDetail'])
+            for (let [codeDiffFile, codeDiffFileObj] of Object.entries(mrObj['codeDiffDetail'])) {
+              console.log(codeDiffFile, codeDiffFileObj)
+              if (!codeDiffFileObj['ignore']) {
+                // mrFileIgnore = true;
+                // continue;
+                // console.log(codeDiffFileObj['file_type'])
+                mrCount++;
+                mrScore += codeDiffFileObj['score'];
+                if (codeDiffFileObj['file_type'] in fileType) {
+                  fileType[codeDiffFileObj['file_type']] += codeDiffFileObj['score'];
+                }
+                else {
+                  fileType[codeDiffFileObj['file_type']] = codeDiffFileObj['score'];
+                }
+                // console.log(codeDiffFileObj['file_type'])
+              }
+            }
+            console.log(mrID, mrObj);
+            for (let [commitID, commitObj] of Object.entries(mrObj['commitList'])) {
+              // console.log(commitID, commitObj)]
+              if (commitObj['ignore']) {  // ignore commit
+
+              }
+            }
             // console.log('value', value)
             // if (value['ignore']) {
             //   continue;
             // }
             // console.log(value["ignore"])
-            if (value['ignore']) {
-              ignore = true;
-              continue;
-            }
-            for (let [k, v] of Object.entries(value['commitList'])) {
+            for (let [k, v] of Object.entries(mrObj['commitList'])) {
               if (v['ignore']) {
                 ignore = true
                 continue;
@@ -92,12 +125,12 @@ const EveryoneScore = () => {
               commitScore += v['score'];
             }
             for (let [keylines, valuelines] of Object.entries(
-              value['lineCounts']
+              mrObj['lineCounts']
             )) {
               if (!ignore) {
-                linesAdded += value['lineCounts']['lines_added'];
-                linesDeleted += value['lineCounts']['lines_deleted'];
-                syntaxChanged += value['lineCounts']['syntax_changes'];
+                linesAdded += mrObj['lineCounts']['lines_added'];
+                linesDeleted += mrObj['lineCounts']['lines_deleted'];
+                syntaxChanged += mrObj['lineCounts']['syntax_changes'];
               }
             }
             ignore = false
