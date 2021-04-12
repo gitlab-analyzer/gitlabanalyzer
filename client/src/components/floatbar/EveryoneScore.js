@@ -42,25 +42,25 @@ const EveryoneScore = () => {
 
       if (commitsMaster) {
         for (let [cmUser, cmObj] of Object.entries(commitsMaster['commit_list'])) {
-          console.log('cmObj', cmObj)
+          cmMaster[cmUser] = {count:0, score:0, type:{}, print:true}
+          cmMaster[cmUser]['print'] = false;
           for (let [cmID, cmValue] of Object.entries(cmObj)) {
+            cmMaster[cmUser]['count']++;
             for (let [cmKey, cmPropValue] of Object.entries(cmValue['code_diff_detail'])) {
               if (cmPropValue['ignore']){
                 continue;
               }
-              if (cmUser in cmMaster) {
-                cmMaster[cmUser]['score'] += cmPropValue['score'];
+              cmMaster[cmUser]['score'] += cmPropValue['score'];
+              if (cmPropValue['file_type'] in cmMaster[cmUser]['type']) {
+                cmMaster[cmUser]['type'][cmPropValue['file_type']] += cmPropValue['score'];
               }
               else {
-                cmMaster[cmUser] = {count:0}
-                cmMaster[cmUser]['score'] = cmPropValue['score'];
+                cmMaster[cmUser]['type'][cmPropValue['file_type']] = cmPropValue['score'];
               }
-              cmMaster[cmUser]['count']++;
             }
           }
         }
       }
-      console.log('cmmaster', cmMaster);
       if (notesList) {
         for (let [noteKey, noteObj] of Object.entries(notesList)) {
           if (noteObj['ignore'] || dataList[0]==null ||
@@ -118,22 +118,26 @@ const EveryoneScore = () => {
           if (!subscore[user]) {
             subscore[user] = 0;
           }
+          for (let file in fileType){
+            if (cmMaster[toString(user)]) {
+              for (let [cmfiletype, cmfileScore] of Object.entries(cmMaster[toString(user)]['type'])) {
+                if (file === cmfiletype) {
+                  fileType[file] += cmfileScore;
+                }
+                else {
+                  fileType[cmfiletype] = cmfileScore;
+                }
+              }
+            }
+          }
           barData.push({
             name: user,
             id: num++,
-            // ...((user in cmMaster) ? [
-            //   weightscore: mrScore+cmMaster[user],
-            // ]:[]),
-
-            weightscore: mrScore,
-            // weightscore: mrScore + (cmMaster[user] ? cmMaster[user] : 0),
-            // weightscore: mrScore+masterCm,
+            weightscore: mrScore + (cmMaster[user] ? cmMaster[user]['score'] : 0),
             mrscore: mrScore,
             mrcount: mrCount,
-
-            cmscore: cmScore,
-            // cmscore: cmScore + (cmMaster[user] ? cmMaster[user] : 0),
-            cmcount: cmCount,
+            cmscore: cmScore + (cmMaster[user] ? cmMaster[user]['score'] : 0),
+            cmcount: cmCount + (cmMaster[user] ? cmMaster[user]['count'] : 0),
             issue: subscore[user],
             filetype: fileType
           });
@@ -148,7 +152,6 @@ const EveryoneScore = () => {
   const scrollRef = HorizontalScroll();
   return (
     <div className="floatbarContainer">
-      {console.log(barData)}
       <div className="floatbarLabels">
         <div className="scoreLabel">weighted score</div>
         <div className="remainingLabels">
