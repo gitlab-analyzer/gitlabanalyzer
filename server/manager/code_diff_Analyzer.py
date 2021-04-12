@@ -92,7 +92,9 @@ class CodeDiffAnalyzer:
                     if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                         info = self.add_one_char_middle(line, oldLine, info, fileType)
                         if temp != info:
-                            info = self.modify_info_value(oldLineType, info, oldLine[0], -1)
+                            info = self.modify_info_value(
+                                oldLineType, info, oldLine[0], -1
+                            )
                             oldLineType = self.compare_dict_value(info, temp)
                             oldLine = line
                             continue
