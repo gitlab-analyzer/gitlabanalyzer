@@ -43,7 +43,7 @@ const UserMap = () => {
 
   const mapUsers = async () => {
     const userMappingRes = await axios.post(
-      `http://localhost:5678/projects/${selectedRepo}/map`,
+      `https://cmpt373.herokuapp.com/projects/${selectedRepo}/map`,
       finalDict,
       {
         withCredentials: true,

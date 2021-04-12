@@ -47,9 +47,12 @@ const SearchPage = ({ insideApp }) => {
   useEffect(() => {
     const getRepos = async () => {
       setLoading(true);
-      const repoList = await axios.get('http://localhost:5678/projects', {
-        withCredentials: true,
-      });
+      const repoList = await axios.get(
+        'https://cmpt373.herokuapp.com/projects',
+        {
+          withCredentials: true,
+        }
+      );
       setRepo(repoList.data.projects);
 
       const projectsData = repoList.data.projects;

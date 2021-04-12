@@ -85,7 +85,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     configDict['value'] = value;
     let currConfig = JSON.stringify(configDict);
     const configStatus = await axios.post(
-      `http://localhost:5678/config`,
+      `https://cmpt373.herokuapp.com/config`,
       currConfig,
       {
         withCredentials: true,
@@ -112,7 +112,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   const syncProjectId = async () => {
     axios.defaults.withCredentials = true;
     const projectRes = await axios.post(
-      `http://localhost:5678/projects/${selectRepo}/sync`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/sync`,
       {
         withCredentials: true,
         headers: {
@@ -135,7 +135,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
    */
   const syncProject = async () => {
     const syncStatus = await axios.post(
-      `http://localhost:5678/projects/${selectRepo}/sync/state`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/sync/state`,
       {
         withCredentials: true,
       }
@@ -159,7 +159,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/members`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/members`,
       {
         withCredentials: true,
       }
@@ -180,7 +180,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching users list data
   const fetchUsers = async () => {
     const usersRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/users`,
+      `https://cmpt373.herokuapp.com/${selectRepo}/users`,
       {
         withCredentials: true,
       }
@@ -192,7 +192,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/commit/user/all`,
+      `https://cmpt373.herokuapp.com/${selectRepo}/commit/user/all`,
       {
         withCredentials: true,
       }
@@ -235,7 +235,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching commits list data
   const fetchCommitsMaster = async () => {
     const commitsMasterRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/commit/master/direct/user/all`,
+      `https://cmpt373.herokuapp.com/${selectRepo}/commit/master/direct/user/all`,
       {
         withCredentials: true,
       }
@@ -308,7 +308,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/merge_request/user/all`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/merge_request/user/all`,
       {
         withCredentials: true,
       }
@@ -423,7 +423,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching, parsing, and storing notes list data
   const fetchNotes = async () => {
     const notesRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/comments/all`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/comments/all`,
       {
         withCredentials: true,
       }
@@ -455,7 +455,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching, parsing, and storing comments list data
   const fetchComments = async () => {
     const commentsRes = await axios.get(
-      `http://localhost:5678/projects/${selectRepo}/comments/user/all`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/comments/user/all`,
       {
         withCredentials: true,
       }
@@ -524,7 +524,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   };
 
   const updateRepos = async () => {
-    const repoList = await axios.get('http://localhost:5678/projects', {
+    const repoList = await axios.get('https://cmpt373.herokuapp.com/projects', {
       withCredentials: true,
     });
     setRepo(repoList.data.projects);
@@ -571,7 +571,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     let final = JSON.stringify(payload);
 
     const batchStatus = await axios.post(
-      `http://localhost:5678/projects/sync/batch/state`,
+      `https://cmpt373.herokuapp.com/projects/sync/batch/state`,
       final,
       {
         withCredentials: true,
@@ -614,7 +614,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
 
     axios.defaults.withCredentials = true;
     const batchRes = await axios.post(
-      `http://localhost:5678/projects/sync/batch`,
+      `https://cmpt373.herokuapp.com/projects/sync/batch`,
       payload,
       {
         withCredentials: true,

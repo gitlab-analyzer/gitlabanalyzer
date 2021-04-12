@@ -178,7 +178,7 @@ const CodeDiff = ({ codeId }) => {
   useEffect(() => {
     const getData = async () => {
       const codeRes = await axios.get(
-        `http://localhost:5678/projects/2/code_diff/${codeDiffId}`
+        `https://cmpt373.herokuapp.com/projects/2/code_diff/${codeDiffId}`
       );
       await setCodeDiff(codeRes.data.code_diff_list);
       const files = codeDiff.map((code) => code.new_path);

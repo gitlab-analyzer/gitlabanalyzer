@@ -70,7 +70,7 @@ const LoginBar = ({ setRedirect }) => {
     axios.defaults.withCredentials = true;
     const response = await axios({
       method: 'post',
-      url: 'http://localhost:5678/auth',
+      url: 'https://cmpt373.herokuapp.com/auth',
       data: bodyFormData,
       withCredentials: true,
       headers: { 'Content-Type': 'multipart/form-data' },

@@ -68,5 +68,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://flask:5678"
+  // "proxy": "http://flask:5678"
 }

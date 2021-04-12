@@ -18,10 +18,10 @@ import {
 } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import { SaveOutlined } from '@ant-design/icons';
-import axios from "axios";
+import axios from 'axios';
 
 const { Option } = Select;
-export var SavedConfigs = {}
+export var SavedConfigs = {};
 const ConfigPage = () => {
   const {
     dataList,
@@ -56,7 +56,7 @@ const ConfigPage = () => {
   ];
   useEffect(() => {
     retrieveConfig();
-  }, [SavedConfigs])
+  }, [SavedConfigs]);
   const mrScore = (codediffdetail, singleFile) => {
     let index;
     let totalScore = 0;
@@ -152,7 +152,6 @@ const ConfigPage = () => {
     return tempMR;
   };
 
-
   const handleSave = async (value) => {
     setCurrentConfig(value);
     setDataList(value.date);
@@ -163,13 +162,12 @@ const ConfigPage = () => {
       duration: 1.5,
     });
 
-    let configDict ={}
-    configDict["name"] = value.configname;
-    configDict["value"] = value;
-    let currConfig = JSON.stringify(
-      configDict);
+    let configDict = {};
+    configDict['name'] = value.configname;
+    configDict['value'] = value;
+    let currConfig = JSON.stringify(configDict);
     const configStatus = await axios.post(
-      `http://localhost:5678/config`,
+      `https://cmpt373.herokuapp.com/config`,
       currConfig,
       {
         withCredentials: true,
@@ -188,26 +186,30 @@ const ConfigPage = () => {
   let tempConfig;
   const retrieveConfig = async () => {
     let loadConfig;
-    loadConfig = await axios.get(
-      `http://localhost:5678/config`,
-      {
-        withCredentials: true,
-      }
-    );
+    loadConfig = await axios.get(`https://cmpt373.herokuapp.com/config`, {
+      withCredentials: true,
+    });
     tempConfig = loadConfig.data.configs;
     SavedConfigs = {
-      ...tempConfig
-    }
-    for (let [configname, configvalue] of Object.entries(SavedConfigs)){
-      SavedConfigs[configname]['date'] = [moment(configvalue['date'][0]), moment(configvalue['date'][1])];
+      ...tempConfig,
+    };
+    for (let [configname, configvalue] of Object.entries(SavedConfigs)) {
+      SavedConfigs[configname]['date'] = [
+        moment(configvalue['date'][0]),
+        moment(configvalue['date'][1]),
+      ];
       if (SavedConfigs[configname]['iterations']) {
-        for (let [iterkeys, itervalues] of Object.entries(configvalue['iterations'])) {
-          SavedConfigs[configname]['iterations'][iterkeys]['iterdates'] = 
-            [moment(itervalues['iterdates'][0]), moment(itervalues['iterdates'][1])];
+        for (let [iterkeys, itervalues] of Object.entries(
+          configvalue['iterations']
+        )) {
+          SavedConfigs[configname]['iterations'][iterkeys]['iterdates'] = [
+            moment(itervalues['iterdates'][0]),
+            moment(itervalues['iterdates'][1]),
+          ];
         }
       }
     }
-  }
+  };
 
   useEffect(() => {
     form.setFieldsValue(currentConfig);
@@ -225,22 +227,18 @@ const ConfigPage = () => {
   return (
     <>
       <Header />
-      <Form
-        style={{ padding:'3% 3% 0 3%' }}
-        onFinish={handleSave}
-        form={form}
-      >
-        <div 
+      <Form style={{ padding: '3% 3% 0 3%' }} onFinish={handleSave} form={form}>
+        <div
           style={{
-            display:"flex",
-            marginRight:"-3%",
-            marginTop: "-3%",
-            float:"right"
+            display: 'flex',
+            marginRight: '-3%',
+            marginTop: '-3%',
+            float: 'right',
           }}
         >
           <Select
             style={{
-              width: 320
+              width: 320,
             }}
             showSearch
             allowClear
@@ -276,25 +274,18 @@ const ConfigPage = () => {
         <Divider />
         <div
           style={{
-            display:"flex",
-            justifyContent:"space-between",
-            alignItems:"end"
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'end',
           }}
         >
           <div>
             <h6>Turn on Anonymous Viewing: </h6>
-            <Form.Item
-              name="anon"
-              initialValue={anon}
-              valuePropName="checked"
-            >
+            <Form.Item name="anon" initialValue={anon} valuePropName="checked">
               <Switch onChange={setAnon} />
             </Form.Item>
           </div>
-          <div
-            className="buttonContainer"
-            style={{ display:'flex' }}
-          >
+          <div className="buttonContainer" style={{ display: 'flex' }}>
             <Form.Item
               name="configname"
               rules={[
