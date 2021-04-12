@@ -2,6 +2,7 @@ import hashlib
 from typing import Any
 
 import flask
+import os
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from manager.gitlab_analyzer_manager import GitLabAnalyzerManager

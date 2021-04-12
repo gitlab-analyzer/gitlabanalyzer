@@ -9,14 +9,14 @@ services:
     depends_on:
      - "mangodb"
      
-  frontend:
-    build:
-     context: .
-     dockerfile: reactjs.Dockerfile
-    ports:
-     - "6789:6789"
-    depends_on:
-     - "mangodb"
+#  frontend:
+#    build:
+#     context: .
+#     dockerfile: reactjs.Dockerfile
+#    ports:
+#     - "6789:6789"
+#    depends_on:
+#     - "mangodb"
 
   mangodb:
     image: mongo
