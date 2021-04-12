@@ -1,4 +1,5 @@
 import datetime
+from model.project import Project
 import threading
 from copy import deepcopy
 
@@ -20,9 +21,7 @@ TOTAL_SYNC_STAGES: int = 7
 
 
 class GitLabProject:
-    def __init__(
-        self, projectID: int, projectName: str = "", default_branch: str = "master"
-    ):
+    def __init__(self, project, default_branch: str = "master"):
         self.__membersManager: MemberManager = MemberManager()
         self.__issuesManager: IssueManager = IssueManager()
         self.__commitsManager: CommitManager = CommitManager()
@@ -30,8 +29,7 @@ class GitLabProject:
         self.__mergeRequestManager: MergeRequestManager = MergeRequestManager()
         self.__codeDiffManager: CodeDiffManager = CodeDiffManager()
         self.__codeDiffAnalyzer: CodeDiffAnalyzer = CodeDiffAnalyzer()
-        self.__projectID: int = projectID
-        self.__projectName: str = projectName
+        self.__project: Project = Project(project)
         self.__is_syncing: bool = False
         self.__last_synced: datetime = None
         self.__syncing_state: str = "Not Synced"
@@ -42,7 +40,7 @@ class GitLabProject:
 
     def get_project_sync_state(self) -> dict:
         return {
-            "projectID": self.__projectID,
+            "projectID": self.__project.project_id,
             "is_syncing": self.__is_syncing,
             "last_synced": self.__last_synced,
             "syncing_state": self.__syncing_state,
@@ -52,7 +50,7 @@ class GitLabProject:
     def update(self, myGitlab: GitLab) -> None:
         self.__syncing_progress = 0
         self.__is_syncing = True
-        myGitlab.set_project(projectID=self.__projectID)
+        myGitlab.set_project(projectID=self.__project.project_id)
         # construct a thread list that each thread responsible to update a different manager
         myThreadList: list = [
             threading.Thread(
@@ -88,16 +86,17 @@ class GitLabProject:
             state="all"
         )
         for i in range(0, len(mergeRequests)):
-            self.__mergeRequestManager.add_merge_request(
+            newMR = self.__mergeRequestManager.add_merge_request(
                 mergeRequests[i], commitsForMR[i]
             )
             # Get comments
             mr_notes = myGitlab.get_comments_of_mr(mergeRequests[i].iid)
             for item in mr_notes:
                 if item.system is False:
-                    self.__commentsManager.add_comment(
+                    newComment = self.__commentsManager.add_comment(
                         item, mergeRequests[i].author["name"]
                     )
+                    newMR.add_comment(newComment.noteable_iid)
         self.__syncing_progress = self.__syncing_progress + 1
 
     def __update_member_manager(self, myGitlab: GitLab) -> None:
@@ -416,7 +415,7 @@ class GitLabProject:
         for mr in all_mrs_list:
             commits_list = mr.related_commits_list
             for i in range(0, len(commits_list)):
-                commit_authorName = commits_list[i].author_name
+                commit_authorName = commits_list[i].org_author
                 for user_sublist in range(0, len(userList)):
                     if commit_authorName in userList[user_sublist]:
                         mr.related_commits_list[i].author_name = memberList[
@@ -426,18 +425,38 @@ class GitLabProject:
     def __update_commits_manager_after_mapping(self, memberList, userList) -> None:
         all_commits_list = self.__commitsManager.get_commit_list()
         for i in range(0, len(all_commits_list)):
-            commit_authorName = all_commits_list[i].author_name
+            commit_authorName = all_commits_list[i].org_author
             for user_sublist in range(0, len(userList)):
                 if commit_authorName in userList[user_sublist]:
                     all_commits_list[i].author_name = memberList[user_sublist]
 
+    def reset_user_mapping(self):
+        self.__reset_commits()
+        self.__reset_mr_and_commits()
+
+    def __reset_commits(self):
+        commit: Commit
+        for commit in self.__commitsManager.get_commit_list():
+            commit.author_name = commit.org_author
+
+    def __reset_mr_and_commits(self):
+        mr: MergeRequest
+        for mr in self.__mergeRequestManager.merge_request_list:
+            commit: Commit
+            for commit in mr.related_commits_list:
+                commit.author_name = commit.org_author
+
+    @property
+    def project(self) -> Project:
+        return self.__project
+
     @property
     def project_id(self) -> int:
-        return self.__projectID
+        return self.__project.project_id
 
     @property
     def project_name(self) -> str:
-        return self.__projectName
+        return self.__project.name
 
     @property
     def user_list(self) -> list:

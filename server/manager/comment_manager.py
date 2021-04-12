@@ -12,19 +12,13 @@ class CommentManager:
     def get_comment_list(self) -> list:
         return self.__commentList
 
-    def add_comment(self, comment: gitlab, notable_author: str, sha=None) -> None:
+    def add_comment(self, comment: gitlab, notable_author: str, sha=None) -> Comment:
         if sha is None:
-            self.__commentList.append(
-                Comment(commentForIssueMR=comment, author_of_notable=notable_author)
-            )
+            newComment = Comment(comment, None, notable_author, "")
         else:  # sha is not None
-            self.__commentList.append(
-                Comment(
-                    commentForCommit=comment,
-                    author_of_notable=notable_author,
-                    commitSha=sha,
-                )
-            )
+            newComment = Comment(None, comment, notable_author, sha)
+        self.__commentList.append(newComment)
+        return newComment
 
     # Get list of Comments in certain (ex. Issue iid / Merge Request iid / Commit sha)
     def get_comments_by_noteableId(self, noteableID) -> List[Comment]:

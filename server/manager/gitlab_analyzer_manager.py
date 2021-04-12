@@ -11,7 +11,7 @@ ERROR_CODES = {
     "invalidToken": "Invalid token",
     "invalidProjectID": "Invalid project ID",
     "projectIsSyncing": "Project is syncing",
-    "partialInvalidProjectID": "Some project IDs are invalid or they are already syncing",
+    "partialInvalidProjectID": "Some project IDs are invalid, or they are already syncing",
 }
 
 
@@ -300,6 +300,15 @@ class GitLabAnalyzerManager:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
 
+    def reset_user_mapping(self, hashedToken: str, projectID: int) -> Tuple[bool, str]:
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
+            hashedToken, projectID
+        )
+        if isValid:
+            myProject.reset_user_mapping()
+            return isValid, errorCode
+        return isValid, errorCode
+
     def __delete_GitLab_instance(self, hashedToken: str) -> None:
         self.__gitlab_list_lock.acquire()
         if self.__gitlab_list.get(hashedToken, None) is not None:
@@ -341,3 +350,18 @@ class GitLabAnalyzerManager:
         if isValid:
             myProject.call_map_users_to_members(userMapDict)
         return isValid, errorCode
+
+    def update_config(
+        self, hashedToken: str, configName: str, config: dict
+    ) -> Tuple[bool, str]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is not None:
+            myGitLab.configs[configName] = config
+            return True, ""
+        return False, ERROR_CODES["invalidToken"]
+
+    def get_config(self, hashedToken: str) -> Tuple[bool, str, dict]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is not None:
+            return True, "", myGitLab.configs
+        return False, ERROR_CODES["invalidToken"], {}

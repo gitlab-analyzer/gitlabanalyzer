@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import {
+  Popconfirm,
   Tag,
   Button,
   Checkbox,
@@ -17,6 +18,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { SavedConfigs } from '../../pages/ConfigPage';
 import {
   CloseCircleOutlined,
+  ConsoleSqlOutlined,
   SettingOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
@@ -25,7 +27,7 @@ import axios from 'axios';
 
 /// TODO: Hardcoded because of some weird bug
 let selectRepo = 2;
-const Repo = ({ analyzing, setAnalyzing, loading }) => {
+const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   const {
     setMembersList,
     setUsersList,
@@ -46,9 +48,11 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setRepo,
     value,
     setValue,
+    currentConfig,
     setCurrentConfig,
     setDataList,
     setFinishedConfig,
+    finishedConfig,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -56,6 +60,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const [syncDone, setSyncDone] = useState(false);
   const [syncPercent, setSyncPercent] = useState(0);
   const [selectVal, setSelectVal] = useState(false);
+  const [analyzeConfirm, setAnalyzeConfirm] = useState(false);
   const history = useHistory();
   const [form] = Form.useForm();
 
@@ -66,22 +71,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     selectVal,
     selectedRepo,
   ]);
-
-  const handleRoute = () => {
-    if (
-      Object.keys(configSettings.iteration).length > 5 &&
-      configSettings.enddate
-    ) {
-      history.push('/summary');
-    } else {
-      notification.open({
-        message: 'Error',
-        description: 'Please fill out ( * ) all fields.',
-        icon: <CloseCircleOutlined style={{ color: 'red' }} />,
-        duration: 1,
-      });
-    }
-  };
 
   const handleSubmit = (value) => {
     setVisible(false);
@@ -114,6 +103,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         crossDomain: true,
       }
     );
+    console.log('projectRes', projectRes);
     if (!projectRes.data['response']) {
       console.log('Failed to set project ID!');
       console.log(projectRes);
@@ -213,6 +203,64 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCommitsList([...tempCommits]);
   };
 
+  const multiplier = [0, 0, 0, 0, 1, 0.2, 0, 0.2];
+  const fields = [
+    'lines_added',
+    'lines_deleted',
+    'comments_added',
+    'comments_deleted',
+    'blanks_added',
+    'blanks_deleted',
+    'spacing_changes',
+    'syntax_changes',
+  ];
+
+  const mrScore = (codediffdetail, singleFile) => {
+    let index;
+    let totalScore = 0;
+    // maybe move file type
+    let totalFileType = {};
+
+    if (singleFile) {
+      let lines = codediffdetail['line_counts'];
+      let ext = codediffdetail['file_type'];
+      index = 0;
+
+      for (let type in lines) {
+        totalScore += lines[type] * multiplier[index];
+        index++;
+      }
+
+      if (ext in lang) {
+        totalScore *= lang[ext];
+      }
+      return totalScore;
+    } else {
+      for (let file of codediffdetail) {
+        let score = 0;
+        let lines = file['line_counts'];
+        let ext = file['file_type'];
+        index = 0;
+        for (let type in lines) {
+          score += lines[type] * multiplier[index];
+          index++;
+        }
+        if (ext in lang) {
+          score *= lang[ext];
+        }
+        if (ext in totalFileType) {
+          totalFileType[ext] += score;
+        } else {
+          totalFileType[ext] = score;
+        }
+        totalScore += score;
+      }
+      return totalScore;
+    }
+  };
+
+  let lang = {};
+
   // Function for fetching, parsing, and storing merge requests list data
   const fetchMergeRequests = async () => {
     const mergeRequestRes = await axios.get(
@@ -221,13 +269,20 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         withCredentials: true,
       }
     );
-    // console.log(mergeRequestRes.data['merge_request_users_list']);
 
     fetchErrorChecker(mergeRequestRes.data['response'], 'merge request');
 
     // Generate a temporary merge request list to parse and set to Global Context API
     const generateTempMR = () => {
       const mrList = mergeRequestRes.data['merge_request_users_list'];
+      if (currentConfig.language) {
+        for (let [langkey, langvalue] of Object.entries(
+          currentConfig.language
+        )) {
+          lang[langvalue.extname] = langvalue.extpoint;
+        }
+      }
+
       const tempMR = {};
       // Loop through object key
       for (let user in mrList) {
@@ -253,14 +308,23 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
               webUrl: commit.web_url,
               // Frontend defined variables Start --------------------------
               // Initial score calculation
-              score:
-                commit.line_counts.lines_added +
-                commit.line_counts.lines_deleted * 0.1,
+              score: mrScore(commit.code_diff_detail, false),
               // Flag to ignore this commit
               ignore: false,
               omitScore: 0,
               // Frontend defined variables End --------------------------
             };
+            // Calculates and embeds a score for each file within a commit
+            for (let [k1, v1] of Object.entries(
+              tempCommits[commit.short_id]['codeDiffDetail']
+            )) {
+              tempCommits[commit.short_id]['codeDiffDetail'][k1][
+                'score'
+              ] = mrScore(v1, true);
+              tempCommits[commit.short_id]['codeDiffDetail'][k1][
+                'ignore'
+              ] = false;
+            }
           }
           tempMR[user].mr[author.id] = {
             author: author.author,
@@ -281,14 +345,26 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             webUrl: author.web_url,
             // Frontend defined variables Start --------------------------
             // Initial score calculation
-            score:
-              author.line_counts.lines_added +
-              author.line_counts.lines_deleted * 0.1,
+            // score:
+            //   author.line_counts.lines_added +
+            //   author.line_counts.lines_deleted * 0.1,
+            score: mrScore(author.code_diff_detail, false),
             // Flag to ignore this MR
             ignore: false,
             omitScore: 0,
             // Frontend defined variables End --------------------------
           };
+
+          // Experimental
+          for (let [k1, v1] of Object.entries(
+            tempMR[user].mr[author.id]['codeDiffDetail']
+          )) {
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['score'] = mrScore(
+              v1,
+              true
+            );
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['ignore'] = false;
+          }
         }
       }
       console.log('tempMR', tempMR);
@@ -365,7 +441,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
           tempComments[user]['weightedScore'] = 0;
         }
       }
-      // console.log(tempComments);
       return tempComments;
     };
     setCommentsList(generateTempComments());
@@ -386,7 +461,6 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       await syncProjectId();
       // This is a recursive call that checks the status of syncing process every 5000 milliseconds
       await syncProject();
-      // await updateRepos();
     } catch (error) {
       setAnalyzing(false);
       console.log(error);
@@ -577,17 +651,19 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             alignItems: 'center',
           }}
         >
-          <Popover content="Global Configuration">
-            <SettingOutlined
-              height="100px"
-              style={{
-                marginRight: 10,
-                fontSize: 20,
-                color: '#1890ff',
-              }}
-              onClick={handleDrawer}
-            />
-          </Popover>
+          {insideApp ? null : (
+            <Popover content="Global Configuration">
+              <SettingOutlined
+                height="100px"
+                style={{
+                  marginRight: 10,
+                  fontSize: 20,
+                  color: '#1890ff',
+                }}
+                onClick={handleDrawer}
+              />
+            </Popover>
+          )}
           <Button
             onClick={selectAll}
             style={{ marginRight: '10px' }}
@@ -670,7 +746,16 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
   const tagRender = (item) => {
     if (analyzing && selectedRepo === item.id) {
       return (
-        <Tag icon={<SyncOutlined spin />} color="processing" key={'cached'}>
+        <Tag
+          style={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          icon={<SyncOutlined spin />}
+          color="processing"
+          key={'cached'}
+        >
           Analyzing
         </Tag>
       );
@@ -682,7 +767,15 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       );
     } else {
       return (
-        <Tag color={'green'} key={'cached'}>
+        <Tag
+          style={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          color={'green'}
+          key={'cached'}
+        >
           Cached: {Math.round(item['lastSynced'])} min ago
         </Tag>
       );
@@ -695,12 +788,22 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     fetchAndRedirect();
   };
 
+  const innerContent = () => <p>Global Configuration Incomplete</p>;
+
   const goRender = (item) => {
     if (item['lastSynced'] === null) {
       return (
         <Button type="primary" disabled>
           Go
         </Button>
+      );
+    } else if (!finishedConfig) {
+      return (
+        <Popover content={innerContent}>
+          <Button type="primary" disabled>
+            Go
+          </Button>
+        </Popover>
       );
     } else {
       return (
@@ -712,6 +815,43 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
         >
           Go
         </Button>
+      );
+    }
+  };
+
+  const popMsg = () => {
+    return (
+      <>
+        <div>This Repository has already been synced before,</div>
+        <div>Are you sure you want to re-sync it again?</div>
+      </>
+    );
+  };
+
+  const renderAnalyze = (item) => {
+    if (item['lastSynced'] === null) {
+      return (
+        <Button
+          onClick={(e) => {
+            handleAnalyze(e, item.id);
+          }}
+          key="analyze"
+        >
+          Analyze
+        </Button>
+      );
+    } else {
+      return (
+        <Popconfirm
+          title={popMsg}
+          onConfirm={(e) => {
+            handleAnalyze(e, item.id);
+          }}
+        >
+          <Button ghost type="primary" key="analyze">
+            Analyze
+          </Button>
+        </Popconfirm>
       );
     }
   };
@@ -775,14 +915,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
             <List.Item
               actions={[
                 tagRender(item),
-                <Button
-                  onClick={(e) => {
-                    handleAnalyze(e, item.id);
-                  }}
-                  key="analyze"
-                >
-                  Analyze
-                </Button>,
+                renderAnalyze(item),
                 goRender(item),
                 <Checkbox
                   checked={item.batched}
