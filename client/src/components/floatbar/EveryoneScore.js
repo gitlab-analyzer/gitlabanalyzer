@@ -36,8 +36,15 @@ const EveryoneScore = () => {
   const { notesList, mergeRequestList, setFloatScores, dataList, selectUser, anon } = useAuth();
 
   console.log('MR',mergeRequestList);
+  
+    const dateInRange = (value) => {
+      // new Date(value)
+      console.log('date type', value); 
+      console.log(dataList);
+    }
 
   useEffect(() => {
+
     async function updateData() {
       barData = [];
       let subscore = {};
@@ -72,12 +79,16 @@ const EveryoneScore = () => {
           let syntaxChanged = 0;
           let mrScore = 0;
           let mrCount = 0;
+          let cmScore = 0;
+          let cmCount = 0;
           for (let [mrID, mrObj] of Object.entries(uservalue['mr'])) {
             if (mrObj['ignore']) {
               mrIgnore = true;
               continue;
             }
+            if (dateInRange(mrObj['createdDate'])) {
 
+            }
             //TODO: Iterate Code Diffs in this Level
             // console.log(mrID, mrObj)
             // console.log('code diff detail', mrObj['codeDiffDetail'])
@@ -98,11 +109,21 @@ const EveryoneScore = () => {
                 // console.log(codeDiffFileObj['file_type'])
               }
             }
-            console.log(mrID, mrObj);
+            // console.log(mrID, mrObj);
             for (let [commitID, commitObj] of Object.entries(mrObj['commitList'])) {
               // console.log(commitID, commitObj)]
-              if (commitObj['ignore']) {  // ignore commit
-
+              if (commitObj['ignore']) {
+                continue;
+              }
+              else {
+              // if (!commitObj['ignore']) {  // ignore commit
+                for (let [commitFileID, commitFileObject] of Object.entries(commitObj['codeDiffDetail'])) {
+                  console.log(commitFileID, commitFileObject)
+                  if (!commitFileObject['ignore']) {
+                    cmCount++;
+                    cmScore += commitFileObject['score'];
+                  }
+                }
               }
             }
             // console.log('value', value)
