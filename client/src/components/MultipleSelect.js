@@ -14,16 +14,14 @@ const MultipleSelect = (props) => {
 
     const [selectedItems, setSelectedItems] = useState([]);
     const [newSelectedItems, setNewSelectedItems] = useState();
-    const userList = ["UserA", "UserB", "UserC", "UserD", "UserE", "UserJJJ", "UserX"] //  fake data
+    // const userList = ["UserA", "UserB", "UserC", "UserD", "UserE", "UserJJJ", "UserX"] //  fake data
 
-    /*
     // real data
-    const memberList = membersList.map((item) => item.name);    // real member data
-    // const userList = usersList;     // real data
-    const userList = usersList.filter(val => !memberList.includes(val));    // real data
+    const memberList = membersList.map((item) => item.name); 
+    // const userList = usersList;
+    const userList = usersList.filter(val => !memberList.includes(val));
     // const dict = {};
-    */
-
+    
     function handleSelect(value) {
         setSelectedOptions([...selectedOptions, value]);
     }

@@ -12,8 +12,6 @@ import CommitPage from './pages/CommitPage';
 import TablePage from './pages/TablePage';
 import ConfigPage from './pages/ConfigPage';
 import CodeDiffDetail from './components/code_diff_detail/CodeDiffDetail';
-
-import UserMap from './components/UserMap';
 import UserMapPage from './pages/UserMapPage';
 
 function App() {
@@ -24,6 +22,7 @@ function App() {
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
           <Route path="/reposearch" component={SearchPage} />
+          <Route path="/usermap" component={UserMapPage} />
           <Container maxWidth="lg">
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />
@@ -31,7 +30,6 @@ function App() {
             <Route path="/batch" component={BatchPage} />
             <Route path="/config" component={ConfigPage} />
             <Route path="/code_diff_detail" component={CodeDiffDetail} />
-            <Route path="/usermap" component={UserMapPage} />
           </Container>
         </Switch>
       </div>
