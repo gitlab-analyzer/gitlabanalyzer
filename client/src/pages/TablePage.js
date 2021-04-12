@@ -175,8 +175,8 @@ const TablePage = () => {
     }
 
   // Table updates based on state of this
-  var values  = populateTable(notesList, dataList)
-  var rows = values[0]
+  var values  = populateTable(notesList, dataList);
+  var rows = values[0];
 
   useEffect(() => {
     setWordCount(values[1])
@@ -184,7 +184,7 @@ const TablePage = () => {
     setOwnCount(values[3])
     setOtherCount(values[4])
     setIssueCount(values[5])
-  }, [selectUser, dataList])
+  }, [selectUser, dataList]);
 
   return (
     <>

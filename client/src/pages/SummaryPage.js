@@ -36,7 +36,7 @@ const Summary = () => {
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
 
-  const [userMRList, setUserMRList] = useState(mergeRequestList)
+  const [userMRList, setUserMRList] = useState(mergeRequestList);
 
   const classes = useStyles();
 
@@ -63,20 +63,21 @@ const Summary = () => {
           for( i in list[selectUser].mr) {
             for(j in list[selectUser].mr[i].commitList) {
               if (dates.length !== 0) {
-                if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
-                  date = [
-                    list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
-                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
-                    list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
-                  ].join('-');
-                  result[date] = result[date] || 0;
-                  if(list[selectUser].mr[i].commitList[j].ignore == false) {
-                    for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
-                      if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
-                        result[date]++;
+                if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && 
+                  (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
+                    date = [
+                      list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                      list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
+                      list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                      for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                        if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                          result[date]++;
+                        }
                       }
                     }
-                  }
                 }
               } else {
                 date = [
@@ -262,7 +263,7 @@ const Summary = () => {
                 if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
                   date = [
                     list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
-                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
                     list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
@@ -277,7 +278,7 @@ const Summary = () => {
               } else {
                 date = [
                   list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
-                  list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                  list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
                   list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
                 ].join('-');
                 result[date] = result[date] || 0;
@@ -508,8 +509,9 @@ const Summary = () => {
         </Grid>
         <Grid item xs={10}>
           <StackedBarGraph 
-          series={combinedSeries} 
-          xlabel={commitDatesArray}/>
+            series={combinedSeries} 
+            xlabel={commitDatesArray}
+          />
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
@@ -526,11 +528,11 @@ const Summary = () => {
         </Grid>
         <Grid item xs={10}>
           <BarGraph 
-          series={crSeries} 
-          colors={'#f8f0d4'} 
-          stroke={'#CBB97B'} 
-          xlabel={crDateArray} 
-          id={2}
+            series={crSeries} 
+            colors={'#f8f0d4'} 
+            stroke={'#CBB97B'} 
+            xlabel={crDateArray} 
+            id={2}
           />
         </Grid>
         <Grid item xs={1}></Grid>

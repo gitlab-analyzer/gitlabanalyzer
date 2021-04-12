@@ -30,8 +30,7 @@ const Stats = () => {
     } = useAuth();
     return (
         <div>
-            <Grid container className={classes.grid} direction="column"
-          >
+            <Grid container className={classes.grid} direction="column">
                 <Grid item xs={12}>
                     <h4 className={classes.filterText}><b>Stats</b></h4>
                     <h6 className={classes.filterText}>Word Count: {wordCount}</h6>
@@ -48,4 +47,4 @@ const Stats = () => {
     )
 }
 
-export default Stats
+export default Stats;
