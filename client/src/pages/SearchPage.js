@@ -18,7 +18,6 @@ const SearchPage = ({ insideApp }) => {
   const {
     user,
     setRepo,
-    mergeRequestList,
     reList,
     setReList,
     filteredList,

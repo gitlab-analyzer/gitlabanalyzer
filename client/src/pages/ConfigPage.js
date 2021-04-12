@@ -19,7 +19,6 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from "axios";
-import {configSettings} from "../components/login/Repo";
 
 const { Option } = Select;
 export var SavedConfigs = {}
@@ -32,7 +31,6 @@ const ConfigPage = () => {
     anon,
     setAnon,
     mergeRequestList,
-    setMergeRequestList,
   } = useAuth();
   const [form] = Form.useForm();
 
@@ -62,7 +60,6 @@ const ConfigPage = () => {
   const mrScore = (codediffdetail, singleFile) => {
     let index;
     let totalScore = 0;
-    // maybe move file type
     let totalFileType = {};
 
     if (singleFile) {

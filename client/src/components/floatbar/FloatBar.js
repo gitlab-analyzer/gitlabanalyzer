@@ -3,14 +3,9 @@ import { Select, Button, DatePicker, notification } from 'antd';
 import {
   CheckCircleOutlined,
   CopyOutlined,
-  ScanOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../../context/AuthContext';
-import EveryoneScore, {
-  ScoreCalculator,
-  barData,
-  FillBarData,
-} from './EveryoneScore.js';
+import EveryoneScore, { barData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 
@@ -31,12 +26,6 @@ function FloatBar() {
   const [sortType, setSortType] = useState('alpha');
 
   const {
-    membersList,
-    usersList,
-    commitsList,
-    notesList,
-    mergeRequestList,
-    commentsList,
     selectUser,
     dataList,
     setDataList,
@@ -135,7 +124,6 @@ function FloatBar() {
                   <CopyOutlined className="copyicon" />
                 </Button>
               </CopyToClipboard>
-              {/* )} */}
             </Grid>
           </Grid>
         </div>

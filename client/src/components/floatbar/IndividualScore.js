@@ -21,7 +21,6 @@ function IndividualScore({ user }) {
                 placement="bottom"
               >
                 <Button>
-                  {/* {ScoreCalculator(user).toFixed(0)} */}
                   {Detail.weightscore.toFixed(0)}
                 </Button>
               </Popover>

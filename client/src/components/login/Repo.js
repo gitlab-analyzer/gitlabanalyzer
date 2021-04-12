@@ -1017,6 +1017,3 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
 
 export default Repo;
 
-export var configSettings = {
-  iteration: {},
-};

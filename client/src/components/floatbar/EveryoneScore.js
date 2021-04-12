@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import HorizontalScroll from './Scroll';
 import { useAuth } from '../../context/AuthContext';
 import './EveryoneScore.css';
-import axios from "axios";
 
 const usercolours = [
   '#b0911d',
@@ -84,9 +83,6 @@ const EveryoneScore = () => {
             if (mrObj['ignore'] || dateOutOfRange(mrObj['mergedDate'])) {
               continue;
             }
-            // if (dateOutOfRange(mrObj['createdDate'])) {
-            //   continue;
-            // }
             if (!mrObj['codeDiffDetail']['ignore']) {
               mrCount++;
             }
@@ -122,11 +118,6 @@ const EveryoneScore = () => {
           barData.push({
             name: user,
             id: num++,
-            // commits: commitScore.toFixed(0),
-            // code: linesAdded,
-            // deleted: linesDeleted,
-            // syntax: syntaxChanged,
-
             weightscore: mrScore,
             // weightscore: mrScore+masterCm,
             mrscore: mrScore,
@@ -170,11 +161,9 @@ const EveryoneScore = () => {
                   }
                 </div>
                 <div className="userScore">
-                  {/* {ScoreCalculator(Detail.name).toFixed(0)} */}
                   {Detail.weightscore.toFixed(0)}
                 </div>
                 <div className="userScoreDetails">
-                  {/* <div className="userScore">{Detail.weightscore.toFixed(0)}</div> */}
                   <div>{Detail.cmcount}</div>
                   <div>{Detail.mrcount}</div>
                   <div>{Detail.issue}</div>

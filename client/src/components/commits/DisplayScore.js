@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Collapse, Divider } from 'antd';
 import { barData } from '../floatbar/EveryoneScore';
@@ -8,9 +8,7 @@ const { Panel } = Collapse;
 
 const DisplayScore = () => {
   const {
-    mergeRequestList,
     selectUser,
-    currentConfig,
   } = useAuth();
 
   let userData = barData.find((x) => x.name === selectUser);
@@ -22,12 +20,12 @@ const DisplayScore = () => {
           <div style={{ height: 15 }} />
           <div className="TotalScoreContainer">
             <div className="scoreType">Student's Commits :</div>
-            <div className="scoreNumber">{( userData && userData['cmscore'].toFixed(1))}</div>
+            <div className="scoreNumber">{( userData && userData['cmscore'].toFixed(1)) || 0}</div>
           </div>
           <Divider />
           <div className="TotalScoreContainer">
             <div className="scoreType">Merge Request :</div>
-            <div className="scoreNumber">{( userData && userData['mrscore'].toFixed(1))}</div>
+            <div className="scoreNumber">{( userData && userData['mrscore'].toFixed(1)) || 0}</div>
           </div>
           <Divider />
           <div className="FileTypeScoreContainer">
