@@ -39,6 +39,7 @@ const AuthProvider = (props) => {
   const [codeDiffPath, setCodeDiffPath] = useState('');
   const [mapList, setMapList] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [userMapped, setUserMapped] = useState(false);
 
   const authContextValue = {
     user,
@@ -113,6 +114,8 @@ const AuthProvider = (props) => {
     setMapList,
     selectedOptions,
     setSelectedOptions,
+    userMapped,
+    setUserMapped,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };
