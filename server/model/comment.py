@@ -34,7 +34,7 @@ class Comment(DataObject):
         author_of_notable: str = None,
         commitSha: str = None,
     ) -> None:
-        if commentForIssueMR is not None:  # comment of MergeRequest/Issue
+        if commentForIssueMR:  # comment of MergeRequest/Issue
             self.__author: str = commentForIssueMR.author["name"]
             self.__body: str = commentForIssueMR.body
             self.__created_date: str = commentForIssueMR.created_at
@@ -47,7 +47,7 @@ class Comment(DataObject):
             self.__word_count = len(re.findall(r'\w+', self.__body))
             self.__owner_of_noteable: str = author_of_notable
             self.__ownership: str = self.__define_ownership()  # either own, other
-        else:  # comment of Commit
+        elif commentForCommit and commitSha:  # comment of Commit
             self.__author: str = commentForCommit.author["name"]
             self.__body: str = commentForCommit.note
             self.__created_date: str = (
@@ -60,6 +60,8 @@ class Comment(DataObject):
             self.__word_count = len(re.findall(r'\w+', self.__body))
             self.__owner_of_noteable: str = author_of_notable
             self.__ownership: str = self.__define_ownership()
+        else:
+            raise Exception("Comment constructor parameters cannot all be None.")
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()

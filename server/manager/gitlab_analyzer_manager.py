@@ -11,7 +11,7 @@ ERROR_CODES = {
     "invalidToken": "Invalid token",
     "invalidProjectID": "Invalid project ID",
     "projectIsSyncing": "Project is syncing",
-    "partialInvalidProjectID": "Some project IDs are invalid or they are already syncing",
+    "partialInvalidProjectID": "Some project IDs are invalid, or they are already syncing",
 }
 
 
@@ -331,3 +331,28 @@ class GitLabAnalyzerManager:
 
     def get_garbage_monitor_check_period(self) -> int:
         return self.__worker_check_period
+
+    def map_users(
+        self, hashedToken: str, projectID: int, userMapDict: dict
+    ) -> Tuple[bool, str]:
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
+            hashedToken, projectID
+        )
+        if isValid:
+            myProject.call_map_users_to_members(userMapDict)
+        return isValid, errorCode
+
+    def update_config(
+        self, hashedToken: str, configName: str, config: dict
+    ) -> Tuple[bool, str]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is not None:
+            myGitLab.configs[configName] = config
+            return True, ""
+        return False, ERROR_CODES["invalidToken"]
+
+    def get_config(self, hashedToken: str) -> Tuple[bool, str, dict]:
+        myGitLab = self.__find_gitlab(hashedToken)
+        if myGitLab is not None:
+            return True, "", myGitLab.configs
+        return False, ERROR_CODES["invalidToken"], {}

@@ -35,38 +35,23 @@ class Project(DataObject):
     def __init__(self, gitlab_project: gl_Project) -> None:
         self.__project_id: int = gitlab_project.id
         self.__name: str = gitlab_project.name
-        self.__namespace: str = gitlab_project.namespace.name
+        self.__namespace: str = gitlab_project.namespace['name']
         self.__path: str = gitlab_project.path
-        self.__path_namespace = gitlab_project.namespace.path
+        self.__path_namespace = gitlab_project.namespace['path']
         self.__web_url: str = gitlab_project.web_url
-        self.__description: str = gitlab_project.description
 
-        self.__default_branch: str = gitlab_project.default_branch
         self.__visibility: str = gitlab_project.visibility
         self.__is_archived: bool = gitlab_project.archived
 
         self.__created_date: str = gitlab_project.created_at
         self.__updated_date: str = gitlab_project.last_activity_at
 
-        self.__fork_count: int = gitlab_project.forks_count
-        self.__star_count: int = gitlab_project.star_count
-
-        self.__owner_id: int = gitlab_project.owner.id
-
-        self.__tags_list: List[str] = gitlab_project.tag_list
-
-        # self.__issues_list: List[int]
-        # self.__branches_list: List[int]
-        # self.__members_list: List[int]
+        self.__owner_id: int = gitlab_project.owner['id']
 
         # super().__init__() MUST BE AFTER CURRENT CLASS CONSTRUCTION IS DONE
         super().__init__()
 
     # Getters
-    @property
-    def tags_list(self) -> Tuple[str]:
-        return tuple(self.__tags_list)
-
     @property
     def project_id(self) -> int:
         return self.__project_id
@@ -100,14 +85,6 @@ class Project(DataObject):
         return self.__web_url
 
     @property
-    def description(self) -> str:
-        return self.__description
-
-    @property
-    def default_branch(self) -> str:
-        return self.__default_branch
-
-    @property
     def visibility(self) -> str:
         return self.__visibility
 
@@ -122,14 +99,6 @@ class Project(DataObject):
     @property
     def updated_date(self) -> str:
         return self.__updated_date
-
-    @property
-    def fork_count(self) -> int:
-        return self.__fork_count
-
-    @property
-    def star_count(self) -> int:
-        return self.__star_count
 
     @property
     def owner_id(self) -> int:

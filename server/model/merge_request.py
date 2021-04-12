@@ -1,4 +1,3 @@
-from model.code_diff import CodeDiff
 from model.commit import Commit
 from model.data_object import DataObject
 from typing import Optional, List
@@ -27,7 +26,7 @@ class MergeRequest(DataObject):
         else:  # merge request is not merged
             self.__merged_by: Optional[int] = None
         self.__merged_date: Optional[str] = mr.merged_at
-        self.__comments: Optional[List[str]] = None
+        self.__comment_iid_list: List[int] = []
         self.__related_commits_list: List[Commit] = []
         self.__line_counts: dict = {}
         self.__code_diff_detail: list = []
@@ -97,8 +96,8 @@ class MergeRequest(DataObject):
         return self.__merged_date
 
     @property
-    def comments(self) -> Optional[List[str]]:
-        return self.__comments
+    def comment_iid_list(self) -> Optional[List[str]]:
+        return self.__comment_iid_list
 
     @property
     def related_commits_list(self) -> List[Commit]:
@@ -123,6 +122,9 @@ class MergeRequest(DataObject):
     @code_diff_id.setter
     def code_diff_id(self, codeDiffID: int) -> None:
         self.__code_diff_id = codeDiffID
+
+    def add_comment(self, comment_iid: int):
+        self.__comment_iid_list.append(comment_iid)
 
     def set_comments(self, commentList: List[str]):
         self.__comments = commentList
