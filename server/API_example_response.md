@@ -32,13 +32,15 @@
 - [Get all the comments sorted in users](#get-all-comments-sorted-in-users)
     - `GET /projects/<int:projectID>/comments/user/all`
 - [Start garbage collector](#start-garbage-collector)
-    - `POST /config/garbage_monitor/start`
+    - `POST admin/config/garbage_monitor/start`
 - [Stop garbage collector](#stop-garbage-collector)
-    - `POST /config/garbage_monitor/stop`
+    - `POST admin/config/garbage_monitor/stop`
 - [Get garbage collector check period](#get-garbage-collector-check-period)
-    - `GET /config/garbage_monitor/check_period`
+    - `GET admin/config/garbage_monitor/check_period`
 - [Change garbage collector check period](#change-garbage-collector-check-period)
-    - `POST /config/garbage_monitor/check_period`
+    - `POST admin/config/garbage_monitor/check_period`
+- [Reset server](#reset-server-testing-only)
+    - `POST admin/reset`
 - [Map users](#map-users)
     - `POST /projects/<int:projectID>/map`
 - [Reset user mapping](#reset-user-mapping)
@@ -769,7 +771,7 @@ Note: exclude merge requests and commits related in that merge requests on the m
 [Go back to API list](#api-example-response)
 
 ### Start garbage collector
-#### `POST /config/garbage_monitor/start`
+#### `POST admin/config/garbage_monitor/start`
 ```json
 {
     "cause": "",
@@ -779,7 +781,7 @@ Note: exclude merge requests and commits related in that merge requests on the m
 [Go back to API list](#api-example-response)
 
 ### Stop garbage collector
-#### `POST /config/garbage_monitor/stop`
+#### `POST admin/config/garbage_monitor/stop`
 ```json
 {
     "cause": "",
@@ -789,7 +791,7 @@ Note: exclude merge requests and commits related in that merge requests on the m
 [Go back to API list](#api-example-response)
 
 ### Get garbage collector check period
-#### `GET /config/garbage_monitor/check_period`
+#### `GET admin/config/garbage_monitor/check_period`
 ```json
 {
     "cause": "",
@@ -800,7 +802,7 @@ Note: exclude merge requests and commits related in that merge requests on the m
 [Go back to API list](#api-example-response)
 
 ### Change garbage collector check period
-#### `POST /config/garbage_monitor/check_period`
+#### `POST admin/config/garbage_monitor/check_period`
 ```json
 {
     "cause": "",
@@ -810,6 +812,16 @@ Note: exclude merge requests and commits related in that merge requests on the m
 Variables needed in `form-data`
 - `check_period`(int): The garbage monitor will check every `check_period` **hours**
 
+[Go back to API list](#api-example-response)
+
+### Reset server (Testing only)
+#### `POST admin/reset`
+```json
+{
+    "cause": "",
+    "response": true
+}
+```
 [Go back to API list](#api-example-response)
 
 ### Map users

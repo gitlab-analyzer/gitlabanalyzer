@@ -198,21 +198,21 @@ def get_notes_for_all_users(projectID):
 
 
 # TODO: May be we can add a admin list so only user with admin access can make this call
-@app.route('/config/garbage_monitor/start', methods=['POST'])
+@app.route('/admin/config/garbage_monitor/start', methods=['POST'])
 def start_garbage_collector():
     gitlab_manager.start_garbage_monitor_thread()
 
     return jsonify({"response": True, 'cause': ""})
 
 
-@app.route('/config/garbage_monitor/stop', methods=['POST'])
+@app.route('/admin/config/garbage_monitor/stop', methods=['POST'])
 def stop_garbage_collector():
     gitlab_manager.stop_garbage_monitor_thread()
 
     return jsonify({"response": True, 'cause': ""})
 
 
-@app.route('/config/garbage_monitor/check_period', methods=['GET', 'POST'])
+@app.route('/admin/config/garbage_monitor/check_period', methods=['GET', 'POST'])
 def change_garbage_collector_check_period():
     if request.method == "GET":
         return jsonify(
@@ -263,6 +263,14 @@ def add_or_get_config():
         )
 
     return jsonify({"response": isSuccess, 'cause': errorCode, "configs": value})
+
+
+@app.route('/admin/reset', methods=['POST'])
+def reset_server():
+    global gitlab_manager
+    del gitlab_manager
+    gitlab_manager = GitLabAnalyzerManager()
+    return jsonify({"response": True, 'cause': ""})
 
 
 if __name__ == '__main__':
