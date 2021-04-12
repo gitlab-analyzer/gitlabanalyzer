@@ -45,7 +45,7 @@ class CodeDiffAnalyzer:
                 # Check for block of comments
                 # -------------------------------------------------
                 if (
-                    fileType not in HTMLfileExtension and fileType != "py"
+                        fileType not in HTMLfileExtension and fileType != "py"
                 ) or fileType == "sql":
                     info = self.define_block_of_code(
                         block_code, "/*", line, info, fileType
@@ -126,10 +126,10 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> str:
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> Union[str, None]:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
-        found = re.search("\.(.+?)$", fileName)
+        found = re.search(".(\w+)$", fileName)
         if found is not None:
             return found.group(1)
         return None
@@ -194,11 +194,11 @@ class CodeDiffAnalyzer:
                     info = self.modify_info_value("comments", info, signal)
                     return info
             elif fileType == "sql":
-                if str[i : i + 2] == "--" and isSyntax is False:
+                if str[i: i + 2] == "--" and isSyntax is False:
                     info = self.modify_info_value("comments", info, signal)
                     return info
             elif fileType not in HTMLfileExtension:
-                if str[i : i + 2] == "//" and isSyntax is False:
+                if str[i: i + 2] == "//" and isSyntax is False:
                     info = self.modify_info_value("comments", info, signal)
                     return info
             if str[i] != " ":
@@ -232,7 +232,7 @@ class CodeDiffAnalyzer:
         return info
 
     def define_block_of_code(
-        self, block_code, signal_block_code, line, info, fileType
+            self, block_code, signal_block_code, line, info, fileType
     ) -> dict:
         if block_code == True and signal_block_code not in line:
             if "*/" not in line and "'''" not in line and "-->" not in line:
@@ -241,7 +241,7 @@ class CodeDiffAnalyzer:
 
         if signal_block_code in line:
             if ("*/" in line or "-->" in line and fileType != "py") or (
-                line.count(signal_block_code) == 2 and fileType == "py"
+                    line.count(signal_block_code) == 2 and fileType == "py"
             ):
                 info = self.modify_info_value("comments", info, line[0])
             else:
@@ -254,53 +254,53 @@ class CodeDiffAnalyzer:
 
         for i in range(0, len(line)):
             if fileType != "py" and fileType not in HTMLfileExtension:
-                if line[i : i + 2] == "/*" or line[i : i + 2] == "*/":
+                if line[i: i + 2] == "/*" or line[i: i + 2] == "*/":
                     temp = i
             elif fileType == "py":
-                if line[i : i + 3] == "'''":
+                if line[i: i + 3] == "'''":
                     temp = i
             elif fileType in HTMLfileExtension:
-                if line[i : i + 4] == "<!--" or line[i : i + 3] == "-->":
+                if line[i: i + 4] == "<!--" or line[i: i + 3] == "-->":
                     temp = i
 
         if fileType != "py" and fileType not in HTMLfileExtension:
-            if line[temp : temp + 2] == "/*":
+            if line[temp: temp + 2] == "/*":
                 info = self.check_block_code_cases(
-                    line[1:temp], line[temp + 2 :], info, line, fileType
+                    line[1:temp], line[temp + 2:], info, line, fileType
                 )
-            if line[temp : temp + 2] == "*/":
+            if line[temp: temp + 2] == "*/":
                 info = self.check_block_code_cases(
-                    line[temp + 2 :], line[1:temp], info, line, fileType
+                    line[temp + 2:], line[1:temp], info, line, fileType
                 )
         elif fileType == "py":
             if block_code:
                 info = self.check_block_code_cases(
-                    line[temp + 3 :], line[1:temp], info, line, fileType
+                    line[temp + 3:], line[1:temp], info, line, fileType
                 )
             else:
                 info = self.check_block_code_cases(
-                    line[1:temp], line[temp + 3 :], info, line, fileType
+                    line[1:temp], line[temp + 3:], info, line, fileType
                 )
         elif fileType in HTMLfileExtension:
-            if line[temp : temp + 4] == "<!--":
+            if line[temp: temp + 4] == "<!--":
                 info = self.check_block_code_cases(
-                    line[1:temp], line[temp + 4 :], info, line, fileType
+                    line[1:temp], line[temp + 4:], info, line, fileType
                 )
-            if line[temp : temp + 3] == "-->":
+            if line[temp: temp + 3] == "-->":
                 info = self.check_block_code_cases(
-                    line[temp + 3 :], line[1:temp], info, line, fileType
+                    line[temp + 3:], line[1:temp], info, line, fileType
                 )
         return info
 
     def check_block_code_cases(self, strFront, strBack, info, line, fileType) -> dict:
         if (
-            (strFront.isspace() or strFront == "")
-            and strBack != ""
-            and strBack.isspace() is False
+                (strFront.isspace() or strFront == "")
+                and strBack != ""
+                and strBack.isspace() is False
         ):
             info = self.modify_info_value("comments", info, line[0])
         elif (
-            strFront.isspace() or strFront == "" and strBack.isspace() or strBack == ""
+                strFront.isspace() or strFront == "" and strBack.isspace() or strBack == ""
         ):
             info = self.modify_info_value("syntax", info, line[0])
         else:
