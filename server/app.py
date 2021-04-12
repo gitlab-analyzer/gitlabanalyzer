@@ -10,7 +10,7 @@ from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
-port = int(os.environ.get("PORT", 5000))
+port = int(os.environ.get("PORT", 5678))
 
 # Error respond body list:
 projectIDError = {"response": False, "cause": "Error, invalid projectID."}
