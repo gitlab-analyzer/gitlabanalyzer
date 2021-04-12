@@ -27,6 +27,7 @@ const AuthProvider = (props) => {
   const [codeDiffId, setCodeDiffId] = useState('');
   const [codeDrawer, setCodeDrawer] = useState(false);
   const [finishedConfig, setFinishedConfig] = useState(false);
+  const [commitsMaster, setCommitsMaster] = useState([]);
   const [wordCount, setWordCount] = useState(0);
   const [crCount, setCrCount] = useState(0);
   const [ownCount, setOwnCount] = useState(0);
@@ -85,6 +86,8 @@ const AuthProvider = (props) => {
     setCodeDrawer,
     finishedConfig,
     setFinishedConfig,
+    commitsMaster,
+    setCommitsMaster,
     wordCount,
     setWordCount,
     crCount, 

@@ -18,7 +18,6 @@ const SearchPage = ({ insideApp }) => {
   const {
     user,
     setRepo,
-    mergeRequestList,
     reList,
     setReList,
     filteredList,
@@ -54,7 +53,6 @@ const SearchPage = ({ insideApp }) => {
       setRepo(repoList.data.projects);
 
       const projectsData = repoList.data.projects;
-      console.log('projects data', projectsData);
 
       const projectsList = projectsData.map((project) => {
         return {
