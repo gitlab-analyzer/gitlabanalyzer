@@ -119,22 +119,7 @@ const CodeDiffTable = ({ singleFile }) => {
     }
   };
 
-  return (
-    <>
-      {/* {!lcdata ? null : (
-        <>
-          <Table
-            size="small"
-            style={{ width: '500px' }}
-            dataSource={lcdata}
-            columns={columns}
-            pagination={false}
-          />
-        </>
-      )} */}
-      {loadingSim()}
-    </>
-  );
+  return <>{loadingSim()}</>;
 };
 
 export default CodeDiffTable;

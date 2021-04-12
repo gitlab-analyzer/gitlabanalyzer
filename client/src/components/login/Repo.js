@@ -330,7 +330,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
 
       const tempMR = {};
       // Loop through object key
-      for (let user in mrList) {
+      for (let [user, mz] of Object.entries(mrList)) {
         tempMR[user] = {
           mr: {},
           weightedScore: 0,
@@ -363,12 +363,14 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
             for (let [k1, v1] of Object.entries(
               tempCommits[commit.short_id]['codeDiffDetail']
             )) {
+              let path = `cm.${user}.${author['id']}.${commit.short_id}.${k1}`;
               tempCommits[commit.short_id]['codeDiffDetail'][k1][
                 'score'
               ] = mrScore(v1, true);
               tempCommits[commit.short_id]['codeDiffDetail'][k1][
                 'ignore'
               ] = false;
+              tempCommits[commit.short_id]['codeDiffDetail'][k1]['path'] = path;
             }
           }
           tempMR[user].mr[author.id] = {
@@ -404,11 +406,13 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
           for (let [k1, v1] of Object.entries(
             tempMR[user].mr[author.id]['codeDiffDetail']
           )) {
+            let npath = `mr.${user}.${author['id']}.${k1}`;
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['score'] = mrScore(
               v1,
               true
             );
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['ignore'] = false;
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['path'] = npath;
           }
         }
       }
