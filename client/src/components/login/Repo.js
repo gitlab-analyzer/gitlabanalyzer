@@ -80,11 +80,10 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     setDataList(value.date);
     setFinishedConfig(true);
 
-    let configDict ={}
-    configDict["name"] = 'default';
-    configDict["value"] = value;
-    let currConfig = JSON.stringify(
-      configDict);
+    let configDict = {};
+    configDict['name'] = 'default';
+    configDict['value'] = value;
+    let currConfig = JSON.stringify(configDict);
     const configStatus = await axios.post(
       `http://localhost:5678/config`,
       currConfig,
@@ -124,10 +123,8 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
         crossDomain: true,
       }
     );
-    console.log('projectRes', projectRes);
     if (!projectRes.data['response']) {
       console.log('Failed to set project ID!');
-      console.log(projectRes);
       throw new Error('Fetch request failed.');
     }
   };
@@ -245,19 +242,21 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     );
     fetchErrorChecker(commitsMasterRes.data['response'], 'commits master');
 
-    const tempCommits = { commit_list: {...commitsMasterRes.data['commit_list']}};
+    const tempCommits = {
+      commit_list: { ...commitsMasterRes.data['commit_list'] },
+    };
 
     for (let [k, v] of Object.entries(tempCommits['commit_list'])) {
       for (let [k1, v1] of Object.entries(v)) {
         for (let [k2, v2] of Object.entries(v1['code_diff_detail'])) {
-          v2['score'] = mrScore(v2,true);
+          v2['score'] = mrScore(v2, true);
           v2['ignore'] = false;
           // tempCommits['commit_list'][k1]['code_diff_detail']['score'] = mrScore(v2, true);
         }
       }
     }
 
-    setCommitsMaster({...tempCommits});
+    setCommitsMaster({ ...tempCommits });
   };
 
   const mrScore = (codediffdetail, singleFile) => {
@@ -561,20 +560,19 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   };
 
   const syncBatch = async () => {
+    let payload = {};
     let batchArray = [];
 
-    for (let item in batchList) {
-      batchArray.push(item.id);
+    for (let [k, v] of Object.entries(filteredList)) {
+      batchArray.push(v.id);
     }
+    payload['project_list'] = batchArray;
 
-    // To Fix, batchArray should be used here instead
-    let payload = JSON.stringify({
-      project_list: [2, 3],
-    });
+    let final = JSON.stringify(payload);
 
     const batchStatus = await axios.post(
       `http://localhost:5678/projects/sync/batch/state`,
-      payload,
+      final,
       {
         withCredentials: true,
 
@@ -908,19 +906,18 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   const selectAll = () => {
     if (!selectVal) {
       setSelectVal(true);
-      setFilteredList(
-        filteredList.map((project) => {
-          if (project.batched) {
-            return project;
-          } else {
-            return {
-              ...project,
-              batched: true,
-            };
-          }
-        })
-      );
-      setBatchList(filteredList);
+      let newFilter = filteredList.map((project) => {
+        if (project.batched) {
+          return project;
+        } else {
+          return {
+            ...project,
+            batched: true,
+          };
+        }
+      });
+      setFilteredList(newFilter);
+      setBatchList(newFilter);
     } else {
       setSelectVal(false);
       setFilteredList(
@@ -1020,4 +1017,3 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
 };
 
 export default Repo;
-

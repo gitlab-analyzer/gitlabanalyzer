@@ -6,7 +6,7 @@
 
 <h4 align="center">A web application for analyzing <a href="https://gitlab.com/gitlab-org/gitlab" target="_blank">GitLab</a> repositories. Built for Simon Fraser University course CMPT 373.</h4>
 
-## Demo (Iteration 2)
+## Demo (Iteration 3)
 
 👉 Try it <a href="http://142.58.22.167:6789/">here</a>.
 <br>
@@ -35,7 +35,7 @@ Iteration 1:
 - [ ] Issues & Reviews
 - [ ] Config
 
-**Iteration 2:**
+Iteration 2:
 - [x] Score Calculation 💯
 - [x] Merge Requests & Commit Ignoring
 - [x] Refactored Overview graphs
@@ -47,7 +47,30 @@ Iteration 1:
 - [ ] Code Diff Page
 - [ ] Export Reports
 
-Iteration 3:
+**Iteration 3:**
+- [x] Issues & Reviews
+- [x] Config
+- [x] Batch Processing
+- [x] <a href="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/blob/master/server/API_example_response.md#api-example-response " target="_blank">REST API v3 Finished!</a> 🚀
+- [x] Code Diff Page
+
+## Directory Structure
+- server (Where the backend code is stored, python flask is used as the backend server)
+  - interface (Contains all the interface files)
+  - manager (Contains all the manager files)
+  - model (Contains our data class for commits, mergre requests etc.)
+  - test (Contains all the test and unittest files)
+  - app.py (Main server file)
+  - API_example_response (Stores all the API routes and their example response body)
+- client (Where the front-end client code is stored, reactjs is used)
+  - public
+  - src
+    - components
+    - context
+    - pages
+    - public
+    - various files
+- various docker files for building and deploying
 
 ## Links
 - [GitLab Test Server](https://cmpt373-1211-12.cmpt.sfu.ca/)

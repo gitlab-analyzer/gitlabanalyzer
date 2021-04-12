@@ -15,22 +15,6 @@ const usercolours = [
 ];
 export var barData = [];
 
-export function ScoreCalculator(username) {
-  let TotalScore;
-  for (let i = 0; i < barData.length; i++) {
-    let data = barData[i];
-    if (username === data['name']) {
-      TotalScore =
-        parseInt(data['commits']) +
-        parseInt(data['code']) +
-        parseInt(data['issue']) +
-        parseInt(data['deleted']) * 0.2 +
-        parseInt(data['syntax']) * 0.2;
-    }
-  }
-  return TotalScore;
-}
-
 const EveryoneScore = () => {
   const { 
     notesList, 
@@ -42,13 +26,9 @@ const EveryoneScore = () => {
     commitsMaster,
   } = useAuth();
 
-  console.log('master', commitsMaster);
   
   const dateOutOfRange = (value) => {  
-    if (value < dataList[0] || value > dataList[1]) {
-      return true;
-    }
-    return false;
+    return value < dataList[0] || value > dataList[1];
   };
 
   useEffect(() => {
@@ -57,7 +37,29 @@ const EveryoneScore = () => {
       barData = [];
       let subscore = {};
       let num = 0;
+      let cmMaster = {};
 
+      if (commitsMaster) {
+        for (let [cmUser, cmObj] of Object.entries(commitsMaster['commit_list'])) {
+          cmMaster[cmUser] = {count:0, score:0, type:{}, print:true}
+          cmMaster[cmUser]['print'] = false;
+          for (let [cmID, cmValue] of Object.entries(cmObj)) {
+            cmMaster[cmUser]['count']++;
+            for (let [cmKey, cmPropValue] of Object.entries(cmValue['code_diff_detail'])) {
+              if (cmPropValue['ignore']){
+                continue;
+              }
+              cmMaster[cmUser]['score'] += cmPropValue['score'];
+              if (cmPropValue['file_type'] in cmMaster[cmUser]['type']) {
+                cmMaster[cmUser]['type'][cmPropValue['file_type']] += cmPropValue['score'];
+              }
+              else {
+                cmMaster[cmUser]['type'][cmPropValue['file_type']] = cmPropValue['score'];
+              }
+            }
+          }
+        }
+      }
       if (notesList) {
         for (let [noteKey, noteObj] of Object.entries(notesList)) {
           if (noteObj['ignore'] || dataList[0]==null ||
@@ -115,20 +117,30 @@ const EveryoneScore = () => {
           if (!subscore[user]) {
             subscore[user] = 0;
           }
+          for (let file in fileType){
+            if (cmMaster[toString(user)]) {
+              for (let [cmfiletype, cmfileScore] of Object.entries(cmMaster[toString(user)]['type'])) {
+                if (file === cmfiletype) {
+                  fileType[file] += cmfileScore;
+                }
+                else {
+                  fileType[cmfiletype] = cmfileScore;
+                }
+              }
+            }
+          }
           barData.push({
             name: user,
             id: num++,
-            weightscore: mrScore,
-            // weightscore: mrScore+masterCm,
+            weightscore: mrScore + (cmMaster[user] ? cmMaster[user]['score'] : 0),
             mrscore: mrScore,
             mrcount: mrCount,
-            cmscore: cmScore,
-            cmcount: cmCount,
+            cmscore: cmScore + (cmMaster[user] ? cmMaster[user]['score'] : 0),
+            cmcount: cmCount + (cmMaster[user] ? cmMaster[user]['count'] : 0),
             issue: subscore[user],
             filetype: fileType
           });
         }
-        
       }
       await setFloatScores([...barData]);  
     }

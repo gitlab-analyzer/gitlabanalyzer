@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navbar, Nav, Link } from 'react-bootstrap';
 import { BackTop, Affix } from 'antd';
 import { UpCircleOutlined } from '@ant-design/icons';
@@ -7,8 +7,24 @@ import SelectUser from '../components/SelectUser';
 import FloatBar from './floatbar/FloatBar';
 import Logo from './Logo';
 import './Header.css';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const Header = () => {
+  const { setUserMapped, userMapped, selectedRepo } = useAuth();
+
+  useEffect(() => [selectedRepo]);
+
+  const handleReset = async () => {
+    const resetMap = await axios.post(
+      `http://localhost:5678/projects/${selectedRepo}/map/reset`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(resetMap);
+    setUserMapped(false);
+  };
   return (
     <div>
       <Logo />
@@ -39,6 +55,13 @@ const Header = () => {
               <LinkContainer className="marginRight" to="/config">
                 <Nav.Link>Config</Nav.Link>
               </LinkContainer>
+              {userMapped ? (
+                <Nav.Link onClick={handleReset}>Reset Mapping</Nav.Link>
+              ) : (
+                <LinkContainer className="marginRight" to="/usermap">
+                  <Nav.Link>User Mapping</Nav.Link>
+                </LinkContainer>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
