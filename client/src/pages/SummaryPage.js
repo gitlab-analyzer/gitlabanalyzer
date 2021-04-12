@@ -66,13 +66,13 @@ const Summary = () => {
                 if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
                   date = [
                     list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
-                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
                     list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
                   if(list[selectUser].mr[i].commitList[j].ignore == false) {
                     for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
-                      if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                      if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
                         result[date]++;
                       }
                     }
@@ -87,7 +87,7 @@ const Summary = () => {
                 result[date] = result[date] || 0;
                 if(list[selectUser].mr[i].commitList[j].ignore == false) {
                   for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
-                    if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                    if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
                       result[date]++;
                     }
                   }
@@ -105,7 +105,7 @@ const Summary = () => {
               if((dates[0]._d <= list[selectUser].mr[i].createdDate) && (list[selectUser].mr[i].createdDate <= dates[1]._d)){
                   date = [
                     list[selectUser].mr[i].createdDate.getFullYear(),
-                    list[selectUser].mr[i].createdDate.getMonth() +1,
+                    list[selectUser].mr[i].createdDate.getMonth() + 1,
                     list[selectUser].mr[i].createdDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
@@ -116,7 +116,7 @@ const Summary = () => {
             } else {
               date = [
                 list[selectUser].mr[i].createdDate.getFullYear(),
-                list[selectUser].mr[i].createdDate.getMonth() +1,
+                list[selectUser].mr[i].createdDate.getMonth() + 1,
                 list[selectUser].mr[i].createdDate.getDate(),
               ].join('-');
               result[date] = result[date] || 0;
@@ -173,7 +173,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS_OWN) {
       for(i = 0; i < list.length; i++) {
-        if ((selectUser === list[i].author) && (list[i].ownership === "Own") && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+        if ((selectUser === list[i].author) && (list[i].ownership === "Own") && ((list[i].noteableType === "MergeRequest") || (list[i].noteableType === "Commit"))) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
@@ -195,7 +195,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS_OTHERS) {
       for(i = 0; i < list.length; i++) {
-        if ((selectUser === list[i].author) && (list[i].ownership === "Other") && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+        if ((selectUser === list[i].author) && (list[i].ownership === "Other") && ((list[i].noteableType === "MergeRequest") || (list[i].noteableType === "Commit"))) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
@@ -223,7 +223,7 @@ const Summary = () => {
               if((dates[0]._d <= list[selectUser].mr[i].createdDate) && (list[selectUser].mr[i].createdDate <= dates[1]._d)){
                   date = [
                     list[selectUser].mr[i].createdDate.getFullYear(),
-                    list[selectUser].mr[i].createdDate.getMonth() +1,
+                    list[selectUser].mr[i].createdDate.getMonth() + 1,
                     list[selectUser].mr[i].createdDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
@@ -238,7 +238,7 @@ const Summary = () => {
             } else {
               date = [
                 list[selectUser].mr[i].createdDate.getFullYear(),
-                list[selectUser].mr[i].createdDate.getMonth() +1,
+                list[selectUser].mr[i].createdDate.getMonth() + 1,
                 list[selectUser].mr[i].createdDate.getDate(),
               ].join('-');
               result[date] = result[date] || 0;
@@ -268,7 +268,7 @@ const Summary = () => {
                   result[date] = result[date] || 0;
                   if(list[selectUser].mr[i].commitList[j].ignore == false) {
                     for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
-                      if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                      if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
                         result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[k].score;
                       }
                     }
@@ -283,7 +283,7 @@ const Summary = () => {
                 result[date] = result[date] || 0;
                 if(list[selectUser].mr[i].commitList[j].ignore == false) {
                   for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
-                    if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                    if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
                       result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[k].score;
                     }
                   }
@@ -530,11 +530,14 @@ const Summary = () => {
           colors={'#f8f0d4'} 
           stroke={'#CBB97B'} 
           xlabel={crDateArray} 
-          id={2}/>
+          id={2}
+          />
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
-          <Dropdown overlay={crMenu}>
+          <Dropdown 
+          overlay={crMenu}
+          >
             <Button>
               {crDropdown} <DownOutlined />
             </Button>

@@ -67,7 +67,7 @@ const TablePage = () => {
     setIssueCount
   } = useAuth()
   const classes = useStyles();
-
+  
   // This is the date formatter that formats in the form: Mar 14 @ 8:30pm if same year
   // if not, Mar 14 2020 @ 8:30pm
   const dateFormatter = (dateObject) => {
@@ -132,7 +132,7 @@ const TablePage = () => {
           } else if(notes[i].ownership === "Other") {
             othercount += 1
           }
-          if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+          if((notes[i].noteableType === "MergeRequest") || (notes[i].noteableType === "Commit")) {
             type = "Code Review"
             crcount += 1
           } else {
@@ -154,7 +154,7 @@ const TablePage = () => {
           } else if(notes[i].ownership === "Other") {
             othercount += 1
           }
-          if(notes[i].noteableType === "MergeRequest" || notes[i].noteableType === "Commit") {
+          if((notes[i].noteableType === "MergeRequest") || (notes[i].noteableType === "Commit")) {
             type = "Code Review"
             crcount += 1
           } else {
