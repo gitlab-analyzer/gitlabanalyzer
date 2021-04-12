@@ -239,6 +239,15 @@ def map_users(projectID):
     return jsonify({"response": isSuccess, 'cause': errorCode})
 
 
+@app.route('/projects/<int:projectID>/map/reset', methods=['POST'])
+def reset_user_mapping(projectID):
+    isSuccess, errorCode = gitlab_manager.reset_user_mapping(
+        request.cookies.get("id", ""), projectID
+    )
+
+    return jsonify({"response": isSuccess, 'cause': errorCode})
+
+
 @app.route('/config', methods=['GET', 'POST'])
 def add_or_get_config():
     value: dict = {}

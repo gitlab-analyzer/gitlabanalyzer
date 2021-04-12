@@ -41,6 +41,8 @@
     - `POST /config/garbage_monitor/check_period`
 - [Map users](#map-users)
     - `POST /projects/<int:projectID>/map`
+- [Reset user mapping](#reset-user-mapping)
+    - `POST /projects/<int:projectID>/map/reset`
 - [Add user config to server](#add-user-config)
     - `POST /config`
 - [Get all previously added user configs](#get-all-previously-added-user-configs)
@@ -825,6 +827,16 @@ Variables needed in `form-data`
         "fanghaof": ["Administrator", "TestUser H"],
         "Thomas Min": ["Joseph Test", "springbro294"]
     }
+}
+```
+[Go back to API list](#api-example-response)
+
+### Reset user mapping
+#### `POST /projects/<int:projectID>/map/reset`
+```json
+{
+    "cause": "",
+    "response": true
 }
 ```
 [Go back to API list](#api-example-response)
