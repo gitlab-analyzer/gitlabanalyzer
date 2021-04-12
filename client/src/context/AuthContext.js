@@ -36,6 +36,7 @@ const AuthProvider = (props) => {
   const [codeDiffDetail, setCodeDiffDetail] = useState({});
   const [codeFiles, setCodeFiles] = useState([]);
   const [specificFile, setSpecificFile] = useState(null);
+  const [codeDiffPath, setCodeDiffPath] = useState('');
   const [mapList, setMapList] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -106,6 +107,8 @@ const AuthProvider = (props) => {
     setCodeFiles,
     specificFile,
     setSpecificFile,
+    codeDiffPath,
+    setCodeDiffPath,
     mapList,
     setMapList,
     selectedOptions,

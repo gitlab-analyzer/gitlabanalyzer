@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import {
-  Table,
-  Space,
-  Badge,
-  Tag,
-  Button,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Form,
-  Typography,
-} from 'antd';
+import { Table, Space, Tag, Button, Input, InputNumber, Form } from 'antd';
 import { CodeFilled, CodeOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/AuthContext';
 import DisplayScore from './DisplayScore';
@@ -89,26 +78,6 @@ const CommitBar = () => {
     }
   };
 
-  const edit = (record) => {
-    form.setFieldsValue({
-      score: '',
-      ...record,
-    });
-    setEditingKey(record.key);
-  };
-
-  const cancel = () => {
-    setEditingKey('');
-  };
-
-  const save = async (key) => {
-    try {
-      console.log('saved');
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
-    }
-  };
-
   const EditableCell = ({
     editing,
     dataIndex,
@@ -160,10 +129,19 @@ const CommitBar = () => {
       for (let [k, v] of Object.entries(value['commitList'])) {
         if (
           v['comittedDate'] < new Date(dataList[0]) ||
-          v['comittedDate'] > new Date(dataList[1])
+          v['comittedDate'] > new Date(dataList[1]) ||
+          v['mergedDate'] < new Date('1971-01-01T00:00:00.000Z')
         ) {
           continue;
         }
+
+        let codeDiffCommitScore = 0;
+        for (let [k1, v1] of Object.entries(v['codeDiffDetail'])) {
+          if (!v1['ignore']) {
+            codeDiffCommitScore += v1['score'];
+          }
+        }
+
         commitsData.push({
           key: v['shortId'],
           commitid: (
@@ -178,6 +156,8 @@ const CommitBar = () => {
           score: v['score'].toFixed(1),
           message: v['title'],
           ignore: v['ignore'],
+          codeDiffDetail: v['codeDiffDetail'],
+          lineCounts: v['lineCounts'],
         });
         // This constructs a separate list for commits only
         commitTotalScore += v['score'];
@@ -189,6 +169,13 @@ const CommitBar = () => {
         value['mergedDate'] < new Date('1971-01-01T00:00:00.000Z')
       ) {
         continue;
+      }
+
+      let codeDiffScore = 0;
+      for (let [k1, v1] of Object.entries(value['codeDiffDetail'])) {
+        if (!v1['ignore']) {
+          codeDiffScore += v1['score'];
+        }
       }
       mergeRequestData.push({
         key: value['id'],
@@ -203,7 +190,7 @@ const CommitBar = () => {
           ...value['lineCounts'],
         },
         branch: value['title'],
-        mrdiffscore: value['score'].toFixed(1),
+        mrdiffscore: codeDiffScore.toFixed(1),
         commitssum: commitTotalScore.toFixed(1),
         createdAt: dateFormatter(value['createdDate']),
         mergedDate: dateFormatter(value['mergedDate']),
@@ -221,6 +208,12 @@ const CommitBar = () => {
       width: 110,
     },
     {
+      title: 'Commiter',
+      dataIndex: 'comitterName',
+      key: 'comitterName',
+      width: 110,
+    },
+    {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
@@ -231,37 +224,7 @@ const CommitBar = () => {
       sortDirections: ['descend', 'ascend'],
     },
     { title: 'Message', dataIndex: 'message', key: 'message', width: 300 },
-    {
-      title: 'Manual',
-      width: 100,
-      dataIndex: 'operation',
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <a
-              href="javascript:;"
-              onClick={() => save(record.key)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Save
-            </a>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link
-            disabled={editingKey !== ''}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </Typography.Link>
-        );
-      },
-    },
+
     {
       title: 'Score',
       dataIndex: 'score',
@@ -398,25 +361,47 @@ const CommitBar = () => {
     },
   ];
 
-  const generateCodeDiffDetail = (record) => {
-    const codeDetails = {
-      createdBy: record['author'],
-      branch: record['branch'],
-      createdAt: record['createdAt'],
-      mergedDate: record['mergedDate'],
-      ignored: record['ignore'],
-      mrid: record['mrid'],
-      lineCounts: {
-        ...record['lineCounts'],
-      },
-      type: 'mr',
-    };
-    return codeDetails;
+  const generateCodeDiffDetail = (record, type) => {
+    if (type === 'mr') {
+      const codeDetails = {
+        createdBy: record['author'],
+        branch: record['branch'],
+        createdAt: record['createdAt'],
+        mergedDate: record['mergedDate'],
+        ignored: record['ignore'],
+        mrid: record['mrid'],
+        lineCounts: {
+          ...record['lineCounts'],
+        },
+        type: 'mr',
+      };
+      return codeDetails;
+    } else {
+      const codeDetails = {
+        comitterName: record['comitterName'],
+        relatedMr: record['relatedMr'],
+        date: record['date'],
+        ignored: record['ignore'],
+        key: record['key'],
+        score: record['score'],
+        message: record['message'],
+        commitid: record['commitid'],
+        lineCounts: {
+          ...record['lineCounts'],
+        },
+        type: 'cm',
+      };
+      return codeDetails;
+    }
   };
 
   const handleSetCodeDiff = (text, record) => {
     setCodeDiffId(record['codeDiffId']);
-    setCodeDiffDetail(generateCodeDiffDetail(record));
+    if (record['comitterName']) {
+      setCodeDiffDetail(generateCodeDiffDetail(record, 'cm'));
+    } else {
+      setCodeDiffDetail(generateCodeDiffDetail(record, 'mr'));
+    }
     setCodeDrawer(true);
   };
 
