@@ -62,33 +62,45 @@ const Summary = () => {
     var rarr = [];
     
     if (type === COMMITS) {
-    for (i = 0; i < list.length; i++) {
-      if (selectUser === list[i].userName) {
-        for (j = 0; j < list[i].commits[0].length; j++) {
-          if(dates.length !== 0) {
-            // Case when float bar dates are selected
-            if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
-              date = [
-                list[i].commits[0][j].commitedDate.getFullYear(),
-                list[i].commits[0][j].commitedDate.getMonth() +1,
-                list[i].commits[0][j].commitedDate.getDate(),
-              ].join('-');
-              result[date] = result[date] || 0;
-              result[date]++;
+      for(i in list) {
+        if (i === selectUser) {
+          for( i in list[selectUser].mr) {
+            for(j in list[selectUser].mr[i].commitList) {
+              if (dates.length !== 0) {
+                if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
+                  date = [
+                    list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                    list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                  ].join('-');
+                  result[date] = result[date] || 0;
+                  if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                    for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                      if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                        result[date]++;
+                      }
+                    }
+                  }
+                }
+              } else {
+                date = [
+                  list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                  list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                  list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                ].join('-');
+                result[date] = result[date] || 0;
+                if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                  for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                    if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                      result[date]++;
+                    }
+                  }
+                }
+              }
             }
-          } else {
-            // No float bar dates seleceted
-            date = [
-              list[i].commits[0][j].commitedDate.getFullYear(),
-              list[i].commits[0][j].commitedDate.getMonth() +1,
-              list[i].commits[0][j].commitedDate.getDate(),
-            ].join('-');
-            result[date] = result[date] || 0;
-            result[date]++;
           }
         }
       }
-    }
     } else if (type === MERGE_REQUESTS) {
       for(i in list) {
         if(i === selectUser) {
@@ -101,7 +113,9 @@ const Summary = () => {
                     list[selectUser].mr[i].createdDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
-                  result[date]++;
+                  if(list[selectUser].mr[i].ignore == false) {
+                    result[date]++;
+                  }
               }
             } else {
               date = [
@@ -110,7 +124,9 @@ const Summary = () => {
                 list[selectUser].mr[i].createdDate.getDate(),
               ].join('-');
               result[date] = result[date] || 0;
-              result[date]++;
+              if(list[selectUser].mr[i].ignore == false) {
+                result[date]++;
+              }
             }
           }
         }
@@ -257,7 +273,7 @@ const Summary = () => {
                   if(list[selectUser].mr[i].commitList[j].ignore == false) {
                     for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
                       if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
-                        result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[0].score;
+                        result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[k].score;
                       }
                     }
                   }
@@ -272,7 +288,7 @@ const Summary = () => {
                 if(list[selectUser].mr[i].commitList[j].ignore == false) {
                   for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
                     if( list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
-                      result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[0].score;
+                      result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[k].score;
                     }
                   }
                 }
@@ -311,7 +327,7 @@ const Summary = () => {
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser
-  var dailyCommitsArray = countDates(userCommitsList, COMMITS, dataList)
+  var dailyCommitsArray = countDates(userMRList, COMMITS, dataList)
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
