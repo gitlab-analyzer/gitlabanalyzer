@@ -6,7 +6,7 @@
 
 <h4 align="center">A web application for analyzing <a href="https://gitlab.com/gitlab-org/gitlab" target="_blank">GitLab</a> repositories. Built for Simon Fraser University course CMPT 373.</h4>
 
-## Demo (Iteration 2)
+## Demo (Iteration 3)
 
 👉 Try it <a href="http://142.58.22.167:6789/">here</a>.
 <br>
@@ -48,6 +48,11 @@ Iteration 1:
 - [ ] Export Reports
 
 Iteration 3:
+- [x] Issues & Reviews
+- [x] Config
+- [x] Batch Processing
+- [x] <a href="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/blob/master/server/API_example_response.md#api-example-response " target="_blank">REST API v3 Finished!</a> 🚀
+- [x] Code Diff Page
 
 ## Links
 - [GitLab Test Server](https://cmpt373-1211-12.cmpt.sfu.ca/)
