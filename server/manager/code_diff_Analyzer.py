@@ -40,10 +40,10 @@ class CodeDiffAnalyzer:
         diffCode = codeDiffObject
         for line in diffCode.diff.splitlines():
             if line[0] == "+" or line[0] == "-":
+                temp = info.copy()
 
                 # Check for block of comments
                 # -------------------------------------------------
-                temp = info.copy()
                 if (
                     fileType not in HTMLfileExtension and fileType != "py"
                 ) or fileType == "sql":
@@ -92,10 +92,10 @@ class CodeDiffAnalyzer:
                     if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                         info = self.add_one_char_middle(line, oldLine, info, fileType)
                         if temp != info:
+                            oldLineType = self.compare_dict_value(info, temp)
                             info = self.modify_info_value(
                                 oldLineType, info, oldLine[0], -1
                             )
-                            oldLineType = self.compare_dict_value(info, temp)
                             oldLine = line
                             continue
                     # -------------------------------------------------
@@ -111,8 +111,8 @@ class CodeDiffAnalyzer:
                             "-", oldLine, line, info, fileType
                         )
                     if info != temp:
-                        info = self.modify_info_value(oldLineType, info, oldLine[0], -1)
                         oldLineType = self.compare_dict_value(info, temp)
+                        info = self.modify_info_value(oldLineType, info, oldLine[0], -1)
                         oldLine = line
                         continue
                     # -------------------------------------------------
