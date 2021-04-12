@@ -24,9 +24,8 @@ function App() {
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
           <Route path="/reposearch" component={SearchPage} />
-          <Container style={{ backgroundColor: '#fff' }} maxWidth="lg">
           <Route path="/usermap" component={UserMapPage} />
-          <Container maxWidth="lg">
+          <Container style={{ backgroundColor: '#fff' }} maxWidth="lg">
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />
             <Route path="/table" component={TablePage} />

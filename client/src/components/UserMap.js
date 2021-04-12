@@ -18,7 +18,7 @@ const UserMap = () => {
     } = useAuth();
     const [redirect, setRedirect] = useState(false);
 
-    const memberList = membersList.map((item) => item.name);    // real data
+    const memberList = membersList.map((item) => item.name);
     const userList = usersList.filter(val => !memberList.includes(val));
     const unselectedUsers = userList.filter(val => !selectedOptions.includes(val));
     
@@ -30,7 +30,7 @@ const UserMap = () => {
         if (selectedOptions.length !== 0) { 
             try {
                 await mapUsers();
-                console.log(selectedOptions.length)
+                console.log(finalDict)
             } catch (error) {
                 console.log(error);
             }
