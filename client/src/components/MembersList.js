@@ -12,6 +12,7 @@ const MembersList = (props) => {
     const memberList = props.list
     // const memberList = membersList.map((item) => item);
 
+    /*
     return(
       <ul className="allList">
         {memberList.map(item => (
@@ -19,7 +20,21 @@ const MembersList = (props) => {
               <div className="listForMembers">
                   {item}
               </div>
-              <MultipleSelect key={item} id={item} currentMember={item}/>
+              <MultipleSelect className="multipleSelect" key={item} id={item} currentMember={item}/> 
+          </li>
+        ))}
+    </ul>
+    );
+    */
+
+    return(
+      <ul className="allList">
+        {memberList.map(item => (
+          <li className="innerList" key={item}>
+              <div className="listForMembers">
+                  {item}
+              </div>
+              <MultipleSelect className="multipleSelect" key={item} id={item} currentMember={item}/> 
           </li>
         ))}
     </ul>

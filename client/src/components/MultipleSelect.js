@@ -37,9 +37,6 @@ const MultipleSelect = (props) => {
         }
         console.log(selectedOptions)
         console.log(value);
-        
-        console.log(selectedOptions)
-        console.log(value);
        
     }
     
@@ -67,7 +64,6 @@ const MultipleSelect = (props) => {
           onSelect={handleSelect}
           onDeselect={handleDeselect}
           size="large"
-          allowClear
           className="multipleSelection"
         >
           {filteredOptions.map(item => (

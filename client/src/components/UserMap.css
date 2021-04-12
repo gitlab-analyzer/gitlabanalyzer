@@ -38,16 +38,17 @@ p {
     padding-bottom: 10px;
     width: 200px;
     height: 41px;
-    display: inline-block;
-
     margin-left: 30px;
     margin-right: 40px;
+    display: inline-block;
+    vertical-align: 22px;
 }
 
 .multipleSelection {
     height: 50px;
     width: 40%;
-    margin-top: 3px;
+    white-space: nowrap;
+    overflow: auto;
 }
 
 .button {
