@@ -50,6 +50,9 @@ const Summary = () => {
   const CODE_REVIEWS_OWN = 5;
   const CODE_REVIEWS_OTHERS = 6;
 
+  const COMMIT_SCORE = 7;
+  const MERGE_REQUEST_SCORE = 9;
+
   console.log(mergeRequestList)
 
   const countDates = (list, type, dates) => {
@@ -200,6 +203,32 @@ const Summary = () => {
           }
         }
       }
+    } else if (type === MERGE_REQUEST_SCORE) {
+      for(i in list) {
+        if(i === selectUser) {
+          for(i in list[selectUser].mr){
+            if(dates.length !== 0) {
+              if((dates[0]._d <= list[selectUser].mr[i].createdDate) && (list[selectUser].mr[i].createdDate <= dates[1]._d)){
+                  date = [
+                    list[selectUser].mr[i].createdDate.getFullYear(),
+                    list[selectUser].mr[i].createdDate.getMonth() +1,
+                    list[selectUser].mr[i].createdDate.getDate(),
+                  ].join('-');
+                  result[date] = result[date] || 0;
+                  result[date] += list[selectUser].mr[i].score;
+              }
+            } else {
+              date = [
+                list[selectUser].mr[i].createdDate.getFullYear(),
+                list[selectUser].mr[i].createdDate.getMonth() +1,
+                list[selectUser].mr[i].createdDate.getDate(),
+              ].join('-');
+              result[date] = result[date] || 0;
+              result[date] += list[selectUser].mr[i].score;
+            }
+          }
+        }
+      }
     }
 
     for (i in result) {
@@ -255,12 +284,18 @@ const Summary = () => {
   var CROtherDatesArray = populateDates(dailyCROtherArray)
   var CROtherCountsArray = populateCounts(dailyCROtherArray)
 
+  var dailyMRScores = countDates(userMRList, MERGE_REQUEST_SCORE, dataList)
+  var dailyMRScoresArray = populateCounts(dailyMRScores)
+  var dailyMRDatesArray = populateDates(dailyMRScores)
+  console.log(dailyMRScoresArray)
+
   // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
   const [crDateArray, setCrDateArray] = useState(CRDatesArray);
   const [issueDateArray, setIssueDateArray] = useState(issueDatesArray);
 
   useEffect(() => {
+    if(combinedDropdown === 'Number') {
     setCombinedSeries([
       {
         name: 'Merge Requests',
@@ -271,6 +306,18 @@ const Summary = () => {
         data: commitCountsArray,
       },
     ])
+    } else {
+      setCombinedSeries([
+        {
+          name: 'Merge Requests',
+          data: dailyMRScoresArray,
+        },
+        {
+          name: 'Commits',
+          data: commitCountsArray,
+        },
+      ])
+    }
     setCrSeries([
       {
         name: 'CR Words',
@@ -335,9 +382,10 @@ const Summary = () => {
       setTextRender('Number');
     } else if (e.key === 'Score') {
       setCombinedDropdown('Score');
+      console.log(dailyMRScoresArray)
       setCombinedSeries([
         {
-          data: [],
+          data: dailyMRScoresArray,
         },
         {
           data: [],
