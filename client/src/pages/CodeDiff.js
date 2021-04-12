@@ -51,7 +51,6 @@ const Appdiff = ({ diffText, code }) => {
 
   const ignoreMRCodeDiff = (selectUser, relatedMr, codeid) => {
     const newMergeRequestState = { ...mergeRequestList };
-    console.log(newMergeRequestState);
     newMergeRequestState[selectUser]['mr'][relatedMr]['codeDiffDetail'][codeid][
       'ignore'
     ] = !mergeRequestList[selectUser]['mr'][relatedMr]['codeDiffDetail'][
@@ -60,7 +59,15 @@ const Appdiff = ({ diffText, code }) => {
     setMergeRequestList(newMergeRequestState);
   };
 
-  const ignoreCommitCodeDiff = () => {};
+  const ignoreCommitCodeDiff = (selectUser, relatedMr, commitid, codeid) => {
+    const newMergeRequestState = { ...mergeRequestList };
+    newMergeRequestState[selectUser]['mr'][relatedMr]['commitList'][commitid][
+      'codeDiffDetail'
+    ][codeid]['ignore'] = !newMergeRequestState[selectUser]['mr'][relatedMr][
+      'commitList'
+    ][commitid]['codeDiffDetail'][codeid]['ignore'];
+    setMergeRequestList(newMergeRequestState);
+  };
 
   const matchFile = (codeDiffPath, currPath) => {
     for (let [k, v] of Object.entries(codeDiffPath)) {
@@ -79,6 +86,7 @@ const Appdiff = ({ diffText, code }) => {
       ignoreMRCodeDiff(regArray[1], regArray[2], regArray[3]);
       // Handle case Code diff is a Commit
     } else {
+      ignoreCommitCodeDiff(regArray[1], regArray[2], regArray[3], regArray[4]);
     }
   };
 
@@ -156,8 +164,6 @@ const Appdiff = ({ diffText, code }) => {
 const CodeDiff = ({ codeId }) => {
   const [codeDiff, setCodeDiff] = useState([]);
   const [codeFiles, setCodeFiles] = useState([]);
-  const [showFiles, setShowFiles] = useState(false);
-  const [breakdown, setBreakdown] = useState({});
   const [showBreakdown, setShowBreakdown] = useState(false);
 
   const {
@@ -214,84 +220,81 @@ const CodeDiff = ({ codeId }) => {
   };
 
   const codeDiffHeader = () => {
-    return (
-      <div className="site-page-header-ghost-wrapper">
-        <PageHeader
-          ghost={false}
-          title={codeDiffDetail['branch']}
-          tags={ignoreRenderer()}
-          subTitle={tagRenderer()}
-          extra={[
-            // <Button
-            //   onClick={() => {
-            //     setShowFiles(!showFiles);
-            //   }}
-            //   key="1"
-            //   type="primary"
-            // >
-            //   File Changes
-            // </Button>,
-            <Button
-              onClick={() => {
-                setShowBreakdown(!showBreakdown);
-              }}
-              key="2"
-              type="primary"
-            >
-              Score Breakdown
-            </Button>,
-          ]}
-        >
-          <Descriptions size="small" column={2}>
-            <Descriptions.Item label="Created by">
-              {codeDiffDetail['createdBy']}
-            </Descriptions.Item>
-            <Descriptions.Item label="ID">
-              {codeDiffDetail['mrid']}
-            </Descriptions.Item>
-            <Descriptions.Item label="Merged Date">
-              {codeDiffDetail['mergedDate']}
-            </Descriptions.Item>
-            <Descriptions.Item label="Created On">
-              {codeDiffDetail['createdAt']}
-            </Descriptions.Item>
-          </Descriptions>
-        </PageHeader>
-      </div>
-    );
-  };
-
-  const fileChanges = () => {
-    return (
-      <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-        <div style={{ display: 'flex' }}>
-          <h2 style={{ marginRight: '10px' }}>File changed</h2>
-          <Button
-            onClick={() => {
-              setShowFiles(!showFiles);
-            }}
+    if (codeDiffDetail['type'] === 'cm') {
+      return (
+        <div className="site-page-header-ghost-wrapper">
+          <PageHeader
+            ghost={false}
+            title={codeDiffDetail['message']}
+            tags={ignoreRenderer()}
+            subTitle={tagRenderer()}
+            extra={[
+              <Button
+                onClick={() => {
+                  setShowBreakdown(!showBreakdown);
+                }}
+                key="2"
+                type="primary"
+              >
+                Score Breakdown
+              </Button>,
+            ]}
           >
-            Show
-          </Button>
+            <Descriptions size="small" column={2}>
+              <Descriptions.Item label="Committed by">
+                {codeDiffDetail['comitterName']}
+              </Descriptions.Item>
+              <Descriptions.Item label="ID">
+                {codeDiffDetail['commitid']}
+              </Descriptions.Item>
+              <Descriptions.Item label="Commited On">
+                {codeDiffDetail['date']}
+              </Descriptions.Item>
+              <Descriptions.Item label="Related MR">
+                {codeDiffDetail['relatedMr']}
+              </Descriptions.Item>
+            </Descriptions>
+          </PageHeader>
         </div>
-      </div>
-    );
-  };
-
-  const fileList = () => {
-    return (
-      <div style={{ marginBottom: '20px' }}>
-        <List
-          size="small"
-          dataSource={codeFiles}
-          renderItem={(item) => (
-            <List.Item>
-              <FileExcelOutlined /> {item}
-            </List.Item>
-          )}
-        />
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="site-page-header-ghost-wrapper">
+          <PageHeader
+            ghost={false}
+            title={codeDiffDetail['branch']}
+            tags={ignoreRenderer()}
+            subTitle={tagRenderer()}
+            extra={[
+              <Button
+                onClick={() => {
+                  setShowBreakdown(!showBreakdown);
+                }}
+                key="2"
+                type="primary"
+              >
+                Score Breakdown
+              </Button>,
+            ]}
+          >
+            <Descriptions size="small" column={2}>
+              <Descriptions.Item label="Created by">
+                {codeDiffDetail['createdBy']}
+              </Descriptions.Item>
+              <Descriptions.Item label="ID">
+                {codeDiffDetail['mrid']}
+              </Descriptions.Item>
+              <Descriptions.Item label="Merged Date">
+                {codeDiffDetail['mergedDate']}
+              </Descriptions.Item>
+              <Descriptions.Item label="Created On">
+                {codeDiffDetail['createdAt']}
+              </Descriptions.Item>
+            </Descriptions>
+          </PageHeader>
+        </div>
+      );
+    }
   };
 
   const header =
@@ -318,7 +321,6 @@ const CodeDiff = ({ codeId }) => {
   const mapDiff = codeDiff.map((code) => (
     <>
       <Appdiff diffText={headerGenerator(code)} code={code} />
-      {/* <Appdiff diffText={header + code.diff} /> */}
     </>
   ));
   const codeDiffTags = () => {
