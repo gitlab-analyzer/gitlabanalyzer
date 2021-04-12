@@ -26,7 +26,6 @@ const EveryoneScore = () => {
     commitsMaster,
   } = useAuth();
 
-  console.log('master', commitsMaster);
   
   const dateOutOfRange = (value) => {  
     return value < dataList[0] || value > dataList[1];
