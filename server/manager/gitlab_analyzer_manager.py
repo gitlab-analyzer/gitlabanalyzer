@@ -300,6 +300,15 @@ class GitLabAnalyzerManager:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
 
+    def reset_user_mapping(self, hashedToken: str, projectID: int) -> Tuple[bool, str]:
+        isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
+            hashedToken, projectID
+        )
+        if isValid:
+            myProject.reset_user_mapping()
+            return isValid, errorCode
+        return isValid, errorCode
+
     def __delete_GitLab_instance(self, hashedToken: str) -> None:
         self.__gitlab_list_lock.acquire()
         if self.__gitlab_list.get(hashedToken, None) is not None:
