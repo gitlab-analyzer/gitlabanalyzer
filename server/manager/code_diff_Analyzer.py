@@ -43,7 +43,9 @@ class CodeDiffAnalyzer:
                 # Check for block of comments
                 # -------------------------------------------------
                 temp = info.copy()
-                if fileType not in HTMLfileExtension or fileType == "sql":
+                if (
+                    fileType not in HTMLfileExtension and fileType != "py"
+                ) or fileType == "sql":
                     info = self.define_block_of_code(
                         block_code, "/*", line, info, fileType
                     )
@@ -175,20 +177,20 @@ class CodeDiffAnalyzer:
             if str[i] in syntaxStr:
                 isSyntax = True
                 continue
-        if fileType == "py":
-            if str[i] == "#" and isSyntax is False:
-                info = self.modify_info_value("comments", info, signal)
+            if fileType == "py":
+                if str[i] == "#" and isSyntax is False:
+                    info = self.modify_info_value("comments", info, signal)
+                    return info
+            elif fileType == "sql":
+                if str[i : i + 2] == "--" and isSyntax is False:
+                    info = self.modify_info_value("comments", info, signal)
+                    return info
+            elif fileType not in HTMLfileExtension:
+                if str[i : i + 2] == "//" and isSyntax is False:
+                    info = self.modify_info_value("comments", info, signal)
+                    return info
+            if str[i] != " ":
                 return info
-        elif fileType == "sql":
-            if str[i : i + 2] == "--" and isSyntax is False:
-                info = self.modify_info_value("comments", info, signal)
-                return info
-        elif fileType not in HTMLfileExtension:
-            if str[i : i + 2] == "//" and isSyntax is False:
-                info = self.modify_info_value("comments", info, signal)
-                return info
-        if str[i] != " ":
-            return info
 
         if isSyntax:
             info["syntax_changes"] = info["syntax_changes"] + 1
@@ -201,7 +203,7 @@ class CodeDiffAnalyzer:
         else:
             length = len(line)
 
-        for i in range(0, length):
+        for i in range(1, length):
             if oldLine[i] != line[i]:
                 temp = i
                 break
