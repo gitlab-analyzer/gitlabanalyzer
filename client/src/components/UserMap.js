@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Select } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import './UserMap.css';
-import MultipleSelect from '../components/MultipleSelect'
 import MembersList from './MembersList'
 import { Redirect } from 'react-router';
-import fetchMergeRequests from './login/Repo'
-import fetchCommits from './login/Repo'
 import axios from 'axios';
 
 const { Option } = Select;
@@ -16,58 +13,24 @@ const UserMap = () => {
         membersList,
         usersList,
         selectedRepo,
-        mergeRequestList,
-        setMergeRequestList,
-        commitsList,
-        setCommitsList,
-        mapList, setMapList,
+        mapList, 
         selectedOptions, 
     } = useAuth();
     const [redirect, setRedirect] = useState(false);
-    const [mappingDictionary, setMappingDictionary] = useState("");
 
-    // const memberList = ["MemberA", "MemberB", "MemberC", "MemberD"]; // fake data
     const memberList = membersList.map((item) => item.name);    // real data
     const userList = usersList.filter(val => !memberList.includes(val));
+    const unselectedUsers = userList.filter(val => !selectedOptions.includes(val));
     
-    const MemberList = ({ list }) => (
-        <ul className="allList">
-          {list.map(item => (
-            <li className="innerList" key={item}>
-                <div className="listForMembers">
-                    {item}
-                </div>
-                <MultipleSelect key={item} id={item} currentMember={item}/>
-            </li>
-          ))}
-        </ul>
-    );
-    
-    // const mapDictionary = JSON.stringify({ "Administrator": ["jiwonj", "jaddiet", "xtran"] }); 
-    // const mapDictionary = JSON.stringify(mapList);
-
     let mapDict = {}
     mapDict["user_mapping"] = mapList;
     let finalDict = JSON.stringify(mapDict);
 
     const proceedMapping = async () => {
-        // var mapDictionary = JSON.stringify(mapList);
-        setMappingDictionary(mapList);
-        // console.log(selectedRepo)
-        // console.log(mapDictionary)
-        // console.log(selectedOptions.length)
-        console.log(mapList);
-        console.log(mapDict);
-        console.log(finalDict);
-
-        if (selectedOptions.length !== 0) {  // if there is at least one committer to be mapped
+        if (selectedOptions.length !== 0) { 
             try {
                 await mapUsers();
-                // Call commitsList mergeRequestList again since the data have been changed.
-                await fetchCommits();
-                console.log('commit change')
-                await fetchMergeRequests();
-                console.log('merge request change')
+                console.log(selectedOptions.length)
             } catch (error) {
                 console.log(error);
             }
@@ -75,7 +38,6 @@ const UserMap = () => {
         setRedirect(true)
     }
 
-    // POST call to backend 
     const mapUsers = async () => {
         const userMappingRes = await axios.post(
             `http://localhost:5678/projects/${selectedRepo}/map`,
@@ -107,7 +69,7 @@ const UserMap = () => {
         return(
             <div className="MapContainer">
                 <div className="intro">
-                    <b1>* { userList.length } committers are not identified as members. Please complete the mapping.</b1>
+                    <b1>* { unselectedUsers.length } committers are not identified as members. Please complete the mapping.</b1>
                     <div className="columnNames">
                         <p>Member</p>
                         <p>Committer</p>

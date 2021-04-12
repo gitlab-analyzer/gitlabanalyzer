@@ -25,7 +25,6 @@ const AuthProvider = (props) => {
   const [filteredList, setFilteredList] = useState([]);
   const [value, setValue] = useState('');
   const [finishedConfig, setFinishedConfig] = useState(false);
-
   const [mapList, setMapList] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
 

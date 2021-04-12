@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Select } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import './UserMap.css';
@@ -13,15 +13,10 @@ const MultipleSelect = (props) => {
     } = useAuth();
 
     const [selectedItems, setSelectedItems] = useState([]);
-    const [newSelectedItems, setNewSelectedItems] = useState();
-    // const userList = ["UserA", "UserB", "UserC", "UserD", "UserE", "UserJJJ", "UserX"] //  fake data
 
-    // real data
     const memberList = membersList.map((item) => item.name); 
-    // const userList = usersList;
     const userList = usersList.filter(val => !memberList.includes(val));
-    // const dict = {};
-    
+
     function handleSelect(value) {
         setSelectedOptions([...selectedOptions, value]);
     }
@@ -40,16 +35,10 @@ const MultipleSelect = (props) => {
     
     function handleChange(value) {
         setSelectedItems(value);
-        // setSelectedOptions(value);
-        // console.log(props.currentMember)
-
+        
         var dict = mapList;
-        dict[props.currentMember] = value;  // this!
-
+        dict[props.currentMember] = value;  
         setMapList(dict)
-        // setMapList(oldList => ({...oldList, dict}));  // this!
-        // setMapList({...mapList, dict}) // this!
-        // console.log(mapList)
     }
 
     const filteredOptions = userList.filter(o => !selectedOptions.includes(o));
@@ -72,7 +61,6 @@ const MultipleSelect = (props) => {
         </Select>
       );
       
-    
 }
 
 export default MultipleSelect

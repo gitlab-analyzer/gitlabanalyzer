@@ -46,7 +46,7 @@ p {
 
 .multipleSelection {
     height: 50px;
-    width: 40%;
+    width: 33%;
     white-space: nowrap;
     overflow: auto;
 }
