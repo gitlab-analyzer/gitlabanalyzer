@@ -58,6 +58,7 @@ const EveryoneScore = () => {
           }
         }
       }
+      console.log('mergerequestlist', mergeRequestList);
       if (mergeRequestList !== 0) {
         for (let [user, uservalue] of Object.entries(mergeRequestList)) {
           let commitScore = 0;

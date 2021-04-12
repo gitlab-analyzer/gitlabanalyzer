@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { SaveOutlined } from '@ant-design/icons';
 import axios from "axios";
+import {configSettings} from "../components/login/Repo";
 
 const { Option } = Select;
 export var SavedConfigs = {}
@@ -105,6 +106,8 @@ const ConfigPage = () => {
   const recalculateScores = () => {
     if (currentConfig.language) {
       for (let [langkey, langvalue] of Object.entries(currentConfig.language)) {
+        console.log('lang', langvalue.extname)
+        langvalue.extname = langvalue.extname.replaceAll(' ', '');
         lang[langvalue.extname] = langvalue.extpoint;
       }
     }
@@ -153,6 +156,7 @@ const ConfigPage = () => {
     }
     return tempMR;
   };
+
 
   const handleSave = async (value) => {
     setCurrentConfig(value);
@@ -215,7 +219,7 @@ const ConfigPage = () => {
     recalculateScores();
     retrieveConfig();
     console.log('New MR: ', mergeRequestList);
-  }, []);
+  }, [currentConfig]);
 
   const fillForm = (value) => {
     setCurrentConfig(SavedConfigs[value]);
