@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 const Summary = () => {
   const {
     selectUser,
-    commitsList,
     mergeRequestList,
     notesList,
     dataList,
@@ -37,8 +36,7 @@ const Summary = () => {
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
 
-  const [userCommitsList, setUserCommitsList] = useState(commitsList);
-  const [userMRList, setUserMRList] = useState(mergeRequestList)
+  const [userMRList, setUserMRList] = useState(mergeRequestList);
 
   const classes = useStyles();
 
@@ -50,40 +48,56 @@ const Summary = () => {
   const CODE_REVIEWS_OWN = 5;
   const CODE_REVIEWS_OTHERS = 6;
 
+  const COMMIT_SCORE = 7;
+  const MERGE_REQUEST_SCORE = 9;
+
   const countDates = (list, type, dates) => {
     var result = {};
-    var i, j;
+    var i, j, k;
     var date;
     var rarr = [];
     
     if (type === COMMITS) {
-    for (i = 0; i < list.length; i++) {
-      if (selectUser === list[i].userName) {
-        for (j = 0; j < list[i].commits[0].length; j++) {
-          if(dates.length !== 0) {
-            // Case when float bar dates are selected
-            if((dates[0]._d <= list[i].commits[0][j].commitedDate) && (list[i].commits[0][j].commitedDate <= dates[1]._d)) {
-              date = [
-                list[i].commits[0][j].commitedDate.getFullYear(),
-                list[i].commits[0][j].commitedDate.getMonth() +1,
-                list[i].commits[0][j].commitedDate.getDate(),
-              ].join('-');
-              result[date] = result[date] || 0;
-              result[date]++;
+      for(i in list) {
+        if (i === selectUser) {
+          for( i in list[selectUser].mr) {
+            for(j in list[selectUser].mr[i].commitList) {
+              if (dates.length !== 0) {
+                if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && 
+                  (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
+                    date = [
+                      list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                      list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
+                      list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                    ].join('-');
+                    result[date] = result[date] || 0;
+                    if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                      for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                        if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                          result[date]++;
+                        }
+                      }
+                    }
+                }
+              } else {
+                date = [
+                  list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                  list[selectUser].mr[i].commitList[j].comittedDate.getMonth() +1,
+                  list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                ].join('-');
+                result[date] = result[date] || 0;
+                if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                  for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                    if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                      result[date]++;
+                    }
+                  }
+                }
+              }
             }
-          } else {
-            // No float bar dates seleceted
-            date = [
-              list[i].commits[0][j].commitedDate.getFullYear(),
-              list[i].commits[0][j].commitedDate.getMonth() +1,
-              list[i].commits[0][j].commitedDate.getDate(),
-            ].join('-');
-            result[date] = result[date] || 0;
-            result[date]++;
           }
         }
       }
-    }
     } else if (type === MERGE_REQUESTS) {
       for(i in list) {
         if(i === selectUser) {
@@ -92,20 +106,24 @@ const Summary = () => {
               if((dates[0]._d <= list[selectUser].mr[i].createdDate) && (list[selectUser].mr[i].createdDate <= dates[1]._d)){
                   date = [
                     list[selectUser].mr[i].createdDate.getFullYear(),
-                    list[selectUser].mr[i].createdDate.getMonth() +1,
+                    list[selectUser].mr[i].createdDate.getMonth() + 1,
                     list[selectUser].mr[i].createdDate.getDate(),
                   ].join('-');
                   result[date] = result[date] || 0;
-                  result[date]++;
+                  if(list[selectUser].mr[i].ignore == false) {
+                    result[date]++;
+                  }
               }
             } else {
               date = [
                 list[selectUser].mr[i].createdDate.getFullYear(),
-                list[selectUser].mr[i].createdDate.getMonth() +1,
+                list[selectUser].mr[i].createdDate.getMonth() + 1,
                 list[selectUser].mr[i].createdDate.getDate(),
               ].join('-');
               result[date] = result[date] || 0;
-              result[date]++;
+              if(list[selectUser].mr[i].ignore == false) {
+                result[date]++;
+              }
             }
           }
         }
@@ -156,7 +174,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS_OWN) {
       for(i = 0; i < list.length; i++) {
-        if ((selectUser === list[i].author) && (list[i].ownership === "Own") && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+        if ((selectUser === list[i].author) && (list[i].ownership === "Own") && ((list[i].noteableType === "MergeRequest") || (list[i].noteableType === "Commit"))) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
@@ -178,7 +196,7 @@ const Summary = () => {
       }
     } else if (type === CODE_REVIEWS_OTHERS) {
       for(i = 0; i < list.length; i++) {
-        if ((selectUser === list[i].author) && (list[i].ownership === "Other") && (list[i].noteableType === "MergeRequest" || list[i].noteableType === "Commit")) {
+        if ((selectUser === list[i].author) && (list[i].ownership === "Other") && ((list[i].noteableType === "MergeRequest") || (list[i].noteableType === "Commit"))) {
           if (dates.length !== 0) {
             if((dates[0]._d <= list[i].createdDate) && (list[i].createdDate <= dates[1]._d)) {
               date = [list[i].createdDate.getFullYear(),
@@ -198,6 +216,84 @@ const Summary = () => {
           }
         }
       }
+    } else if (type === MERGE_REQUEST_SCORE) {
+      for(i in list) {
+        if(i === selectUser) {
+          for(i in list[selectUser].mr){
+            if(dates.length !== 0) {
+              if((dates[0]._d <= list[selectUser].mr[i].createdDate) && (list[selectUser].mr[i].createdDate <= dates[1]._d)){
+                  date = [
+                    list[selectUser].mr[i].createdDate.getFullYear(),
+                    list[selectUser].mr[i].createdDate.getMonth() + 1,
+                    list[selectUser].mr[i].createdDate.getDate(),
+                  ].join('-');
+                  result[date] = result[date] || 0;
+                  if(list[selectUser].mr[i].ignore == false) {
+                    for(k in list[selectUser].mr[i].codeDiffDetail) {
+                      if(list[selectUser].mr[i].codeDiffDetail[k].ignore == false) {
+                        result[date] += list[selectUser].mr[i].codeDiffDetail[k].score;
+                      }
+                    }
+                  }
+              }
+            } else {
+              date = [
+                list[selectUser].mr[i].createdDate.getFullYear(),
+                list[selectUser].mr[i].createdDate.getMonth() + 1,
+                list[selectUser].mr[i].createdDate.getDate(),
+              ].join('-');
+              result[date] = result[date] || 0;
+              if(list[selectUser].mr[i].ignore == false) {
+                for(k in list[selectUser].mr[i].codeDiffDetail) {
+                  if(list[selectUser].mr[i].codeDiffDetail[k].ignore == false) {
+                    result[date] += list[selectUser].mr[i].codeDiffDetail[k].score;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } else if (type === COMMIT_SCORE) {
+      for(i in list) {
+        if (i === selectUser) {
+          for( i in list[selectUser].mr) {
+            for(j in list[selectUser].mr[i].commitList) {
+              if (dates.length !== 0) {
+                if((dates[0]._d <= list[selectUser].mr[i].commitList[j].comittedDate) && (list[selectUser].mr[i].commitList[j].comittedDate <= dates[1]._d)){
+                  date = [
+                    list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                    list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
+                    list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                  ].join('-');
+                  result[date] = result[date] || 0;
+                  if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                    for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                      if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                        result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[k].score;
+                      }
+                    }
+                  }
+                }
+              } else {
+                date = [
+                  list[selectUser].mr[i].commitList[j].comittedDate.getFullYear(),
+                  list[selectUser].mr[i].commitList[j].comittedDate.getMonth() + 1,
+                  list[selectUser].mr[i].commitList[j].comittedDate.getDate(),
+                ].join('-');
+                result[date] = result[date] || 0;
+                if(list[selectUser].mr[i].commitList[j].ignore == false) {
+                  for(k in list[selectUser].mr[i].commitList[j].codeDiffDetail) {
+                    if(list[selectUser].mr[i].commitList[j].codeDiffDetail[k].ignore == false) {
+                      result[date] += list[selectUser].mr[i].commitList[j].codeDiffDetail[k].score;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     for (i in result) {
@@ -207,7 +303,6 @@ const Summary = () => {
     }
     return rarr;
   };
-
 
   const populateDates = (array) => {
     var result = [];
@@ -228,7 +323,7 @@ const Summary = () => {
   };
 
   // Computations for graph data - fine to leave this here since it will be updated on selectUser
-  var dailyCommitsArray = countDates(userCommitsList, COMMITS, dataList)
+  var dailyCommitsArray = countDates(userMRList, COMMITS, dataList)
   var commitDatesArray = populateDates(dailyCommitsArray)
   var commitCountsArray = populateCounts(dailyCommitsArray)
 
@@ -253,12 +348,19 @@ const Summary = () => {
   var CROtherDatesArray = populateDates(dailyCROtherArray)
   var CROtherCountsArray = populateCounts(dailyCROtherArray)
 
+  var dailyMRScores = countDates(userMRList, MERGE_REQUEST_SCORE, dataList)
+  var dailyMRScoresArray = populateCounts(dailyMRScores)
+
+  var dailyCommitScores = countDates(userMRList, COMMIT_SCORE, dataList)
+  var dailyCommitScoresArray = populateCounts(dailyCommitScores)
+
   // will need dates based on snapshot taken from context
   const [dateArray, setDateArray] = useState(commitDatesArray);
   const [crDateArray, setCrDateArray] = useState(CRDatesArray);
   const [issueDateArray, setIssueDateArray] = useState(issueDatesArray);
 
   useEffect(() => {
+    if(combinedDropdown === 'Number') {
     setCombinedSeries([
       {
         name: 'Merge Requests',
@@ -269,6 +371,18 @@ const Summary = () => {
         data: commitCountsArray,
       },
     ])
+    } else {
+      setCombinedSeries([
+        {
+          name: 'Merge Requests',
+          data: dailyMRScoresArray,
+        },
+        {
+          name: 'Commits',
+          data: dailyCommitScoresArray,
+        },
+      ])
+    }
     setCrSeries([
       {
         name: 'CR Words',
@@ -335,10 +449,10 @@ const Summary = () => {
       setCombinedDropdown('Score');
       setCombinedSeries([
         {
-          data: [],
+          data: dailyMRScoresArray,
         },
         {
-          data: [],
+          data: dailyCommitScoresArray,
         },
       ]);
       setTextRender('Score');
@@ -394,7 +508,10 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} xlabel={commitDatesArray}/>
+          <StackedBarGraph 
+            series={combinedSeries} 
+            xlabel={commitDatesArray}
+          />
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
@@ -411,15 +528,18 @@ const Summary = () => {
         </Grid>
         <Grid item xs={10}>
           <BarGraph 
-          series={crSeries} 
-          colors={'#f8f0d4'} 
-          stroke={'#CBB97B'} 
-          xlabel={crDateArray} 
-          id={2}/>
+            series={crSeries} 
+            colors={'#f8f0d4'} 
+            stroke={'#CBB97B'} 
+            xlabel={crDateArray} 
+            id={2}
+          />
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
-          <Dropdown overlay={crMenu}>
+          <Dropdown 
+          overlay={crMenu}
+          >
             <Button>
               {crDropdown} <DownOutlined />
             </Button>
