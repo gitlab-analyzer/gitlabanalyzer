@@ -164,6 +164,14 @@ const CommitBar = () => {
         ) {
           continue;
         }
+
+        let codeDiffCommitScore = 0;
+        for (let [k1, v1] of Object.entries(v['codeDiffDetail'])) {
+          if (!v1['ignore']) {
+            codeDiffCommitScore += v1['score'];
+          }
+        }
+
         commitsData.push({
           key: v['shortId'],
           commitid: (
@@ -173,12 +181,13 @@ const CommitBar = () => {
           ),
           relatedMr: v['relatedMr'],
           comitterName: v['committerName'],
-          codeDiffId: v['codeDiffId'],
+          codeDiffId: codeDiffCommitScore.toFixed(1),
           date: dateFormatter(v['comittedDate']),
           score: v['score'].toFixed(1),
           message: v['title'],
           ignore: v['ignore'],
         });
+        console.log('v', v);
         // This constructs a separate list for commits only
         commitTotalScore += v['score'];
       }
@@ -189,6 +198,13 @@ const CommitBar = () => {
         value['mergedDate'] < new Date('1971-01-01T00:00:00.000Z')
       ) {
         continue;
+      }
+
+      let codeDiffScore = 0;
+      for (let [k1, v1] of Object.entries(value['codeDiffDetail'])) {
+        if (!v1['ignore']) {
+          codeDiffScore += v1['score'];
+        }
       }
       mergeRequestData.push({
         key: value['id'],
@@ -203,7 +219,7 @@ const CommitBar = () => {
           ...value['lineCounts'],
         },
         branch: value['title'],
-        mrdiffscore: value['score'].toFixed(1),
+        mrdiffscore: codeDiffScore.toFixed(1),
         commitssum: commitTotalScore.toFixed(1),
         createdAt: dateFormatter(value['createdDate']),
         mergedDate: dateFormatter(value['mergedDate']),
