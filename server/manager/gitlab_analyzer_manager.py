@@ -300,9 +300,7 @@ class GitLabAnalyzerManager:
             commentList = myProject.get_comments_for_all_users()
         return isValid, errorCode, commentList
 
-    def reset_user_mapping(
-        self, hashedToken: str, projectID: int
-    ) -> Tuple[bool, str]:
+    def reset_user_mapping(self, hashedToken: str, projectID: int) -> Tuple[bool, str]:
         isValid, errorCode, _, myProject = self.__validate_token_and_project_state(
             hashedToken, projectID
         )
