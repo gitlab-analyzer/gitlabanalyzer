@@ -71,8 +71,8 @@ const UserMap = () => {
                 <div className="intro">
                     <b1>* { unselectedUsers.length } committers are not identified as members. Please complete the mapping.</b1>
                     <div className="columnNames">
-                        <p>Member</p>
-                        <p>Committer</p>
+                        <div className="role">Member</div>
+                        <div className="role">Committer</div>
                     </div>
                 </div>
     
@@ -81,7 +81,11 @@ const UserMap = () => {
                 </div>
     
                 <div className="button">
-                    <Button type="primary" onClick={proceedMapping} setRedirect={setRedirect}>Proceed</Button>
+                    <Button type="primary" 
+                    onClick={proceedMapping} 
+                    setRedirect={setRedirect}>
+                        Proceed
+                    </Button>
                 </div>
                 
             </div>
