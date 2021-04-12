@@ -113,7 +113,7 @@ class CodeDiffAnalyzer:
                         oldLineType = self.compare_dict_value(info, temp)
                         oldLine = line
                         continue
-                # -------------------------------------------------
+                    # -------------------------------------------------
 
                 # Normal case
                 # -------------------------------------------------
