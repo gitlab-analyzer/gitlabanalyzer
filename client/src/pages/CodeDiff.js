@@ -10,7 +10,7 @@ import CodeInfoCombined from '../components/code_diff_detail/CodeInfoCombined';
 
 const Appdiff = ({ diffText, code }) => {
   const [collapse, setCollapse] = useState(false);
-  const { setSpecificFile } = useAuth();
+  const { setSpecificFile, mergeRequestList, setMergeRequestList } = useAuth();
   const files = parseDiff(diffText);
 
   const multiplier = [1, 0.1, 0, 0, 0, 0, 0, 0.1];
@@ -27,8 +27,30 @@ const Appdiff = ({ diffText, code }) => {
 
   useEffect(() => {}, [collapse]);
 
+  // const ignoreMRCodeDiff = (path) => {
+  //   const newMergeRequestState = {
+  //     ...mergeRequestList,
+  //     [selectUser]: {
+  //       mr: {
+  //         ...mergeRequestList[selectUser]['mr'],
+  //         [relatedMr]: {
+  //           ...mergeRequestList[selectUser]['mr'][relatedMr],
+  //           ignore: value,
+  //         },
+  //       },
+  //       weightedScore: mergeRequestList[selectUser]['weightedScore'],
+  //     },
+  //   };
+  //   for (let [k, v] of Object.entries(
+  //     newMergeRequestState[selectUser]['mr'][relatedMr]['commitList']
+  //   )) {
+  //     v.ignore = value;
+  //   }
+  //   setMergeRequestList(newMergeRequestState);
+  // };
+
   const handleIgnore = () => {
-    console.log('caa', code);
+    console.log('path', code['path']);
   };
 
   const handleCollapse = (e) => {
@@ -74,7 +96,7 @@ const Appdiff = ({ diffText, code }) => {
           >
             Score Breakdown
           </Button>
-          <Checkbox onClick={handleIgnore}>Ignore</Checkbox>
+          <Checkbox onChange={handleIgnore}>Ignore</Checkbox>
           <Checkbox onChange={handleCollapse}>Collapse</Checkbox>
         </div>
       </header>
@@ -121,15 +143,6 @@ const CodeDiff = ({ codeId }) => {
     getData();
     console.log('ehok', codeDiff);
   }, [codeDiffId, codeDiffDetail]);
-
-  const data = [
-    'README.md',
-    'scripts/hulk.js',
-    'src/diff2html.js',
-    'src/joganjs-utils.js',
-    'src/line-by-line-printer.js',
-    'test/side-by-side.js',
-  ];
 
   const tagRenderer = () => {
     if (codeDiffDetail['type'] === 'mr') {

@@ -286,7 +286,6 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
       const tempMR = {};
       // Loop through object key
       for (let [user, mz] of Object.entries(mrList)) {
-        console.log('user', user, mz);
         tempMR[user] = {
           mr: {},
           weightedScore: 0,
@@ -294,7 +293,6 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
         // Loop through object item
         for (let author of mrList[user]) {
           let tempCommits = {};
-          console.log('author', author);
           for (let commit of author.commit_list) {
             tempCommits[commit.short_id] = {
               authorName: commit.author_name,
@@ -316,12 +314,11 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
               omitScore: 0,
               // Frontend defined variables End --------------------------
             };
-            console.log('ommo', commit);
             // Calculates and embeds a score for each file within a commit
             for (let [k1, v1] of Object.entries(
               tempCommits[commit.short_id]['codeDiffDetail']
             )) {
-              let path = `${user}.${author['id']}.${commit.id}`;
+              let path = `cm.${user}.${author['id']}.${commit.short_id}.${k1}`;
               tempCommits[commit.short_id]['codeDiffDetail'][k1][
                 'score'
               ] = mrScore(v1, true);
@@ -364,11 +361,13 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
           for (let [k1, v1] of Object.entries(
             tempMR[user].mr[author.id]['codeDiffDetail']
           )) {
+            let npath = `mr.${user}.${author['id']}.${k1}`;
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['score'] = mrScore(
               v1,
               true
             );
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['ignore'] = false;
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['path'] = npath;
           }
         }
       }

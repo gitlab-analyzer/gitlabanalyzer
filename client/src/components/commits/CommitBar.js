@@ -425,6 +425,7 @@ const CommitBar = () => {
       lineCounts: {
         ...record['lineCounts'],
       },
+      path: record['path'],
       type: 'mr',
     };
     return codeDetails;
