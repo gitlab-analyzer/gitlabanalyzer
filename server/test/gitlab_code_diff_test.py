@@ -21,4 +21,5 @@ if __name__ == "__main__":
     temp = CodeDiffAnalyzer()
     diffs = project.commits.get("d95a38e6").diff()
     for diff in diffs:
-        print(temp.get_code_diff_statistic(CodeDiff(diff)))
+        print(diff)
+        print(temp.get_code_diff_statistic(CodeDiff(diff)), '\n')

@@ -88,14 +88,14 @@ class CodeDiffAnalyzer:
 
                 # Adding to middle of the line instead of to the front or the back
                 # -------------------------------------------------
-                if oldLine != None:
+                if oldLine != None and oldLineType != None:
                     if line[0] != oldLine[0] and abs(len(line) - len(oldLine)) == 1:
                         info = self.add_one_char_middle(line, oldLine, info, fileType)
                         if temp != info:
-                            oldLineType = self.compare_dict_value(info, temp)
                             info = self.modify_info_value(
                                 oldLineType, info, oldLine[0], -1
                             )
+                            oldLineType = self.compare_dict_value(info, temp)
                             oldLine = line
                             continue
                     # -------------------------------------------------
@@ -106,13 +106,13 @@ class CodeDiffAnalyzer:
                         info = self.add_to_existing_line(
                             "+", line, oldLine, info, fileType
                         )
-                    if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
+                    elif line[1:] in oldLine[1:] and oldLine[0] != line[0]:
                         info = self.add_to_existing_line(
                             "-", oldLine, line, info, fileType
                         )
                     if info != temp:
-                        oldLineType = self.compare_dict_value(info, temp)
                         info = self.modify_info_value(oldLineType, info, oldLine[0], -1)
+                        oldLineType = self.compare_dict_value(info, temp)
                         oldLine = line
                         continue
                     # -------------------------------------------------
