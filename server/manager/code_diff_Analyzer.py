@@ -96,7 +96,7 @@ class CodeDiffAnalyzer:
                                 oldLineType, info, oldLine[0], -1
                             )
                             oldLineType = self.compare_dict_value(info, temp)
-                            oldLine = line
+                            oldLine = None
                             continue
                     # -------------------------------------------------
 
@@ -113,7 +113,7 @@ class CodeDiffAnalyzer:
                     if info != temp:
                         info = self.modify_info_value(oldLineType, info, oldLine[0], -1)
                         oldLineType = self.compare_dict_value(info, temp)
-                        oldLine = line
+                        oldLine = None
                         continue
                     # -------------------------------------------------
 
