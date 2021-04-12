@@ -15,22 +15,6 @@ const usercolours = [
 ];
 export var barData = [];
 
-export function ScoreCalculator(username) {
-  let TotalScore;
-  for (let i = 0; i < barData.length; i++) {
-    let data = barData[i];
-    if (username === data['name']) {
-      TotalScore =
-        parseInt(data['commits']) +
-        parseInt(data['code']) +
-        parseInt(data['issue']) +
-        parseInt(data['deleted']) * 0.2 +
-        parseInt(data['syntax']) * 0.2;
-    }
-  }
-  return TotalScore;
-}
-
 const EveryoneScore = () => {
   const { 
     notesList, 
@@ -45,10 +29,7 @@ const EveryoneScore = () => {
   console.log('master', commitsMaster);
   
   const dateOutOfRange = (value) => {  
-    if (value < dataList[0] || value > dataList[1]) {
-      return true;
-    }
-    return false;
+    return value < dataList[0] || value > dataList[1];
   };
 
   useEffect(() => {
@@ -57,7 +38,29 @@ const EveryoneScore = () => {
       barData = [];
       let subscore = {};
       let num = 0;
+      let cmMaster = {};
 
+      if (commitsMaster) {
+        for (let [cmUser, cmObj] of Object.entries(commitsMaster['commit_list'])) {
+          console.log('cmObj', cmObj)
+          for (let [cmID, cmValue] of Object.entries(cmObj)) {
+            for (let [cmKey, cmPropValue] of Object.entries(cmValue['code_diff_detail'])) {
+              if (cmPropValue['ignore']){
+                continue;
+              }
+              if (cmUser in cmMaster) {
+                cmMaster[cmUser]['score'] += cmPropValue['score'];
+              }
+              else {
+                cmMaster[cmUser] = {count:0}
+                cmMaster[cmUser]['score'] = cmPropValue['score'];
+              }
+              cmMaster[cmUser]['count']++;
+            }
+          }
+        }
+      }
+      console.log('cmmaster', cmMaster);
       if (notesList) {
         for (let [noteKey, noteObj] of Object.entries(notesList)) {
           if (noteObj['ignore'] || dataList[0]==null ||
@@ -118,17 +121,23 @@ const EveryoneScore = () => {
           barData.push({
             name: user,
             id: num++,
+            // ...((user in cmMaster) ? [
+            //   weightscore: mrScore+cmMaster[user],
+            // ]:[]),
+
             weightscore: mrScore,
+            // weightscore: mrScore + (cmMaster[user] ? cmMaster[user] : 0),
             // weightscore: mrScore+masterCm,
             mrscore: mrScore,
             mrcount: mrCount,
+
             cmscore: cmScore,
+            // cmscore: cmScore + (cmMaster[user] ? cmMaster[user] : 0),
             cmcount: cmCount,
             issue: subscore[user],
             filetype: fileType
           });
         }
-        
       }
       await setFloatScores([...barData]);  
     }
@@ -139,6 +148,7 @@ const EveryoneScore = () => {
   const scrollRef = HorizontalScroll();
   return (
     <div className="floatbarContainer">
+      {console.log(barData)}
       <div className="floatbarLabels">
         <div className="scoreLabel">weighted score</div>
         <div className="remainingLabels">
