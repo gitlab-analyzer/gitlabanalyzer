@@ -41,6 +41,8 @@ const EveryoneScore = () => {
       // new Date(value)
       console.log('date type', value); 
       console.log(dataList);
+      if (value < dataList[0] || value > dataList[1]) {
+      }
     }
 
   useEffect(() => {

@@ -51,6 +51,8 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
     setCurrentConfig,
     setDataList,
     setFinishedConfig,
+    commitsMaster,
+    setCommitsMaster,
   } = useAuth();
 
   const [redirect, setRedirect] = useState(false);
@@ -185,6 +187,21 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
 
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
+  };
+  // Function for fetching commits list data
+  const fetchCommitsMaster = async () => {
+    const commitsMasterRes = await axios.get(
+      `http://localhost:5678/projects/${selectRepo}/commit/master/direct/user/all`,
+      {
+        withCredentials: true,
+      }
+    );
+    fetchErrorChecker(commitsMasterRes.data['response'], 'commits master');
+
+    const tempCommits = { commit_list: {...commitsMasterRes.data['commit_list']}};
+    console.log('tempCommits', tempCommits);
+
+    setCommitsMaster([...tempCommits]);
   };
 
   // Function for fetching commits list data
@@ -704,6 +721,7 @@ const Repo = ({ analyzing, setAnalyzing, loading }) => {
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
+      await fetchCommitsMaster();
       await fetchNotes();
       await fetchComments();
       setRedirect(true);
