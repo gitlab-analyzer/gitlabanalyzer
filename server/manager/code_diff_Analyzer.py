@@ -81,7 +81,7 @@ class CodeDiffAnalyzer:
                         )
                         block_code = False
                 if info != temp:
-                    oldLineType = self.compare_dict_value(info,temp)
+                    oldLineType = self.compare_dict_value(info, temp)
                     oldLine = line
                     continue
                 # -------------------------------------------------
@@ -93,7 +93,7 @@ class CodeDiffAnalyzer:
                         info = self.add_one_char_middle(line, oldLine, info, fileType)
                         if temp != info:
                             info = self.modify_info_value("lines", info, oldLine[0], -1)
-                            oldLineType = self.compare_dict_value(info,temp)
+                            oldLineType = self.compare_dict_value(info, temp)
                             oldLine = line
                             continue
                     # -------------------------------------------------
@@ -101,12 +101,16 @@ class CodeDiffAnalyzer:
                     # Adding to an exisiting line
                     # -------------------------------------------------
                     if oldLine[1:] in line[1:] and oldLine[0] != line[0]:
-                        info = self.add_to_existing_line("+", line, oldLine, info, fileType)
+                        info = self.add_to_existing_line(
+                            "+", line, oldLine, info, fileType
+                        )
                     if line[1:] in oldLine[1:] and oldLine[0] != line[0]:
-                        info = self.add_to_existing_line("-", oldLine, line, info, fileType)
+                        info = self.add_to_existing_line(
+                            "-", oldLine, line, info, fileType
+                        )
                     if info != temp:
                         info = self.modify_info_value("lines", info, oldLine[0], -1)
-                        oldLineType = self.compare_dict_value(info,temp)
+                        oldLineType = self.compare_dict_value(info, temp)
                         oldLine = line
                         continue
                 # -------------------------------------------------
@@ -114,7 +118,7 @@ class CodeDiffAnalyzer:
                 # Normal case
                 # -------------------------------------------------
                 info = self.add_normal_line_of_code(info, line, fileType)
-                oldLineType = self.compare_dict_value(info,temp)
+                oldLineType = self.compare_dict_value(info, temp)
                 oldLine = line
                 # -------------------------------------------------
 
@@ -176,7 +180,7 @@ class CodeDiffAnalyzer:
         }
 
         if str.isspace():
-            info = self.modify_info_value("spacing",info,signal)
+            info = self.modify_info_value("spacing", info, signal)
             return info
 
         for i in range(0, len(str)):
@@ -199,7 +203,7 @@ class CodeDiffAnalyzer:
                 return info
 
         if isSyntax:
-            info = self.modify_info_value("syntax",info,signal)
+            info = self.modify_info_value("syntax", info, signal)
         return info
 
     def add_one_char_middle(self, line, oldLine, info, fileType) -> dict:
@@ -296,7 +300,7 @@ class CodeDiffAnalyzer:
         elif (
             strFront.isspace() or strFront == "" and strBack.isspace() or strBack == ""
         ):
-            info = self.modify_info_value("syntax",info,line[0])
+            info = self.modify_info_value("syntax", info, line[0])
         else:
             info = self.add_normal_line_of_code(info, line[0] + strFront, fileType)
         return info
