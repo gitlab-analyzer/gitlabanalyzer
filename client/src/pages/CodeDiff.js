@@ -10,7 +10,13 @@ import CodeInfoCombined from '../components/code_diff_detail/CodeInfoCombined';
 
 const Appdiff = ({ diffText, code }) => {
   const [collapse, setCollapse] = useState(false);
-  const { setSpecificFile, mergeRequestList, setMergeRequestList } = useAuth();
+  const [ignored, setIgnored] = useState(false);
+  const {
+    setSpecificFile,
+    codeDiffPath,
+    mergeRequestList,
+    setMergeRequestList,
+  } = useAuth();
   const files = parseDiff(diffText);
 
   const multiplier = [1, 0.1, 0, 0, 0, 0, 0, 0.1];
@@ -25,32 +31,55 @@ const Appdiff = ({ diffText, code }) => {
     'syntax_changes',
   ];
 
-  useEffect(() => {}, [collapse]);
+  useEffect(() => {
+    let hello = matchFile(codeDiffPath, code['new_path']) + '';
+    let regArray = hello.split('.');
+    // Handle case Code diff is MR
+    if (regArray[0] === 'mr') {
+      let selectUser = regArray[1];
+      let relatedMr = regArray[2];
+      let codeid = regArray[3];
+      setIgnored(
+        mergeRequestList[selectUser]['mr'][relatedMr]['codeDiffDetail'][codeid][
+          'ignore'
+        ]
+      );
+      // Handle case Code diff is a Commit
+    } else {
+    }
+  }, [collapse, codeDiffPath, ignored, mergeRequestList]);
 
-  // const ignoreMRCodeDiff = (path) => {
-  //   const newMergeRequestState = {
-  //     ...mergeRequestList,
-  //     [selectUser]: {
-  //       mr: {
-  //         ...mergeRequestList[selectUser]['mr'],
-  //         [relatedMr]: {
-  //           ...mergeRequestList[selectUser]['mr'][relatedMr],
-  //           ignore: value,
-  //         },
-  //       },
-  //       weightedScore: mergeRequestList[selectUser]['weightedScore'],
-  //     },
-  //   };
-  //   for (let [k, v] of Object.entries(
-  //     newMergeRequestState[selectUser]['mr'][relatedMr]['commitList']
-  //   )) {
-  //     v.ignore = value;
-  //   }
-  //   setMergeRequestList(newMergeRequestState);
-  // };
+  const ignoreMRCodeDiff = (selectUser, relatedMr, codeid) => {
+    const newMergeRequestState = { ...mergeRequestList };
+    console.log(newMergeRequestState);
+    newMergeRequestState[selectUser]['mr'][relatedMr]['codeDiffDetail'][codeid][
+      'ignore'
+    ] = !mergeRequestList[selectUser]['mr'][relatedMr]['codeDiffDetail'][
+      codeid
+    ]['ignore'];
+    setMergeRequestList(newMergeRequestState);
+  };
+
+  const ignoreCommitCodeDiff = () => {};
+
+  const matchFile = (codeDiffPath, currPath) => {
+    for (let [k, v] of Object.entries(codeDiffPath)) {
+      if (v['new_path'] === currPath) {
+        return v['path'];
+      }
+    }
+    return false;
+  };
 
   const handleIgnore = () => {
-    console.log('path', code['path']);
+    let pathToIgnore = matchFile(codeDiffPath, code['new_path']);
+    let regArray = pathToIgnore.split('.');
+    // Handle case Code diff is MR
+    if (regArray[0] === 'mr') {
+      ignoreMRCodeDiff(regArray[1], regArray[2], regArray[3]);
+      // Handle case Code diff is a Commit
+    } else {
+    }
   };
 
   const handleCollapse = (e) => {
@@ -96,7 +125,9 @@ const Appdiff = ({ diffText, code }) => {
           >
             Score Breakdown
           </Button>
-          <Checkbox onChange={handleIgnore}>Ignore</Checkbox>
+          <Checkbox checked={ignored} onChange={handleIgnore}>
+            Ignore
+          </Checkbox>
           <Checkbox onChange={handleCollapse}>Collapse</Checkbox>
         </div>
       </header>
@@ -135,6 +166,7 @@ const CodeDiff = ({ codeId }) => {
     codeDiffDetail,
     specificFile,
     mergeRequestList,
+    setCodeDiffPath,
   } = useAuth();
 
   useEffect(() => {
@@ -146,21 +178,21 @@ const CodeDiff = ({ codeId }) => {
       const files = codeDiff.map((code) => code.new_path);
       setCodeFiles(files);
     };
-    codeDiffPathSetter();
+    setCodeDiffPath(codeDiffPathSetter());
     getData();
-    console.log('ehok', codeDiff);
   }, [codeDiffId, codeDiffDetail]);
 
   const codeDiffPathSetter = () => {
     for (let [k, v] of Object.entries(mergeRequestList)) {
-      console.log('authy', v);
       for (let [k1, v1] of Object.entries(v['mr'])) {
-        console.log('ahh', v1);
-        if (v1['codeDiffId'].toString() === codeDiffId) {
+        if (v1['codeDiffId'] === codeDiffId) {
           return v1['codeDiffDetail'];
         }
-        // for (let [k2, v2] of Object.entries()) {
-        // }
+        for (let [k2, v2] of Object.entries(v1['commitList'])) {
+          if (v2['codeDiffId'] === codeDiffId) {
+            return v2['codeDiffDetail'];
+          }
+        }
       }
     }
   };
