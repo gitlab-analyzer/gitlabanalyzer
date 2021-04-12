@@ -39,6 +39,9 @@ const Header = () => {
               <LinkContainer className="marginRight" to="/config">
                 <Nav.Link>Config</Nav.Link>
               </LinkContainer>
+              <LinkContainer className="marginRight" to="/usermap">
+                <Nav.Link>User Map</Nav.Link>
+              </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
