@@ -129,7 +129,13 @@ const CodeDiff = ({ codeId }) => {
   const [breakdown, setBreakdown] = useState({});
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  const { setCodeDiffId, codeDiffId, codeDiffDetail, specificFile } = useAuth();
+  const {
+    setCodeDiffId,
+    codeDiffId,
+    codeDiffDetail,
+    specificFile,
+    mergeRequestList,
+  } = useAuth();
 
   useEffect(() => {
     const getData = async () => {
@@ -140,9 +146,24 @@ const CodeDiff = ({ codeId }) => {
       const files = codeDiff.map((code) => code.new_path);
       setCodeFiles(files);
     };
+    codeDiffPathSetter();
     getData();
     console.log('ehok', codeDiff);
   }, [codeDiffId, codeDiffDetail]);
+
+  const codeDiffPathSetter = () => {
+    for (let [k, v] of Object.entries(mergeRequestList)) {
+      console.log('authy', v);
+      for (let [k1, v1] of Object.entries(v['mr'])) {
+        console.log('ahh', v1);
+        if (v1['codeDiffId'].toString() === codeDiffId) {
+          return v1['codeDiffDetail'];
+        }
+        // for (let [k2, v2] of Object.entries()) {
+        // }
+      }
+    }
+  };
 
   const tagRenderer = () => {
     if (codeDiffDetail['type'] === 'mr') {

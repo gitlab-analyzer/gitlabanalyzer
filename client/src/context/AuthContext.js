@@ -30,6 +30,7 @@ const AuthProvider = (props) => {
   const [codeDiffDetail, setCodeDiffDetail] = useState({});
   const [codeFiles, setCodeFiles] = useState([]);
   const [specificFile, setSpecificFile] = useState(null);
+  const [codeDiffPath, setCodeDiffPath] = useState('');
 
   const authContextValue = {
     user,
@@ -86,6 +87,8 @@ const AuthProvider = (props) => {
     setCodeFiles,
     specificFile,
     setSpecificFile,
+    codeDiffPath,
+    setCodeDiffPath,
   };
   return <AuthContext.Provider value={authContextValue} {...props} />;
 };

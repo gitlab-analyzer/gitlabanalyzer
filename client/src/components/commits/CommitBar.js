@@ -12,7 +12,11 @@ import {
   Form,
   Typography,
 } from 'antd';
-import { CodeFilled, CodeOutlined } from '@ant-design/icons';
+import {
+  CodeFilled,
+  CodeOutlined,
+  ConsoleSqlOutlined,
+} from '@ant-design/icons';
 import { useAuth } from '../../context/AuthContext';
 import DisplayScore from './DisplayScore';
 
@@ -187,7 +191,6 @@ const CommitBar = () => {
           message: v['title'],
           ignore: v['ignore'],
         });
-        console.log('v', v);
         // This constructs a separate list for commits only
         commitTotalScore += v['score'];
       }
@@ -425,7 +428,6 @@ const CommitBar = () => {
       lineCounts: {
         ...record['lineCounts'],
       },
-      path: record['path'],
       type: 'mr',
     };
     return codeDetails;
