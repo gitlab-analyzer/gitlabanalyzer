@@ -27,6 +27,10 @@ const Appdiff = ({ diffText, code }) => {
 
   useEffect(() => {}, [collapse]);
 
+  const handleIgnore = () => {
+    console.log('caa', code);
+  };
+
   const handleCollapse = (e) => {
     setCollapse(!collapse);
   };
@@ -70,7 +74,7 @@ const Appdiff = ({ diffText, code }) => {
           >
             Score Breakdown
           </Button>
-          <Checkbox>Ignore</Checkbox>
+          <Checkbox onClick={handleIgnore}>Ignore</Checkbox>
           <Checkbox onChange={handleCollapse}>Collapse</Checkbox>
         </div>
       </header>
@@ -115,6 +119,7 @@ const CodeDiff = ({ codeId }) => {
       setCodeFiles(files);
     };
     getData();
+    console.log('ehok', codeDiff);
   }, [codeDiffId, codeDiffDetail]);
 
   const data = [

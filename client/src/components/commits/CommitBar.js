@@ -462,6 +462,7 @@ const CommitBar = () => {
   };
 
   const ignoreMR = (commitId, relatedMr, value) => {
+    console.log('rl', relatedMr, value);
     const newMergeRequestState = {
       ...mergeRequestList,
       [selectUser]: {
