@@ -52,6 +52,8 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     setCurrentConfig,
     setDataList,
     setFinishedConfig,
+    commitsMaster,
+    setCommitsMaster,
     finishedConfig,
   } = useAuth();
 
@@ -72,12 +74,31 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     selectedRepo,
   ]);
 
-  const handleSubmit = (value) => {
+  const handleSubmit = async (value) => {
     setVisible(false);
     setCurrentConfig(value);
     setDataList(value.date);
-    SavedConfigs['default'] = value;
     setFinishedConfig(true);
+
+    let configDict ={}
+    configDict["name"] = 'default';
+    configDict["value"] = value;
+    let currConfig = JSON.stringify(
+      configDict);
+    const configStatus = await axios.post(
+      `http://localhost:5678/config`,
+      currConfig,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
+      }
+    );
+    fetchErrorChecker(configStatus.data['response'], 'config');
   };
 
   // General error handling function for fetch requests
@@ -171,7 +192,6 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     fetchErrorChecker(usersRes.data['response'], 'users');
     setUsersList([...usersRes.data['users']]);
   };
-
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
@@ -214,6 +234,31 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     'spacing_changes',
     'syntax_changes',
   ];
+
+  // Function for fetching commits list data
+  const fetchCommitsMaster = async () => {
+    const commitsMasterRes = await axios.get(
+      `http://localhost:5678/projects/${selectRepo}/commit/master/direct/user/all`,
+      {
+        withCredentials: true,
+      }
+    );
+    fetchErrorChecker(commitsMasterRes.data['response'], 'commits master');
+
+    const tempCommits = { commit_list: {...commitsMasterRes.data['commit_list']}};
+
+    for (let [k, v] of Object.entries(tempCommits['commit_list'])) {
+      for (let [k1, v1] of Object.entries(v)) {
+        for (let [k2, v2] of Object.entries(v1['code_diff_detail'])) {
+          v2['score'] = mrScore(v2,true);
+          v2['ignore'] = false;
+          // tempCommits['commit_list'][k1]['code_diff_detail']['score'] = mrScore(v2, true);
+        }
+      }
+    }
+
+    setCommitsMaster({...tempCommits});
+  };
 
   const mrScore = (codediffdetail, singleFile) => {
     let index;
@@ -285,7 +330,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
 
       const tempMR = {};
       // Loop through object key
-      for (let user in mrList) {
+      for (let [user, mz] of Object.entries(mrList)) {
         tempMR[user] = {
           mr: {},
           weightedScore: 0,
@@ -318,12 +363,14 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
             for (let [k1, v1] of Object.entries(
               tempCommits[commit.short_id]['codeDiffDetail']
             )) {
+              let path = `cm.${user}.${author['id']}.${commit.short_id}.${k1}`;
               tempCommits[commit.short_id]['codeDiffDetail'][k1][
                 'score'
               ] = mrScore(v1, true);
               tempCommits[commit.short_id]['codeDiffDetail'][k1][
                 'ignore'
               ] = false;
+              tempCommits[commit.short_id]['codeDiffDetail'][k1]['path'] = path;
             }
           }
           tempMR[user].mr[author.id] = {
@@ -359,15 +406,16 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
           for (let [k1, v1] of Object.entries(
             tempMR[user].mr[author.id]['codeDiffDetail']
           )) {
+            let npath = `mr.${user}.${author['id']}.${k1}`;
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['score'] = mrScore(
               v1,
               true
             );
             tempMR[user].mr[author.id]['codeDiffDetail'][k1]['ignore'] = false;
+            tempMR[user].mr[author.id]['codeDiffDetail'][k1]['path'] = npath;
           }
         }
       }
-      console.log('tempMR', tempMR);
       return tempMR;
     };
     setMergeRequestList(generateTempMR());
@@ -691,6 +739,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
       await fetchUsers();
       await fetchCommits();
       await fetchMergeRequests();
+      await fetchCommitsMaster();
       await fetchNotes();
       await fetchComments();
       setRedirect(true);
@@ -972,6 +1021,3 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
 
 export default Repo;
 
-export var configSettings = {
-  iteration: {},
-};

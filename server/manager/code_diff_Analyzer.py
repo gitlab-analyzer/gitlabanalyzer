@@ -126,13 +126,13 @@ class CodeDiffAnalyzer:
 
         return info
 
-    def check_for_code_type(self, codeDiffObject: CodeDiff) -> str:
+    def check_for_code_type(self, codeDiffObject: CodeDiff) -> Union[str, None]:
         diffCode = codeDiffObject
         fileName = diffCode.new_path
-        found = re.search("\.(.+?)$", fileName)
+        found = re.search(r"\.(\w+)$", fileName)
         if found is not None:
             return found.group(1)
-        return None
+        return fileName
 
     def add_normal_line_of_code(self, info, line, fileType) -> dict:
         if len(line) == 1:

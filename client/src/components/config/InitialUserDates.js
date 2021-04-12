@@ -26,7 +26,7 @@ function InitialUserDates() {
       <h6
         style={{ paddingBottom:10 }}
       >
-        Current Date Range
+        Set Date Range
       </h6>
       <Form.Item
         label="Dates"

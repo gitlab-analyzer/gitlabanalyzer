@@ -14,6 +14,7 @@ import ConfigPage from './pages/ConfigPage';
 import CodeDiff from './pages/CodeDiff';
 import NewPage from './pages/NewPage';
 import CodeDiffDetail from './components/code_diff_detail/CodeDiffDetail';
+import UserMapPage from './pages/UserMapPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route className="App" path="/" exact component={LoginPage} />
           <Route className="App" path="/repo" exact component={SearchPage} />
           <Route path="/reposearch" component={SearchPage} />
+          <Route path="/usermap" component={UserMapPage} />
           <Container style={{ backgroundColor: '#fff' }} maxWidth="lg">
             <Route path="/summary" exact component={SummaryPage} />
             <Route path="/commits" component={CommitPage} />

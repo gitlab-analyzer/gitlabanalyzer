@@ -3,14 +3,9 @@ import { Select, Button, DatePicker, notification } from 'antd';
 import {
   CheckCircleOutlined,
   CopyOutlined,
-  ScanOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../../context/AuthContext';
-import EveryoneScore, {
-  ScoreCalculator,
-  barData,
-  FillBarData,
-} from './EveryoneScore.js';
+import EveryoneScore, { barData } from './EveryoneScore.js';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 
@@ -31,12 +26,6 @@ function FloatBar() {
   const [sortType, setSortType] = useState('alpha');
 
   const {
-    membersList,
-    usersList,
-    commitsList,
-    notesList,
-    mergeRequestList,
-    commentsList,
     selectUser,
     dataList,
     setDataList,
@@ -60,11 +49,11 @@ function FloatBar() {
       barData.sort((a, b) => (a.name > b.name ? 1 : -1));
     } else if (value === 'low') {
       barData.sort((a, b) =>
-        ScoreCalculator(a.name) > ScoreCalculator(b.name) ? 1 : -1
+        a.weightscore > b.weightscore ? 1 : -1
       );
     } else if (value === 'high') {
       barData.sort((a, b) =>
-        ScoreCalculator(a.name) < ScoreCalculator(b.name) ? 1 : -1
+        a.weightscore < b.weightscore ? 1 : -1
       );
     }
   };
@@ -120,11 +109,11 @@ function FloatBar() {
                 format={'text/plain'}
                 text={
                   (userData &&
-                    String(ScoreCalculator(userData.name).toFixed(0)) +
+                      userData.weightscore.toFixed(0) +
                       '\t' +
-                      userData.commits +
+                      userData.cmcount +
                       '\t' +
-                      userData.code +
+                      userData.mrcount +
                       '\t' +
                       userData.issue) ||
                   '0\t0\t0\t0'
@@ -135,7 +124,6 @@ function FloatBar() {
                   <CopyOutlined className="copyicon" />
                 </Button>
               </CopyToClipboard>
-              {/* )} */}
             </Grid>
           </Grid>
         </div>

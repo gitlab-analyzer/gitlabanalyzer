@@ -4,6 +4,7 @@ import LanguagePoints from '../components/config/LanguagePoints';
 import IterationDates from '../components/config/IterationDates';
 import InitialUserDates from '../components/config/InitialUserDates';
 import FooterBar from '../components/FooterBar';
+import moment from 'moment';
 import {
   Form,
   Divider,
@@ -17,9 +18,10 @@ import {
 } from 'antd';
 import { useAuth } from '../context/AuthContext';
 import { SaveOutlined } from '@ant-design/icons';
+import axios from "axios";
 
 const { Option } = Select;
-export var SavedConfigs = {};
+export var SavedConfigs = {}
 const ConfigPage = () => {
   const {
     dataList,
@@ -29,9 +31,15 @@ const ConfigPage = () => {
     anon,
     setAnon,
     mergeRequestList,
-    setMergeRequestList,
   } = useAuth();
   const [form] = Form.useForm();
+
+  const fetchErrorChecker = (res, dataType) => {
+    if (!res) {
+      console.log(`Failed to retrieve ${dataType} list!`);
+      throw new Error('Fetch request failed.');
+    }
+  };
 
   let lang = {};
 
@@ -46,11 +54,12 @@ const ConfigPage = () => {
     'spacing_changes',
     'syntax_changes',
   ];
-
+  useEffect(() => {
+    retrieveConfig();
+  }, [SavedConfigs])
   const mrScore = (codediffdetail, singleFile) => {
     let index;
     let totalScore = 0;
-    // maybe move file type
     let totalFileType = {};
 
     if (singleFile) {
@@ -94,6 +103,7 @@ const ConfigPage = () => {
   const recalculateScores = () => {
     if (currentConfig.language) {
       for (let [langkey, langvalue] of Object.entries(currentConfig.language)) {
+        langvalue.extname = langvalue.extname.replaceAll(' ', '');
         lang[langvalue.extname] = langvalue.extpoint;
       }
     }
@@ -101,7 +111,6 @@ const ConfigPage = () => {
     const tempMR = {};
     // Loop through object key
     for (let user in mergeRequestList) {
-      console.log('mrList', mergeRequestList);
       tempMR[user] = {
         mr: {},
         weightedScore: 0,
@@ -143,14 +152,8 @@ const ConfigPage = () => {
     return tempMR;
   };
 
-  useEffect(() => {
-    form.setFieldsValue(currentConfig);
-    recalculateScores();
-    console.log('New MR: ', mergeRequestList);
-  }, []);
 
-  const handleSave = (value) => {
-    SavedConfigs[value.configname] = value;
+  const handleSave = async (value) => {
     setCurrentConfig(value);
     setDataList(value.date);
 
@@ -159,7 +162,58 @@ const ConfigPage = () => {
       icon: <SaveOutlined style={{ color: '#00d100' }} />,
       duration: 1.5,
     });
+
+    let configDict ={}
+    configDict["name"] = value.configname;
+    configDict["value"] = value;
+    let currConfig = JSON.stringify(
+      configDict);
+    const configStatus = await axios.post(
+      `http://localhost:5678/config`,
+      currConfig,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        crossorigin: true,
+        crossDomain: true,
+      }
+    );
+    retrieveConfig();
+    fetchErrorChecker(configStatus.data['response'], 'config');
   };
+
+  let tempConfig;
+  const retrieveConfig = async () => {
+    let loadConfig;
+    loadConfig = await axios.get(
+      `http://localhost:5678/config`,
+      {
+        withCredentials: true,
+      }
+    );
+    tempConfig = loadConfig.data.configs;
+    SavedConfigs = {
+      ...tempConfig
+    }
+    for (let [configname, configvalue] of Object.entries(SavedConfigs)){
+      SavedConfigs[configname]['date'] = [moment(configvalue['date'][0]), moment(configvalue['date'][1])];
+      if (SavedConfigs[configname]['iterations']) {
+        for (let [iterkeys, itervalues] of Object.entries(configvalue['iterations'])) {
+          SavedConfigs[configname]['iterations'][iterkeys]['iterdates'] = 
+            [moment(itervalues['iterdates'][0]), moment(itervalues['iterdates'][1])];
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    form.setFieldsValue(currentConfig);
+    recalculateScores();
+    retrieveConfig();
+  }, [currentConfig]);
 
   const fillForm = (value) => {
     setCurrentConfig(SavedConfigs[value]);
@@ -171,25 +225,44 @@ const ConfigPage = () => {
   return (
     <>
       <Header />
-      <Form style={{ padding: '3% 3% 0 3%' }} onFinish={handleSave} form={form}>
-        <Select
+      <Form
+        style={{ padding:'3% 3% 0 3%' }}
+        onFinish={handleSave}
+        form={form}
+      >
+        <div 
           style={{
-            width: 429,
-            display: 'flex',
-            marginRight: '-3%',
-            marginTop: '-3%',
-            right: 0,
-            float: 'right',
+            display:"flex",
+            marginRight:"-3%",
+            marginTop: "-3%",
+            float:"right"
           }}
-          showSearch
-          allowClear
-          onSelect={fillForm}
-          placeholder="Load Config File"
         >
-          {Object.keys(SavedConfigs).map(function (key) {
-            return <Option value={key}>{key}</Option>;
-          })}
-        </Select>
+          <Select
+            style={{
+              width: 320
+            }}
+            showSearch
+            allowClear
+            onSelect={fillForm}
+            placeholder="Load Config File"
+          >
+            {Object.keys(SavedConfigs).map(function (key) {
+              return <Option value={key}>{key}</Option>;
+            })}
+          </Select>
+          <Button
+            style={{
+              marginLeft: 10,
+              width: 98,
+            }}
+            type="primary"
+            ghost
+            onClick={retrieveConfig}
+          >
+            Load
+          </Button>
+        </div>
         <InitialUserDates />
         <Divider />
         <Row gutter={120}>
@@ -203,18 +276,25 @@ const ConfigPage = () => {
         <Divider />
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'end',
+            display:"flex",
+            justifyContent:"space-between",
+            alignItems:"end"
           }}
         >
           <div>
             <h6>Turn on Anonymous Viewing: </h6>
-            <Form.Item name="anon" initialValue={anon} valuePropName="checked">
+            <Form.Item
+              name="anon"
+              initialValue={anon}
+              valuePropName="checked"
+            >
               <Switch onChange={setAnon} />
             </Form.Item>
           </div>
-          <div className="buttonContainer" style={{ display: 'flex' }}>
+          <div
+            className="buttonContainer"
+            style={{ display:'flex' }}
+          >
             <Form.Item
               name="configname"
               rules={[
