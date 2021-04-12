@@ -2,6 +2,7 @@ import hashlib
 from typing import Any
 
 import flask
+import os
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
@@ -9,6 +10,7 @@ from manager.gitlab_analyzer_manager import GitLabAnalyzerManager
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
+port = int(os.environ.get("PORT", 5678))
 
 # Error respond body list:
 projectIDError = {"response": False, "cause": "Error, invalid projectID."}
@@ -275,4 +277,4 @@ def reset_server():
 
 if __name__ == '__main__':
     gitlab_manager = GitLabAnalyzerManager()
-    app.run(host='0.0.0.0', port=5678)
+    app.run(host='0.0.0.0', port=port)

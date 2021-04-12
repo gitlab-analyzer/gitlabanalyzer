@@ -298,9 +298,8 @@ class GitLabProject:
             for commit in mr.related_commits_list:
                 if tempCommit.short_id == commit.short_id:
                     return False
-                else:
-                    commit.direct_to_master = True
-                    return True
+        tempCommit.direct_to_master = True
+        return True
 
     def __not_merge_commit(self, commit: Commit):
         return "Merge branch " not in commit.title
@@ -311,10 +310,7 @@ class GitLabProject:
             if self.__not_merge_commit(commit) and self.__check_if_direct_on_master(
                 commit
             ):
-                if (
-                    self.__not_merge_commit(commit)
-                    and commitList.get(commit.author_name, None) is None
-                ):
+                if commitList.get(commit.author_name, None) is None:
                     commitList[commit.author_name] = []
                 commitList[commit.author_name].append(commit.to_dict())
         return commitList
