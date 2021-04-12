@@ -60,15 +60,10 @@ const TablePage = () => {
     selectUser, 
     notesList, 
     dataList,
-    wordCount,
     setWordCount,
-    crCount,
     setCrCount,
-    ownCount,
     setOwnCount,
-    otherCount,
     setOtherCount,
-    issueCount,
     setIssueCount
   } = useAuth()
   const classes = useStyles();

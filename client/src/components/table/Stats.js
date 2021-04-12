@@ -19,10 +19,6 @@ const useStyles = makeStyles({
     },
   });
 
-function onChange(e) {
-    console.log(`checked = ${e.target.checked}`);
-}
-
 const Stats = () => {
     const classes = useStyles();
     const {
@@ -40,7 +36,7 @@ const Stats = () => {
                     <h4 className={classes.filterText}><b>Stats</b></h4>
                     <h6 className={classes.filterText}>Word Count: {wordCount}</h6>
                     <h6 className={classes.filterText}>Code Reviews: {crCount}</h6>
-                    <h6 className={classes.filterText}>Total Issues: {issueCount}</h6>
+                    <h6 className={classes.filterText}>Issues: {issueCount}</h6>
                     <h6 className={classes.filterText}>CRs + Issues: {crCount + issueCount}</h6>
 
                     <br />

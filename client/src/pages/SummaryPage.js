@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 const Summary = () => {
   const {
     selectUser,
-    commitsList,
     mergeRequestList,
     notesList,
     dataList,
@@ -37,7 +36,6 @@ const Summary = () => {
   const [crDropdown, setCrDropdown] = useState('All');
   const [textRender, setTextRender] = useState('Number');
 
-  const [userCommitsList, setUserCommitsList] = useState(commitsList);
   const [userMRList, setUserMRList] = useState(mergeRequestList)
 
   const classes = useStyles();
@@ -52,8 +50,6 @@ const Summary = () => {
 
   const COMMIT_SCORE = 7;
   const MERGE_REQUEST_SCORE = 9;
-
-  console.log(mergeRequestList)
 
   const countDates = (list, type, dates) => {
     var result = {};
@@ -307,7 +303,6 @@ const Summary = () => {
     return rarr;
   };
 
-
   const populateDates = (array) => {
     var result = [];
     var i;
@@ -512,7 +507,9 @@ const Summary = () => {
           </b>
         </Grid>
         <Grid item xs={10}>
-          <StackedBarGraph series={combinedSeries} xlabel={commitDatesArray}/>
+          <StackedBarGraph 
+          series={combinedSeries} 
+          xlabel={commitDatesArray}/>
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>

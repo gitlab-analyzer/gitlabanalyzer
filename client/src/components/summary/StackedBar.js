@@ -83,7 +83,6 @@ class StackedBarGraph extends React.Component {
     }
 
     render() {
-      console.log(this.props.series)
       return (
         <div id="chart">
           <Chart options={this.state.options} series={this.props.series} type="bar" height={350} />
