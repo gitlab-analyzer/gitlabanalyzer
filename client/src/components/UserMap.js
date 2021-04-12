@@ -35,7 +35,7 @@ const UserMap = () => {
                 console.log(error);
             }
         }
-        setRedirect(true)
+        setRedirect(true);
     }
 
     const mapUsers = async () => {

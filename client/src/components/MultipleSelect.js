@@ -23,13 +23,11 @@ const MultipleSelect = (props) => {
 
     function handleDeselect(value) {
         var tempSelectedOptions = selectedOptions; 
-        var index = tempSelectedOptions.indexOf(value)
+        var index = tempSelectedOptions.indexOf(value);
         if (index !== -1) {
             tempSelectedOptions.splice(index, 1);
-            setSelectedOptions([...selectedOptions, tempSelectedOptions])
+            setSelectedOptions([...selectedOptions, tempSelectedOptions]);
         }
-        // console.log(selectedOptions)
-        // console.log(value);
        
     }
     
