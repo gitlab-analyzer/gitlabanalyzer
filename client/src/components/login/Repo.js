@@ -940,7 +940,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
     if (date === null) {
       return null;
     }
-    const dateBefore = new Date(date + '-0700');
+    const dateBefore = new Date(date);
     const dateAfter = new Date();
 
     return (dateAfter - dateBefore) / (1000 * 60);
