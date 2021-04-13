@@ -67,12 +67,12 @@ const LoginBar = ({ setRedirect }) => {
     const fullUrl = urlPre + url + urlPost;
     bodyFormData.append('token', token);
     bodyFormData.append('url', fullUrl);
-    axios.defaults.withCredentials = true;
+    // axios.defaults.withCredentials = true;
     const response = await axios({
       method: 'post',
       url: 'https://cmpt373.herokuapp.com/auth',
       data: bodyFormData,
-      withCredentials: true,
+      // withCredentials: true,
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response;

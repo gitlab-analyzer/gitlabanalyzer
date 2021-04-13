@@ -48,12 +48,10 @@ const SearchPage = ({ insideApp }) => {
     const getRepos = async () => {
       setLoading(true);
       const repoList = await axios.get(
-        'https://cmpt373.herokuapp.com/projects',
-        {
-          withCredentials: true,
-        }
+        'https://cmpt373.herokuapp.com/projects'
       );
       setRepo(repoList.data.projects);
+      console.log(repoList);
 
       const projectsData = repoList.data.projects;
 
