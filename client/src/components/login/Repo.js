@@ -159,10 +159,10 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching members list data
   const fetchMembers = async () => {
     const membersRes = await axios.get(
-      `https://cmpt373.herokuapp.com/projects/${selectRepo}/members`,
-      {
-        withCredentials: true,
-      }
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/members`
+      // {
+      //   withCredentials: true,
+      // }
     );
 
     fetchErrorChecker(membersRes.data['response'], 'members');
@@ -180,7 +180,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching users list data
   const fetchUsers = async () => {
     const usersRes = await axios.get(
-      `https://cmpt373.herokuapp.com/${selectRepo}/users`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/users`,
       {
         withCredentials: true,
       }
@@ -192,7 +192,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching commits list data
   const fetchCommits = async () => {
     const commitsRes = await axios.get(
-      `https://cmpt373.herokuapp.com/${selectRepo}/commit/user/all`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/commit/user/all`,
       {
         withCredentials: true,
       }
@@ -235,7 +235,7 @@ const Repo = ({ analyzing, setAnalyzing, loading, insideApp }) => {
   // Function for fetching commits list data
   const fetchCommitsMaster = async () => {
     const commitsMasterRes = await axios.get(
-      `https://cmpt373.herokuapp.com/${selectRepo}/commit/master/direct/user/all`,
+      `https://cmpt373.herokuapp.com/projects/${selectRepo}/commit/master/direct/user/all`,
       {
         withCredentials: true,
       }
