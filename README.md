@@ -1,7 +1,7 @@
 # Makemake GitLab Analyzer
 
 <div align="center">
-  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/logogitlab.png" alt="makemake" width="600">
+  <img src="./client/public/logogitlab.png" alt="makemake" width="600">
 </div>
 
 <h4 align="center">A web application for analyzing <a href="https://gitlab.com/gitlab-org/gitlab" target="_blank">GitLab</a> repositories. Built for Simon Fraser University course CMPT 373.</h4>
@@ -12,7 +12,7 @@
 <br>
 
 <h1 align="center">
-  <img src="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/raw/master/client/public/iter3.png" width="900">
+  <img src="./client/public/iter3.png" width="900">
 </h1>
 
 
@@ -42,7 +42,7 @@ Iteration 2:
 - [x] Issues & Reviews
 - [x] Initial Config & App Config
 - [x] Search Repo
-- [x] <a href="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/blob/master/server/API_example_response.md#api-example-response " target="_blank">REST API v2 Finished!</a> 🚀
+- [x] <a href="./server/API_example_response.md#api-example-response " target="_blank">REST API v2 Finished!</a> 🚀
 - [x] Batch Processing (UI Only)
 - [ ] Code Diff Page
 - [ ] Export Reports
@@ -51,7 +51,7 @@ Iteration 2:
 - [x] Issues & Reviews
 - [x] Config
 - [x] Batch Processing
-- [x] <a href="https://csil-git1.cs.surrey.sfu.ca/373-2021-1-Makemake/gitlabanalyzer/-/blob/master/server/API_example_response.md#api-example-response " target="_blank">REST API v3 Finished!</a> 🚀
+- [x] <a href="./server/API_example_response.md#api-example-response " target="_blank">REST API v3 Finished!</a> 🚀
 - [x] Code Diff Page
 
 ## Directory Structure
