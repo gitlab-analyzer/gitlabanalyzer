@@ -100,7 +100,3 @@ class Project(DataObject):
     @property
     def updated_date(self) -> str:
         return self.__updated_date
-
-    @property
-    def owner_id(self) -> int:
-        return self.__owner_id
