@@ -157,7 +157,7 @@ class GitLabProject:
     ) -> None:
         mr: MergeRequest
         for mr in self.__mergeRequestManager.merge_request_list:
-            codeDiff = myGitlab.get_merge_request_code_diff_latest_version(mr.id)
+            codeDiff = myGitlab.get_merge_request_code_diff_latest_version(mr.iid)
             self.__update_code_diff(codeDiff)
             codeDiffID = self.__codeDiffManager.append_code_diff(codeDiff)
             mr.code_diff_id = codeDiffID
