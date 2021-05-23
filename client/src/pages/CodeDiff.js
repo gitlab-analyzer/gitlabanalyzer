@@ -173,12 +173,13 @@ const CodeDiff = ({ codeId }) => {
     specificFile,
     mergeRequestList,
     setCodeDiffPath,
+    selectedRepo,
   } = useAuth();
 
   useEffect(() => {
     const getData = async () => {
       const codeRes = await axios.get(
-        `http://localhost:5678/projects/2/code_diff/${codeDiffId}`
+        `http://localhost:5678/projects/${selectedRepo}/code_diff/${codeDiffId}`
       );
       await setCodeDiff(codeRes.data.code_diff_list);
       const files = codeDiff.map((code) => code.new_path);
