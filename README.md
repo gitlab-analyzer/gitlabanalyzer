@@ -1,10 +1,40 @@
-# Makemake GitLab Analyzer
+<br />
+<p align="center">
+  <a href="./client/public/logogitlab.png">
+    <img width="60%" src="./client/public/logogitlab.png" alt="gitlabanalyzer logo">
+  </a>
+  <p align="center">
+<!--     <a href="https://github.com/quarterblue/bloomy/actions/workflows/rust.yml" target="_blank">
+        <img src="https://github.com/quarterblue/bloomy/actions/workflows/rust.yml/badge.svg" alt="GitHub Passing">
+    </a> -->
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/blob/master/LICENSE" target="_blank">
+        <img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License">
+    </a>   
+     <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/graphs/contributors" target="_blank">
+        <img src="https://img.shields.io/github/contributors/gitlab-analyzer/gitlabanalyzer" alt="Contributers">
+    </a>   
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/graphs/commit-activity" target="_blank">
+        <img src="https://img.shields.io/github/last-commit/gitlab-analyzer/gitlabanalyzer" alt="Last Commit">
+    </a>
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/issues" target="_blank">
+        <img src="https://img.shields.io/github/issues/gitlab-analyzer/gitlabanalyzer" alt="Issues">
+    </a>
+</p>
+  <h3 align="center">A web application for analyzing <a href="https://gitlab.com/gitlab-org/gitlab" target="_blank">GitLab</a> repositories.</h3>
 
-<div align="center">
-  <img src="./client/public/logogitlab.png" alt="makemake" width="600">
-</div>
-
-<h4 align="center">A web application for analyzing <a href="https://gitlab.com/gitlab-org/gitlab" target="_blank">GitLab</a> repositories. Built for Simon Fraser University course CMPT 373.</h4>
+  <p align="center">
+    Built for Simon Fraser University course CMPT 373.
+    <br />
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/">View Demo</a>
+    ·
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/issues">Request Feature</a>
+  </p>
+</p>
 
 ## Demo (Iteration 3)
 
