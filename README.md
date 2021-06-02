@@ -25,16 +25,80 @@
   <p align="center">
     Built for Simon Fraser University course CMPT 373.
     <br />
-    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/blob/master/server/API_example_response.md#api-example-response"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/">View Demo</a>
+    <a href="https://github.com/gitlab-analyzer/gitlabanalyzer#demo-iteration-3">View Demo</a>
     ·
     <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/issues">Report Bug</a>
     ·
     <a href="https://github.com/gitlab-analyzer/gitlabanalyzer/issues">Request Feature</a>
   </p>
 </p>
+
+## ⚡️ Quick start
+
+First of all, [download](https://nodejs.org/en/) and install **Node.js**. Version `14.7.0 LTS` or higher is recommended.
+
+Then, [download](https://www.python.org/downloads/) and install **Python 3**. Version `3.6` or higher is recommended.
+
+**Clone directory:**
+```bash
+$ git clone git@github.com:gitlab-analyzer/gitlabanalyzer.git
+```
+
+**Frontend:**
+```bash
+# Change directory:
+$ cd gitlabanalyzer/client/
+
+# Installation:
+$ npm install
+
+# Start client server:
+$ npm start
+```
+
+**Backend:**
+```bash
+# Change directory:
+$ cd gitlabanalyzer/server/
+
+# Installation:
+$ pip3 install
+
+# Start backend server:
+$ python3 app.py
+```
+
+Then navigate to **[http://localhost:6789/](http://localhost:6789/)** on your browser.
+
+
+## 🐳 Docker-way to quick start
+
+Make sure you have [installed docker and docker-compose](https://docs.docker.com/compose/install/) on your computer
+
+**Clone directory:**
+```bash
+$ git clone git@github.com:gitlab-analyzer/gitlabanalyzer.git
+```
+
+**Run:**
+```bash
+# Change directory:
+$ cd gitlabanalyzer/
+
+# Run:
+$ ./start.sh  
+
+# Or if you need sudo previleges:
+$ sudo bash ./start.sh
+```
+
+Then navigate to **[http://localhost:6789/](http://localhost:6789/)** on your browser.
+
+You might need to wait a couple minutes for everything in docker to be loaded.
+
 
 ## Demo (Iteration 3)
 
@@ -44,15 +108,6 @@
 <h1 align="center">
   <img src="./client/public/iter3.png" width="900">
 </h1>
-
-
-## Deploy our web app on your local machine
-- Make sure you have [installed docker and docker-compose](https://docs.docker.com/compose/install/) on your computer
-- Clone or download the repo on your local computer
-- `cd` into the repo folder
-- run `./start.sh` or `sudo bash ./start.sh` if you need sudo privileges to run **docker-compose**
-- paste **http://localhost:6789/** into your web browser and explore our GitLab Analyzer!
-	- You might need to wait a couple minutes for everything in docker to be loaded
 
 ## Features
 
